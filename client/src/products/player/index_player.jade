@@ -122,6 +122,22 @@ html(lang='en', data-ng-app='hcApp' style="background: #{backgroundColor}" )
 		div#svg-renderarea.hidden
 		div(ng-include=" '#{server_prefix}#{view_path}/components/project/distributions/renderers/renderTemplates.html' ")
 
+		//npm packages from cdn
+		script(src='https://cdnjs.cloudflare.com/ajax/libs/bluebird/3.7.2/bluebird.min.js')
+		script(src='https://cdnjs.cloudflare.com/ajax/libs/bluebird/3.7.2/bluebird.core.min.js')
+		//- https://cdnjs.cloudflare.com/ajax/libs/bluebird/3.7.2/bluebird.core.js
+		//- https://cdnjs.cloudflare.com/ajax/libs/bluebird/3.7.2/bluebird.js
+		script(src='https://cdnjs.cloudflare.com/ajax/libs/jade/1.11.0/jade.min.js')
+		script(src='https://cdnjs.cloudflare.com/ajax/libs/jade/1.11.0/runtime.min.js')
+		script(src='https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.20/lodash.min.js')
+		script(src='https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.20/lodash.core.min.js')
+		script(src='https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.20/lodash.fp.min.js')
+		script(src='https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.20/mapping.fp.min.js')
+		script(src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.28.0/moment.min.js')
+		script(src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.28.0/moment-with-locales.min.js')
+		
+		
+		
 		// @if compiled = false
 		//-<!-- build:js #{env}/js/player/vendor.js -->
 		// bower:js
