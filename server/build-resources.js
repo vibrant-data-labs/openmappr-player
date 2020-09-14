@@ -1,18 +1,16 @@
 'use strict';
 
-const _    = require('lodash'),
-      Promise  = require("bluebird"),
-      mongoose = require('mongoose'),
-      fs       = require('fs'),
-      DSModel        = require('./datasys/datasys_model'),
-      projModel      = require("./project/proj_model"),
-      dataUtils      = require("./utils/dataUtils"),
-      AppConfig = require('./services/AppConfig'),
-      express = require('express'),
-      serverInit = require('./main_server'),
-      http = require('http'),
-      { execSync } = require('child_process'),
-      { argv } = require('yargs');
+const _ = require('lodash'),
+  Promise = require("bluebird"),
+  mongoose = require('mongoose'),
+  fs = require('fs'),
+  DSModel = require('./datasys/datasys_model'),
+  projModel = require("./project/proj_model"),
+  dataUtils = require("./utils/dataUtils"),
+  AppConfig = require('./services/AppConfig'),
+  { execSync } = require('child_process'),
+  { argv } = require('yargs'),
+  jade = require('jade');
 
 const player_model = require('./player/player_model');
 
@@ -20,7 +18,7 @@ const projId = argv.projId;
 const publishDataPath = argv.path;
 const dataOnly = argv.dataOnly;
 const staticFilesOnly = argv.staticFilesOnly;
-console.log('args!!!!', argv);
+
 let hasError = false;
 if (!dataOnly && !publishDataPath) {
   console.error('Argument --path should be provided!');
@@ -50,29 +48,24 @@ if (staticFilesOnly) {
 }
 
 var config = AppConfig.init({
-  get: function(key) {
+  get: function (key) {
     return process.env[key];
   }
 });
 
 if (!dataOnly || staticFilesOnly) {
   console.log('Running grunt...');
-  if (process.env.NODE_ENV === 'local') {
-    console.warn('Local environment detected, forcing...');
-    execSync('grunt --force');
-  } else {
-    execSync('grunt');
-  }
+  execSync('grunt --force');
 }
 
 const outputPath = './client/build/dev/';
-const dataPath = outputPath +'data/';
+const dataPath = outputPath + 'data/';
 
-if (!fs.existsSync(dataPath)){
+if (!fs.existsSync(dataPath)) {
   fs.mkdirSync(dataPath);
 }
 
-mongoose.connect(config.dbUrl, function(error) {
+mongoose.connect(config.dbUrl, function (error) {
   console.log('MONGO CONNECT ERR', error);
 });
 
@@ -125,7 +118,7 @@ async function buildResources() {
   if (!dataOnly) {
     const html = await buildIndex()
     console.log("HTML fetched.");
-    fs.writeFileSync(outputPath + 'index.html', html.text);
+    fs.writeFileSync(outputPath + 'index.html', html);
 
     console.log("HTML is rendered.");
     await prepareToPublish();
@@ -140,22 +133,36 @@ async function buildResources() {
 }
 
 function buildIndex() {
-  var app  = express();
-    
+  const playerTemplate = outputPath + '/views/index_player.jade';
+
+  const contents = fs.readFileSync(playerTemplate);
+  const options = {
+    client: true,
+    compileDebug: false,
+    filename: outputPath + '/views/index.html',
+    playerLoadInfo: JSON.stringify({
+      isPublicPlayer: true,
+      playerBuildVer: process.version,
+      directAccess: true,
+      isFinal: false
+    }),
+    playerTitle: 'Enter the title here',
+    backgroundColor: '#fff',
+    colorTheme: 'light',
+    snapshotImg: '/img/openmappr_socialmedia.png',
+    playerDataPath: publishDataPath,
+    player_prefix_index: ''
+  };
+
   return new Promise((resolve) => {
-    serverInit(app, function() {
-      console.log('Rendering index.html...');
-      const request = require('supertest');
-      const client = request(app);
-      client.get('/play/' + (!staticFilesOnly ? playerSettings.playerUrl : 'ten-years-of-ted-talks') + "?data_path=" + publishDataPath).then((val) => resolve(val));
-    });
+    resolve(jade.renderFile(outputPath + '/views/index_player.jade', options));
   });
 }
 
 async function prepareToPublish() {
   console.log('Preparing items to publish...');
   const publishOutputPath = './publish';
-  if (fs.existsSync(publishOutputPath)){
+  if (fs.existsSync(publishOutputPath)) {
     const del = require('del');
     await del(publishOutputPath);
   }
@@ -165,7 +172,7 @@ async function prepareToPublish() {
   const { ncp } = require('ncp');
 
   let i = 0;
-  const callbackHandler = function(err) {
+  const callbackHandler = function (err) {
     if (++i == 7) process.exit(0);
   };
 
@@ -183,7 +190,7 @@ function _shouldSanitizeClusterInfo(nw) {
 }
 
 
-buildResources().catch((err) =>  {
+buildResources().catch((err) => {
   console.error('[Build error]: ' + err);
   process.exit(1);
 });

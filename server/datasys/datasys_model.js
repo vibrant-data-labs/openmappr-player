@@ -8,8 +8,7 @@ var streamifier = require("streamifier"),
     _ = require('lodash'),
     onecolor = require('onecolor');
 
-var elasticSearchService = require('../services/elasticsearch'),
-    gfs = require('../schemas/gfs_schema.js'),
+var gfs = require('../schemas/gfs_schema.js'),
     DataMapping = require('../schemas/dataMapping_schema.js'),
     DatasetRecord = require('../schemas/datasetRecord_schema.js'),
     NetworkRecord = require('../schemas/networkRecord_schema.js');
@@ -436,16 +435,6 @@ function saveDataset (dataset, skipDatapoints) {
         return saveDatasetRecord(dataset);
     })
         .then(() => dataset)
-        .tap(function(dataset) {
-            if(shouldIndex) {
-                return elasticSearchService.storeDataSet(dataset.id, dataset.attrDescriptors, dataset.datapoints, function (err){
-                    if(err) {
-                        return console.warn("[DSModel.saveDataset] error storing data to elasticsearch", err);
-                    }
-                    console.log("[DSModel.saveDataset] Successfully stored data to elasticsearch");
-                });
-            } else return null;
-        });
     return onSaveP.tap(() => console.log(`[Dataset.saveDataset] Successfully saved dataset: ${dataset.name}`));
 
     // // var dataMap = new DataMapping({
@@ -475,15 +464,7 @@ function saveDataset (dataset, skipDatapoints) {
     //         resolve(dataset);
     //     });
     //     writestream.on('error', function(err) { reject(err); });
-    // }).tap(function(dataset) {
-    //     elasticSearchService.storeDataSet(dataset.id, dataset.datapoints, function (err, result){
-    //         if(err) {
-    //             console.warn("[DSModel.saveDataset] : error storing data to elasticsearch", err);
-    //         } else {
-    //             console.log("[DSModel.saveDataset] : successfully stored data to elasticsearch");
-    //         }
-    //     });
-    // });
+    // })
 }
 
 function saveNetworkRecord(network) {

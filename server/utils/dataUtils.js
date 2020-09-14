@@ -4,7 +4,6 @@ var fs = require('fs');
 var xlsx = require('xlsx');
 var xls = require('xlsjs');
 var csv = require('csv-parser');
-var UID = require('../services/UIDUtils.js');
 var gexf = require('gexf');
 var assert = require("assert");
 var color = require('onecolor'); // color guessing
@@ -2219,7 +2218,6 @@ module.exports = {
     parseGEXFToGraph          : parseGEXFToGraph,
     parseExcelToGraph         : parseExcelToGraph,
     parseCSVToGraph           : parseCSVToGraph,
-    parseQJSONToGraph         : parseQJSONToGraph,
     parseXLSXToSurveyTemplate : parseXLSXToSurveyTemplate,
     generateCSVFromGraph      : generateCSVFromGraph,
     generateNetworksXLSX      : generateNetworksXLSX,
