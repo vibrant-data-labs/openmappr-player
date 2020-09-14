@@ -1,0 +1,124 @@
+/* line 1, ../../sass/sign-in/button.scss */
+.button {
+  padding: 10px;
+  font-size: 15px;
+  text-transform: uppercase;
+  border-radius: 4px;
+  transition: all .25s;
+  cursor: pointer;
+}
+/* line 9, ../../sass/sign-in/button.scss */
+.button:disabled {
+  pointer-events: none;
+  opacity: .7;
+}
+/* line 14, ../../sass/sign-in/button.scss */
+.button_wide {
+  display: block;
+  width: 100%;
+}
+/* line 20, ../../sass/sign-in/button.scss */
+.button_type_primary {
+  background: #BA3665;
+  color: #fff;
+}
+/* line 24, ../../sass/sign-in/button.scss */
+.button_type_primary:hover {
+  background: #9a2d54;
+}
+/* line 28, ../../sass/sign-in/button.scss */
+.button_type_primary:focus, .button_type_primary:active {
+  background: #9a2d54;
+  box-shadow: inset 0 0 8px rgba(91, 26, 49, 0.6);
+}
+/* line 35, ../../sass/sign-in/button.scss */
+.button_type_ghost {
+  background: none;
+  color: #BA3665;
+  text-transform: initial;
+  font-weight: 500;
+  font-size: 13px;
+}
+/* line 42, ../../sass/sign-in/button.scss */
+.button_type_ghost:hover {
+  color: #9a2d54;
+}
+/* line 47, ../../sass/sign-in/button.scss */
+.button_type_play-toolbar {
+  display: block;
+  width: 26px;
+  height: 100%;
+  padding: 0;
+  font-size: 0;
+  position: relative;
+  background-color: #fff;
+  border-radius: 2px;
+  text-transform: none;
+}
+/* line 58, ../../sass/sign-in/button.scss */
+.button_type_play-toolbar:disabled {
+  opacity: .3;
+}
+/* line 62, ../../sass/sign-in/button.scss */
+.button_type_play-toolbar.button_with-text {
+  width: auto;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 26px;
+  padding: 0 10px 0 20px;
+}
+/* line 69, ../../sass/sign-in/button.scss */
+.button_type_play-toolbar.button_with-text::before {
+  width: 20px;
+}
+/* line 74, ../../sass/sign-in/button.scss */
+.button_type_play-toolbar:hover {
+  background-color: #fafafa;
+}
+/* line 78, ../../sass/sign-in/button.scss */
+.button_type_play-toolbar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-repeat: no-repeat;
+  background-position: 50%;
+}
+/* line 91, ../../sass/sign-in/button.scss */
+.button_type_play-toolbar.button_icon_check::before {
+  background-image: url("/img/play-toolbar/check.svg");
+}
+/* line 95, ../../sass/sign-in/button.scss */
+.button_type_play-toolbar.button_icon_chevron-left::before {
+  background-image: url("/img/play-toolbar/arrow-left.svg");
+}
+/* line 99, ../../sass/sign-in/button.scss */
+.button_type_play-toolbar.button_icon_chevron-right::before {
+  background-image: url("/img/play-toolbar/arrow-right.svg");
+}
+/* line 103, ../../sass/sign-in/button.scss */
+.button_type_play-toolbar.button_icon_cancel::before {
+  background-image: url("/img/play-toolbar/cancel.svg");
+}
+/* line 107, ../../sass/sign-in/button.scss */
+.button_type_play-toolbar.button_icon_target::before {
+  background-image: url("/img/play-toolbar/target.svg");
+}
+/* line 111, ../../sass/sign-in/button.scss */
+.button_type_play-toolbar.button_icon_plus::before {
+  background-image: url("/img/play-toolbar/plus.svg");
+}
+/* line 115, ../../sass/sign-in/button.scss */
+.button_type_play-toolbar.button_icon_minus::before {
+  background-image: url("/img/play-toolbar/minus.svg");
+}
+/* line 119, ../../sass/sign-in/button.scss */
+.button_type_play-toolbar.button_icon_search::before {
+  background-image: url("/img/play-toolbar/search.svg");
+}
+/* line 123, ../../sass/sign-in/button.scss */
+.button_type_play-toolbar.button_icon_help::before {
+  background-image: url("/img/play-toolbar/help.svg");
+}

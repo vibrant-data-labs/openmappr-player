@@ -1,0 +1,12 @@
+.layout-dropdown
+  .shadow-btn.text-center.uib-dropdown.vert-align(uib-dropdown dropdown-append-to-body)
+    .vert-align.truncate.uib-dropdown-toggle.width-100(uib-dropdown-toggle auto-close="outsideClick")
+      h6.pull-left.truncate {{snapInfo.activeSnap.snapName}}&nbsp;
+      i.fa.fa-caret-down
+    .uib-dropdown-menu.uib-dropdown-menu-right.uib-dropdown-menu-flexing.layout-dropdown-menu(uib-dropdown-menu style="margin-left: 240px;")
+      .uib-dropdown-click-close
+      .uib-dropdown-flex-content(style="width: 239px;")
+        .uib-dropdown-flex
+          ul.list-unstyled.dd-list
+            li.vert-align(ng-repeat="snap in player.snapshots" ng-class="{'active': snapInfo.activeSnap.id === snap.id}" ng-click="setSnapActive(snap);")
+              h6.no-margin {{snap.snapName}}

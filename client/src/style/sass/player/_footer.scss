@@ -1,0 +1,236 @@
+//
+// Player footer styling
+// Styling for player footer, including the timeline and snapshot descriptions
+
+.footer-menu {
+    bottom: 0;
+    height: 60px;
+    left: 0;
+    pointer-events: none;
+    position: absolute;
+    right: 0;
+    z-index: 1000;
+
+    &.lower {
+        bottom: -60px;
+    }
+
+    .description {
+        // @include transform(translate3d(0, -100%, 0));
+        @include transform(translate3d(0, -60px, 0));
+        @include transition(all .5s ease-out);
+        left: 0;
+        padding: 0;
+        pointer-events: auto;
+        position: absolute;
+        right: 0;
+        top: 0;
+
+        &.closed,
+        &.one-snap {
+            @include transform(translate3d(0, 0, 0));
+        }
+
+        &.closed {
+            &.one-snap {
+                @include transform(translate3d(0, 60px, 0));
+            }
+        }
+
+        .content {
+            background: $shadow-color-dark;
+            border-top: 1px solid $gray-light;
+        }
+
+        .container {
+            padding: 0;
+            width: 650px;
+        }
+
+        h1 {
+            margin-top: -2px;
+        }
+
+        ul {
+            position: absolute;
+            right: 160px;
+            top: 60px;
+            z-index: 10;
+        }
+
+        li {
+            float: right;
+        }
+
+        .one-snap-filler {
+            background: $shadow-color-dark;
+            position: absolute;
+            bottom: 0;
+            height: 60px;
+            margin-bottom: -60px;
+            width: 100%;
+        }
+    }
+
+    .bottom-controls {
+        bottom: 0;
+        height: 60px;
+        left: 0;
+        pointer-events: auto;
+        position: absolute;
+        right: 0;
+
+        .background {
+            background-color: $body-bg;
+            border-top: 1px solid $gray-light;
+            bottom: 0;
+            left: 0;
+            position: absolute;
+            right: 0;
+            top: 0;
+            z-index: 1;
+        }
+
+        .container {
+            padding: 16px;
+            position: relative;
+            width: 960px;
+            z-index: 2;
+        }
+
+        .zoom-to-fit-btn {
+            bottom: 15px;
+            left: 10px;
+            position: absolute;
+            z-index: 2;
+        }
+
+        .play-btn,
+        .fullscreen-btn {
+            float: left;
+        }
+
+        .snaps-bar {
+            border-top: 1px solid $panel-border-dark;
+            float: left;
+            margin: 14px 100px;
+            position: relative;
+            width: 650px;
+
+            .time-bar {
+                border-top: 3px solid;
+                left: 0;
+                position: absolute;
+                top: -2px;
+                width: 0;
+            }
+        }
+        .snap {
+            background-color: $body-bg;
+            border: 1px solid $panel-border-dark;
+            border-radius: 100%;
+            cursor: pointer;
+            height: 11px;
+            margin: -6px;
+            overflow: hidden;
+            position: absolute;
+            top: 0;
+            width: 11px;
+
+            &.active,
+            &:hover {
+                border-width: 3px;
+
+                .marker {
+                    padding: 4px;
+                }
+            }
+
+            &.large {
+                height: 27px;
+                margin: -14px;
+                width: 27px;
+            }
+
+            .marker {
+                color: $panel-border-dark;
+                display: block;
+                margin: auto;
+                padding-left: 1px;
+            }
+
+            .icon-project {
+                padding-left: 2px;
+            }
+
+            //earth is just a little too small at this size
+            .icon-earth {
+                font-size: 1.4em;
+            }
+        }
+
+        &:hover {
+            .description {
+                @include transform(translate3d(0, -100%, 0));
+
+                &.closed,
+                &.one-snap,
+                &.open {
+                    @include transform(translate3d(0, -100%, 0));
+                }
+
+                &.closed {
+                    &.one-snap {
+                        @include transform(translate3d(0, -100%, 0));
+                    }
+
+                    &.force-closed {
+                        @include transform(translate3d(0, 0, 0));
+                    }
+                }
+            }
+        }
+    }
+
+    .logo {
+        float: right;
+        height: auto;
+        margin-left: 15px;
+        margin-top: 7px;
+        padding: 0;
+        pointer-events: auto;
+        position: relative;
+        width: auto;
+        z-index: 2;
+
+        a {
+            color: $panel-text-dark;
+            &:hover {
+                color: $panel-text-dark;
+            }
+        }
+
+        h6 {
+            color: $text-color;
+            font-size: 12px;
+            font-weight: 200;
+            position: absolute;
+            right: 77px;
+            text-transform: uppercase;
+            top: 8px;
+            white-space: nowrap;
+        }
+    }
+
+    .powered-by {
+        background: url('https://s3-us-west-1.amazonaws.com/mappr-misc/icons/vibrantdata-logo.svg');
+        background-repeat: no-repeat;
+        background-size: cover;
+        height: 24px;
+        margin: 14px 9px 11px;
+        // width: 138px;
+        width: 26px;
+
+    }
+
+}

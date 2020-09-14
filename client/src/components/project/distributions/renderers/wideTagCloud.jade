@@ -1,0 +1,41 @@
+.tag-list(ng-if="selNodesCount === 0 || (selNodesCount > 0 && catListData.highlightedCats.length > 0)")
+	.tag-list__item.tag-list__item-wide(uib-tooltip="{{getTooltipInfo(catData)}}",
+			tooltip-placement="right", 
+			tooltip-append-to-body="true",
+			style="cursor: pointer;"
+			ng-mouseenter="overCat(catData, $event)", 
+			ng-mouseleave="outCat(catData)",
+			ng-class="{'filter':showFilter, 'cat-item-subsetted': catData.isSubsetted, 'active': catData.isChecked}", 
+			ng-click="onCatClick(catData, $event)"
+			ng-repeat="catData in catListData.data | filter:{text: distrData.searchQuery} | limitTo: distrData.step:(distrData.numShowGroups * distrData.step) track by catData.id",
+			ng-if="(catListData.inSelectionMode && catData.selTagFreq.toFixed(0) || catData.globalTagFreq.toFixed(0)) > 0")
+		.cat-highlight(style="opacity: 0;")
+		//- .cat-highlight(style="opacity: {{catData.selPercentOfSel/100}}")
+		//- .cat-bar-container
+		//- 	.cat-global-bar.transition(style="width:{{catData.globalpercent}}%")
+		//- 	//- .cat-global-bar.transition(ng-if="catData.isCurrent" style="width:{{(catData.globalpercent - catData.selPercent).toFixed(2)}}%; background-color:{{catData.colorStr}};")
+		//- 	.cat-selfreq-bar.transition(style="width:{{catData.selPercent}}%; background-color:{{catData.colorStr}}")
+		.cat-list.tag-cloud
+			{{::catData.text}}
+
+		//.vert-align.cat-text-container.tag-checkbox-container(ng-click="onCatClick(catData, $event);")
+		//	.tag-checkbox(ng-if="showFilter" ng-class="{{catData.checkboxClass}}")
+		//		input(id="checkbox-{{$index}}-{{attrId}}" type="checkbox", ng-model="catData.isChecked", ng-disabled="true")
+		//		label(for="checkbox-{{$index}}-{{attrId}}")
+		//	div
+		//		.cat-text.h6.no-margin.truncate {{::catData.text}}
+		//- .cat-percent.text-right.h6.no-margin {{::catData.globalpercent.toFixed(0)}}%
+footer.card__footer(ng-if="catListData.data.length > distrData.initialItemCount")
+	.card-pagination
+		span.card-pagination__button(ng-click='showFirstPage()' ng-disabled="!(distrData.numShowGroups !== 0)" ng-class="{'disabled': !(distrData.numShowGroups !== 0)}") |&larr;
+		span.card-pagination__button(ng-click='showLess()' ng-disabled="!(distrData.numShowGroups !== 0)" ng-class="{'disabled': !(distrData.numShowGroups !== 0)}") &larr; Less
+		span.card-pagination__total {{distrData.startItem()}} - {{distrData.numShownCats}} of {{catListData.data.length}}
+		span.card-pagination__button(ng-click='showMore()' 
+			ng-disabled="!(distrData.numShownCats < catListData.data.length && (selNodesCount === 0 || (selNodesCount > 0 && catListData.highlightedCats.length > 0)))"
+			ng-class="{ 'disabled': !(distrData.numShownCats < catListData.data.length && (selNodesCount === 0 || (selNodesCount > 0 && catListData.highlightedCats.length > 0)))}"
+			) More &rarr;
+		span.card-pagination__button(ng-click='showLastPage()'  
+			ng-disabled="!(distrData.numShownCats < catListData.data.length && (selNodesCount === 0 || (selNodesCount > 0 && catListData.highlightedCats.length > 0)))"
+			ng-class="{ 'disabled': !(distrData.numShownCats < catListData.data.length && (selNodesCount === 0 || (selNodesCount > 0 && catListData.highlightedCats.length > 0)))}") &rarr;|
+.cat-list.h6.tag-cloud(ng-if="selNodesCount > 0 && catListData.highlightedCats.length === 0")
+	h6 No tags in group

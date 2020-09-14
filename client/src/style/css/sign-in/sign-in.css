@@ -1,0 +1,40 @@
+/* line 2, ../../sass/sign-in/sign-in.scss */
+.page-signin {
+  background: #449BB9 url(../img/bg.png) 50% no-repeat;
+  background-size: cover;
+  height: 100%;
+}
+/* line 7, ../../sass/sign-in/sign-in.scss */
+.page-signin__title {
+  margin: 30px 0 16px;
+  font-size: 13px;
+  line-height: 20px;
+  font-family: 'Poppins', sans-serif;
+}
+@media (min-width: 768px) {
+  /* line 14, ../../sass/sign-in/sign-in.scss */
+  .page-signin .modal-dialog {
+    margin-top: 120px;
+  }
+}
+/* line 20, ../../sass/sign-in/sign-in.scss */
+.page-signin .modal-dialog__note {
+  color: #fff;
+}
+/* line 24, ../../sass/sign-in/sign-in.scss */
+.page-signin .panel-profile {
+  max-width: 480px;
+  margin: 0 auto 20px;
+  padding: 20px;
+  border: 0;
+  border-radius: 6px;
+  box-shadow: 0 0 18px rgba(0, 0, 0, 0.06);
+}
+/* line 33, ../../sass/sign-in/sign-in.scss */
+.page-signin .panel-heading {
+  padding: 0;
+}
+/* line 37, ../../sass/sign-in/sign-in.scss */
+.page-signin .panel-body {
+  padding: 0;
+}

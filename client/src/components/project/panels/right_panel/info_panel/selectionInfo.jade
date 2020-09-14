@@ -1,0 +1,3 @@
+dir-nodes-list(nodes="selInfo.genericSelNodes", links="selInfo.genericSelLinks" selected-groups="selInfo.selectedGroups", label-attr="selInfo.labelAttr" node-color-attr="selInfo.nodeColorAttr" node-color-attr-title="selInfo.nodeColorAttrTitle" panel-mode="selInfo.panelMode" sort-types="selInfo.sortTypes" sort-info="selInfo.sortInfo")
+dir-neighbor-nodes(ng-if="selInfo.panelMode == 'node' " sel-node="selInfo.principalNode" panel-mode="selInfo.panelMode" label-attr="selInfo.labelAttr" sel-nodes="selInfo.genericSelNodes" node-neighbors="selInfo.nodeNeighbors" link-info-attrs="selInfo.linkInfoAttrs")
+dir-node-info-attrs(ng-if="selInfo.panelMode == 'node' && ui.showInfoAttrs " sel-node="selInfo.principalNode" pinned-media="pinnedMedia")

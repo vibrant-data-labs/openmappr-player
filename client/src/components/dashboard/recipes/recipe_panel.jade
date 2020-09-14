@@ -1,0 +1,5 @@
+.page.page-recipelist.height-100(ng-init="ui.setPage('recipe_panel')" ng-controller="RecipePanelCtrl")
+	h5.recipe-name {{vm.recipe.name}}
+	.recipe-list.top-align.height-100
+		.pull-left.flex-fill.list-lg(ng-include=' "#{server_prefix}#{view_path}/components/dashboard/recipes/recipe_left_panel.html" ')
+		.pull-left.recipe-right-panel.list-lg(ng-include=' "#{server_prefix}#{view_path}/components/dashboard/recipes/recipe_right_panel.html" ')

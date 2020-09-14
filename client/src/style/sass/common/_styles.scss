@@ -1,0 +1,1437 @@
+//
+// General Styles
+// Styles across the app for both the player and the app
+
+
+//vars
+
+body,
+html {
+    -webkit-font-smoothing: antialiased;
+    height: 100%;
+    font-weight: 300;
+    font-family: $font-family-sans-serif;
+}
+
+.h7,
+h7 {
+    font-size: 12px;
+}
+
+h1,
+.h1,
+h2,
+.h2,
+h3,
+.h3 {
+  font-weight: 300;
+}
+
+input,
+label,
+textarea,
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+h7 {
+    @include user-select(auto);
+}
+
+label {
+    font-family: $headings-font-family;
+    font-weight: 300;
+}
+
+hr {
+    border-color: $horiz-line-color;
+}
+
+//for any code
+.pre,
+pre {
+    font-family: $font-family-monospace !important;
+}
+
+.clearfix {
+  @include user-select(auto);
+}
+
+.clearfix:before,.clearfix:after {
+    content: " ";
+    display: table;
+}
+
+.clearfix:after {
+    clear: both;
+}
+
+::selection {
+    background: $active-color;
+    color: $text-color-dark;
+}
+
+//TODO: find new focus strategy
+*:focus {
+    outline: 0 !important;
+}
+
+.break-word {
+    @include break-word;
+}
+
+button {
+    background-color: transparent;
+    border: 0;
+    padding: 0 6px;
+}
+
+p {
+    a {
+        text-decoration: underline;
+    }
+}
+
+a {
+    cursor: pointer;
+
+    &:focus,
+    &:hover {
+        color: $active-color;
+        text-decoration: none;
+    }
+
+}
+
+.pointer-auto {
+    pointer-events: auto;
+}
+
+.pointer-none {
+    pointer-events: none;
+}
+
+.inline {
+    display: inline-block;
+}
+
+.active {
+    @include transition(color .2s ease-out);
+    color: $active-color;
+}
+
+.blue {
+    color: $active-color;
+}
+
+.no-active {
+    color: inherit;
+}
+
+.bg-active {
+    background: $panel-dark-highlight;
+}
+
+.icon-bg {
+    &.active-bg {
+        background: $active-color;
+    }
+}
+
+.divider-sm {
+    display: block;
+    height: 5px;
+}
+
+.divider {
+    display: block;
+    height: 10px;
+}
+
+.divider-lg {
+    display: block;
+    height: 20px;
+}
+
+.divider-xlg {
+    display: block;
+    height: 40px;
+}
+
+.holder {
+    padding: 10px;
+}
+
+.horiz-line {
+    border-bottom: 1px solid $horiz-line-color;
+    width: 100%;
+}
+
+.three-columns {
+    -webkit-column-count: 3;
+    -moz-column-count: 3;
+    column-count: 3;
+}
+
+.vdat-logo {
+    background-image: url('https://s3-us-west-1.amazonaws.com/mappr-misc/icons/vdat-blue-dot-logo.png');
+    background-size: cover;
+    height: 120px;
+    margin-right: 20px;
+    width: 120px;
+}
+
+.logo-heading {
+    color: $text-color;
+    font-size: 50px;
+}
+
+//buttons
+
+.square-btn {
+    @include user-select(none);
+    background-color: $body-bg;
+    border: 1px solid $gray-light;
+    color: $text-color;
+    cursor: pointer;
+    display: block;
+    font-family: $headings-font-family;
+    //was 16px
+    font-size: 18px;
+    height: 30px;
+    line-height: 1.3;
+    margin: 0 4px;
+    min-width: 30px;
+    padding: 2px 8px;
+    pointer-events: auto;
+    white-space: nowrap;
+
+    &.active,
+    &:hover {
+        color: $active-color;
+    }
+
+
+    &.small-btn {
+        // display: inline-block;
+        font-size: 12px;
+        height: 20px;
+        line-height: .5;
+        margin: -1px 0 0;
+        min-width: 22px;
+        padding: 2px 6px;
+        vertical-align: middle;
+
+        &.text-btn {
+            font-size: 12px;
+            height: 24px;
+            line-height: .7;
+            margin-top: -3px;
+            padding: 7px;
+        }
+
+        h5 {
+            font-size: 10px;
+            margin: 0;
+            text-transform: uppercase;
+        }
+
+        h6 {
+            margin: 0;
+        }
+
+        .fa {
+            display: block;
+            font-size: 10px;
+            margin-top: -1px;
+        }
+
+        .icon {
+            font-size: 10px;
+            letter-spacing: -3px;
+            margin-left: -3px;
+        }
+
+        .form-control {
+            background: transparent;
+        }
+    }
+}
+
+.shadow-btn {
+    position: relative;
+    border: none;
+    box-shadow: 0 0 3px rgba(0, 0, 0, .4);
+    border-radius: 3px;
+    padding: 0 10px;
+    height: 30px;
+    line-height: 1.3;
+    margin: 0 4px;
+    min-width: 30px;
+    padding: 2px 8px;
+    pointer-events: auto;
+    white-space: nowrap;
+    cursor: pointer;
+    background: #fff;
+
+    &.active,
+    &:hover {
+        color: $color-slice-blue;
+    }
+
+    &:active {
+      background: -moz-radial-gradient(center, ellipse cover, #f2f2f2 0%, #ffffff 100%); /* FF3.6-15 */
+      background: -webkit-radial-gradient(center, ellipse cover, #f2f2f2 0%,#ffffff 100%); /* Chrome10-25,Safari5.1-6 */
+      background: radial-gradient(ellipse at center, #f2f2f2 0%,#ffffff 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2f2f2', endColorstr='#ffffff',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+    }
+}
+
+.shadown-btn--no-hover {
+    &.active, &:hover {
+        color: inherit;
+    }
+}
+
+.shadow-btn--icon-btn {
+    display: inline-block;
+    min-width: 0;
+    width: auto;
+    margin: 0 5px 7px;
+    display: inline-block;
+    padding: 6px;
+    font-size: 18px;
+
+    .material-icons {
+      font-size: inherit;
+    }
+
+    button {
+        &:not(:last-child) {
+            border-right: 1px solid #ccc;
+            padding-right: 6px;
+        }
+        
+        &.active,
+        &:hover {
+            &[disabled] {
+                color: #ccc;
+            }
+
+            color: $color-slice-blue;
+        }
+
+        &[disabled] {
+            color: #ccc;
+            cursor: not-allowed;
+        }
+    }
+}
+
+.shadow-btn--icon-btn__text {
+    font-size: 0.7em;
+}
+
+.shadow-btn--tall {
+  height: auto;
+  position: relative;
+
+  &.active,
+  &:hover,
+  &:active {
+      background: $body-bg;
+      color: inherit;
+  }
+
+  button {
+    display: block;
+    padding: 0 0 2px;
+
+    &.active,
+    &:hover {
+        color: $color-slice-blue;
+    }
+
+    &:active {
+      background: -moz-radial-gradient(center, ellipse cover, #f2f2f2 0%, #ffffff 100%); /* FF3.6-15 */
+      background: -webkit-radial-gradient(center, ellipse cover, #f2f2f2 0%,#ffffff 100%); /* Chrome10-25,Safari5.1-6 */
+      background: radial-gradient(ellipse at center, #f2f2f2 0%,#ffffff 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2f2f2', endColorstr='#ffffff',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+    }
+  }
+
+  .bottom-btn {
+    border-top: 1px solid #ccc;
+    padding: 7px 0 0;
+    margin: 0 0 -2px;
+  }
+}
+
+
+.panel-btn {
+    background-color: $body-bg;
+}
+
+.ui-btn {
+    padding: 8px;
+
+    &:hover {
+        color: $active-color;
+    }
+}
+
+.power-btn {
+    background: $active-color;
+    border: 1px solid $body-bg;
+    border-radius: 18px;
+    color: $text-color-dark;
+    font-family: $headings-font-family;
+    font-size: 11px;
+    justify-content: center;
+    margin: 0;
+    padding: 7px 15px 6px;
+    text-align: center;
+    text-transform: uppercase;
+    white-space: nowrap;
+
+    &:hover {
+        background: darken($active-color, 10%);
+    }
+
+    &.left {
+        margin-left: 0;
+    }
+
+    &.right {
+        margin-right: 0;
+    }
+
+    &.wide {
+        width: 200px;
+    }
+
+    &.big {
+        border-radius: 24px;
+        font-size: 18px;
+    }
+
+    &.secondary-btn {
+        background: transparent;
+        border-color: transparent;
+        color: $active-color;
+
+        &:hover {
+            color: darken($active-color, 10%);
+        }
+
+        &.left {
+            padding-left: 0;
+        }
+
+        &.right {
+            padding-right: 0;
+        }
+    }
+
+    &.error-btn {
+        background: $danger-color;
+
+        &:hover {
+            background: darken($danger-color, 10%);
+        }
+
+        &.secondary-btn {
+            background: transparent;
+            color: $danger-color;
+        }
+
+        &.secondary-btn:hover {
+            background: transparent;
+            color: darken($danger-color, 10%);
+        }
+    }
+
+    &.grey-btn {
+        padding: 7px 10px 6px;
+        
+        &.secondary-btn {
+            color: $link-color;
+
+            &:hover {
+                color: $active-color;
+            }
+        }
+
+        &.disabled {
+            cursor: default;
+        }
+
+    }
+
+}
+
+
+.circle-btn {
+    @include transition(background-color .1s ease-out);
+    @include vert-align;
+    background: $circle-btn-background;
+    border-radius: 100%;
+    color: $text-color-dark;
+    cursor: pointer;
+    font-size: 16px;
+    height: 30px;
+    margin: 4px;
+    position: relative;
+    text-align: center;
+    width: 30px;
+    z-index: 2;
+
+    &:hover {
+        background: darken($circle-btn-background, 10%);
+    }
+
+    &.big {
+        height: 51px;
+        margin: -1px;
+        padding: 12px;
+        width: 51px;
+        z-index: 10;
+    }
+
+    i,
+    span {
+        display: block;
+        margin: auto;
+    }
+
+    .icon-close {
+        font-size: 16px;
+        position: static;
+    }
+
+    .icon-graph {
+        display: block;
+        font-size: 25px;
+        margin: 0;
+    }
+
+    .icon-story {
+        display: block;
+        font-size: 20px;
+        margin: 2px 0;
+    }
+}
+//end buttons
+
+
+
+//forms
+.small-control {
+    border: 1px solid $gray-light;
+    height: 20px;
+    min-width: 130px;
+    padding: 10px 5px;
+
+    &.no-min-width {
+        min-width: 0;
+    }
+}
+
+.small-btn-control {
+    margin-left: 5px;
+}
+
+.more-btn {
+    color: $active-color;
+    font-style: italic;
+}
+
+.text-muted-light {
+    color: $text-muted;
+}
+
+.not-searchable {
+    color: #5582a5
+}
+
+.text-link {
+    cursor: pointer;
+    text-decoration: underline;
+
+    &:hover {
+        color: $active-color;
+    }
+
+    i {
+        margin-left: 3px;
+
+        &.left {
+            margin-right: 3px;
+        }
+    }
+
+}
+
+.toggle-icon {
+    // color: #666;
+
+    &.active,
+    &:hover {
+        color: $active-color;
+    }
+}
+
+//inputs
+input {
+    &[type='color'] {
+        background: transparent;
+        border: 0;
+        margin: 0;
+        padding: 0;
+    }
+
+    &.h6 {
+        margin: 2px 0;
+    }
+}
+
+.input-group-addon {
+    background: transparent;
+    border: 1px solid $border-color;
+    color: $text-color;
+}
+
+.ui-select {
+    position: relative;
+    white-space: nowrap;
+
+    &.filter {
+        display: block;
+        max-width: 100%;
+        height: 30px;
+    }
+
+    & > select,
+    & > span {
+        -webkit-appearance: none;
+        background-color: $body-bg;
+        border: 1px solid $gray-light;
+        border-radius: 0;
+        color: $text-color;
+        font-family: $headings-font-family;
+        padding: 5px 5px 4px;
+        width: 100%;
+
+    }
+
+    & > span {
+        display: inline-block;
+        max-width: 100%;
+        padding-right: 25px;
+        white-space: nowrap;
+    }
+
+    &.inline {
+        select {
+            padding-right: 25px;
+        }
+    }
+
+    &:after {
+        border-left: 6px solid transparent;
+        border-right: 6px solid transparent;
+        border-top: 6px solid;
+        color: $text-color;
+        content: '';
+        height: 0;
+        margin-top: -3px;
+        pointer-events: none;
+        position: absolute;
+        right: 11px;
+        top: 50%;
+        width: 0;
+        z-index: 0;
+    }
+}
+
+
+.form-control {
+    //remove bootstrap glow
+    &:focus {
+        box-shadow: none;
+    }
+
+    &.width-100 {
+        width: 100%;
+    }
+}
+
+
+input,
+textarea {
+    &::-webkit-input-placeholder,
+    &:-moz-placeholder,
+    &::-moz-placeholder,
+    &:-ms-input-placeholder {
+        color: $text-color;
+        font-style: italic;
+    }
+}
+
+
+
+//override bootstrap
+.list-inline {
+    margin-left: -2px;
+
+    li {
+        padding: 0 2px;
+    }
+}
+
+
+//for more precise resizing of icons
+i {
+    &.fa-2x {
+        font-size: 2em;
+    }
+
+    &.fa-1-9x {
+        font-size: 1.9em;
+    }
+
+    &.fa-1-8x {
+        font-size: 1.8em;
+    }
+
+    &.fa-1-7x {
+        font-size: 1.7em;
+    }
+
+    &.fa-1-6x {
+        font-size: 1.6em;
+    }
+
+    &.fa-1-5x {
+        font-size: 1.5em;
+    }
+
+    &.fa-1-4x {
+        font-size: 1.4em;
+    }
+
+    &.fa-1-3x {
+        font-size: 1.3em;
+    }
+
+    &.fa-1-2x {
+        font-size: 1.2em;
+    }
+
+    &.fa-1-1x {
+        font-size: 1.1em;
+    }
+}
+
+
+//flex classes
+.flex-container {
+    @include flex-display;
+}
+
+.flex-vert-container {
+    @include flex-vert-container;
+}
+
+.flex-container-end {
+  @include flex-display;
+  justify-content: flex-end;
+}
+
+//for when need div to take up 100% height of flexed parent
+//its good if you have divs between the flex container and the divs that need flexing (right panel legend)
+.flex-transclude {
+    @include flex-display;
+}
+
+.flex-fill {
+    @include flex-fill;
+}
+
+.flex-fill-column {
+    @include flex-fill;
+    flex-direction: column;
+}
+
+//vertical align within row
+.vert-align {
+    @include vert-align;
+
+    &.right {
+        -webkit-justify-content: flex-end;
+        justify-content: flex-end;
+    }
+}
+
+
+.top-align {
+    @include top-align;
+}
+
+.no-flex {
+    -moz-flex: none;
+    -webkit-flex: none;
+    flex: none;
+}
+
+//alternate type of vertical align
+.vcenter {
+    display: inline-block;
+    float: none;
+    vertical-align: middle;
+}
+
+.truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.transparent {
+    opacity: 0 !important;
+}
+
+.clear {
+    background-color: transparent !important;
+}
+
+.accelerate {
+    -webkit-transform: translate3d(0, 0, 0);
+}
+
+.animate,
+.transition {
+    @include transition(all .3s ease-out);
+}
+
+.no-underline {
+    text-decoration: none !important;
+}
+
+.no-margin {
+    margin: 0 !important;
+}
+
+.no-padding {
+    padding: 0 !important;
+}
+
+.no-border {
+    border: none !important;
+}
+
+.no-background {
+  background: transparent !important;
+}
+
+.over-hidden {
+    overflow: hidden;
+}
+
+.over-auto {
+    overflow: auto;
+}
+
+.show-on-hover {
+    @include transition(opacity .2s ease-out);
+    opacity: 0;
+}
+
+
+.show-on-hover-target {
+    &:hover {
+        .show-on-hover {
+            opacity: 1;
+        }
+    }
+}
+
+.nowrap {
+    white-space: nowrap;
+}
+
+.max-height {
+    max-height: 100%;
+}
+
+.height-100 {
+    height: 100%;
+}
+
+.width-100 {
+    width: 100%;
+}
+
+.width-1000 {
+    width: 1000%;
+}
+
+.no-width {
+    width: 0;
+}
+
+.absolute-fill {
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.noselect {
+    @include user-select(none);
+}
+
+.autoselect {
+  @include user-select(auto);
+}
+
+.pointable-cursor,
+.pointer {
+    cursor: pointer;
+}
+
+.sortable-cursor {
+    cursor: move;
+}
+
+.text-light {
+    color: $gray-light;
+}
+
+.text-highlight {
+    color: $highlight-color;
+}
+
+
+.error-text {
+    color: $danger-color !important;
+}
+
+.big-circle,
+.med-circle,
+.small-circle {
+    background: $circle-btn-background;
+    border-radius: 100%;
+}
+
+.big-circle {
+    height: 17px;
+    margin-bottom: 2px;
+    width: 17px;
+}
+
+.med-circle {
+    height: 15px;
+    margin: 0 0 2px 1px;
+    width: 15px;
+}
+
+.small-circle {
+    height: 7px;
+    margin-left: 5px;
+    width: 7px;
+}
+
+.color-icon {
+    background: url('https://s3-us-west-1.amazonaws.com/mappr-misc/icons/color-icon.png');
+    background-size: 100%;
+    height: 15px;
+    width: 15px;
+}
+
+.tooltip {
+    @include transition(opacity .3s ease-out);
+    display: block;
+    filter: alpha(opacity=0);
+    font-size: 14px;
+    left: -10000px;
+    letter-spacing: 1px;
+    line-height: 1.4em;
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+    visibility: visible;
+    z-index: 100000;
+
+    &.in {
+        @include transition(opacity .3s ease-out);
+        filter: alpha(opacity=80);
+        opacity: 1;
+    }
+
+    &.top {
+        margin-top: -3px;
+        padding: 8px 0;
+    }
+
+    &.right {
+        margin-left: 3px;
+        padding: 0 5px;
+    }
+
+    &.bottom {
+        margin-top: 3px;
+        padding: 5px 0;
+    }
+
+    &.left {
+        margin-left: -3px;
+        padding: 0 5px;
+    }
+}
+
+.tooltip-inner {
+    background-color: $tooltip-bg;
+    border-radius: 2px;
+    color: $text-color-dark;
+    max-width: 500px;
+    padding: 8px 14px;
+    text-align: center;
+    text-decoration: none;
+}
+
+.tooltip-arrow {
+    border-color: transparent;
+    border-style: solid;
+    height: 0;
+    position: absolute;
+    width: 0;
+}
+
+.tooltip.top .tooltip-arrow {
+    -webkit-transform: scale(1, 1.5);
+    border-top-color: $tooltip-bg;
+    border-width: 8px 8px 0;
+    bottom: 0;
+    left: 50%;
+    margin-left: -8px;
+}
+
+.tooltip.right .tooltip-arrow {
+    border-right-color: $tooltip-bg;
+    border-width: 5px 5px 5px 0;
+    left: 0;
+    margin-top: -5px;
+    top: 50%;
+}
+
+.tooltip.left .tooltip-arrow {
+    border-left-color: $tooltip-bg;
+    border-width: 5px 0 5px 5px;
+    margin-top: -5px;
+    right: 0;
+    top: 50%;
+}
+
+.tooltip.bottom .tooltip-arrow {
+    border-bottom-color: $tooltip-bg;
+    border-width: 0 5px 5px;
+    left: 50%;
+    margin-left: -5px;
+    top: 0;
+}
+
+//for positioning the tooltip in renderers
+.tooltip-positioner {
+    // background: #f00;
+    height: 10px;
+    margin: 10px;
+    pointer-events: none;
+    position: absolute;
+    width: 10px;
+    z-index: 10;
+}
+
+//uib-dropdown overrides
+
+.uib-dropdown-menu {
+    padding: 0;
+    position: fixed;
+    z-index: 1101;
+
+    .dd-list {
+        border-radius: 3px;
+        margin: 0;
+        min-width: 200px;
+        overflow: hidden;
+        padding: 0 15px;
+        position: relative;
+        z-index: 3;
+    }
+
+    .dd-list > li {
+        border-bottom: 1px solid $horiz-line-color;
+        padding: 10px;
+        cursor: pointer;
+
+        &:hover {
+            background-color: $gray-lighter;
+        }
+
+        &.no-hover {
+            &:hover {
+                background-color: inherit;
+            }
+        }
+
+        &:last-child {
+            border: 0;
+        }
+
+        .list-inline {
+            li {
+                margin: 0 -2px;
+            }
+        }
+
+
+        &.divider,
+        &.divider:hover {
+            background-color: $horiz-line-color;
+            height: 8px;
+            margin: 0 -15px;
+            overflow: hidden;
+            padding: 0;
+        }
+    }
+
+    .dd-list > li > a {
+        @include flex-fill;
+        margin: -10px;
+        padding: 10px 0;
+    }
+
+    .list-group {
+        position: relative;
+        z-index: 3;
+    }
+
+    .dd-search {
+        margin: 0;
+        min-height: 35px;
+        width: 100%;
+
+        &.right {
+            margin-left: -100%;
+        }
+
+        input {
+            box-shadow: 0 0 2px $shadow-color;
+        }
+
+        .fa-search {
+            margin-left: -20px;
+            margin-right: 20px;
+            width: 0;
+        }
+    }
+
+    .panel-dd-menu {
+        max-width: 320px;
+    }
+
+
+
+}
+
+.uib-dropdown-menu-flexing {
+    @include flex-display;
+    -ms-flex-direction: column;
+    -webkit-flex-direction: column;
+    border: 0;
+    bottom: 0;
+    flex-direction: column;
+    min-width: 0;
+    overflow: visible;
+    width: 0;
+
+    &.dropup {
+        height: 75vh;
+        margin-top: -75vh;
+
+        .uib-dropdown-flex-content {
+            height: 100%;
+        }
+
+        .uib-dropdown-flex {
+            bottom: 4px;
+            display: flex;
+            flex-direction: column;
+            max-height: 75vh;
+            position: absolute;
+            right: 0;
+        }
+
+        .dd-search {
+            bottom: -30px;
+            left: 0;
+            min-width: 220px;
+            overflow: visible;
+            position: absolute;
+
+            &.right {
+                left: auto;
+                right: 0;
+            }
+        }
+
+        .dd-list {
+            overflow: visible;
+            width: 100%;
+        }
+    }
+}
+
+.btn-group {
+    &.open {
+        .uib-dropdown-toggle {
+            -webkit-box-shadow: none;
+            box-shadow: none;
+        }
+    }
+}
+
+//for covering everything, so if click outside, then closes uib-dropdown
+//(sigma was preventing event bubbling)
+.uib-dropdown-click-close {
+    bottom: 0;
+    left: 0;
+    position: fixed;
+    right: 0;
+    top: 0;
+    z-index: 2;
+}
+
+//for getting uib-dropdown to scroll if hits bottom
+.uib-dropdown-flex-content {
+    @include flex-display;
+    -ms-flex-direction: column;
+    -webkit-flex-direction: column;
+    border-radius: 0;
+    flex-direction: column;
+    left: 0;
+    margin: 0;
+    max-height: 100%;
+    padding: 0;
+    position: absolute;
+    z-index: 3;
+}
+
+
+.uib-dropdown-menu-right {
+    .uib-dropdown-flex-content {
+        left: auto;
+        right: 0;
+    }
+}
+
+.uib-dropdown-triangle {
+    border-color: transparent transparent $body-bg;
+    border-style: solid;
+    border-width: 0 10px 17.3px;
+    height: 0;
+    margin-bottom: -1px;
+    margin-left: -9px;
+    position: relative;
+    width: 0;
+    z-index: 1;
+
+    &.right {
+        margin-left: -20px;
+    }
+}
+
+.uib-dropdown-flex {
+    background-color: $body-bg;
+    box-shadow: 0 0 2px $shadow-color;
+    max-width: 300px;
+    min-width: 220px;
+    overflow: auto;
+    width: 100%;
+
+    &.wide {
+        max-width: 400px;
+        min-width: 300px;
+    }
+
+    &.center {
+        margin-left: -50%;
+    }
+
+    &.right {
+        margin-left: -100%;
+    }
+
+    h6 {
+        font-size: 13px;
+    }
+}
+
+.uib-dropdown-flexer {
+    height: 0;
+}
+
+.dropdown-btn {
+    background: $active-color;
+    color: $text-color-dark;
+    font-size: 11px;
+    justify-content: center;
+    margin: 0 -15px;
+    width: 100%;
+
+    &:hover {
+        background: darken($active-color, 10%);
+    }
+}
+
+.input-cont {
+    margin: -5px 0;
+}
+
+
+//datepicker (is type of dropdown)
+.uib-datepicker-popup {
+    &.dropdown-menu {
+        box-shadow: 0 0 2px $shadow-color;
+        padding: 5px;
+        z-index: 1050;
+
+        .btn-danger,
+        .btn-info,
+        .btn-success {
+            background: $active-color;
+            border: 0;
+            font-family: $headings-font-family;
+        }
+        .btn-danger:hover,
+        .btn-info:hover,
+        .btn-success:hover {
+            background: darken($active-color, 10%);
+        }
+    }
+}
+
+//end dropdown stuff
+
+//alert
+.alert {
+    border: 0;
+    box-shadow: 0 0 2px $shadow-color;
+    display: flex !important;
+    font-family: $headings-font-family;
+    left: 38px !important;
+    max-width: 400px;
+    padding: 6px 40px 6px 10px;
+
+    button {
+        position: absolute;
+        right: 0;
+        top: 5px;
+    }
+}
+
+#loading-bar-spinner {
+    display: none !important;
+}
+
+//checkbox
+.tag-checkbox-container {
+    &:hover {
+        .tag-checkbox {
+            label {
+                &:after {
+                    opacity: 0.3;
+                }
+            }
+        }
+    }
+}
+
+.tag-checkbox {
+    display: inline-block;
+    height: 18px;
+    position: relative;
+    width: 18px;
+
+    label {
+        background: $gray-light;
+        border-radius: 0;
+        cursor: pointer;
+        height: 16px;
+        left: 0;
+        margin: 1px;
+        max-width: none;
+        position: absolute;
+        top: 0;
+        width: 16px;
+
+        &:after {
+            background: transparent;
+            border: 3px solid #BC3364;
+            border-right: 0;
+            border-top: 0;
+            content: '';
+            height: 5px;
+            left: 3px;
+            opacity: 0;
+            position: absolute;
+            top: 4px;
+            transform: rotate(-45deg);
+            width: 9px;
+        }
+
+        &:hover::after {
+            opacity: .3;
+        }
+    }
+
+    input[type=checkbox] {
+        height: 16px;
+        margin: 0;
+        visibility: hidden;
+        width: 16px;
+
+        &:checked + label:after {
+            opacity: 1;
+        }
+    }
+
+    &.dark {
+        label {
+            background: $body-bg;
+        }
+    }
+}
+
+//switch
+.onoffswitch {
+    display: inline-block;
+
+    .onoffswitch-inner {
+        &:before {
+            background-color: $active-color;
+        }
+    }
+
+    &.left {
+        margin-right: 5px;
+    }
+
+    &.right {
+        margin-left: 5px;
+    }
+}

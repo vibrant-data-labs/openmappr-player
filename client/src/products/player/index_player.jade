@@ -1,0 +1,225 @@
+doctype html
+html(lang='en', data-ng-app='hcApp' style="background: #{backgroundColor}" )
+	head
+		meta(charset='utf-8')
+		link(rel="icon" type="image/png" href="https://s3-us-west-1.amazonaws.com/mappr-misc/icons/vdat-blue-dot-logo.png")
+		meta(name="viewport", content="initial-scale=.7, user-scalable=no, minimal-ui")
+		meta(name="apple-mobile-web-app-capable" content="yes")
+		meta(property="fb:app_id", content="1389717224632761")
+		meta(property="og:image", content="#{snapshotImg}")
+		meta(property="og:title", content="openmappr | network exploration tool")
+		meta(property="og:description", content="#{playerTitle}")
+		meta(name="robots", content="noindex")
+		title openmappr | #{playerTitle}
+		meta(name="description", content="#{playerTitle}")
+		link(rel="stylesheet", href="#{player_prefix_index}/css/mappr-icons/style.css")
+		link(href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css", rel="stylesheet")
+		link(href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet")
+		link(href="https://fonts.googleapis.com/css?family=Roboto:300,500" rel="stylesheet")
+		link(href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet")
+		//-link(href='//cdnjs.cloudflare.com/ajax/libs/ng-grid/2.0.11/ng-grid.min.css', rel="stylesheet")
+
+		// @if compiled = false
+		//-<!-- build:css #{env}/css/vendor.css -->
+		// bower:css
+		//- link(rel='stylesheet', href='../../bower_components/bootstrap/dist/css/bootstrap.min.css')
+		link(rel='stylesheet', href='../../bower_components/morris.js/morris.css')
+		link(rel='stylesheet', href='../../bower_components/toastr/toastr.min.css')
+		link(rel='stylesheet', href='../../bower_components/leaflet/dist/leaflet.css')
+		link(rel='stylesheet', href='../../bower_components/angular-loading-bar/src/loading-bar.css')
+		link(rel='stylesheet', href='../../bower_components/spectrum/spectrum.css')
+		link(rel='stylesheet', href='../../bower_components/angular-wizard/dist/angular-wizard.css')
+		link(rel='stylesheet', href='../../bower_components/intro.js/introjs.css')
+		// endbower
+		//-<!-- endbuild -->
+		// @endif
+		// @if compiled = true
+		link(rel='stylesheet', href='#{player_prefix_index}/css/vendor.css')
+		// @endif
+
+		//- futura font
+		//- script(src="//use.typekit.net/lew5cwh.js")
+		//- script.
+		//- 	try{Typekit.load({ async: true });}catch(e){}
+		script.
+			window.MP_APP = {};
+			window.DATA_PATH = '#{playerDataPath}';
+
+		// @if production=true
+		//- link(rel='stylesheet', href='#{player_prefix_index}/css/player.min.css')
+		script.
+			(function() {
+				var mapprCssUrl = '#{player_prefix_index}/css/player.min.css';
+				loadCSSCors(mapprCssUrl);
+
+				function loadCSSCors(stylesheet_uri) {
+					var _xhr = window.XMLHttpRequest;
+					var has_cred = false;
+					try {
+						has_cred = _xhr && ('withCredentials' in (new _xhr()));
+					}
+					catch(e) {}
+					if (!has_cred) {
+						console.error('CORS not supported');
+						return;
+					}
+					var xhr = new _xhr();
+					xhr.open('GET', stylesheet_uri);
+					xhr.onload = function() {
+						xhr.onload = xhr.onerror = null;
+						if (xhr.status < 200 || xhr.status >=300) {
+						console.error('style failed to load: ' + stylesheet_uri)
+						}
+						else {
+							var style_tag = document.createElement('style');
+							style_tag.appendChild(document.createTextNode(xhr.responseText));
+							document.head.appendChild(style_tag);
+						}
+					};
+					xhr.onerror = function() {
+						xhr.onload = xhr.onerror = null;
+						console.error('XHR CORS CSS fail:' + styleURI);
+					};
+					xhr.send();
+				}
+			}());
+		script(src="//dmc1acwvwny3.cloudfront.net/atatus.js")
+		script.
+			(function() {
+				var config = {
+					sourceMap: true,
+					enableAjaxErrors: true,
+					enableAjaxAbort: false,
+					ignoreErrors: [],
+					allowedDomains: ['app.mappr.io', 'staging.mappr.io']
+				};
+				var staging_key = '',
+					app_key = '',
+					host, key;
+				if(document.location && document.location.hostname) {
+					host = document.location.hostname.split('.')[0];
+				}
+				if(host == 'staging') { key = staging_key; }
+				else if(host == 'app') { key = app_key; }
+				window.atatus.config(key, config).install();
+			}());
+		// @endif
+		// @if production=false
+		link(rel='stylesheet', href='/css/player.debug.css')
+		// @endif
+
+		//- start Mixpanel
+		script.
+			(function(e,b){if(!b.__SV){var a,f,i,g;window.mixpanel=b;b._i=[];b.init=function(a,e,d){function f(b,h){var a=h.split(".");2==a.length&&(b=b[a[0]],h=a[1]);b[h]=function(){b.push([h].concat(Array.prototype.slice.call(arguments,0)))}}var c=b;"undefined"!==typeof d?c=b[d]=[]:d="mixpanel";c.people=c.people||[];c.toString=function(b){var a="mixpanel";"mixpanel"!==d&&(a+="."+d);b||(a+=" (stub)");return a};c.people.toString=function(){return c.toString(1)+".people (stub)"};i="disable time_event track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config people.set people.set_once people.increment people.append people.union people.track_charge people.clear_charges people.delete_user".split(" ");
+			for(g=0;g<i.length;g++)f(c,i[g]);b._i.push([a,e,d])};b.__SV=1.2;a=e.createElement("script");a.type="text/javascript";a.async=!0;a.src="undefined"!==typeof MIXPANEL_CUSTOM_LIB_URL?MIXPANEL_CUSTOM_LIB_URL:"file:"===e.location.protocol&&"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js".match(/^\/\//)?"https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js":"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";f=e.getElementsByTagName("script")[0];f.parentNode.insertBefore(a,f)}})(document,window.mixpanel||[]);
+		//- end Mixpanel
+
+	body#app.nav-min(data-custom-background, data-off-canvas-nav style="background: #{backgroundColor}" class="#{colorTheme}-theme side-menu-compressed")
+		div
+			div.view-container(ng-init="playerInfo = #{playerLoadInfo}")
+				div#content(style="background: #{backgroundColor}" data-ng-view='ng-view', data-close-min-nav='data-close-min-nav')
+
+		div#svg-renderarea.hidden
+		div(ng-include=" '#{server_prefix}#{view_path}/components/project/distributions/renderers/renderTemplates.html' ")
+
+		// @if compiled = false
+		//-<!-- build:js #{env}/js/player/vendor.js -->
+		// bower:js
+		script(src='../../bower_components/es5-shim/es5-shim.min.js')
+		script(src='../../bower_components/jquery/dist/jquery.min.js')
+		script(src='../../bower_components/jquery-ui/ui/minified/jquery-ui.min.js')
+		script(src='../../bower_components/angular/angular.min.js')
+		script(src='../../bower_components/angular-resource/angular-resource.min.js')
+		script(src='../../bower_components/angular-cookies/angular-cookies.min.js')
+		script(src='../../bower_components/angular-sanitize/angular-sanitize.min.js')
+		script(src='../../bower_components/angular-scroll/angular-scroll.min.js')
+		script(src='../../bower_components/angular-route/angular-route.min.js')
+		script(src='../../bower_components/angular-animate/angular-animate.min.js')
+		script(src='../../bower_components/angular-touch/angular-touch.min.js')
+		script(src='../../bower_components/angular-simple-logger/dist/angular-simple-logger.js')
+		script(src='../../bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js')
+		script(src='../../bower_components/angular-vs-repeat/src/angular-vs-repeat.min.js')
+		script(src='../../bower_components/json3/lib/json3.min.js')
+		script(src='../../bower_components/lodash/lodash.min.js')
+		script(src='../../bower_components/leaflet/dist/leaflet.js')
+		script(src='../../bower_components/angular-leaflet/dist/angular-leaflet-directive.js')
+		script(src='../../bower_components/angular-loading-bar/build/loading-bar.min.js')
+		script(src='../../bower_components/d3/d3.min.js')
+		script(src='../../bower_components/snap.svg/dist/snap.svg-min.js')
+		script(src='../../bower_components/ngInfiniteScroll/build/ng-infinite-scroll.min.js')
+		script(src='../../bower_components/re-tree/re-tree.min.js')
+		script(src='../../bower_components/angular-ui-slider/src/slider.js')
+		script(src='../../bower_components/ng-device-detector/ng-device-detector.min.js')
+		script(src='../../bower_components/remarkable-bootstrap-notify/dist/bootstrap-notify.min.js')
+		script(src='../../bower_components/toastr/toastr.min.js')
+		script(src='../../bower_components/isMobile/isMobile.min.js')
+		script(src='../../bower_components/succinct/jQuery.succinct.min.js')
+		script(src='../../bower_components/moment/moment.js')
+		script(src='../../bower_components/twix/dist/twix.js')
+		script(src='../../bower_components/angular-audio/app/angular.audio.js')
+		script(src="../../bower_components/angular-google-analytics/dist/angular-google-analytics.js")
+		script(src='../../bower_components/intro.js/intro.js')
+		script(src='../../bower_components/angular-intro.js/src/deprecated.angular-intro.js')
+		script(src='../../bower_components/html2canvas/build/html2canvas.min.js')
+		// endbower
+
+		script(src="../../libs/mixpanel_lib.js")
+		script(src="../../libs/sigma.js")
+		script(src="../../libs/blob.js")
+		script(src="../../libs/filesaver.js")
+		script(src="../../libs/lodash-extended.js")
+		script(src="../../libs/reqAnimFramePolyfill.js")
+		script(src="../../libs/jquery-extns/jquery.mousewheel.js")
+		script(src="../../libs/jquery-extns/jquery.animateRotate.js")
+		script(src="../../libs/rainbowvis.js")
+		script(src="../../libs/d3Pie.min.js")
+		script(src="../../libs/d3.color.min.js")
+		script(src="../../libs/es6Shims.js")
+		script(src="../../libs/fuzzysort.js")
+
+		//licenses
+		script(src="../../libs/licenseList.js")
+
+
+		//-<!-- endbuild -->
+		// @endif
+		// @if compiled = true
+		script(src='#{player_prefix_index}/js/player/vendor.js')
+		// @endif
+
+		// @if production = true
+		script(src="#{player_prefix_index}/js/player.min.js")
+		// @endif
+
+		// @if production = false
+		script(src='/js/products/player/app/app.js')
+		//- sourcing into templates
+		//- include: "type": "js", "files": "js/lib/sigmamods/*.js"
+		//- include: "type": "js", "files": "js/components/core/**/*.js"
+		//- include: "type": "js", "files": "js/components/project/ctrlLayout.js"
+		//- include: "type": "js", "files": "js/components/project/ctrlRenderGraph.js"
+		//- include: "type": "js", "files": "js/components/project/distributions/*.js"
+		//- include: "type": "js", "files": "js/components/project/layouts/**/*.js"
+		//- include: "type": "js", "files": "js/components/project/distributions/**/*.js"
+		//- include: "type": "js", "files": "js/components/project/overlays/**/*.js"
+		//- include: "type": "js", "files": "js/components/project/sort_menu/*.js"
+		//- include: "type": "js", "files": "js/components/project/panels/search/*.js"
+		//- include: "type": "js", "files": "js/components/project/panels/right_panel/*.js"
+		//- include: "type": "js", "files": "js/components/project/panels/right_panel/def_data_groups/*.js"
+		//- include: "type": "js", "files": "js/components/project/panels/right_panel/distribution_panel/*.js"
+		//- include: "type": "js", "files": ["js/components/project/panels/right_panel/info_panel/*.js", "!js/components/project/panels/right_panel/info_panel/ctrlNetworkUtils.js"]
+		//- include: "type": "js", "files": "js/products/player/*.js"
+		//- include: "type": "js", "files": "js/products/player/auth/*.js"
+		//- include: "type": "js", "files": "js/products/player/analytics/*.js"
+		// @endif
+
+		<!-- @if NODE_ENV='production' -->
+		//- script.
+		//- 	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		//- 	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		//- 	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		//- 	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+		//- 	ga('create', '', '');
+		//- 	ga('send', 'pageview');
+		<!-- @endif -->

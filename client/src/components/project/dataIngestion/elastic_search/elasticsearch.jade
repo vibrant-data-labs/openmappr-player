@@ -1,0 +1,13 @@
+div(ng-controller="ElasticSearchCtrl")
+    .col-xs-12
+        h3 Import from Company API
+    .col-xs-12
+        .vert-align
+            h6.nowrap Query Text:&nbsp;&nbsp;
+            input.form-control.h6.no-margin(ng-model='ui.queryText', ng-minlength="2", ng-model-options="{debounce: 500}")
+        .clearfix
+        .divider 
+        .divider 
+        .text-center
+            button.power-btn(ng-hide="ui.queryText == ''" type="submit", ng-click="mapProcessor.createMap()") Import Data
+            

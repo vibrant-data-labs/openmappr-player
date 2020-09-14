@@ -1,0 +1,40 @@
+version: '3'
+services:
+  athena:
+    build: ./athena
+    command: ./run_docker_mode.sh
+    restart: unless-stopped
+    environment:
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      - "mongo"
+      - "beanstalk"
+  beanstalk:
+    image: kusmierz/beanstalkd
+    restart: unless-stopped
+    ports:
+      - "11300:11300"
+  mongo:
+    build: ./mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./mongo/data:/data/db
+  # elasticsearch:
+  #   image: docker.elastic.co/elasticsearch/elasticsearch:5.6.9
+  #   restart: unless-stopped
+  #   environment:
+  #     - node.name=mappr_prod
+  #     - bootstrap.memory_lock=true
+  #     - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+  #     - "discovery.type=single-node"
+  #     - "xpack.security.enabled=false"
+  #     - "action.auto_create_index=true"
+  #   ulimits:
+  #     memlock:
+  #       soft: -1
+  #       hard: -1
+  #   ports:
+  #     - 9200:9200
+  #     - 9300:9300

@@ -1,0 +1,446 @@
+.accordion-panel.info-panel.flex-transclude.height-100(ng-controller="PlayerEditorCtrl")
+	form.panel-container.flex-vert-container.width-100
+		.header
+			.row.vert-align
+				.col-xs-4
+					h6.title.text-uppercase.truncate Publish&nbsp;
+				.col-xs-3(ng-if="playerTempObj.playerExists")
+					.bool(uib-tooltip="{{playerTempObj.isDisabled && 'Enable mapp' || 'Disable mapp'}}" tooltip-placement="right" tooltip-append-to-body="true")
+						.onoffswitch
+							input.onoffswitch-checkbox(id='player-switch', type='checkbox', ng-model='playerTempObj.isDisabled', ng-true-value="false", ng-false-value="true", ng-change='togglePlayer();')
+							label.onoffswitch-label(for='player-switch')
+								.onoffswitch-inner
+								.onoffswitch-switch
+				.col-xs-4.vert-align(ng-if="playerTempObj.playerExists")
+					a.pull-right.square-btn.small-btn.panel-btn.vert-align(type="button", target="_blank", ng-href="{{protocol}}//{{domain}}/play/{{playerObj.playerUrl}}", tooltip-placement="right", ng-if="!playerObj.isDisabled && !playerTempObj.playerDirty && (!playerObj.isPrivate || (playerObj.isPrivate && !playerObj.directAccess))") View
+					a.pull-right.square-btn.small-btn.panel-btn.vert-align(type="button", target="_blank", ng-href="{{protocol}}//{{domain}}/play/{{playerObj.playerUrl}}?access_token={{playerObj.access_token}}", tooltip-placement="right", ng-if="!playerObj.isDisabled && !playerTempObj.playerDirty && playerObj.isPrivate && playerObj.directAccess") View
+					button.square-btn.small-btn.h6.panel-btn(type="submit", ng-if="playerTempObj.playerDirty", ng-click="updatePlayer()", tooltip-placement="right") Update
+				//- .col-xs-1
+				//- 	button.pull-right(ng-click="panelUI.openPanel('summary');")
+				//- 		i.fa.fa-times.toggle-icon
+		div.flex-fill.panel-scroll.flex-vert-container
+			.panel-list(ng-if="playerTempObj.playerExists")
+				uib-accordion(close-others="editorPanels.closeOthers")
+					uib-accordion-group(is-open="editorPanels.privatePlayer", ng-if="!playerObj.isDisabled")
+						uib-accordion-heading
+							.row.vert-align.border-section.title-style2
+								.col-xs-12
+									h6.text-uppercase.no-margin(uib-tooltip="Customize access" tooltip-placement="right" tooltip-append-to-body="true") Mapp Access
+						div
+							.panel-list
+								.panel-item
+									.row.vert-align
+										.col-xs-5
+											h6.title.text-uppercase Private&nbsp;
+										.col-xs-4(ng-if="playerTempObj.playerExists")
+											.bool(uib-tooltip="{{!playerObj.isPrivate && 'Make private' || 'Make public'}}" tooltip-placement="right" tooltip-append-to-body="true")
+												.onoffswitch
+													input.onoffswitch-checkbox(id='player-access', type='checkbox', ng-model='playerTempObj.isPrivate', ng-change="togglePlayerAccess()")
+													label.onoffswitch-label(for='player-access')
+														.onoffswitch-inner
+														.onoffswitch-switch
+								.panel-item(ng-if="playerTempObj.isPrivate")
+									.row
+										.col-xs-4.radio
+											label.h6
+												input(type="radio", ng-model="playerTempObj.directAccess", ng-value="true", ng-click="setPrivateUrl()")
+												span Private Url
+										.col-sm-2 or
+										.col-xs-4.radio
+											label.h6
+												input(type="radio", ng-model="playerTempObj.directAccess", ng-value="false", ng-click="setAccessToken()")
+												span Access Token
+								.panel-item(ng-if="playerTempObj.directAccess && playerTempObj.isPrivate")
+									.row.vert-align
+										.col-xs-12
+											h6 Private Url -
+											textarea.width-100(readonly dir-select-all) {{protocol}}//{{domain}}/play/{{playerObj.playerUrl}}?access_token={{playerObj.access_token}}
+								.panel-item(ng-if="!playerTempObj.directAccess && playerTempObj.isPrivate")
+									.row.vert-align
+										.col-xs-12
+											h6(ng-show="tokenEditMode") Enter Access Token -
+											input.form-control(type="text", ng-model="playerTempObj.access_token", ng-if="tokenEditMode" dir-select-all)
+											h6(ng-if="!tokenEditMode") {{playerObj.access_token}}
+											.clearfix
+											button.square-btn.small-btn.h6.panel-btn(type="button", ng-click="editToken()", ng-if="!tokenEditMode") Edit Token
+									.divider
+					uib-accordion-group(is-open="editorPanels.url", ng-if="!playerObj.isDisabled")
+						uib-accordion-heading
+							.row.vert-align
+								.col-xs-12
+									h6.text-uppercase.no-margin(uib-tooltip="Customize Url" tooltip-placement="right" tooltip-append-to-body="true") Mapp URL
+						div
+							.panel-list
+								.panel-item
+									.row.vert-align
+										a.col-xs-12.text-ultralight.text-normal.text-primary(target="_blank", ng-if="!playerObj.isPrivate || (playerObj.isPrivate && !playerObj.directAccess)", ng-href="{{protocol}}//{{domain}}/play/{{playerObj.playerUrl}}") {{protocol}}//{{domain}}/play/{{playerTempObj.playerUrl}}
+										a.col-xs-12.text-ultralight.text-normal.text-primary(target="_blank", ng-if="playerObj.isPrivate && playerObj.directAccess" ng-href="{{protocol}}//{{domain}}/play/{{playerObj.playerUrl}}?access_token={{playerObj.access_token}}") {{protocol}}//{{domain}}/play/{{playerTempObj.playerUrl}}?access_token={{playerObj.access_token}}
+								.panel-item
+									.row.vert-align
+										.col-xs-5
+											h6 customize url:
+										.col-xs-7
+											.form-inline
+												.form-group
+													input.form-control(ng-class="playerTempObj.isUniquePlayerUrl ? '' : 'input-danger'", type="text", ng-model="playerTempObj.playerUrl", ng-change="isUrlAvailable();" style="width: 150px; margin-top: 0px;" dir-select-all)
+									.row.vert-align(ng-if="!playerTempObj.isUniquePlayerUrl")
+										.col-xs-offset-5.col-xs-8
+											h6.error-block URL already taken!
+								.panel-item
+									.row.vert-align
+										.col-xs-12
+											.row
+												.col-xs-12
+													h6 Embed
+											.row
+												.col-xs-12
+													textarea(readonly="readonly" onclick="this.focus();this.select()" class="form-control" rows="3") &lt;iframe src="{{protocol}}//{{domain}}/play/{{playerObj.playerUrl}}?embed=true" width="500" height="300" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen&gt;&lt;/iframe&gt;
+									.clearfix
+								.divider
+					uib-accordion-group(is-open="editorPanels.snapshots")
+						uib-accordion-heading
+							.row.vert-align.border-section.title-style2
+								.col-xs-12
+									h6.text-uppercase.no-margin(uib-tooltip="Edit Snapshots", tooltip-placement="right", tooltip-append-to-body="true") Snapshots
+						.section
+							.section-body
+								ul.panel-list.list-unstyled(ng-model="mappSnapshots", style="margin-bottom: -1px;")
+									li.panel-item(ng-repeat="snap in mappSnapshots | filter: {isEnabled: true} track by snap.id")
+										.row.vert-align.title
+											.col-xs-12
+												//- .col-sm-1.pull-right
+												//- 	h6.text-right.text-ultralight {{$index + 1}}
+												//- .col-sm-2
+												//- 	img.thumb(ng-src="{{snap.picture}}", width="30", height="30")
+												.col-sm-10
+													h6 {{$index + 1}}. {{snap.snapName || 'snapshot'}}
+												.col-sm-1
+													h6
+														a.visible-btn(uib-tooltip="Edit", tooltip-placement="right", ng-show="!snap.showDesc", type="button", ng-click="openSnapEditModal(snap);" tooltip-append-to-body="true")
+															i.text-muted-light.fa.fa-pencil
+													//- button.btn.btn-default.btn-xs(uib-tooltip="Edit snapshot", tooltip-placement="right", ng-show="!snap.showDesc", ng-click="openSnapEditModal(snap);")
+													//- 	span
+													//- 		i.fa.fa-pencil
+													//.col-sm-1
+					uib-accordion-group(is-open="editorPanels.styles")
+						uib-accordion-heading
+							.row.vert-align
+								.col-xs-12
+									h6.text-uppercase.no-margin( tooltip-placement="right" tooltip-append-to-body="true") Settings
+						.panel-list
+							.panel-item
+								.row
+									.col-xs-12
+										h6.title.text-uppercase General
+									.col-xs-12
+										//- .row.vert-align
+										//- 	.col-xs-5
+										//- 		h6 Highlight Color
+										//- 	.col-xs-7
+										//- 		input(type="color" ng-model="playerTempObj.settings.highlightColor" ng-change = 'markAsDirty()')
+										.row.vert-align
+											.col-xs-5
+												h6 Font
+											.col-xs-7
+												.ui-select
+													select(ng-model="playerTempObj.settings.fontClass" ng-options="opt.class as opt.name for opt in fonts" ng-change = 'markAsDirty()')
+								.divider
+							.panel-item
+								.row.vert-align
+									.col-xs-8
+										h6.title.text-uppercase Splash
+									.col-xs-4
+										.bool
+											.onoffswitch
+												input.onoffswitch-checkbox(id='show-splash-switch' type='checkbox', ng-model='playerTempObj.settings.showModal', ng-change = 'markAsDirty()')
+												label.onoffswitch-label(for='show-splash-switch')
+													.onoffswitch-inner
+													.onoffswitch-switch
+								p The splash screen appears as a modal overlay during initial load of your player. Its a good place to explain and introduce your mapp using text or other media.
+								.panel-sublist(ng-if="playerTempObj.settings.showModal")
+									.panel-subitem(ng-if="playerTempObj.settings.simpleSplash == false")
+										//only show if simple splash is false (for legacy players)
+										.row.vert-align
+											.col-xs-8
+												h4 Use Simple Splash
+											.col-xs-4
+												.bool
+													.onoffswitch
+														input.onoffswitch-checkbox(id='simple-splash-switch' type='checkbox', ng-model='playerTempObj.settings.simpleSplash', ng-change = 'markAsDirty()')
+														label.onoffswitch-label(for='simple-splash-switch')
+															.onoffswitch-inner
+															.onoffswitch-switch
+									//- .panel-subitem
+									//- 	.form-group
+									//- 		h6 Modal Logo
+									//- 		input.form-control(ng-model="playerTempObj.settings.modalLogo" ng-change = 'markAsDirty()' dir-select-all)
+									.panel-subitem
+										.form-group
+											h6 Search algorithm
+											.ui-select
+												select(ng-model="playerTempObj.settings.searchAlg" ng-options="opt.value as opt.name for opt in searchAlgs" ng-change = 'markAsDirty()')							
+									.panel-subitem
+										.form-group
+											h6 Title
+											input.form-control(ng-model="playerTempObj.settings.modalTitle" ng-change = 'markAsDirty()' dir-select-all)
+									.panel-subitem
+										.form-group
+											h6 Sub-title
+											text-angular.ui-editor.no-text-transform(ng-model="playerTempObj.settings.modalSubtitle" ta-toolbar-button-class="btn btn-xs btn-default", ng-change = 'markAsDirty()')
+									.panel-subitem
+										.form-group
+											h6 Description
+											text-angular.ui-editor.no-text-transform(ng-model="playerTempObj.settings.modalDescription", ta-toolbar-button-class="btn btn-xs btn-default", ng-change = 'markAsDirty()')
+									.panel-subitem
+										.form-group
+											h6 Hero Background Image
+											input.form-control(ng-model="playerTempObj.settings.modalBackground" ng-change = 'markAsDirty()' dir-select-all)
+									.panel-subitem(ng-if="playerTempObj.settings.showModal && !playerTempObj.settings.simpleSplash")
+										text-angular.ui-editor.no-text-transform(ng-model="playerTempObj.settings.modalIntroHtml", ta-toolbar-button-class="btn btn-xs btn-default", ng-change = 'markAsDirty()')
+							.panel-item
+								.row.vert-align
+									.col-xs-8
+										h6.title.text-uppercase Header
+									.col-xs-4
+										.bool
+											.onoffswitch
+												input.onoffswitch-checkbox(id='show-header-switch' type='checkbox', ng-model='playerTempObj.settings.showHeader', ng-change = 'markAsDirty()')
+												label.onoffswitch-label(for='show-header-switch')
+													.onoffswitch-inner
+													.onoffswitch-switch
+								p The header appears on the top left corner of your player. You can also add an image link (Toggle HTML for advanced usage)
+								//move to header or actually on graph so users see what it will look like
+								.panel-sublist(ng-if="playerTempObj.settings.showHeader")
+									//- .row.vert-align
+									//- 	.col-xs-5
+									//- 		h6 Header Type
+									//- 	.col-xs-7
+									//- 		.ui-select
+									//- 			select(ng-model="playerTempObj.settings.headerType" ng-options="opt.value as opt.descr for opt in headerTypes" ng-change = 'markAsDirty()')
+									div(ng-if="playerTempObj.settings.headerType != 'simple' || playerTempObj.settings.headerType != 'img'")
+										.panel-subitem
+											.form-group
+												h6 Logo URL
+												input.form-control(ng-model="playerTempObj.settings.headerImageUrl" ng-change = 'markAsDirty()' dir-select-all)
+										.panel-subitem
+											.form-group
+												h6 Title
+												input.form-control(ng-model="playerTempObj.settings.headerTitle" ng-change = 'markAsDirty()' dir-select-all)
+										.panel-subitem
+											.form-group
+												h6 Share-Title General
+												input.form-control(ng-model="playerTempObj.settings.shareTitle" ng-change = 'markAsDirty()' dir-select-all)
+										.panel-subitem
+											.form-group
+												h6 Share-Title Compare
+												input.form-control(ng-model="playerTempObj.settings.shareTitleCompare" ng-change = 'markAsDirty()' dir-select-all)
+										.panel-subitem
+											.form-group
+												h6 Share-Title Select
+												input.form-control(ng-model="playerTempObj.settings.shareTitleSelect" ng-change = 'markAsDirty()' dir-select-all)
+										.panel-subitem
+											.form-group
+												h6 Share-ContainerPrefix
+												input.form-control(ng-model="playerTempObj.settings.shareServerPrefix" ng-change = 'markAsDirty()' dir-select-all)
+										//- .panel-subitem
+										//- 	.row.vert-align
+										//- 		.col-xs-5
+										//- 			h6 Share-EnableSelections
+										//- 		.col-xs-7
+										//- 			.bool
+										//- 				.onoffswitch
+										//- 					input.onoffswitch-checkbox(id='share-enable-select-switch' type='checkbox', ng-model='playerTempObj.settings.shareEnableSelect', ng-change = 'markAsDirty()')
+										//- 					label.onoffswitch-label(for='share-enable-select-switch')
+										//- 						.onoffswitch-inner
+										//- 						.onoffswitch-switch
+										.panel-subitem
+											.row.vert-align
+												.col-xs-5
+													h6 Share Facebook 
+												.col-xs-7
+													.bool
+														.onoffswitch
+															input.onoffswitch-checkbox(id='fb-share-switch' type='checkbox', ng-model='playerTempObj.settings.facebookShare', ng-change = 'markAsDirty()')
+															label.onoffswitch-label(for='fb-share-switch')
+																.onoffswitch-inner
+																.onoffswitch-switch
+										.panel-subitem
+											.row.vert-align
+												.col-xs-5
+													h6 Share Twitter 
+												.col-xs-7
+													.bool
+														.onoffswitch
+															input.onoffswitch-checkbox(id='twit-share-switch' type='checkbox', ng-model='playerTempObj.settings.twitterShare', ng-change = 'markAsDirty()')
+															label.onoffswitch-label(for='twit-share-switch')
+																.onoffswitch-inner
+																.onoffswitch-switch
+										.panel-subitem(ng-if="playerTempObj.settings.headerType == 'html'")
+											text-angular.ui-editor.no-text-transform(ng-model="playerTempObj.settings.headerHtml", ta-toolbar-button-class="btn btn-xs btn-default", ng-change = 'markAsDirty()')
+							.panel-item
+								.row.vert-align
+									.col-xs-8
+										h6.title.text-uppercase Search Bar
+									.col-xs-4
+										.bool
+											.onoffswitch
+												input.onoffswitch-checkbox(id='show-search-switch' type='checkbox', ng-model='playerTempObj.settings.showSearch', ng-change = 'markAsDirty()')
+												label.onoffswitch-label(for='show-search-switch')
+													.onoffswitch-inner
+													.onoffswitch-switch
+								p The search bar appears on top of the legend and enables you to do a full-text search on the graph.
+								.space
+							.panel-item
+								.row.vert-align
+									.col-xs-8
+										h6.title.text-uppercase Slideshow Snapshot Duration in Seconds
+									.col-xs-4.vert-align
+										input.form-control(ng-model="playerTempObj.settings.snapDuration" ng-change = 'markAsDirty()' dir-select-all)
+										h6 &nbsp;sec
+								p The duration each snapshot will appear before loading the next when playing through the snapshots.
+								.space
+								
+							.panel-item
+								.row.vert-align
+									.col-xs-8
+										h6.title.text-uppercase Autoplay Slides
+									.col-xs-4
+										.bool
+											.onoffswitch
+												input.onoffswitch-checkbox(id='autoplay-switch' type='checkbox', ng-model='playerTempObj.settings.autoPlay', ng-change = 'markAsDirty()')
+												label.onoffswitch-label(for='autoplay-switch')
+													.onoffswitch-inner
+													.onoffswitch-switch
+							//- .panel-item
+							//- 	.row.vert-align
+							//- 		.col-xs-8
+							//- 			h6.title.text-uppercase Snapshot Tooltips
+							//- 		.col-xs-4
+							//- 			.bool
+							//- 				.onoffswitch
+							//- 					input.onoffswitch-checkbox(id='show-tooltips-switch' type='checkbox', ng-model='playerTempObj.settings.showSnapTooltips', ng-change = 'markAsDirty()')
+							//- 					label.onoffswitch-label(for='show-tooltips-switch')
+							//- 						.onoffswitch-inner
+							//- 						.onoffswitch-switch
+							//- 	p The tooltips appear on the snapshot buttons at the bottom right corner of your player. The tooltips show the snapshot names.
+							//- 	.space
+							//- .panel-item
+							//- 	.row.vert-align
+							//- 		.col-xs-8
+							//- 			h6.title.text-uppercase Timeline
+							//- 		.col-xs-4
+							//- 			.bool
+							//- 				.onoffswitch
+							//- 					input.onoffswitch-checkbox(id='show-timeline-switch' type='checkbox', ng-model='playerTempObj.settings.showTimeline', ng-change = 'markAsDirty()')
+							//- 					label.onoffswitch-label(for='show-timeline-switch')
+							//- 						.onoffswitch-inner
+							//- 						.onoffswitch-switch
+							//- 	p The timeline appears on the bottom of your player displaying your enbaled snapshots.
+							//- 	.panel-sublist(ng-if="playerTempObj.settings.showTimeline")
+									//- .panel-subitem
+									//- 	.row.vert-align
+									//- 		.col-xs-5
+									//- 			h6 Timeline Type
+									//- 		.col-xs-7
+									//- 			.ui-select
+									//- 				select(ng-model="playerTempObj.settings.timelineType" ng-options="opt.value as opt.descr for opt in timelineTypes" ng-change = 'markAsDirty()')
+									//- .panel-subitem
+									//- 	.row.vert-align
+									//- 		.col-xs-5
+									//- 			h6 Snapshot Duration
+									//- 		.col-xs-7
+									//- 			input.form-control(ng-model="playerTempObj.settings.snapDuration" ng-change = 'markAsDirty()' dir-select-all)
+									//- .panel-subitem
+									//- 	.row.vert-align
+									//- 		.col-xs-8
+									//- 			h6 Show Snapshot Description
+									//- 		.col-xs-4
+									//- 			.bool
+									//- 				.onoffswitch
+									//- 					input.onoffswitch-checkbox(id='show-snap-descr' type='checkbox', ng-model='playerTempObj.settings.showSnapDescrs', ng-change = 'markAsDirty()')
+									//- 					label.onoffswitch-label(for='show-snap-descr')
+									//- 						.onoffswitch-inner
+									//- 						.onoffswitch-switch
+							.panel-item
+								.row.vert-align
+									.col-xs-8
+										h6 Show Export Selection Button
+									.col-xs-4
+										.bool
+											.onoffswitch
+												input.onoffswitch-checkbox(id='toggle-export' type='checkbox', ng-model='playerTempObj.settings.showExportBtn', ng-change = 'markAsDirty()')
+												label.onoffswitch-label(for='toggle-export')
+													.onoffswitch-inner
+													.onoffswitch-switch
+								.divider
+									//- .row.vert-align
+									//- 	.col-xs-8
+									//- 		h4 Minimize Snapshot Description
+									//- 	.col-xs-4
+									//- 		.bool
+									//- 			.onoffswitch
+									//- 				input.onoffswitch-checkbox(id='min-snap-descr' type='checkbox', ng-model='playerTempObj.settings.minimizeSnapDescrs', ng-change = 'markAsDirty()')
+									//- 				label.onoffswitch-label(for='min-snap-descr')
+									//- 					.onoffswitch-inner
+									//- 					.onoffswitch-switch
+									//- .row.border-section-lt.title-style
+									//- 	.col-xs-12
+									//- 		.row.vert-align
+									//- 			.col-xs-6
+									//- 				h4 Theme
+									//- 			.col-xs-6
+									//- 				.ui-select
+									//- 					select(ng-model="playerTempObj.settings.colorTheme", ng-options="opt.value as opt.descr for opt in themes", ng-change = 'markAsDirty()')
+									//- 	.col-xs-12
+									//- 		.text-ultralight.text-normal Select from the preset themes - light or dark - to set the color scheme of your buttons and toolbars in your player.
+									//- 	.space
+					uib-accordion-group(is-open="editorPanels.stats")
+						uib-accordion-heading
+							.row.vert-align.border-section.title-style2
+								.col-xs-12
+									h6.text-uppercase.no-margin(uib-tooltip="View Mapp Stats", tooltip-placement="right", tooltip-append-to-body="true") Statistics
+						div
+							.panel-list
+								.panel-item
+									.row.vert-align
+										.col-xs-12
+											h6 Views: {{playerObj.metrics.viewCount}}
+					uib-accordion-group(is-open="editorPanels.finalisePlayer")
+						uib-accordion-heading
+							.row.vert-align
+								.col-xs-12
+									h6.text-uppercase.no-margin(uib-tooltip="Finalise Player", tooltip-placement="right", tooltip-append-to-body="true") Finalise
+						div
+							.panel-list
+								.panel-item
+									.row.vert-align
+										.col-xs-6
+											h6 Last Finalised on :
+										.col-xs-6
+											h6 {{playerObj.metrics.viewCount}}
+									.row
+										.col-xs-12
+											button.square-btn.small-btn.panel-btn.h6(type="button", ng-click="finalisePlayer();") Finalise
+					uib-accordion-group(is-open="editorPanels.editablePlayer")
+						uib-accordion-heading
+							.row.vert-align
+								.col-xs-12
+									h6.text-uppercase.no-margin(uib-tooltip="Make Player Editable", tooltip-placement="right", tooltip-append-to-body="true") Allow edits
+						div
+							.panel-list
+								.panel-item
+									.row
+										.col-xs-4
+											.bool
+												.onoffswitch
+													input.onoffswitch-checkbox(id='editable-player' type='checkbox', ng-model='playerTempObj.isEditable', ng-change = 'toggleEditable()')
+													label.onoffswitch-label(for='editable-player')
+														.onoffswitch-inner
+														.onoffswitch-switch
+			.panel-list(ng-if="!playerTempObj.playerExists || getEnabledSnapshots().length < 1")
+				.panel-item
+					.row
+						.col-xs-12
+							h6.text-center No snapshots {{mappSnapshots.length > 0 ? 'enabled' : ''}} in your mapp yet
+						.col-xs-12.text-center
+							button.square-btn.small-btn.panel-btn(type="button", ng-click="openSnapshotBar();") Add One

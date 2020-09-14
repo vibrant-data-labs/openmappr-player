@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="15px" height="16px" viewBox="0 0 15 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 64 (93537) - https://sketch.com -->
+    <title>arrow-thick-down</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Page-ver.-3" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Mappr-Filters" transform="translate(-254.000000, -121.000000)" fill-rule="nonzero">
+            <g id="Content" transform="translate(213.000000, 20.000000)">
+                <g id="Filters" transform="translate(20.000000, 20.000000)">
+                    <g id="Filters-+-Line-+-Line-+-Line-+-1-+-1-+-1-+-dropdown-Mask">
+                        <g id="1" transform="translate(2.000000, 76.000000)">
+                            <g id="arrow-thick-down" transform="translate(19.000000, 5.000000)">
+                                <polygon id="Path" fill="#334D6E" points="8.125 11 8.125 6 11.875 6 11.875 11 15 11 10 16 5 11"></polygon>
+                                <polygon id="Path" fill="#AEAEAE" transform="translate(5.000000, 5.000000) scale(1, -1) translate(-5.000000, -5.000000) " points="3.125 5 3.125 0 6.875 0 6.875 5 10 5 5 10 0 5"></polygon>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

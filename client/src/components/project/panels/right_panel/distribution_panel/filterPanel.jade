@@ -1,0 +1,61 @@
+.flex-transclude.width-100(ng-mouseleave="rightPanelExited();", ng-controller="FilterPanelParentCtrl")
+	.flex-vert-container.flex-transclude.panel-container.width-100
+		.filter-header
+			ul.filter-header__list
+				li.filter-header__item.tag.filter-header__item_current(ng-click="navigateTo('.tags-first-item')", ng-if="canShowTagsBtn()")
+					span.filter-header__link Tags
+				li.filter-header__item.chart(ng-click="navigateTo('.chart-first-item')", ng-if="canShowChartsBtn()")
+					span.filter-header__link Charts
+
+		.panel-scroll.flex-fill.flex-vert-container(ng-controller="FilterPanelCtrl")
+			//- span {{filteredDistrAttrs.length}} of {{nodeDistrAttrs.length}}
+			ul.filter-list(dir-attr-modifiers="", data-dir-virtual-scroll="", variable-height="", container-item-count="nodeDistrAttrs.length" dir-kill-tooltip-on-scroll, ng-if="ui.renderDistr", on-scroll="onScroll")
+				li.filter-list__item(
+					ng-repeat="attr in ui.filteredAttrs = (nodeDistrAttrs | filter: {title : ui.statsSearchKey}) track by attr.id",
+					ng-if="attr.visible", ng-class="{'attr-hidden':!attr.visible, 'first': ($index == 1), 'chart-first-item': attr.isFirstChart, 'tags-first-item': attr.isFirstTag}",
+					ng-click='selectNodesByAttrib(attr.title, attr.value, $event)'
+				)
+					section.card.card_type_filter(data-attr="{{attr.id}}", ng-class="{'card__chart' : attr.attrType == 'integer' || attr.attrType == 'float' || attr.attrType == 'boolean' || attr.attrType == 'year' || attr.attrType == 'timestamp' }")
+						header.card__header(ng-if="attr.attrType != 'integer' && attr.attrType != 'float' && attr.attrType != 'boolean' && attr.attrType != 'year' && attr.attrType != 'timestamp'", uib-tooltip="{{::attr.metadata.descr}}" tooltip-placement='right' tooltip-append-to-body="true")
+							h2.card__title(dir-elem-ready="onAttrHeaderLoad(attr, $event)"
+								uib-tooltip="{{attr.headerPopupText}}", 
+                    			tooltip-placement="right", 
+                    			tooltip-append-to-body="true"
+								) {{::attr.title}}
+
+							button.card__action-sort(
+								ng-if="attr.renderType == 'tags' || attr.renderType == 'categorylist' || attr.renderType == 'tag-cloud' || attr.renderType == 'wide-tag-cloud'",
+								ng-class="{ 'up': attr.sortConfig && attr.sortConfig.sortType === 'frequency' && attr.sortConfig.sortOrder === 'asc', 'disabled': attr.sortConfig && attr.sortConfig.sortType !== 'frequency' }",
+								ng-click="setSortOrder(attr, 'frequency')"
+								uib-tooltip="Sort by frequency of occurrence",
+								tooltip-placement="right", 
+								tooltip-append-to-body="true"
+								)
+							button.card__action-sort.card__action-sort-alphabet(
+								ng-if="attr.renderType == 'tags' || attr.renderType == 'categorylist' || attr.renderType == 'tag-cloud' || attr.renderType == 'wide-tag-cloud'",
+								ng-class="{ 'desc': attr.sortConfig && attr.sortConfig.sortType === 'alphabetical' && attr.sortConfig.sortOrder === 'desc', 'disabled': !attr.sortConfig || (attr.sortConfig && attr.sortConfig.sortType !== 'alphabetical') }", 
+								ng-click="setSortOrder(attr, 'alphabetical')"
+								uib-tooltip="Sorted alphabetically",
+								tooltip-placement="right", 
+								tooltip-append-to-body="true"
+								)
+
+							.card__action-search
+								button(ng-click="searchToggle(attr)") search
+
+							.card__search-box
+								input(type='text', ng-model="attr.searchQuery", ng-change="search(attr, $event)")/
+								button.close(ng-click="clearSearch(attr); searchToggle(attr);") close
+
+						.card__body
+							.card__content
+								dir-attr-renderer(attr-to-render="attr", noe-color-str="nodeColorStr", is-node="true", show-filter="ui.enableFilters", disable-filter="attr.disableFilter" theme="appUi.theme" pinned-media="pinnedMedia")
+
+					h6.no-margin.text-center.title(
+						ng-if="attr.attrType == 'integer' || attr.attrType == 'float' || attr.attrType == 'boolean' || attr.attrType == 'year' || attr.attrType == 'timestamp'"
+						uib-tooltip="{{attr.metadata.descr || attr.title}}"
+						tooltip-placement='right'
+						tooltip-append-to-body="true"
+					)
+						span {{::attr.title}}
+						span(ng-show="attr.principalVal") :&nbsp;{{attr.principalVal}}

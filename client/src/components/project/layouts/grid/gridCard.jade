@@ -1,0 +1,122 @@
+.rendered-attr
+    div(
+        ng-if="node.selectedAttr.attrType == 'string' && (!node.selectedAttr.renderType || node.selectedAttr.renderType == 'default' || node.selectedAttr.renderType == 'text' || node.selectedAttr.renderType == 'densitybar' || node.selectedAttr.renderType == 'barchart' || node.selectedAttr.renderType == 'piechart')"
+    )
+        h5.text-attr-content(
+            ng-text-truncate="node.selectedAttr.value"
+            ng-tt-chars-threshold="190"
+            ng-tt-more-label="more..."
+            ng-tt-less-label="...less"
+        )
+
+    .render-content.vert-align.text-center
+        dir-attr-renderer.center-block(
+            attr-to-render="node.selectedAttr",
+            node-color-str="::node.colorStr",
+            show-aggregation="false",
+            is-grid="true", 
+            is-node="true",
+            is-small="true"
+            render-width="275",
+            render-height="275"
+            theme="appUi.theme"
+            pinned-media="pinnedMedia"
+        )
+
+    .content-overlay.vert-align.pointable-cursor(
+        ng-if="node.selectedAttr.attrType != 'audio_stream' && node.selectedAttr.attrType != 'video_stream' && node.selectedAttr.attrType != 'video'"
+    )
+
+        //- .btn-container
+        //-     .card-btn(ng-click="openRightPanel(node, $event);")
+        //-         i.fa.fa-bar-chart.fa-3x
+        //-     .card-btn(ng-click="openMediaModal(node);")
+        //-         i.fa.fa-search-plus.fa-3x
+
+.node(
+    ng-class="{'selected': node.isSelected}"
+)
+    .vert-align.pull-left.height-100
+        .background
+
+        .circle(
+            style="background-color:{{::node.colorStr}}; border-color: {{::node.darkColorStr}}"
+        )
+
+        h6.truncate {{::node.attr[mapprSettings.labelAttr]}}
+
+    .btns.pull-right.height-100.vert-align(
+        ng-click="$event.stopPropagation()"
+        ng-class="{hovered: (node.inHover || node.isCompared)}"
+    )
+        .toggle-icon.dropdown(
+            ng-if="MAPP_EDITOR_OPEN"
+            uib-dropdown
+            dropdown-append-to-body
+            uib-tooltip="Groups"
+            tooltip-append-to-body="true"
+            ng-class="{hovered: node.inHover}"
+        )
+            span(
+                uib-dropdown-toggle
+                auto-close="outsideClick"
+                ng-click="maintainHover()"
+            )
+                i.fa.fa-1-2x.fa-heart
+
+            .uib-dropdown-menu.uib-dropdown-menu-flexing(
+                uib-dropdown-menu
+            )
+                .uib-dropdown-click-close(
+                    ng-click="clearMaintainHover();"
+                )
+
+                //inline style to center dropdowns
+                .uib-dropdown-flex-content(
+                    style="margin-left: 7px;"
+                )
+                    .uib-dropdown-triangle
+                    .uib-dropdown-flex.center
+                        ul.dd-list.list-unstyled
+                            li.row.vert-align.pointable-cursor(
+                                ng-repeat="group in selectionVMs" ng-click="toggleNodeInGroup(node, group); clearMaintainHover();"
+                            )
+                                div.vert-align.width-100(
+                                    ng-if="group.dpIDs.indexOf(node.id) == -1"
+                                    uib-tooltip="Add to Group"
+                                    tooltip-append-to-body="true"
+                                )
+                                    .col-xs-12
+                                        h6.no-margin.truncate {{group.selName}}
+
+                                div.vert-align.width-100(
+                                    ng-if="group.dpIDs.indexOf(node.id) != -1"
+                                    uib-tooltip="Remove from Group"
+                                    tooltip-append-to-body="true"
+                                )
+                                    .col-xs-10
+                                        h6.active.no-margin.truncate {{group.selName}}
+
+                                    .col-xs-2.blue-text-btn
+                                        i.fa.fa-times
+
+                            li.row.vert-align.pointable-cursor(
+                                ng-if="selectionVMs.length == 0"
+                                ng-click="panelUI.openPanel('selection');"
+                            )
+                                .vert-align.width-100 
+                                    .col-xs-12 
+                                        h6.no-margin Create Group
+
+        .tag-checkbox
+            input(
+                type="checkbox"
+                disabled="disabled"
+                id="{{node.id}}"
+                ng-model="node.isCompared"
+                ng-change="compareChange(node)"
+            )
+
+            label(
+                for="{{node.id}}"
+            )

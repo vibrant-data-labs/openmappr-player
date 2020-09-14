@@ -1,0 +1,82 @@
+.col-xs-12(ng-controller="AlchemyNews")
+	.row(ng-show="ui.queryRunning")
+		.centerContainer.centerFlex
+			div.centerPseudo.vert-align 
+				i.fa.fa-spinner.fa-pulse.fa-2x
+				span.size-h4 &nbsp;&nbsp;running query..
+	form(name="alchemyNewsForm", ng-show="!ui.queryRunning")
+		h4 Construct a Query
+		h5 Search millions of news and blog articles.
+		.divider
+		.row.vert-align
+			.col-xs-4
+				span.pull-left API Key to use
+			.col-xs-8
+				input.form-control(type="text", name="apiKey", ng-model="fo.apiKey", placeholder="api key...", required="")
+				small.text-danger(ng-show="alchemyNewsForm.apiKey.$dirty && alchemyNewsForm.apiKey.$error.required") Please provide a valid key
+		.divider
+		.row
+			.col-xs-4 Search articles over
+			.col-xs-8
+				.row
+					.col-xs-5
+						div Start Date
+						div.input-group.ui-datepicker
+							span.input-group-addon(ng-click="dp.openDatePicker('start')")
+								i.fa.fa-calendar
+							input.form-control(type="text", ng-change="tp.updateTime('start')" uib-datepicker-popup="dd-MMMM-yyyy" datepicker-append-to-body="true" ng-model="dp.startDate", is-open="dp.startDateOpened", required="required")
+					.col-xs-1
+					.col-xs-5
+						div End Date
+						div.input-group.ui-datepicker
+							span.input-group-addon(ng-click="dp.openDatePicker('end')")
+								i.fa.fa-calendar
+							input.form-control(type="text", ng-change="tp.updateTime('end')" uib-datepicker-popup="dd-MMMM-yyyy" datepicker-append-to-body="true" ng-model="dp.endDate", is-open="dp.endDateOpened", required="required")
+				.divider
+				//- .row
+				//- 	.col-xs-5
+				//- 		.row Start Time
+				//- 		div(ng-model='tp.startTime', ng-change='tp.updateTime("start")', style='display: inline-block;')
+				//- 			timepicker.ui-timepicker(hour-step='tp.options.hstep', minute-step='tp.options.mstep', show-meridian='tp.ismeridian')
+				//- 	.col-xs-1
+				//- 	.col-xs-5
+				//- 		.row End Time
+				//- 		div(ng-model='tp.endTime', ng-change='tp.updateTime("end")', style='display: inline-block;')
+				//- 			timepicker.ui-timepicker(hour-step='tp.options.hstep', minute-step='tp.options.mstep', show-meridian='tp.ismeridian')
+		.divider
+		.row.vert-align
+			.col-xs-4 where
+			.col-xs-8
+				input.form-control(type="text", ng-model="fo.where", required="" placeholder="type keywords here...")
+		.divider
+		.row.vert-align
+			.col-xs-4 is mentioned
+			.col-xs-8
+				select.form-control(ng-model="fo.mentioned" ,ng-options="mention.text for mention in mentions")
+		.divider
+		.row.vert-align
+			.col-xs-4 and the Sentiment is
+			.col-xs-8
+				select.form-control(ng-model="fo.sentiment", ng-options="sentiment for sentiment in sentiments")
+		.divider
+		.row.vert-align
+			.col-xs-4 where the Taxonomy is
+			.col-xs-8
+				select.form-control(ng-model="fo.taxonomy", ng-options="taxonomy for taxonomy in taxonomies")
+		.divider
+		.row.vert-align
+			.col-xs-4 in the article
+			.col-xs-8
+				select.form-control(ng-model="fo.articlePart", ng-options="part for part in articleParts")
+		.divider
+		.row.vert-align
+			.col-xs-4 maximum item count
+			.col-xs-8
+				input.form-control(type="number", name="itemCount", min="0", max="{{ui.maxItemCount}}", step="100", ng-pattern="/\d*/", ng-model="fo.itemCount", required="")
+				small.text-danger(ng-show="alchemyNewsForm.itemCount.$error.min") Should be greater than 0
+				small.text-danger(ng-show="alchemyNewsForm.itemCount.$error.max") Should be less than or equal to 3000
+		.divider
+		.divider
+		.row 
+			.col-xs-12(ng-if="!diModalData.editMode")
+				button.power-btn.pull-right(ng-click="mapProcessor.createMap()" ) {{currDataSrc.btnCreateText}}

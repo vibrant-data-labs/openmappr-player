@@ -1,0 +1,92 @@
+.grid-layout
+    #virtual-scroll.content(
+        ng-class="{highlighted: nodesInHover}"
+    )
+        .compared(
+            ng-click="$event.stopPropagation();"
+            ng-show="comparingNodes"
+        )
+            h7.text-uppercase.pull-left
+                strong Selection
+
+            .text-link.h7.text-uppercase.pull-right.pointable-cursor(
+                ng-click="clearSelection();"
+            )
+                strong Clear Selection
+
+            .clearfix
+
+            .cards
+                div(
+                    ng-repeat="nodes in comparedNodesObj"
+                )
+                    .card(
+                        ng-include=' "#{server_prefix}#{view_path}/components/project/layouts/grid/gridCard.html" '
+                        ng-repeat="node in nodes"
+                        ng-mouseenter="setHover(node)"
+                        ng-mouseleave="setHover()",
+                        ng-class="{highlighted: node.inHover, 'selected': selectedNodeIds.indexOf(node.id) !== -1}"
+                        data-nodeid="{{node.id}}",
+                        dir-grid-card=""
+                        ng-click="clickCard(node);"
+                    )
+
+                    .clearfix
+
+            .clearfix
+
+        .nodes(
+            ng-click="$event.stopPropagation();"
+        )
+            h7.text-uppercase(
+                ng-show="!isSubsetApplied"
+            )
+                strong All Nodes
+            h7.text-uppercase(
+                ng-show="isSubsetApplied"
+            )
+                strong Subset Nodes
+
+            .cards(
+                vs-repeat="305"
+                vs-excess="6"
+                vs-scroll-parent="#virtual-scroll"
+                ng-click="$event.stopPropagation();"
+            )
+                div(
+                    ng-repeat="nodes in sortedNodesObj"
+                )
+                    .card(
+                        ng-include=' "#{server_prefix}#{view_path}/components/project/layouts/grid/gridCard.html" '
+                        ng-repeat="node in nodes"
+                        ng-mouseenter="setHover(node)"
+                        ng-mouseleave="setHover()",
+                        ng-class="{highlighted: node.inHover, 'selected': selectedNodeIds.indexOf(node.id) !== -1}"
+                        data-nodeid="{{node.id}}",
+                        dir-grid-card=""
+                        ng-click="clickCard(node);"
+                    )
+
+                    .clearfix
+
+.grid-bottom-left-btns.vert-align.pull-left
+    //in replace of bullseye zoom
+    button.pull-left.no-margin.vert-align.h3(
+        ng-if="MAPP_EDITOR_OPEN"
+        ng-show="scrolled"
+        ng-click="resetScrollPosition(); closeOverlay();"
+        uib-tooltip="Scroll to Top"
+        tooltip-placement="top-left"
+        tooltip-append-to-body="true"
+    )
+        i.fa.fa-arrow-up
+
+    button.pull-left.no-margin.vert-align.square-btn(
+        ng-if="!MAPP_EDITOR_OPEN"
+        ng-show="scrolled"
+        ng-click="resetScrollPosition(); closeOverlay();"
+        uib-tooltip="Scroll to Top"
+        tooltip-placement="top-left"
+        tooltip-append-to-body="true"
+    )
+        i.fa.fa-arrow-up

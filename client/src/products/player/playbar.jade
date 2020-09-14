@@ -1,0 +1,224 @@
+.playbar.play-toolbar(ng-class="{'play-toolbar_opened': showSearch}")
+  .play-toolbar__buttons
+    .button-group.button-group_type_play-toolbar
+      .button-group__item
+        button.button.button_type_play-toolbar.button_icon_check.button_with-text(
+          ng-click="subsetFilters()",
+          ng-disabled="!(ui.subsetEnabled)"
+        ) Subset
+
+      //.button-group__item
+      //  button.button.button_type_play-toolbar.button_icon_chevron-left(
+      //    ng-click="undoFilters()"
+      //    uib-tooltip="Undo"
+      //    tooltip-append-to-body="true"
+      //    tooltip-placement="right"
+      //    ng-disabled="!enableUndo"
+      //  ) back
+      //
+      //.button-group__item
+      //  button.button.button_type_play-toolbar.button_icon_chevron-right(
+      //    ng-click="redoFilters()"
+      //    uib-tooltip="Redo"
+      //    tooltip-append-to-body="true"
+      //    tooltip-placement="right"
+      //    ng-disabled="!enableRedo"
+      //  ) forward
+
+      .button-group__item
+        button.button.button_type_play-toolbar.button_icon_cancel.button_with-text(
+          ng-click="resetFilters()",
+          ng-disabled="!(ui.activeFilterCount > 0)"
+        ) Reset
+
+      .button-group__item.button-group__select(ng-class="{ 'opened': operations.list.length > 1 && operations.opened, 'closed': operations.list.length > 1 && !operations.opened }", ng-click="operations.togglePanel()")
+        span(ng-if="operations.last().type == 'init'")
+          b {{operations.last().totalNodes}}
+          = ' '
+          | total nodes
+        span(ng-if="operations.last().type == 'select' || operations.last().type == 'subset'")
+          b {{operations.last().nodesCount}}
+          = ' '
+          | nodes
+          = ' '
+          span(ng-if="operations.last().type == 'select'") selected
+          span(ng-if="operations.last().type == 'subset'") subsetted
+
+      .play-toolbar__content(ng-if="operations.list.length > 1 && operations.opened")
+        .play-toolbar-list
+          section.play-toolbar-list__item(ng-repeat="operation in operations.list",
+            ng-if="operation.type != 'init'"
+            ng-class="{'play-toolbar-list__item_subsetted' : operation.type == 'subset', 'play-toolbar-list__item_selected': operation.type == 'select', 'play-toolbar-list__item_opened': operation.isOpened }")
+            header.play-toolbar-list__header(ng-if="operation.type == 'select' || operation.type == 'subset'", ng-click="operations.toggleOperation(operation)")
+              span(ng-class="{'selected' : $last, 'total': !$last}") {{operation.nodesCount}}
+              = ' '
+              | of
+              = ' '
+              span.total {{operation.totalNodes}}
+              = ' '
+              | nodes
+              =' '
+              b(ng-if="operation.type == 'select'") selected
+              b(ng-if="operation.type == 'subset'") subsetted
+
+              button(ng-if="$index == operations.list.length -1", ng-click="resetOperation()").button_icon_cancel
+
+            .play-toolbar-list__content(ng-if="(operation.searchText || operation.filters) && operation.isOpened")
+              .filter-section-wrap(ng-if="operation.searchText")
+                  dl.filter-section
+                    dt.filter-section__label
+                      | Search Results  
+                      span(ng-if="operation.searchAttr") &nbsp;({{operation.searchAttr.title}})
+                      | :
+
+                    dd.filter-section__content
+                      ul.filter-section__list
+                        li.filter-section__item
+                          span {{operation.searchText}}            
+              .filter-section-wrap(ng-repeat="filter in operations.filterArray(operation)", ng-if="operation.filters")
+                dl.filter-section
+                  dt.filter-section__label
+                    | {{filter.attrInfo.attr.title}}:
+
+                  dd.filter-section__content
+                    ul.filter-section__list(ng-if="!operations.isNumeric(filter.attrInfo)")
+                      li.filter-section__item(ng-repeat="val in filter.values.values")
+                        span.filter-section__divider(
+                          ng-if="filter.values.values.length > 1 && $index == filter.values.values.length -1"
+                        ) &nbsp;or&nbsp;
+                        span {{val}}
+                    ul.filter-section__list(ng-if="operations.isNumeric(filter.attrInfo)")
+                      li.filter-section__item(ng-repeat="val in filter.values")
+                        span(ng-if="filter.values.length > 1 && $index == filter.values.length -1") &nbsp;or&nbsp;
+
+                        span.filter-section__item_array(
+                          ng-if="val.description == 'btw'&& (filter.attrInfo.attr.attrType != 'year' && filter.attrInfo.attr.attrType != 'timestamp')"
+                        )
+                          | between
+                          = ' '
+                          span {{val.values[0] | number:2}}
+                          = ' '
+                          span.filter-section__divider and
+                          = ' '
+                          span {{val.values[1] | number:2}}
+
+                        span.filter-section__item_array(
+                          ng-if="val.description == 'btw' && (filter.attrInfo.attr.attrType == 'year')"
+                        )
+                          | between
+                          = ' '
+                          span {{val.values[0]}}
+                          = ' '
+                          span.filter-section__divider and
+                          span {{val.values[1]}}
+
+                        span.filter-section__item_array(
+                          ng-if="val.description == 'btw' && (filter.attrInfo.attr.attrType == 'timestamp')"
+                        )
+                          | between
+                          = ' '
+                          span {{operations.formatTime(val.values[0])}}
+                          = ' '
+                          span.filter-section__divider and
+                          span {{operations.formatTime(val.values[1])}}
+
+                        span(
+                          ng-if="val.description == 'ht' && (filter.attrInfo.attr.attrType == 'year')"
+                        )
+                          | after
+                          = ' '
+                          span {{val.values[0].toString().split('.')[0]}}
+
+                        span.filter-section__item_array(
+                          ng-if="val.description == 'ht' && (filter.attrInfo.attr.attrType == 'timestamp')"
+                        )
+                          | after
+                          = ' '
+                          span {{operations.formatTime(val.values[0])}}
+
+                        span.filter-section__item_array(
+                          ng-if="val.description == 'ht' && (filter.attrInfo.attr.attrType != 'year' && filter.attrInfo.attr.attrType != 'timestamp')"
+                        )
+                          | higher than
+                          = ' '
+                          span {{val.values[0] | number:2}}
+
+                        span.filter-section__item_array(
+                          ng-if="val.description == 'lt' && (filter.attrInfo.attr.attrType == 'year')"
+                        )
+                          | before
+                          = ' '
+                          span {{val.values[0].toString().split('.')[0]}}
+
+                        span.filter-section__item_array(
+                          ng-if="val.description == 'lt' && (filter.attrInfo.attr.attrType == 'timestamp')"
+                        )
+                          | before
+                          = ' '
+                          span {{operations.formatTime(val.values[0])}}
+
+                        span.filter-section__item_array(
+                          ng-if="val.description == 'lt' && (filter.attrInfo.attr.attrType != 'year' && filter.attrInfo.attr.attrType != 'timestamp')"
+                        )
+                          | lower than
+                          = ' '
+                          span {{val.values[0] | number:2}}
+
+                        span(ng-if="val.description == 'eq'") {{val.values[0]}}
+
+    .button-group.button-group_type_play-toolbar.search
+      .button-group__item
+        button.button.button_type_play-toolbar.button_icon_search(ng-click="searchToggle()") search
+
+    .play-toolbar__search(
+      ng-if="player.settings.showSearch && showSearch"
+      ng-controller="SearchPanelCtrl"
+      ng-include=' "#{server_prefix}#{view_path}/components/project/panels/search/search.html" '
+    )
+
+      //.button-group__item
+      //  button.button.button_type_play-toolbar.button_icon_help help
+
+
+.play-toolbar-bottom
+  .button-group.button-group_type_play-toolbar.button-group_vertical(
+    ng-if="layout.plotType != 'list' && layout.plotType != 'grid'"
+  )
+    .button-group__item
+      button.button.button_type_play-toolbar.button_icon_target(ng-click="zoomInfo.zoomExtents()") target
+
+    .button-group__item
+      button.button.button_type_play-toolbar.button_icon_plus(
+        ng-click="zoomInfo.zoomIn()"
+        uib-tooltip="Zoom in"
+        tooltip-append-to-body="true"
+        tooltip-placement="right"
+      ) zoom +
+
+    .button-group__item
+      button.button.button_type_play-toolbar.button_icon_minus(
+        ng-click="zoomInfo.zoomOut()"
+        uib-tooltip="Zoom out"
+        tooltip-append-to-body="true"
+        tooltip-placement="right"
+      ) zoom -
+  //.flex-container.shadow-btn.shadow-btn--icon-btn.shadown-btn--no-hover()
+  //  button.vert-align(ng-click="subsetFilters()", ng-disabled="!(ui.subsetEnabled)" uib-tooltip="Subset" tooltip-append-to-body="true" tooltip-placement="left")
+  //    i.material-icons.m-r-5 send
+  //    span.shadow-btn--icon-btn__text Subset
+    //- button.no-margin.p-r-6.vert-align(ng-click="undoFilters()" uib-tooltip="Undo" tooltip-append-to-body="true" tooltip-placement="right" ng-disabled="!enableUndo")
+    //-   i.material-icons.m-r-5 undo
+    //-   span.shadow-btn--icon-btn__text Undo
+    //- button.right-btn.vert-align(ng-click="redoFilters()" uib-tooltip="Redo" tooltip-append-to-body="true" tooltip-placement="right" ng-disabled="!enableRedo")
+    //-   i.material-icons.m-r-5 redo
+    //-   span.shadow-btn--icon-btn__text Redo
+    button.right-btn.vert-align(ng-click="resetFilters()", ng-disabled="!(ui.activeFilterCount > 0)" uib-tooltip="Reset" tooltip-append-to-body="true" tooltip-placement="right")
+      i.material-icons.m-r-5 clear
+      span.shadow-btn--icon-btn__text Reset
+  //.flex-container.shadow-btn.shadow-btn--icon-btn.shadown-btn--no-hover(ng-if="layout.plotType != 'list' && layout.plotType != 'grid'")
+  //  button(ng-click="zoomInfo.zoomExtents();" uib-tooltip="Zoom to selection" tooltip-append-to-body="true" tooltip-placement="left")
+  //    i.material-icons my_location
+  //  button.no-margin.p-r-6(ng-click="zoomInfo.zoomIn()" uib-tooltip="Zoom in" tooltip-append-to-body="true" tooltip-placement="right")
+  //    i.material-icons add
+  //  button.right-btn(ng-click="zoomInfo.zoomOut()" uib-tooltip="Zoom out" tooltip-append-to-body="true" tooltip-placement="right")
+  //    i.material-icons remove

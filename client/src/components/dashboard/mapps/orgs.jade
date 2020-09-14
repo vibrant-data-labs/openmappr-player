@@ -1,0 +1,55 @@
+.page.page-orglist.list-lg(ng-init="ui.setPage('user-orgs')")
+	form.panel.panel-default
+		ul.list-group
+			li.list-group-item(ng-if="org.addNewOrg")
+				.row.form-group
+					.col-xs-9
+						input.form-control(type="text", placeholder="Name", ng-model="org.uiNameField" dir-select-all)
+					.col-off-1
+					.col-xs-2
+						button.btn.btn-sm.btn-danger.pull-right(ng-click="org.createNew(org.uiNameField)")
+							| Add
+			li.animate-fade-out.list-group-item(ng-repeat="orgItem in user.current.orgs | filter:{orgName: org.orgSearchKey}", ng-click="org.selectByRef(orgItem.ref)")
+				.row
+					.col-xs-9.project
+						.thumb.pull-left
+							//- img(ng-src='{{project.picture || "https://s3-us-west-1.amazonaws.com/mappr-misc/icons/mapp_icon_200x200.jpg"}}', style="width:100px; height:100px;")
+							.circle
+								i.fa.fa-folder-o
+								.small-icon(ng-switch="orgItem.role")
+									i.fa.fa-star(ng-switch-when="isOwner" uib-tooltip="Owner" tooltip-placement="right")
+									i.fa.fa-user(ng-switch-when="isMember" uib-tooltip="Member" tooltip-placement="right")
+									i.fa.fa-gavel(ng-switch-when="isAdmin" uib-tooltip="Administrator" tooltip-placement="right")
+						.form-group.pull-left(ng-if="orgItem.edit")
+							input.form-control.h2(type="text", placeholder="{{orgItem.orgName}}", ng-model="org.selected.orgName", ng-click="$event.stopPropagation();" dir-select-all)
+							.divider
+							div.pull-right
+								input.btn.btn-xs.btn-default(type="submit" value="Save" ng-click="org.updateOrg(org.selected)")
+						span(ng-if="!orgItem.edit")
+							a.title.text-ultralight.h2.no-text-transform(uib-tooltip="Open Organization", tooltip-placement="top", tooltip-append-to-body="true" href="#", ng-click="org.selectByRef(orgItem.ref)")
+								| {{orgItem.orgName}}
+							a.title.btn.btn-xs.project-action-btn(uib-tooltip="Edit", tooltip-placement="top", ng-if="!stItem.edit", ng-click="org.enterOrgEditMode(orgItem); $event.stopPropagation();")
+								.space
+									i.fa.fa-2x.fa-pencil
+
+							.text-small.vert-align
+								img.img-circle.img30_30.pull-left(ng-src="{{user.current.picture}}")
+								.space
+								.pull-left.h6 {{{isOwner: 'owner', isMember:'member', isAdmin: 'admin'}[orgItem.role]}}
+					.col-xs-3
+						span.pull-right
+							a.btn-line-default.btn-icon-round.btn-icon-round-sm.pull-right(uib-tooltip="Join Org" tooltip-placement="left" ng-click="org.joinByRef(orgItem.ref, orgItem.token); $event.stopPropagation();", ng-if="orgItem.isPending")
+								span
+									i.fa.fa-sign-i
+							.space.pull-right
+							a.btn-line-default.btn-icon-round.btn-icon-round-sm.pull-right(uib-tooltip="Leave Org" tooltip-placement="left" ng-click="org.leaveByRef(orgItem.ref); $event.stopPropagation();", ng-if="!orgItem.isPending", ng-show="(orgItem.role == 'isMember' || orgItem.role == 'isAdmin')")
+								span
+									i.fa.fa-sign-out
+							.space.pull-right
+							a.btn-line-default.btn-icon-round.btn-icon-round-sm.pull-right(uib-tooltip="Delete" tooltip-placement="left" ng-click="org.deleteByRef(orgItem.ref); $event.stopPropagation();", ng-if="!orgItem.isPending", ng-show="(orgItem.role == 'isOwner')")
+								span
+									i.fa.fa-trash-o
+							.space.pull-right
+							a.btn-line-default.btn-icon-round.btn-icon-round-sm.pull-right(uib-tooltip="Add Users" tooltip-placement="left" ng-click="org.addUsers(orgItem.ref); $event.stopPropagation();", ng-if="!orgItem.isPending", ng-show="(orgItem.role == 'isOwner' || orgItem.role == 'isAdmin')")
+								span
+									i.fa.fa-users

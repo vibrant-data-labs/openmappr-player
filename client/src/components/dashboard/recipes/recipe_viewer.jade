@@ -1,0 +1,51 @@
+.page.page-recipelist.list-lg(ng-init="ui.setPage('user-recipe-viewer')")
+    .projects(ng-controller="recipeViewerCtrl")
+        .container-fluid
+            .col-xs-6
+                // header
+                .row
+                    h1 Template Viewer / Editor
+                .row(ng-show="vm.isNew") Creating a new template. A sample template has been loaded
+                .row(ng-hide="vm.isNew") Editing template {{vn.template.name}}
+                
+                // show a box where to copy paste settings.
+                .row
+                    textarea(rows=30, cols=80, ng-model="vm.code") {{vm.code}}
+                
+                // update / create button
+                .row
+                    button.btn.btn-default(ng-show="vm.isNew", ng-click="vm.onCreate()") Create
+                    button.btn.btn-default(ng-hide="vm.isNew", ng-click="vm.onUpdate()") Update
+                    button.btn.btn-default(ng-hide="vm.isNew", ng-click="vm.onGenerate()") Generate
+                
+                // show a box where to send errors
+                .row
+                    .col-xs-12
+                        .row Messages
+                        .row(ng-repeat="err in vm.errors track by $index") {{::err}}
+
+            // recipe runs
+            .col-xs-6
+                .row(ng-repeat="run in vm.recipeRuns track by $index")
+                    .col-xs-12
+                        .row {{::run.name}}
+                        .row Date : {{::run.createdAt}}
+                        .row Status : {{::run.isSuccessful ? 'success' : 'failed'}}
+                        .row Counts
+                            .col-xs-12
+                                .row Sources Analysed : {{::run.dataSources.length}}
+                                .row Projects Generated : {{::run.projects.length}}
+                                .row Networks Created : {{::run.networks.length}}
+                        .row(ng-if="!run.isLogLoaded && !run.isLogLoading")
+                            button.btn.btn-default(ng-click="run.loadLogs()") Load logs
+                        .row(ng-if="run.isLogLoading") Loading logs...
+                        .row(ng-if="run.isLogLoaded") LOGS
+                            .col-xs-12
+                                .row
+                                    .col-xs-1.h3 Type
+                                    .col-xs-2.h3 Date
+                                    .col-xs-8.h3 Message
+                                .row(ng-repeat="log in run.logs track by $index")
+                                    .col-xs-1 {{::log.logType}}
+                                    .col-xs-2 {{::log.formattedDate}}
+                                    .col-xs-8 {{::log.msg}}

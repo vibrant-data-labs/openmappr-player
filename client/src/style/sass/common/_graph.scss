@@ -1,0 +1,152 @@
+//
+// Network Graph Styles
+// Styles for the Network graph (labels, d3 selections, etc)
+
+.page-stage {
+
+    .mappr-player {
+        bottom: 0;
+        left: 0;
+        overflow: hidden;
+        position: absolute;
+        right: 0;
+        top: 0;
+    }
+
+    //must use id so can modify the css when changing the background
+    #project-layout {
+        bottom: 0;
+        left: 0;
+        position: absolute;
+        right: 0;
+        top: 0;
+
+        // &.higher {
+        //     bottom: 60px;
+        // }
+    }
+
+    .project-layout {
+
+    }
+
+    sig {
+        @include user-select(none);
+    }
+
+    .node-label {
+        // font-weight: bold;
+        //margin: -10px 0 0 5px;
+        //text-shadow: rgb(255, 255, 255) -1px -1px 0px, rgb(255, 255, 255) 1px -1px 0px, rgb(255, 255, 255) -1px 1px 0px, rgb(255, 255, 255) 1px 1px 0px;
+        color: $text-color;
+        font-family: $headings-font-family;
+        font-size: 32px;
+        max-width: 350px;
+        z-index: auto;
+        font-weight: 500;
+    }
+
+    // Applied to hover label div
+    .node-label-hover {
+        opacity: 1;
+    }
+
+    // InHover mode, applied to all nodes which are NOT in hover state
+    .node-label-hover-hide {
+        @include transition(opacity .2s ease-out);
+        opacity: .1;
+        display: none;
+    }
+
+    // .node-label.internal-d3-sel-label-temp.node-label-sel {
+    //     opacity: 0;
+    // }
+
+    .group-label {
+        color: $text-color;
+        cursor: pointer;
+        pointer-events: auto;
+        text-shadow: $text-color-dark -1px -1px 1px, $text-color-dark 1px -1px 1px, $text-color-dark -1px 1px 1px, $text-color-dark 1px 1px 1px, $text-color-dark -1px 0 1px, $text-color-dark 1px 0 1px, $text-color-dark 0 -1px 1px, $text-color-dark 0 1px 1px;
+
+        p {
+            margin: 0;
+            padding: .325rem 1rem .2rem;
+            border-radius: 32px;
+            background: rgba(255,255,255,.9);
+            box-shadow: 0 0 4px rgba(#000, .1);
+        }
+    }
+
+    .dark-group-label {
+        text-shadow: $body-bg-dark -1px -1px 1px, $body-bg-dark 1px -1px 1px, $body-bg-dark -1px 1px 1px, $body-bg-dark 1px 1px 1px, $body-bg-dark -1px 0 1px, $body-bg-dark 1px 0 1px, $body-bg-dark 0 -1px 1px, $body-bg-dark 0 1px 1px;
+    }
+
+    // rest
+    .graph-container {
+        height: 100%;
+        left: $main-content-left;
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+
+    .selects-container {
+        height: 100%;
+        left: 0;
+        position: absolute;
+        top: 0;
+        width: 100%;
+    }
+    //End aditya's random styling
+
+    .sig-holder {
+        height: 100%;
+        left: 0;
+        overflow: hidden;
+        position: absolute;
+        top: 0;
+        width: 100%;
+
+        &.dragging {
+            cursor: move;
+        }
+
+        &.over {
+            cursor: pointer;
+        }
+    }
+
+    .sig-selection {
+        border: 1px dotted #000;
+        position: absolute;
+    }
+
+    // bug fix for ipad extra height
+    @media (orientation:landscape) {
+        html.ipad.ios7 > body {
+            bottom: 0;
+            height: 644px !important;
+            position: fixed;
+            width: 100%;
+        }
+    }
+
+    .angular-leaflet-map {
+        height: 100%;
+        width: 100%;
+        left: $main-content-left;
+
+        .sig-selection {
+            z-index: 999;
+        }
+
+        .leaflet-tile {
+            -webkit-user-drag: none;
+            -khtml-user-drag: none;
+            -moz-user-drag: none;
+            -o-user-drag: none;
+            user-drag: none;
+        }
+    }
+
+}

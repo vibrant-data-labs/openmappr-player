@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 64 (93537) - https://sketch.com -->
+    <title>Path</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Page-ver.-3" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Mappr-Info-Page" transform="translate(-19.000000, -225.000000)" fill="#FFFFFF" fill-rule="nonzero">
+            <g id="Slide-bar" transform="translate(-1.000000, 0.000000)">
+                <g id="Menu" transform="translate(0.000000, 80.000000)">
+                    <g id="comment-alt-solid" transform="translate(20.000000, 145.000000)">
+                        <path d="M15.7192982,0 L2.24561404,0 C1.00701754,0 0,1.00701754 0,2.24561404 L0,12.3508772 C0,13.5894737 1.00701754,14.5964912 2.24561404,14.5964912 L5.61403509,14.5964912 L5.61403509,17.5438596 C5.61403509,17.8877193 6.00701754,18.0877193 6.28421053,17.8842105 L10.6666667,14.5964912 L15.7192982,14.5964912 C16.9578947,14.5964912 17.9649123,13.5894737 17.9649123,12.3508772 L17.9649123,2.24561404 C17.9649123,1.00701754 16.9578947,0 15.7192982,0 Z" id="Path"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

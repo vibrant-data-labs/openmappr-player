@@ -1,0 +1,10 @@
+.item-icon(ng-hide="inProgress")
+    i.fa.fa-fw.fa-circle-o
+.item-icon(ng-show="inProgress  && !run_failed && !run_begin && !run_finished")
+    i.fa.fa-fw.fa-circle-o
+.item-icon(ng-show="inProgress && !run_failed && run_begin && !run_finished")
+    i.fa.fa-fw.fa-refresh.fa-spin
+.item-icon(ng-show="inProgress && !run_failed && run_finished")
+    i.fa.fa-fw.fa-check-circle.active
+.item-icon(ng-show="inProgress && run_failed")
+    i.fa.fa-fw.fa-exclamation-triangle.error-text

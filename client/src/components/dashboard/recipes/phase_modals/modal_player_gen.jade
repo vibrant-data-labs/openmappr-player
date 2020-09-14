@@ -1,0 +1,51 @@
+.modal-header
+	.row.vert-align
+		.col-xs-10
+			h6
+				span Recipe Player Settings
+		.col-xs-2.vert-align.right
+			button.close-btn(type="button", ng-click="closeModal()")
+				span.icon &times;
+.modal-body
+	div
+		.row.vert-align
+			.col-xs-6
+				label.h6.no-margin Enable Player
+			.col-xs-6
+				.onoffswitch
+					input.onoffswitch-checkbox(id='enable-player', type='checkbox', ng-model='recipe.player_gen.isDisabled', ng-true-value="false", ng-false-value="true")
+					label.onoffswitch-label(for='enable-player')
+						.onoffswitch-inner
+						.onoffswitch-switch
+		hr
+		div(ng-if="!recipe.player_gen.isDisabled")
+			.row.vert-align
+				.col-xs-6
+					label.h6.no-margin Make Player Private
+				.col-xs-6
+					.onoffswitch
+						input.onoffswitch-checkbox(id='private-player', type='checkbox', ng-model='recipe.player_gen.isPrivate')
+						label.onoffswitch-label(for='private-player')
+							.onoffswitch-inner
+							.onoffswitch-switch
+			hr
+			div(ng-show="recipe.player_gen.isPrivate")
+				.row.vert-align
+					.col-xs-6
+						label.h6.no-margin Allow Direct Link to Player
+					.col-xs-6
+						.onoffswitch
+							input.onoffswitch-checkbox(id='directAccess-player', type='checkbox', ng-model='recipe.player_gen.directAccess')
+							label.onoffswitch-label(for='directAccess-player')
+								.onoffswitch-inner
+								.onoffswitch-switch
+				hr
+				.row.vert-align(ng-if="!recipe.player_gen.directAccess")
+					.col-xs-6
+						label.h6.no-margin Enter access token
+					.col-xs-6
+						label.h6
+						input(type="text", ng-model="recipe.player_gen.access_token")
+		.row.vert-align
+			.col-xs-12
+				button.power-btn.pull-right.right(ng-click="saveSettings()") Save

@@ -1,0 +1,49 @@
+.modal-header
+    .row.vert-align
+        .col-xs-6
+            h6
+                span Recipe based Project Generator
+        .col-xs-6.vert-align.right
+            button.close-btn(type="button", ng-click="closeModal()")
+                span.icon &times;
+.modal-body
+    .row
+        div.col-xs-12(ng-switch="modal_state")
+            .row(ng-switch-when="init")
+                p Starting project generation...
+
+            .row(ng-switch-when="upload_file")
+                // upload a file
+                .col-xs-12
+                    h4 We currently support .xls, .xlsx, .csv and .gexf files only.
+                    .row
+                        div(ng-controller="artifactUploadCtrl")
+                        .col-xs-12(ngf-drop="uploadArtifact($files)", accept=".xls, .xlsx, .csv, .gexf")
+                            h3 Drag your file here
+                            p or if you prefer
+                            button.power-btn(ngf-select="uploadArtifact($files)", accept=".xls, .xlsx, .csv, .gexf") Choose your file to upload
+                    .row
+                        h3(ng-show="upload_file_started") Upload Progress
+                        p Status: {{upload_file_status}}
+            
+            .row(ng-switch-when="generating")
+                // Project generatin in progess
+                h2 Generation Phase
+                .col-xs-12
+                    .row(ng-repeat="line in gen_status") {{line}}
+
+            .row(ng-switch-when="gen_success")
+                h2 Generation Successful!
+                p {{primary_message}}
+                div(ng-repeat="project in projects")
+                    p Project Id : {{project._id}}
+                    p Project Name : {{project.projName}}
+                    p 
+                        a(ng-href="/projects/{{project._id}}") open
+
+            .row(ng-switch-when="gen_failure")
+                h2 Generation failure!
+                p {{primary_message}}
+                p {{failure_error}}
+//- .modal-footer
+//-     h3 I am a footer!

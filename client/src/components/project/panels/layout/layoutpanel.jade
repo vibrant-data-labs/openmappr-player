@@ -1,0 +1,127 @@
+.accordion-panel.info-panel.flex-transclude.height-100(ng-controller="LayoutPanelCtrl" ng-show="layoutPanel.focusLayout.plotType != 'list'")
+	.panel-container.flex-vert-container.width-100
+		.header
+			.row.vert-align
+				.col-xs-11
+					h6.title.text-uppercase.truncate.pull-left {{layoutPanel.focusLayout.name}}
+						//- span(ng-if="true || !npUi.editMode && !npUi.utilitiesOpen" uib-dropdown dropdown-append-to-body)
+						//- 	span.text-link.nowrap(uib-dropdown-toggle uib-tooltip="Saved Layouts", tooltip-placement="right", tooltip-append-to-body="true")
+						//- 		span(ng-if="layoutPanel.focusLayout") Layout: {{layoutPanel.focusLayout.name}}
+						//- 		span(ng-if="!layoutPanel.focusLayout") Layouts
+						//- 		i.fa.fa-angle-down
+						//- 	.uib-dropdown-menu.uib-dropdown-menu-flexing(uib-dropdown-menu)
+						//- 		.uib-dropdown-click-close
+						//- 		//inline style to center dropdowns
+						//- 		.uib-dropdown-flex-content(style="margin-left: 28px;")
+						//- 			.uib-dropdown-triangle
+						//- 			.uib-dropdown-flex.center
+						//- 				ul.list-unstyled.dd-list
+						//- 					//- li.divider
+						//- 					li.row.vert-align.pointable-cursor(ng-repeat="layout in layouts | filter: {isBuilder:false}" ng-click="layout.makeCurrent()")
+						//- 						.col-xs-12
+						//- 							.row(uib-tooltip="Current" tooltip-append-to-body="true" tooltip-placement="right" ng-show="layout.isCurrent")
+						//- 								.col-xs-1
+						//- 									i.fa.fa-check
+						//- 								.col-xs-9.truncate
+						//- 									span.text-sm {{layout.name}}
+						//- 							.row(uib-tooltip="Switch to this layout" tooltip-append-to-body="true" tooltip-placement="right" ng-show="!layout.isCurrent")
+						//- 								.col-xs-1
+						//- 									i.icon-scatter
+						//- 								.col-xs-8.truncate
+						//- 									span.text-sm {{layout.name}}
+				//- .col-xs-1
+				//- 	.pull-right
+				//- 		button(ng-click="panelUI.openPanel('summary');")
+				//- 			i.fa.fa-times.toggle-icon
+
+		.panel-scroll.flex-fill.flex-vert-container
+			.panel-list
+				.panel-item.no-heading(ng-show="layout.isCurrentPanel", ng-repeat="layout in layouts | filter: {isBuilder:true}")
+					//- uib-accordion-heading
+					//- 	.row.vert-align
+					//- 		.col-xs-2(ng-class="{active: layout.isCurrent}")
+					//- 			i.icon.icon-scatter-circle-large.fa-1-2x(ng-if="layout.name == 'ScatterPlot'")
+					//- 			i.icon.icon-project-circle.fa-1-2x(ng-if="layout.name == 'Cluster'")
+					//- 			i.fa.fa-globe.fa-1-4x(ng-if="layout.name == 'Geospatial'")
+					//- 			i.fa.fa-th.fa-1.4x(ng-if="layout.name == 'Grid'")
+					//- 		.col-xs-7
+					//- 			h6.no-margin.title.text-uppercase {{layout.name}}
+					//- 		//- .col-xs-2
+					//- 		//- 	.bool(uib-tooltip="Switch to {{layout.name}} Layout", tooltip-placement="right", tooltip-append-to-body="true")
+					//- 		//- 		.onoffswitch
+					//- 		//- 			input.onoffswitch-checkbox(id='{{layout.plotType}}-switch', type='checkbox', ng-checked="layout.isCurrent")
+					//- 		//- 			label.onoffswitch-label(for='{{layout.plotType}}-switch')
+					//- 		//- 				.onoffswitch-inner
+					//- 		//- 				.onoffswitch-switch
+					div(ng-if="layout.options.primary.length > 0")
+						.section-body.panel-list
+							ul.panel-sublist.list-unstyled
+								li.panel-subitem(ng-click="$event.stopPropagation();" ng-if="layout.name == 'Cluster'")
+									.row.vert-align
+										.col-xs-11
+											h6.title
+												.text-uppercase.pull-left Current Layout:&nbsp;
+												span.pull-left(ng-if="layout.name == 'Cluster'" uib-dropdown dropdown-append-to-body)
+													span.text-link.truncate.text-uppercase(uib-dropdown-toggle uib-tooltip="Saved Layouts", tooltip-placement="right", tooltip-append-to-body="true")
+														span.truncate {{layoutPanel.focusLayout.name}}
+														i.fa.fa-angle-down
+													.uib-dropdown-menu.uib-dropdown-menu-flexing(uib-dropdown-menu)
+														.uib-dropdown-click-close
+														//inline style to center dropdowns
+														.uib-dropdown-flex-content(style="margin-left: 90px;")
+															.uib-dropdown-flex.right
+																ul.list-unstyled.dd-list
+																	//- li.divider
+																	li.row.vert-align.pointable-cursor(ng-repeat="layout in layouts | filter: {isBuilder:false}" ng-click="layout.makeCurrent()")
+																		.col-xs-12
+																			.row.vert-align(ng-show="layout.isCurrent")
+																				.col-xs-1
+																					i.fa.fa-check
+																				.col-xs-10.truncate
+																					span.text-sm {{layout.name}}
+																				.col-xs-1
+																					button.h6.no-margin.toggle-icon(ng-show="layout.isGenerated", type="button", ng-click="layout.delete()" uib-tooltip="Delete Layout" tooltip-append-to-body="true") &times;
+
+																			.row.vert-align(ng-show="!layout.isCurrent")
+																				.col-xs-1
+																					i.icon-project-circle
+																				.col-xs-10.truncate
+																					span.text-sm {{layout.name}}
+																				.col-xs-1
+																					button.h6.no-margin.toggle-icon(ng-show="layout.isGenerated", type="button", ng-click="layout.delete()" uib-tooltip="Delete Layout" tooltip-append-to-body="true") &times;
+								li.panel-item.no-hover(ng-if="layout.name == 'Cluster'")
+									h6.title.text-uppercase Create New Cluster Layout
+								li.panel-subitem(ng-repeat = "opt in layout.options.primary", ng-mouseenter='layoutUI.setHoverSetting(opt)', ng-show='opt.enabled', ng-class='layoutUI.getClass(opt)', ng-click="$event.stopPropagation()")
+									.row.vert-align
+										.col-xs-5(uib-tooltip="{{opt.tooltip}}" tooltip-placement="right" tooltip-append-to-body="true")
+											h6(ng-if='opt.title!=""') {{opt.title}}
+										.col-xs-7
+											settings-input(opt="opt", attrs="nodeAttrs", color-change="updateColors()", ng-model="opt.input_value", attr-filter="layoutOptattrFilterFnBuilder(layout.plotType, opt.disableFilter)")
+								li.panel-subitem(ng-show='layout.name=="Cluster" || layout.plotType === "grid" || layout.plotType == "list"' ng-click="$event.stopPropagation();")
+									.row.vert-align
+										.col-xs-8
+											h7.pull-left.error-text(ng-if="isLayoutNameUsed(layout)") The layout with the same name will be overwritten on save!
+										.col-xs-4
+											button.panel-btn.square-btn.pull-right.h6(type="button", ng-click="layout.refresh()") Create Layout
+									.clearfix
+					div(ng-if="layout.isInitialized && layout.options.optional.length > 0 && layout.showOptional")
+						.row.vert-align
+							.col-xs-12
+								h6.title.text-uppercase Settings
+						ul.panel-sublist.list-unstyled
+							li.panel-subitem(ng-repeat = "opt in layout.options.optional", ng-mouseenter='layoutUI.setHoverSetting(opt)', ng-show='opt.enabled', ng-class='layoutUI.getClass(opt)', ng-click="$event.stopPropagation()")
+								.row.vert-align
+									.col-xs-5(uib-tooltip="{{opt.tooltip}}" tooltip-placement="right" tooltip-append-to-body="true")
+										h6(ng-if='opt.title!=""') {{opt.title}}
+									.col-xs-7
+										settings-input(opt="opt", attrs="nodeAttrs", color-change="updateColors()" ng-model="mapprSettings[opt.key]", attr-filter="layoutOptattrFilter")
+					div(ng-if="layout.isInitialized && layout.options.optional.length > 0")
+						ul.panel-sublist.list-unstyled
+							li.panel-subitem
+								.row
+									.col-xs-12
+										a.h6.pointable-cursor.pull-right.no-margin(ng-if="!layout.showOptional" type="button" ng-click="layout.showOptional = true;")
+											em Advanced Options&hellip;
+										a.h6.pointable-cursor.pull-right.no-margin(ng-if="layout.showOptional" type="button" ng-click="layout.showOptional = false;")
+											em Hide Options&hellip;
+								.clearfix

@@ -1,0 +1,145 @@
+#dataModal
+	.modal-header
+		.row.vert-align
+			.col-xs-4
+				h6
+					span Network Data
+			.col-xs-6.vert-align(ng-if="!dmUi.attrHelpersOpen")
+				button.header-btn(type="button", ng-class="{'active': dmUi.tabs.nodes}", ng-click="dmUi.openTab('nodes');") 
+					i.fa.fa-circle
+					span.h7 {{nodes.length}} nodes
+				button.header-btn(type="button", ng-class="{'active': dmUi.tabs.links}", ng-click="dmUi.openTab('links');") 
+					i.icon-links
+					span.h7 {{links.length}} links
+				button.header-btn(type="button", ng-class="{'active': dmUi.tabs.clusters}", ng-if="hasClusters", ng-click="dmUi.openTab('clusters');") 
+					i.icon-legend-dots
+					span.h7 clusters
+			.col-xs-6.vert-align.right(ng-if="!dmUi.attrHelpersOpen")
+				button.header-btn(ng-click="openMergeModal()" uib-tooltip="Add New Attributes" tooltip-placement="left")
+					i.fa.fa-plus
+					span.h7 Add
+				button.header-btn(ng-if="datapoints != undefined && datapoints.length > 0" ng-click="downloadNetworkXLSX()", uib-tooltip="Download XLSX" tooltip-placement="left")
+					i.fa.fa-download
+					span.h7 Download
+				button.close-btn(type="button", ng-click="closeModal()")
+					span.icon &times;
+				//- button.pull-right.btn.btn-primary.btn-lg.pull-right.btn-heading.animate-pulse(ng-if="tabs.datapointAttrs.active && datapointAttrDirty", ng-click="updateAttrs()" uib-tooltip="Update Nodes" tooltip-placement="left") 
+				//- 	span
+				//- 		i.fa.fa-circle-o
+				//- 		.h6 Update
+			.col-xs-9.vert-align.right(ng-if="dmUi.attrHelpersOpen")
+				button.header-btn(ng-click="updateAttrs('global')", uib-tooltip="Make available to all networks" tooltip-placement="left")
+					i.fa.fa-globe
+					span.h7 global
+				button.header-btn(ng-click="updateAttrs('local')", uib-tooltip="Make available to this network only" tooltip-placement="left")
+					i.fa.fa-location-arrow
+					span.h7 local
+				button.header-btn(ng-click="updateAttrs('remove')", uib-tooltip="Remove attributes" tooltip-placement="left")
+					i.fa.fa-trash-o
+					span.h7 remove
+				button.header-btn(ng-click="updateAttrs('visibility')", uib-tooltip="Toggle visibility in panels" tooltip-placement="left")
+					i.fa.fa-lightbulb-o
+					span.h7 visibility
+				button.close-btn(type="button", ng-click="closeModal()")
+					span.icon &times;
+					//- button.header-btn(ng-click="", uib-tooltip="Download XLSX" tooltip-placement="left")
+					//- 	.h6 select all
+	.modal-body
+		.list-wrapper.max-height.nowrap
+			div(ng-if="dmUi.showNoDeleteInfo")
+				.col-xs-12
+					h5 Can't delete following attributes
+				.col-xs-12(ng-repeat="attr in dmUi.nonDelAttrsData")
+					.col-xs-4 {{attr.attrId}}
+					.col-xs-8 {{attr.reason}}
+			.list.animate(ng-if="dmUi.startRender", ng-class="{'col-xs-8': dmUi.attrMetaPanelOpen, 'col-xs-12': !dmUi.attrMetaPanelOpen}")
+				div(ng-if="dmUi.tabs.nodes")
+					.row.title-style.vert-align
+						.col-xs-1
+							h4
+						.col-xs-3
+							h4 Attributes
+						.col-xs-2 
+							h4 Type
+						.col-xs-4 
+							h4 Render Type
+						.col-xs-2
+							.col-xs-6
+								//h6
+									a.visible-btn(uib-tooltip="this network vs all networks" tooltip-append-to-body="true" type="button", ng-click="") 
+										i.text-muted-light.text-thin.fa.fa-info-circle
+							.col-xs-6
+								//h6
+									a.visible-btn(uib-tooltip="attribute visibility in legend" tooltip-append-to-body="true", ng-click="")
+										i.text-muted-light.text-thin.fa.fa-info-circle
+					.clearfix
+					div(ui-sortable="dsAttrSortOptions", ng-model="dpAttrs", dir-attr-modifiers="")
+						div.row.border-section.title-style.vert-align.row-sortable(ng-repeat="attr in dpAttrs")
+							dir-attr-mod.col-xs-12(attr="::attr", attr-type="dsattr")
+					div(ui-sortable="nwNodeAttrSortOptions", ng-model="nodeAttrs", dir-attr-modifiers="")
+						div.row.border-section.title-style.vert-align.row-sortable(ng-repeat="attr in nodeAttrs")
+							dir-attr-mod.col-xs-12(attr="::attr", attr-type="nwnode")
+					.divider
+					.divider
+					.clearfix
+				div(ng-if="dmUi.tabs.links")
+					div(ng-if="::linkAttrs.length > 0")
+						.row.title-style.vert-align
+							.col-xs-1
+								h4 
+							.col-xs-5
+								h4 Attributes
+							.col-xs-2 
+								h4 Type
+							.col-xs-1
+							.col-xs-1
+						.clearfix
+						div(ui-sortable="nwLinkAttrSortOptions", ng-model="linkAttrs", dir-attr-modifiers="")
+							div.row.border-section.title-style.vert-align(ng-repeat="attr in linkAttrs")
+								dir-attr-mod.col-xs-12(attr="::attr", attr-type="nwlink")
+						.divider
+						.divider
+						.clearfix
+					div(ng-if="::linkAttrs.length < 1")
+						.row.title-style
+							.col-xs-12
+								h4 No attributes were found associated with the links
+			.col-xs-4.meta-list.animate-to-left(ng-if="dmUi.attrMetaPanelOpen")
+				h4.nowrap
+					.pull-left ID:&nbsp;
+					.active.truncate(uib-tooltip="{{activeAttrMod.attr.id}}" tooltip-append-to-body="true"){{activeAttrMod.attr.id}}
+				.row.border-section.title-style.vert-align
+					.col-xs-5
+						h6 Min Label
+					.col-xs-7
+						input.form-control(placeholder="High" type="text", ng-model="activeAttrMod.newMetaData.minLabel")
+				.row.border-section.title-style.vert-align
+					.col-xs-5
+						h6 Max Label
+					.col-xs-7
+						input.form-control(placeholder="Low" type="text", ng-model="activeAttrMod.newMetaData.maxLabel")
+				.row.border-section.title-style.vert-align
+					.col-xs-5
+						h6 Description
+					.col-xs-7
+						input.form-control(placeholder="Name" type="text", ng-model="activeAttrMod.newMetaData.descr")
+				.row.border-section.title-style.vert-align
+					.col-xs-9
+						h6 Anchor to Overlay Navigation
+					.col-xs-3
+						.bool
+							.onoffswitch
+								input.onoffswitch-checkbox(id='overlay-anchor' type='checkbox', ng-model="activeAttrMod.newMetaData.overlayAnchor")
+								label.onoffswitch-label(for='overlay-anchor')
+									.onoffswitch-inner
+									.onoffswitch-switch
+				.row.border-section.title-style
+					.col-xs-12
+						button.power-btn.pull-right(type="button", ng-click="updateAttrs('meta')") Update
+						button.power-btn.pull-right.secondary-btn.error-btn(type="button", ng-click="dmUi.attrMetaPanelOpen = false; cancelAttrUpdate('meta')") Cancel
+		.container-fluid(ng-if="!dmUi.startRender", style="height: 500px;")
+			i.fa.fa-spinner.fa-pulse.fa-2x
+
+		.container-fluid(ng-if="datapoints == undefined || datapoints.length == 0")
+			.row.col-xs-12
+				h4 This mapp does not have any data yet. Please click on the '+' button to add a dataset.

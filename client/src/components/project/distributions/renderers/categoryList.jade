@@ -1,0 +1,31 @@
+
+.flex-container-end
+	.cat-search.flex-container.vert-align(ng-if="distrData.numShownCats < catListData.data.length")
+		input.animate-open-right.h6.no-margin(ng-show="showSearch" type="text" ng-model="distrData.searchQuery" ng-model-options="{debounce: 300}" placeholder="search categories...")
+		button(ng-show="!showSearch" ng-click="showSearch = true;" uib-tooltip="Search Categories" tooltip-append-to-body="true")
+			i.fa.fa-search
+		button.close-btn(ng-show="showSearch" ng-click="distrData.searchQuery = ''; showSearch = false;")
+			i.fa.fa-times
+	.more-btn.no-hover.truncate(ng-show="distrData.numShownCats < catListData.data.length || distrData.numShowGroups !== 0")
+		.h6  {{distrData.numShownCats}} of {{::catListData.data.length}}
+	.more-btn(ng-click='showLess()' ng-show="distrData.numShowGroups !== 0")
+		.h6 less
+	.more-btn(ng-click='showMore()', ng-show="distrData.numShownCats < catListData.data.length")
+		.h6 more
+	.clearfix
+.cat-list.h6
+	.cat-item(ng-mouseover="onCatMouseover(catData, $event);" ng-mouseleave="onCatMouseleave($event);" uib-tooltip="{{tooltipText}}" tooltip-placement="right" tooltip-append-to-body="true" tooltip-is-open="openTooltip" ng-class="{'filter':showFilter}" ng-repeat="catData in catListData.data | filter:{text: distrData.searchQuery} | limitTo: distrData.numShownCats track by catData.id" ng-if="(catListData.inSelectionMode && catData.selFreq.toFixed(0) || catData.globalFreq.toFixed(0)) > 0")
+		.cat-bar-container
+			.cat-global-bar.transition(ng-if="!catData.principalNodeBar" style="width:{{(catData.globalpercent).toFixed(2)}}%")
+			div(ng-if="catData.principalNodeBar")
+				.cat-selfreq-bar.transition(style="width:{{(catData.globalpercent).toFixed(2)}}%; background-color:{{colorStr}}")
+				.cat-global-bar(style="width:{{catData.selPercent.toFixed(2)}}%;")
+			.transition(ng-class="{'cat-selfreq-bar': !catData.singleNodeSel, 'cat-global-bar': catData.singleNodeSel}" style="width:{{catData.selPercent.toFixed(2)}}%; background-color:{{colorStr}}")
+		.row.vert-align.m-0.tag-checkbox-container(ng-click="onCatClick(catData);")
+			div.transition.p-0(ng-class="{'col-xs-2':showFilter, 'col-xs-1':!showFilter, 'disableFilter': disableFilter}")
+				.tag-checkbox(ng-if="showFilter" ng-class="{{catData.checkboxClass}}")
+					input(id="checkbox-{{$index}}-{{attrId}}" type="checkbox", ng-model="catData.isChecked", ng-disabled="catData.checkboxClass == 'cat-checkbox-disable'")
+					label(for="checkbox-{{$index}}-{{attrId}}")
+			div.transition.col-xs-10
+				.cat-text.truncate.h6(ng-class="{'no-filter':!showFilter}") {{::catData.text}}
+		.cat-percent.text-right.h6 {{catListData.inSelectionMode && catData.selFreq.toFixed(0) || catData.globalFreq.toFixed(0)}}

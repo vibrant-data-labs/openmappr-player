@@ -1,0 +1,251 @@
+.play-toolbar {
+  position: absolute;
+  right: 20px;
+  left: $side-menu-width + $right-panel-width + 20px;
+  top: 20px;
+  padding-left: 20px;
+
+  &__buttons {
+    display: inline-flex;
+    position: relative;
+    border-radius: 3px;
+    background: #fff;
+    min-width: 360px;
+  }
+
+  &__search {
+    display: none;
+    visibility: hidden;
+  }
+
+  &_opened {
+    left: $side-menu-width + $right-panel-width + 20px;
+
+    //.play-toolbar__buttons {
+    //  display: none;
+    //  visibility: hidden;
+    //}
+
+    .play-toolbar__search {
+      display: block;
+      visibility: visible;
+      order: -1;
+    }
+    .button-group_type_play-toolbar.search,
+    .button-group {
+      visibility: hidden;
+      display: none;
+    }
+  }
+
+  &__content {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 30px;
+  }
+
+  .selected,
+  .total {
+    display: inline-block;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 16px;
+    padding: 0 5px;
+    border-radius: 18px;
+    color: #fff;
+  }
+
+  .selected {
+    background: #BC3364;
+  }
+
+  .total {
+    background: #6A707E;
+  }
+}
+
+.play-toolbar-bottom {
+  position: absolute;
+  left: $side-menu-width + $right-panel-width + 20px;
+  bottom: 20px;
+  padding-left: 20px;
+}
+
+.play-toolbar-list {
+  background: #F5F6F8;
+  border: 1px solid #E8E8E8;
+  border-radius: 6px;
+  padding: 4px;
+
+  &__item {
+    box-shadow: 0 0 3px rgba(#000, .3);
+    border-radius: 4px;
+
+    &:not(:last-child) {
+      margin-bottom: 4px;
+    }
+
+    &_selected {
+      background: #fff;
+    }
+
+    &_opened {
+      .play-toolbar-list__header {
+        border-radius: 4px 4px 0 0;
+
+        &::after {
+          transform: none;
+        }
+      }
+
+      .play-toolbar-list__content {
+        display: block;
+        visibility: visible;
+      }
+    }
+  }
+
+  &__header {
+    padding: 9px 32px 9px 10px;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 16px;
+    color: rgba(#555555, .8);
+    cursor: pointer;
+    position: relative;
+    border-radius: 4px;
+
+    &::after {
+      position: absolute;
+      content: '';
+      border-radius: 2px;
+      border: 1px solid #E2E2E2;
+      background: #fff url('../img/search/arrow-down.svg') 50% no-repeat;
+      background-size: 8px 5px;
+      top: 7px;
+      right: 6px;
+      width: 20px;
+      height: 20px;
+      transform: scaleY(-1);
+    }
+
+    &:hover {
+      background: darken(#fff, 4);
+
+      &::after {
+        border-color: darken(#E2E2E2, 8);
+      }
+    }
+
+    .button_icon_cancel {
+      background-image: url('/img/play-toolbar/cancel.svg');
+      background-repeat: no-repeat;
+      width: 8px;
+      height: 8px;
+      float: right;
+      margin-top: 5px;
+      opacity: .7;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+
+  &__content {
+    display: none;
+    visibility: visible;
+    border-top: 1px solid #CFCFCF;
+    color: #939698;
+    font-size: 14px;
+    line-height: 16px;
+  }
+
+  .filter-section-wrap {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 8px 8px 8px 20px;
+    position: relative;
+
+    &:not(:last-child) {
+      border-bottom: 1px solid #CFCFCF;
+    }
+
+    &::before {
+      position: absolute;
+      content: '';
+      width: 4px;
+      height: 4px;
+      background: #CDCDCD;
+      border-radius: 50%;
+      left: 10px;
+      top: 16px;
+    }
+  }
+
+  .filter-section {
+    margin: 0;
+    position: relative;
+    overflow: hidden;
+
+    &__label {
+      margin: 0;
+      display: inline;
+      font: 400 13px/20px 'Poppins';
+      color: #BC3364;
+
+      span {
+        color: #939698;
+      }
+    }
+
+    &__content {
+      font-weight: 400;
+      margin: 0;
+      display: inline;
+    }
+
+    &__list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: inline;
+    }
+
+    &__item {
+      display: inline-block;
+      padding: 0;
+      margin: 0;
+      cursor: pointer;
+      color: #555;
+      transition: color .2s;
+
+      &:hover {
+        color: darken(#555, 16);
+      }
+
+      &:not(:last-child) {
+        &::after {
+          content: '; ';
+          white-space: pre;
+        }
+      }
+
+      &_array {
+        cursor: default;
+
+        .filter-section__divider {
+          color: #939698;
+        }
+      }
+    }
+
+    &__divider {
+      color: #939698;
+    }
+  }
+}

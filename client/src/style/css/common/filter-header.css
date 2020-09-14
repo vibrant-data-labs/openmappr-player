@@ -1,0 +1,52 @@
+/* line 1, ../../sass/common/filter-header.scss */
+.filter-header {
+  padding: 14px 15px;
+  border-bottom: 1px solid #EBEFF2;
+}
+/* line 5, ../../sass/common/filter-header.scss */
+.filter-header__list {
+  display: flex;
+  background: #F0F2F5;
+  border-radius: 6px;
+  border: 1px solid #E0DFE6;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+/* line 15, ../../sass/common/filter-header.scss */
+.filter-header__item {
+  flex: 1 0 auto;
+  font: 400 14px/21px 'Poppins';
+  color: #6F7583;
+  text-align: center;
+  border-radius: 6px;
+  position: relative;
+}
+/* line 25, ../../sass/common/filter-header.scss */
+.filter-header__item_current::after {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  bottom: -1px;
+  background: linear-gradient(#D9DADD, #B8B9BE);
+  z-index: 1;
+  border-radius: 6px;
+  pointer-events: none;
+}
+/* line 38, ../../sass/common/filter-header.scss */
+.filter-header__item_current .filter-header__link {
+  color: #323C47;
+  background: #fff;
+  border-radius: 5px;
+}
+/* line 46, ../../sass/common/filter-header.scss */
+.filter-header__link {
+  position: relative;
+  z-index: 10;
+  display: block;
+  height: 100%;
+  padding: 5px 6px 4px;
+  cursor: pointer;
+}

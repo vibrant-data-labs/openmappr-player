@@ -1,0 +1,60 @@
+doctype html
+html(lang='en', data-ng-app='hcApp')
+	head
+		meta(charset='utf-8')
+		link(rel="icon" type="image/png" href="https://s3-us-west-1.amazonaws.com/mappr-misc/icons/vdat-blue-dot-logo.png")
+		meta(name="viewport", content="initial-scale=.7, user-scalable=no, minimal-ui")
+		meta(name="apple-mobile-web-app-capable" content="yes")
+		meta(name="robots", content="noindex")
+		title Vibrant Data
+		link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css")
+
+	body#app(data-custom-background, data-off-canvas-nav, data-ng-controller='AppCtrl')
+		div.time-box(data-ng-cloak='data-ng-cloak')
+			.col-xs-12(style="top:100px;")
+				.col-xs-6
+					h5 Only .xlsx & .xls files supported
+					h5 Clean Raw file generated from survey
+					div
+						button.power-btn(ngf-select="cleanFile($files)" accept=".xls, .xlsx, .csv, .gexf") Clean File
+					div(ng-show="showProgress")
+						span Upload Progress
+						span {{progress}}%
+				.col-xs-6
+					h5 Only .xlsx & .xls files supported
+					h5 Resources Needed Column must have name "Needs"
+					h5 Resources Offered Column must have name "Offerings"
+					h5 Specializations Column must have name "Specializations"
+					h5 Download will automatically begin after uploading with file having an extra column "Top_Matches"
+					div
+						button.power-btn(ngf-select="findMatches($files)" accept=".xls, .xlsx, .csv, .gexf") Find Matches
+					div(ng-show="showProgress")
+						span Upload Progress
+						span {{progress}}%
+
+		// @if compiled = false
+		//-<!-- build:js #{env}/js/sources/vendor.js -->
+		// bower:js
+		script(src='../../bower_components/jquery/dist/jquery.min.js')
+		script(src='../../bower_components/angular/angular.min.js')
+		script(src='../../bower_components/angular-route/angular-route.min.js')
+		script(src='../../bower_components/angular-animate/angular-animate.min.js')
+		script(src='../../bower_components/lodash/lodash.min.js')
+		script(src='../../bower_components/ng-file-upload/ng-file-upload.min.js')
+		script(src="../../libs/blob.js")
+		script(src="../../libs/filesaver.js")
+		// endbower
+		//-<!-- endbuild -->
+		// @endif
+		// @if compiled = true
+		script(src='#{server_prefix}/js/sources/vendor.js')
+		// @endif
+
+		// @if production = true
+		script(src="#{server_prefix}/js/sources.min.js")
+		// @endif
+
+		// @if production = false
+		//- sourcing into templates
+		//- include: "type": "js", "files": "js/products/sources/**/*.js"
+		// @endif

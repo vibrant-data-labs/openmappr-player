@@ -1,0 +1,31 @@
+.modal-header
+	.row.vert-align
+		.col-xs-10
+			h6
+				span Recipe Dataset Settings
+		.col-xs-2.vert-align.right
+			button.close-btn(type="button", ng-click="closeModal()")
+				span.icon &times;
+.modal-body
+	div(ng-repeat="opt in datasetOpts")
+		.row.vert-align
+			.col-xs-2
+				label.h6.no-margin Attribute {{$index+1}}
+			.col-xs-2
+				settings-input.pull-left(opt="opt", attrs="getNodeAttrs(opt)" ng-model="opt.id")
+			.col-xs-3.vert-align
+				.ui-select.pull-left
+					select(ng-model = "opt.attrType", ng-options="atype for atype in attrTypes")
+				button.power-btn.error-btn.secondary-btn.pull-left(ng-click="removeAttrDesc($index);", uib-tooltip="Remove Attribute" tooltip-append-to-body="true") 
+					i.fa.fa-2x.fa-times
+			.col-xs-5
+				.error-text(ng-if="!checkIfAttrExists(opt);") &lsquo;{{opt.id}}&rsquo; is not an attribut in the uploaded file(s).
+		.divider
+	div 
+		.row.vert-align
+			.col-xs-7
+				button.power-btn(ng-click="addAttrDesc()") Add Attribute
+		
+	.divider
+		button.power-btn.right.pull-right(ng-click="saveAttrDesc();") Save
+		

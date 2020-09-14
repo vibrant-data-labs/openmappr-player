@@ -1,0 +1,38 @@
+.modal-header
+	.row.vert-align
+		.col-xs-8
+			h6
+				span Add Org
+		.col-xs-4
+			button.close-btn(type="button", ng-click="$close();")
+				span.icon &times;
+.modal-body
+	.container-fluid
+		.row
+			li.list-group-item
+				.row
+					.col-xs-4 Org Name
+					.col-xs-8
+						input.form-input(type="text", placeholder="Org Name", ng-model="newOrgVM.orgName" dir-select-all)
+				.row
+					.row Org Settings
+					.row
+						.col-xs-4 Max User Count
+						.col-xs-8
+							input(type="number", ng-model="newOrgVM.settings.userLimit")
+					.row
+						.col-xs-4 Max Project Count
+						.col-xs-8
+							input(type="number", ng-model="newOrgVM.settings.projectLimit")
+					.row
+						.col-xs-4 Max Datapoints
+						.col-xs-8
+							input(type="number", ng-model="newOrgVM.settings.datapointsLimit")
+					.row
+						.col-xs-4 Max Storage Limit
+						.col-xs-8
+							input(type="number", ng-model="newOrgVM.settings.storageLimit")
+				.row
+					.col-xs-9
+					.col-xs-3
+						button.power-btn.pull-right(ng-click="newOrgVM.add(); $close();") Add

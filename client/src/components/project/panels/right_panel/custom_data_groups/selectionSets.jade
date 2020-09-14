@@ -1,0 +1,78 @@
+.panel-container.flex-vert-container.width-100(ng-controller="SelectionSetsCtrl", ng-mouseleave="rightPanelExited();")
+	//- .header(ng-class="{'active': panelUI.selectionPanelOpen, 'hovered': panelUI.selectionPanelHover}" ng-click="panelUI.togglePanel('selection');" ng-mouseenter="panelUI.selectionPanelHover = true;" ng-mouseleave="panelUI.selectionPanelHover = false;")
+	.header
+		.row.vert-align.main
+			.col-xs-9
+				h6.title.text-uppercase.truncate
+					i.fa.fa-fw.fa-1-3x.fa-heart.btn-icon(ng-class="{'active': panelUI.selectionPanelOpen}")
+					span.truncate &nbsp;&nbsp;My&nbsp;
+						span(ng-if="selectionVMs.length > 0") {{selectionVMs.length}}
+						span &nbsp;Group
+						span(ng-if="selectionVMs.length != 1") s
+						span &nbsp;&nbsp;
+			.col-xs-3.vert-align.right(ng-click="$event.stopPropagation();")
+				button(ng-if="panelUI.selectionPanelOpen && selectionVMs.length > 0" type="button", ng-click="bakeIntoDataset();", uib-tooltip="Save Groups as Tags" tooltip-append-to-body="true" tooltip-placement="right")
+					i.fa.fa-tags.fa-1-2x.toggle-icon
+				button(type="button", ng-click="addNewSelection(); panelUI.openPanel('selection')", uib-tooltip="Create New Group" tooltip-append-to-body="true" tooltip-placement="right")
+					i.fa.fa-plus.fa-1-2x.toggle-icon
+	.list-content.panel-scroll.flex-fill
+		div.width-100
+			ul.panel-list.list-unstyled.width-100
+				li.panel-item.pointable-cursor.animate-repeat.width-100(ng-repeat="selVM in selectionVMs", ng-class="{'bg-active': selVM.selected}" ng-click="selVM.select($event);" ng-mouseenter="selVM.hover(); selVM.hovered = true;", ng-mouseleave="selVM.clear(); selVM.hovered =false; selVM.showButs = false;")
+					.row.flex-container.pointable-cursor.vert-align
+						.col-xs-2
+							span.info-icon
+								i.fa-1-3x.icon-legend-dots
+						.col-xs-10.less-gutter(ng-if='!selVM.editMode && !selVM.createMode')
+							.row.vert-align
+								.col-xs-2
+									h6.pull-left.no-margin {{selVM.dpIDs.length}}
+								.transition(ng-class="{'col-xs-3': selVM.showButs, 'col-xs-7': !selVM.showButs}")
+									h6.less-gutter.no-margin.truncate.width-100 {{selVM.selName}}
+								.transition(ng-click="$event.stopPropagation()" ng-class="{'col-xs-6': selVM.showButs, 'col-xs-3': !selVM.showButs}")
+									.row.vert-align
+										.col-xs-1(ng-if="selVM.selected")
+											button.visible-btn(type="button", ng-click="selVM.updateSelection();" uib-tooltip="Update Group" tooltip-placement="bottom-left" tooltip-append-to-body="true")
+												i.fa.fa-cloud-upload
+										.col-xs-1(ng-if="!selVM.selected")
+											button.visible-btn(ng-show="ui.graphInteracted" type="button", ng-click="selVM.addDatapoints();" uib-tooltip="Add to Group" tooltip-placement="bottom-left" tooltip-append-to-body="true")
+												i.fa.fa-plus
+										.col-xs-1(ng-hide="selVM.showButs")
+											button.visible-btn(type="button" ng-click="selVM.showButs = true;" uib-tooltip="More..." tooltip-placement="bottom-left" tooltip-append-to-body="true")
+												i.fa.fa-ellipsis-h
+										.col-xs-1
+											button.visible-btn(ng-show="selVM.showButs" type="button" uib-tooltip="{{{true:'Hide', false:'Show'}[selVM.visible]}}" tooltip-placement="bottom-left" ng-click="selVM.toggleVisibility();" tooltip-append-to-body="true")
+												i.fa(ng-class = "{true:'fa-lightbulb-o', false:'fa-lightbulb-o text-muted-light'}[selVM.visible]")
+										.col-xs-1
+											button.visible-btn(ng-show="selVM.showButs" type="button", ng-click="$event.stopPropagation(); selVM.removeSelectedDPs();"  uib-tooltip="Remove selected nodes from group" tooltip-placement="bottom-left" tooltip-append-to-body="true")
+												i.fa.fa-times
+										//- .col-xs-2
+										//- 	button.visible-btn(type="button", ng-click="$event.stopPropagation(); selVM.invertSelection();"  uib-tooltip="Invert group selection" tooltip-placement="bottom-left" tooltip-append-to-body="true")
+										//- 		i.fa.fa-times
+										.col-xs-1
+											button.visible-btn(ng-show="selVM.showButs" type="button", ng-click="$event.stopPropagation(); selVM.editMode = true;" uib-tooltip="Edit Group Name" tooltip-placement="bottom-left" tooltip-append-to-body="true")
+												i.fa.fa-pencil
+										.col-xs-1
+											button.visible-btn(ng-show="selVM.showButs" type="button", ng-click="$event.stopPropagation(); selVM.delete();"  uib-tooltip="Delete Group" tooltip-placement="bottom-left" tooltip-append-to-body="true")
+												i.fa.fa-trash-o
+						.col-xs-10.form-inline.vert-align.less-gutter(ng-if="selVM.editMode || selVM.createMode", ng-click="$event.stopPropagation()")
+							.vert-align
+								input.form-control.small-control.no-min-width.h6.no-margin(type='text', ng-model='selVM.selName', ng-change="updateLabelForAttrValue(l)", ng-model-options="{ debounce: 1000 }" dir-select-all)
+							.pull-right.small-btn-control(ng-if="selVM.createMode")
+								.row(ng-click="$event.stopPropagation()")
+									.col-xs-12.vert-align
+										button.square-btn.small-btn.panel-btn(type="button", ng-click="selVM.create();")
+											h6 Save
+										button.square-btn.small-btn.panel-btn(type="button", ng-click="selVM.delete();")
+											h6 Cancel
+							div.pull-right.small-btn-control(ng-if="!selVM.createMode")
+								.row(ng-click="$event.stopPropagation()")
+									.col-xs-3
+										.square-btn.small-btn.panel-btn.pull-left.vert-align(type="button", ng-click="$event.stopPropagation(); selVM.updateName();")
+											i.fa.fa-check
+									.col-xs-3
+										.square-btn.small-btn.panel-btn.pull-left.vert-align(type="button", ng-click="$event.stopPropagation(); selVM.cancelNameChange();")
+											i.fa.fa-times
+					.divider
+				li.panel-item.width-100.no-hover.text-center.flex-container(ng-if="selectionVMs.length == 0")
+					button.power-btn.flex-fill(type="button" ng-click="addNewSelection();") Create a Group

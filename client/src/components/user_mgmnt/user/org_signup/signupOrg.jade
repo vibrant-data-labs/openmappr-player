@@ -1,0 +1,48 @@
+.page
+	.page-signup(data-ng-controller='OrgSignupCtrl')
+		.modal-dialog
+			.panel.panel-profile
+				.panel-heading(style="padding:0;")
+					a.pull-left.profile(href="/")
+						img(class="logo" alt="Vibrant Data Logo" src="https://s3-us-west-1.amazonaws.com/vdat-site/vdat_logonew.png" width="390" height="80")
+					.clearfix
+					h4(style="padding-left: 92px;") Welcome to {{hostOrg.orgName}}
+				.panel-body
+					section
+						.callout.callout-danger(ng-if="message")
+							i.fa.fa-warning
+							| {{' ' + message}}
+						form.form-horizontal
+							.form-group
+								.col-sm-12
+									.input-group.input-group-lg
+										span.input-group-addon
+											span.fa.fa-envelope-o.fa-fw
+										input.form-control(ng-model='newUser.email', type='email', placeholder='email', disabled="disabled" dir-select-all)
+							.form-group
+								.col-sm-12
+									.input-group.input-group-lg
+										span.input-group-addon
+											span.fa.fa-key.fa-fw
+										input.form-control(ng-model='newUser.pswd', type='password', placeholder='select a password' dir-select-all)
+							.form-group
+								.col-sm-12
+									.input-group.input-group-lg
+										span.input-group-addon
+											span.fa.fa-key.fa-fw
+										input.form-control(ng-model='newUser.pswdConfirm', type='password', placeholder='confirm password' dir-select-all)
+							p.text-center.text-muted.text-small
+								| By clicking on Sign up, you agree to
+								a(href='javascript;')  terms & conditions
+								|  and
+								a(href='javascript:;')  privacy policy
+							.divider
+							p.text-center.text-error.text-small.error-text(ng-if="!validateUserDetails()") {{validateUserError()}}
+							input.power-btn.width-100.big(type="submit" ng-click='addNewUserToOrg()', data-ng-disabled="!validateUserDetails()", value="Sign up")
+					section
+						.divider
+						p.text-center.text-muted.text-small
+							| Already have an account?
+							a(href='#' ng-click='auth.signInViaLocal()') Log in now
+			.text-center.text-small
+				p Vibrant Data, Inc. All Rights Reserved.

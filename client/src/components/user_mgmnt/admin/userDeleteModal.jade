@@ -1,0 +1,31 @@
+.modal-header
+	.row.vert-align
+		.col-xs-8
+			h6
+				span Delete {{selUserVM.name}}'s account
+		.col-xs-4
+			button.close-btn(type="button", ng-click="$close()")
+				span.icon &times;
+.modal-body
+	.container-fluid
+		.row
+			.list-group-item
+				.row
+					.col-xs-12
+						h5 This User has :
+				.row
+					.col-xs-12
+						ul
+							li
+								h6 {{selUserVM.orgs.length}} orgs
+							//- .col-xs-6
+							//- 	a.pull-left(ng-href="", ng-click="viewOrgUsers();") View Users
+							li
+								h6 {{selUserVM.projects.length}} projects
+							//- .col-xs-6
+							//- 	a.pull-left(ng-href="", ng-click="viewOrgProjects();") View Projects
+				.divider
+				div
+					h6.no-margin.pull-left.error-text Are you sure you want to delete this User?
+					button.power-btn.error-btn.pull-right(ng-click="selUserVM.deleteFromSystem()")| Delete
+					.clearfix

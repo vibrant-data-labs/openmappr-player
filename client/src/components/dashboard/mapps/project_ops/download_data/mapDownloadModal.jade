@@ -1,0 +1,76 @@
+.modal-header
+	.row.vert-align
+		.col-xs-12
+			h6
+				span Download Mapp
+		.col-xs-6.vert-align.right
+			button.header-btn(type="button", ng-if="mappDataAvailable", ng-click="downloadMapp()")
+				span.h7 Start
+			button.close-btn(type="button", ng-click="closeModal()")
+				span.icon &times;
+.modal-body
+	.container-fluid
+		.row.vert-align
+			.col-xs-7
+				h5 {{statusMsg}}
+				span.pull-right(ng-if="!mappDataAvailable")
+					i.fa.fa-spinner.fa-pulse.fa-2x
+			.col-xs-2
+			.col-xs-3
+				h5(ng-if="mappDataAvailable") Format
+		.row(ng-if="mappDataAvailable")
+			.col-xs-8
+				.row.border-section.title-style.vert-align(ng-repeat="network in customSelection.networks")
+					.col-xs-3
+						a.btn-line-default.btn-icon-round.btn-icon-round-sm(ng-click="network.download = !network.download;")
+							i.fa(ng-class = "{true:'fa-check', false:'fa-minus light-grey'}[network.download]")
+					.col-xs-9 
+						h6 {{::network.name}}
+			.col-xs-1
+			.col-xs-3
+				.row.border-section.title-style.vert-align
+					.col-xs-2
+						input(type="radio", ng-model="customSelection.downloadFormat", value="xlsx")
+					.col-xs-10
+						h6 XLSX
+				.row.border-section.title-style.vert-align
+					.col-xs-2
+						input(type="radio", ng-model="customSelection.downloadFormat", value="json")
+					.col-xs-10
+						h6 JSON
+
+
+
+
+
+
+
+
+	//- .row.vert-align
+	//- 	.col-xs-8(ng-if="mappDataAvailable")
+	//- 		h5 {{statusMsg}}
+		
+	//- 		.row.border-section.title-style.vert-align
+	//- 			.col-xs-3
+	//- 				a.btn-line-primary.btn-icon-round.btn-icon-round-sm(ng-click="customSelection.dataset = !customSelection.dataset")
+	//- 					i.fa(ng-class = "{true:'fa-check', false:'fa-minus light-grey'}[customSelection.dataset]")
+	//- 			.col-xs-9 
+	//- 				h6 Dataset
+	//- 		.row.border-section.title-style.vert-align(ng-repeat="network in customSelection.networks")
+	//- 			.col-xs-3
+	//- 				a.btn-line-primary.btn-icon-round.btn-icon-round-sm(ng-click="network.download = !network.download;")
+	//- 					i.fa(ng-class = "{true:'fa-check', false:'fa-minus light-grey'}[network.download]")
+	//- 			.col-xs-9 
+	//- 				h6 {{::network.name}}
+	//- 	.col-xs-4
+	//- 		h5 Download Format
+	//- 		.row.border-section.title-style.vert-align
+	//- 			.col-xs-2
+	//- 				input(type="radio", ng-model="customSelection.downloadFormat", value="xlsx")
+	//- 			.col-xs-12 
+	//- 				h6 XLSX
+	//- 		.row.border-section.title-style.vert-align
+	//- 			.col-xs-2
+	//- 				input(type="radio", ng-model="customSelection.downloadFormat", value="json")
+	//- 			.col-xs-12 
+	//- 				h6 JSON

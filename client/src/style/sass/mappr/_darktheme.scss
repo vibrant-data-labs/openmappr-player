@@ -1,0 +1,116 @@
+#app.dark-theme {
+    color: $text-color-dark;
+
+    .proj-name {
+        color: $text-color-dark;
+
+        button {
+            color: $text-color-dark;
+        }
+    }
+
+
+
+
+    .btn-default {
+        background: $dark-panel-background;
+        border-color: $border-color;
+        color: $text-color-dark;
+    }
+
+
+    .onoffswitch-switch {
+        background: $switch-bg;
+        border-color: $body-bg-dark;
+    }
+
+    .onoffswitch-inner:after {
+        background: $body-bg-dark;
+    }
+    .modal .onoffswitch-inner:after {
+        background: $body-bg-dark;
+    }
+
+    .panel-bg {
+        background: $panel-bg-dark;
+    }
+
+    .panel-body {
+        border-top-color: $body-bg-dark;
+    }
+
+    #bottom-left-btns {
+        color: $text-color-dark;
+
+        .vert-line {
+            border-color: $text-color-dark;
+        }
+    }
+
+    //snapshots
+    #snapshots {
+
+        .snap {
+            i {
+                background: $panel-bg-dark;
+            }
+        }
+
+        .grab-triangle {
+            border-color: transparent $text-color-dark transparent transparent;
+        }
+    }
+
+
+    .circle-btn {
+        background-color: $text-color-dark;
+        color: $panel-bg-dark;
+
+        &:hover,
+        &.active {
+            color: $active-color;
+        }
+    }
+
+
+    .btn-opts {
+        background: $switch-bg;
+
+        .circle-btn {
+            background: $text-muted;
+
+            &:hover {
+                background-color: $text-color-dark;
+            }
+        }
+    }
+
+    //zoom buttons
+    .sig-plus,
+    .sig-minus,
+    .sig-home {
+        background: $panel-bg-dark;
+        border-color: $text-color-dark;
+        color: $text-color-dark;
+
+        .circle {
+            background: $panel-bg-dark;
+            border-color: $text-color-dark;
+        }
+    }
+
+    //lists (surveys and projects)
+    .list-lg {
+        .list-group-item {
+            background: $dark-background;
+            border-color: $body-bg-dark;
+            color: $text-color-dark;
+
+            &:hover {
+                background: darken($dark-background, 15%);
+            }
+        }
+    }
+
+
+}

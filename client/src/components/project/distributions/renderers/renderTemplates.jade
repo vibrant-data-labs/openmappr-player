@@ -1,0 +1,130 @@
+script(type="text/ng-template", id="attrDistribution.html")
+	dir-attr-distribution()
+//- dir(ng-if="attrToRender.renderType == 'textlist'")
+//- 	//already rendering if single, so only show directive for multiples
+//- 	div(ng-if="::renderer.nodeValues")
+//- 		dir-text-list(strings="::renderer.nodeValues")
+
+script(type="text/ng-template", id="piechart.html")
+	dir-pie-chart(container="{{attrContainer}}")
+
+script(type="text/ng-template", id="histogram.html")
+	dir-histogram()
+
+script(type="text/ng-template", id="twitterfeed.html")
+	dir-twitter-feed(ng-if="renderer.nodeValue" handle="{{renderer.nodeValue}}" theme="theme")
+
+script(type="text/ng-template", id="instagramfeed.html")
+	dir-instagram-feed(ng-if="renderer.nodeValue" handle="{{renderer.nodeValue}}" search="")
+
+script(type="text/ng-template", id="medialist.html")
+	dir-media-list(ng-if="renderer.nodeValue" json-string="renderer.nodeValue" node-color-str="{{nodeColorStr}}", is-small="{{isSmall}}", render-width="{{renderWidth}}", render-height="{{renderHeight}}")
+
+script(type="text/ng-template", id="media.html")
+	dir-media-embed(ng-if="renderer.nodeValue" url="renderer.nodeValue" node-color-str="{{nodeColorStr}}", is-small="{{isSmall}}", render-width="{{renderWidth}}", render-height="{{renderHeight}}" is-pinnable="pinnedMedia !== undefined" pin-media="pinnedMedia.pinMedia" unpin-media="pinnedMedia.unpinMedia")
+
+script(type="text/ng-template", id="link.html")
+	dir-link-thumb(ng-if="renderer.nodeValue" url="renderer.nodeValue" node-color-str="{{nodeColorStr}}")
+
+script(type="text/ng-template", id="date.html")
+	dir-date-time(ng-if="renderer.nodeValue" attr-type="{{attrToRender.attrType}}" date-string="{{renderer.nodeValue}}" node-color-str="{{nodeColorStr}}")
+
+script(type="text/ng-template", id="date-time.html")
+	dir-date-time(ng-if="renderer.nodeValue" attr-type="{{attrToRender.attrType}}" date-time-string="{{renderer.nodeValue}}" node-color-str="{{nodeColorStr}}")
+
+script(type="text/ng-template", id="time.html")
+	dir-date-time(ng-if="renderer.nodeValue" attr-type="{{attrToRender.attrType}}" time-string="{{renderer.nodeValue}}")
+
+script(type="text/ng-template", id="email.html")
+	dir-email(ng-if="renderer.nodeValue" email="{{renderer.nodeValue}}" node-color-str="{{nodeColorStr}}")
+	div(ng-if="renderer.nodeValues")
+		dir-email(ng-repeat="obj in renderer.nodeValues" ng-if="$index <= maxAttrs" email="{{obj.value}}" node-color-str="{{initialSelection[$index].colorStr}}")
+
+script(type="text/ng-template", id="lat-lng.html")
+	dir-map-embed(ng-if="renderer.nodeValue" lat-lng="{{renderer.nodeValue}}")
+
+script(type="text/ng-template", id="longtext.html")
+	dir-long-text(ng-if="renderer.nodeValue" long-text="{{renderer.nodeValue}}" is-small="{{isSmall}}")
+
+// Rank bars
+script(type="text/ng-template", id="rank_bar.html")
+	dir-rank-bar.attrDistribution()
+		.tooltip-positioner(uib-tooltip="{{tooltipText}}" tooltip-append-to-body="true" tooltip-is-open="openTooltip")
+		svg(ng-mousemove="overDistr($event)" ng-mouseleave="outDistr()")
+		dir-checkbox-filter(ng-if="showFilter", ng-class="{'disableFilter': disableFilter}")
+// value bars
+script(type="text/ng-template", id="value_bar.html")
+	dir-value-bar.attrDistribution()
+		.tooltip-positioner(uib-tooltip="{{tooltipText}}" tooltip-append-to-body="true" tooltip-is-open="openTooltip")
+		svg(ng-mousemove="overDistr($event)" ng-mouseleave="outDistr()")
+		dir-range-filter(ng-if="showFilter", ng-class="{'disableFilter': disableFilter}")
+// tag listing
+script(type="text/ng-template", id="tag_listing.html")
+	dir-tag-list.attrDistribution
+		.tooltip-positioner(uib-tooltip="{{tooltipText}}" tooltip-placement="right" tooltip-append-to-body="true" tooltip-is-open="openTooltip")
+		.vert-align
+			.tag-search.vert-align(ng-show="distrData.nShownTags < distrData.tagsDataCopy.length")
+				input.animate-open-right.h6.no-margin(ng-show="showSearch" type="text" ng-model="distrData.searchQuery" placeholder="search tags..." ng-change="searchTags();")
+				button(ng-show="!showSearch" ng-click="showSearch = true;" uib-tooltip="Search Tags" tooltip-append-to-body="true")
+					i.fa.fa-search
+				button.close-btn(ng-show="showSearch" ng-click="showSearch = false; clearSearch();")
+					i.fa.fa-times
+			.more-btn.no-hover.truncate(ng-show='distrData.nShownTags < distrData.nUniqueTags || distrData.numShowGroups !== 0')
+				.h6  {{distrData.nShownTags}} of {{distrData.nUniqueTags}}
+			.more-btn(ng-click='showMore()' ng-show='distrData.nShownTags < distrData.nUniqueTags')
+				.h6 more 
+			.more-btn(ng-click='showLess()' ng-show="distrData.numShowGroups !== 0")
+				.h6 less
+		.tag-list.h6(ng-mouseover="overTag($event)" ng-mouseleave="outTag()")
+
+// cat listing
+// tag_simple is deprecated
+script(type="text/ng-template", id="tag_simple.html")
+	dir-tag-list-simple.attrDistribution
+script(type="text/ng-template", id="tag_cloud.html")
+	dir-tag-cloud.attrDistribution
+script(type="text/ng-template", id="wide_tag_cloud.html")
+	dir-wide-tag-cloud.attrDistribution
+script(type="text/ng-template", id="row_tag_cloud.html")
+	dir-row-tag-cloud.attrDistribution
+
+// cat listing
+script(type="text/ng-template", id="cat_listing.html")
+	dir-category-list.attrDistribution
+
+// Simple scripts
+script(type="text/ng-template", id="simple_text.html")
+	.row
+		.col-xs-1
+		.col-xs-11 
+			div
+				.text-small(style="color:{{nodeColorStr}};" ng-text-truncate="renderer.nodeValue" ng-tt-chars-threshold="200" ng-tt-more-label="more..." ng-tt-less-label="...less")
+
+script(type="text/ng-template", id="quote.html")
+	//- fix padding issues in rendering of all attrs
+	div(ng-if="::renderer.nodeValue" style="padding: 0 16px;")
+		h3(style="color:{{nodeColorStr}};") 
+			em &ldquo; {{renderer.nodeValue}} &rdquo;
+
+//- No Rendertype or default rendertype
+script(type="text/ng-template", id="picture.html")
+	//- img(ng-src="{{renderer.nodeValue | trustUrl}}", width="100%")
+	dir-picture(url="renderer.nodeValue", node-color-str="{{nodeColorStr}}", is-small="{{isSmall}}")
+
+script(type="text/ng-template", id="video.html")
+	iframe(ng-src="{{renderer.nodeValue | trustUrl}}", id='iframe001', width="100%", height="{{isSmall ? 200 : 450}}px" frameborder="0", webkitallowfullscreen, mozallowfullscreen, allowfullscreen)
+
+script(type="text/ng-template", id="video_stream.html")
+	video(ng-src="{{renderer.nodeValue | trustUrl}}", controls="true")
+	
+script(type="text/ng-template", id="media_link.html")
+	dir-media-embed(ng-if="renderer.nodeValue" url="renderer.nodeValue" node-color-str="{{nodeColorStr}}", is-small="{{isSmall}}", render-width="{{renderWidth}}", render-height="{{renderHeight}}" is-pinnable="pinnedMedia !== undefined" pin-media="pinnedMedia.pinMedia" unpin-media="pinnedMedia.unpinMedia")
+
+script(type="text/ng-template", id="audio_stream.html")
+	audio(ng-src="{{renderer.nodeValue | trustUrl}}", autoplay="false", autobuffer="false", controls="true", volume="0.5")
+
+script(type="text/ng-template", id="url.html")
+	a(target="_blank", ng-href="{{renderer.nodeValue | trustUrl}}" style="color:{{nodeColorStr}};") View Here
+
+script(type="text/ng-template", id="html_renderer.html")
+	.html(ng-bind-html="renderer.nodeValue | trustHtml", width="100%" style="color:{{nodeColorStr}};")

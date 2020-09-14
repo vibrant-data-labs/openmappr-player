@@ -1,0 +1,18 @@
+#right-panel.right-panel(ng-if="panelUI.showRightPanel")
+	.right-btns.pull-right
+		//- .square-btn.small-btn.text-center.info-btn(ng-if="showInfoBtn" ng-click="toggleInfoPanel(); $event.stopPropagation();" ng-class="{active: panelUI.infoPanelOpen}") 
+		//- 	strong i
+		//- .square-btn.small-btn.text-center.x-btn(ng-click="panelUI.closePanels();") 
+		//- 	strong &times;
+		//- .clearfix
+		//- .square-btn.small-btn.panel-btn.text-center(ng-if="panelUI.filterPanelOpen")
+		//- 	i.fa.fa-chevron-up
+		//- .clearfix
+		//- .square-btn.small-btn.panel-btn.text-center(ng-if="panelUI.filterPanelOpen")
+		//- 	i.fa.fa-chevron-down
+	#mainFilterPanel.accordion.height-100.flex-vert-container
+		.accordion-panel.info-panel.flex-transclude.flex-fill(ng-show="panelUI.infoPanelOpen" ng-controller="InfoPanelCtrl", ng-include=' "#{server_prefix}#{view_path}/components/project/panels/right_panel/info_panel/infoPanel.html" ')
+		.accordion-panel.panel-container.flex-transclude.flex-fill(ng-show="panelUI.summaryPanelOpen" ng-controller="DataPresentationCtrl" ng-include=' "#{server_prefix}#{view_path}/player/playerSummary.html" ')
+		// change ng-style to ng-class and work on data-dir-virtual-scroll rendering
+		.accordion-panel.filter-panel.flex-transclude.flex-fill(ng-style="panelUI.filterPanelOpen ? { 'height': 'auto', 'opacity': 1, 'flex': 1, 'min-height': 31 } : { 'height': 0, 'opacity': 0, 'flex':'none', 'min-height': 0 }" ng-include=' "#{server_prefix}#{view_path}/components/project/panels/right_panel/distribution_panel/filterPanel.html" ')
+		.accordion-panel.filter-panel.flex-transclude.flex-fill(ng-if="panelUI.snapshotPanelOpen" ng-controller="SnapshotSidePanelCtrl" ng-include=' "#{server_prefix}#{view_path}/player/snapshotSidePanel.html" ')
