@@ -1,13 +1,8 @@
 'use strict';
 var _ = require('lodash');
 var fs = require('fs');
-var xlsx = require('xlsx');
-var xls = require('xlsjs');
-var csv = require('csv-parser');
-var gexf = require('gexf');
 var assert = require("assert");
 var color = require('onecolor'); // color guessing
-var unorm = require('unorm');
 var moment = require('moment');
 var Promise = require("bluebird");
 
