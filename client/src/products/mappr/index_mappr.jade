@@ -128,7 +128,6 @@ html(lang='en', data-ng-app='hcApp')
 			div(ng-if="isAuthenticated()", data-ng-controller='DashboardCtrl', ng-init="user.loadInitial()")
 				div
 					section#header.header.top-header(ng-if='requiresHeaderBar()', data-ng-include=' "#{server_prefix}#{view_path}/components/dashboard/header/header.html" ')
-					aside#nav-container(ng-if ='requiresNavBar()', data-ng-include=' "#{server_prefix}#{view_path}/components/dashboard/header/nav.html" ')
 				div.view-container
 					div#content(ng-view)
 					#content-cover(data-close-min-nav='data-close-min-nav')
