@@ -1,6 +1,0 @@
-.panel.scroll.recipe-panel.dark-scheme.animate-fade-right.height-100(ng-controller="RecipeRightPanelCtrl")
-	.artifacts(ng-if="selectedRun && vm.runsLoaded && !selectedRun.isRunning", ng-include=' "#{server_prefix}#{view_path}/components/dashboard/recipes/recipe_run_info.html" ' ng-controller="RecipeRunInfo_RPCtrl")
-		.divider
-	// Recipe
-	.recipe.height-100(ng-if="!selectedRun || selectedRun.isRunning", ng-include=' "#{server_prefix}#{view_path}/components/dashboard/recipes/recipe_config.html" ' ng-controller="RecipeConfig_RPCtrl")
-		

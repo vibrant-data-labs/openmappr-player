@@ -69,10 +69,6 @@
             // $routeProvider.when('/user-timeline',                       {templateUrl:   '#{server_prefix}#{view_path}/partials/dashboard/timeline.html',        access: [USER_ROLES.user, USER_ROLES.admin]});
             // $routeProvider.when('/user-orgs',                           {templateUrl:   '#{server_prefix}#{view_path}/partials/dashboard/orgs.html',            access: [USER_ROLES.user, USER_ROLES.admin]});
             $routeProvider.when('/user-surveys',                        {templateUrl:   '#{server_prefix}#{view_path}/components/dashboard/dashboard/mapps.html',      access: [USER_ROLES.user, USER_ROLES.admin]});
-            //recipes
-            $routeProvider.when('/recipes',                             {templateUrl:   '#{server_prefix}#{view_path}/components/dashboard/recipes/recipe_listing.html',     access: [USER_ROLES.user, USER_ROLES.admin]});
-            $routeProvider.when('/recipes/:recipeid/viewer',              {templateUrl:   '#{server_prefix}#{view_path}/components/dashboard/recipes/recipe_viewer.html',      access: [USER_ROLES.user, USER_ROLES.admin]});
-            $routeProvider.when('/recipes/:recipeid',                   {templateUrl:   '#{server_prefix}#{view_path}/components/dashboard/recipes/recipe_panel.html',      access: [USER_ROLES.user, USER_ROLES.admin]});
             //project
             $routeProvider.when('/projects/:pid',                       {templateUrl:   '#{server_prefix}#{view_path}/components/project/project.html',                   access: [USER_ROLES.user, USER_ROLES.admin]});
             $routeProvider.when('/projects/:pid/:vnum',                 {templateUrl:   '#{server_prefix}#{view_path}/components/project/project.html',                   access: [USER_ROLES.user, USER_ROLES.admin]});
