@@ -160,15 +160,6 @@ angular.module('common')
                         $scope.panelUI.openPanel('style');
                     }
                 },
-                {
-                    iconClass: 'database',
-                    title: 'Edit data',
-                    panel: 'edit_data',
-                    tooltipTitle: 'Edit Data',
-                    cmd: function() {
-                        return $scope.openNetworkDataModal();
-                    }
-                },
 
             ];
 
@@ -211,33 +202,6 @@ angular.module('common')
                     $scope.selNodesCount = data.selectionCount;
                 }
             });
-
-            function openNetworkDataModal() {
-
-                var modalInstance = $uibModal.open({
-                    templateUrl: '#{server_prefix}#{view_path}/components/project/data_modal/networkDataModal.html',
-                    controller: 'NetworkDataModalCtrl',
-                    size: 'lg',
-                    resolve: {
-                        mapprSettings: function() {
-                            return $scope.mapprSettings;
-                        }
-                    }
-                });
-
-                //Called when modal is closed
-                modalInstance.result.then(
-                    function() {
-                        console.log('Closing network data modal');
-                    },
-                    function() {
-                        console.warn("Modal dismissed at: " + new Date());
-                    }
-                );
-            }
-
-            $scope.openNetworkDataModal = openNetworkDataModal;
-
 
             /*************************************
              ********* Initialise *****************
