@@ -62,12 +62,8 @@
             $routeProvider.when('/signin-org',                          {templateUrl:   '#{server_prefix}#{view_path}/components/user_mgmnt/user/org_signin/signinOrg.html',           access: [USER_ROLES.anon, USER_ROLES.user, USER_ROLES.admin]});
             $routeProvider.when('/reset_password',                      {templateUrl:   '#{server_prefix}#{view_path}/components/user_mgmnt/user/reset_pswd/resetPassword.html',       access: [USER_ROLES.anon]});
             //user dash
-            // $routeProvider.when('/user',                                {templateUrl:   '#{server_prefix}#{view_path}/partials/user.html',                      access: [USER_ROLES.user, USER_ROLES.admin]});
-            $routeProvider.when('/user-projects',                       {templateUrl:   '#{server_prefix}#{view_path}/components/dashboard/mapps/project_list/projectlist.html',     access: [USER_ROLES.user, USER_ROLES.admin]});
-            $routeProvider.when('/user-projects-old',                   {templateUrl:   '#{server_prefix}#{view_path}/components/dashboard/mapps/project_list/projectlist_old.html', access: [USER_ROLES.user, USER_ROLES.admin]});
             $routeProvider.when('/user-profile',                        {templateUrl:   '#{server_prefix}#{view_path}/components/user_mgmnt/user/profile/profile.html',         access: [USER_ROLES.user, USER_ROLES.owner, USER_ROLES.admin]});
             // $routeProvider.when('/user-timeline',                       {templateUrl:   '#{server_prefix}#{view_path}/partials/dashboard/timeline.html',        access: [USER_ROLES.user, USER_ROLES.admin]});
-            // $routeProvider.when('/user-orgs',                           {templateUrl:   '#{server_prefix}#{view_path}/partials/dashboard/orgs.html',            access: [USER_ROLES.user, USER_ROLES.admin]});
             $routeProvider.when('/user-surveys',                        {templateUrl:   '#{server_prefix}#{view_path}/components/dashboard/dashboard/mapps.html',      access: [USER_ROLES.user, USER_ROLES.admin]});
             //project
             $routeProvider.when('/projects/:pid',                       {templateUrl:   '#{server_prefix}#{view_path}/components/project/project.html',                   access: [USER_ROLES.user, USER_ROLES.admin]});

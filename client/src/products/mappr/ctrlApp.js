@@ -22,7 +22,6 @@ function($scope, $routeParams, $route, $location, $rootScope, $interval, $timeou
 
         '#{server_prefix}#{view_path}/partials/project/athenapanel.html',
         '#{server_prefix}#{view_path}/partials/project/createMapModal.html',
-        '#{server_prefix}#{view_path}/partials/project/input-settings.html',
         '#{server_prefix}#{view_path}/partials/common/summaryPanel.html',
         '#{server_prefix}#{view_path}/partials/project/layoutpanel.html',
         '#{server_prefix}#{view_path}/partials/project/playerEditor.html',
