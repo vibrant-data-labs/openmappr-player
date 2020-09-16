@@ -70,8 +70,6 @@
             $routeProvider.when('/admin',                               {templateUrl:   '#{server_prefix}#{view_path}/components/user_mgmnt/admin/adminDash.html',            access: [USER_ROLES.admin]});
             // org-admin
             $routeProvider.when('/owner',                               {templateUrl:   '#{server_prefix}#{view_path}/components/user_mgmnt/admin/ownerDash.html' ,           access: [USER_ROLES.owner]});
-            //pattern-library
-            $routeProvider.when('/pattern-library',                     {templateUrl:   '#{server_prefix}#{view_path}/components/project/patternLibrary.html',                       access: [USER_ROLES.anon, USER_ROLES.user, USER_ROLES.admin]});
             //404
             $routeProvider.when('/404',                                 {templateUrl:   '#{server_prefix}#{view_path}/partials/404.html',                       access: [USER_ROLES.anon, USER_ROLES.user, USER_ROLES.admin]});
             //otherwise

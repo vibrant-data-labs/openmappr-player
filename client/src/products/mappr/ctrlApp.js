@@ -22,10 +22,7 @@ function($scope, $routeParams, $route, $location, $rootScope, $interval, $timeou
         '#{server_prefix}#{view_path}/partials/project/athenapanel.html',
         '#{server_prefix}#{view_path}/partials/common/summaryPanel.html',
         '#{server_prefix}#{view_path}/partials/project/layoutpanel.html',
-        '#{server_prefix}#{view_path}/partials/project/playerEditor.html',
         '#{server_prefix}#{view_path}/partials/project/nodefocus.html',
-        '#{server_prefix}#{view_path}/partials/project/snapshotpanel.html',
-        '#{server_prefix}#{view_path}/partials/project/stylepanel.html',
         // '#{server_prefix}#{view_path}/partials/project/tagpanel.html',
         // '#{server_prefix}#{view_path}/partials/project/versions.html',
 
@@ -36,10 +33,6 @@ function($scope, $routeParams, $route, $location, $rootScope, $interval, $timeou
 
         '#{server_prefix}#{view_path}/partials/attrs/attrModModal.html',
         '#{server_prefix}#{view_path}/partials/attrs/attrModSelection.html',
-
-        //'#{server_prefix}#{view_path}/partials/templates/datasetModal.html',
-        //'#{server_prefix}#{view_path}/partials/templates/networksModal.html',
-        '#{server_prefix}#{view_path}/partials/templates/netgenModal.html',
 
         '#{server_prefix}#{view_path}/partials/renderers/renderTemplates.html'
     ];
