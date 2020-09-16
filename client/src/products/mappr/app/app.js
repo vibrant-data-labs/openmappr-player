@@ -49,27 +49,11 @@
 
         .config(['$routeProvider', '$locationProvider', '$httpProvider', 'USER_ROLES', function ($routeProvider, $locationProvider, $httpProvider, USER_ROLES) {
 
-            //public pages
-            $routeProvider.when('/',                                    {templateUrl:   '#{server_prefix}#{view_path}/components/user_mgmnt/user/signin/signin.html',                    access: [USER_ROLES.anon, USER_ROLES.user, USER_ROLES.admin]});
-            // $routeProvider.when('/home',                                {templateUrl:   '#{server_prefix}#{view_path}/partials/home.html',                      access: [USER_ROLES.anon, USER_ROLES.user, USER_ROLES.admin]});
-            // $routeProvider.when('/about',                               {templateUrl:   '#{server_prefix}#{view_path}/partials/about.html',                     access: [USER_ROLES.anon, USER_ROLES.user, USER_ROLES.admin]});
-            //public signup signin accept-invite etc
-            // $routeProvider.when('/signup',                              {templateUrl:   '#{server_prefix}#{view_path}/partials/signup.html',                    access: [USER_ROLES.anon, USER_ROLES.user, USER_ROLES.admin]});
-            $routeProvider.when('/signin',                              {templateUrl:   '#{server_prefix}#{view_path}/components/user_mgmnt/user/signin/signin.html',                    access: [USER_ROLES.anon, USER_ROLES.user, USER_ROLES.admin]});
-            $routeProvider.when('/signup-org',                          {templateUrl:   '#{server_prefix}#{view_path}/components/user_mgmnt/user/org_signup/signupOrg.html',           access: [USER_ROLES.anon, USER_ROLES.user, USER_ROLES.admin]});
-            $routeProvider.when('/signin-org',                          {templateUrl:   '#{server_prefix}#{view_path}/components/user_mgmnt/user/org_signin/signinOrg.html',           access: [USER_ROLES.anon, USER_ROLES.user, USER_ROLES.admin]});
-            $routeProvider.when('/reset_password',                      {templateUrl:   '#{server_prefix}#{view_path}/components/user_mgmnt/user/reset_pswd/resetPassword.html',       access: [USER_ROLES.anon]});
-            //user dash
-            $routeProvider.when('/user-profile',                        {templateUrl:   '#{server_prefix}#{view_path}/components/user_mgmnt/user/profile/profile.html',         access: [USER_ROLES.user, USER_ROLES.owner, USER_ROLES.admin]});
             // $routeProvider.when('/user-timeline',                       {templateUrl:   '#{server_prefix}#{view_path}/partials/dashboard/timeline.html',        access: [USER_ROLES.user, USER_ROLES.admin]});
             $routeProvider.when('/user-surveys',                        {templateUrl:   '#{server_prefix}#{view_path}/components/dashboard/dashboard/mapps.html',      access: [USER_ROLES.user, USER_ROLES.admin]});
             //player
             // $routeProvider.when('/p/:urlStr',                           {templateUrl:   '#{server_prefix}#{view_path}/partials/player.html',                    access: [USER_ROLES.anon, USER_ROLES.user, USER_ROLES.admin]});
             // $routeProvider.when('/play/:urlStr',                        {templateUrl:   '#{server_prefix}#{view_path}/partials/player.html',                    access: [USER_ROLES.anon, USER_ROLES.user, USER_ROLES.admin]});
-            //mappr-admin
-            $routeProvider.when('/admin',                               {templateUrl:   '#{server_prefix}#{view_path}/components/user_mgmnt/admin/adminDash.html',            access: [USER_ROLES.admin]});
-            // org-admin
-            $routeProvider.when('/owner',                               {templateUrl:   '#{server_prefix}#{view_path}/components/user_mgmnt/admin/ownerDash.html' ,           access: [USER_ROLES.owner]});
             //404
             $routeProvider.when('/404',                                 {templateUrl:   '#{server_prefix}#{view_path}/partials/404.html',                       access: [USER_ROLES.anon, USER_ROLES.user, USER_ROLES.admin]});
             //otherwise
