@@ -14,7 +14,7 @@
     }
     ieFix();
 
-    angular.module('player');
+    angular.module('player', []);
     angular.module('common', ['chieffancypants.loadingBar']);
 
     angular.module('hcApp', [

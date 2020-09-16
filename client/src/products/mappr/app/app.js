@@ -14,7 +14,7 @@
     }
     ieFix();
 
-    angular.module('mappr');
+    angular.module('mappr', []);
 
     angular.module('common', []);
 
