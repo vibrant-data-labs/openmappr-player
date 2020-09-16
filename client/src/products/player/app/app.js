@@ -14,8 +14,7 @@
     }
     ieFix();
 
-    angular.module('errorLogger', []);
-    angular.module('player', ['errorLogger']);
+    angular.module('player');
     angular.module('common', ['chieffancypants.loadingBar']);
 
     angular.module('hcApp', [

@@ -294,7 +294,6 @@ module.exports = function(grunt) {
 				'client/src/products/player/*.js',
 				'client/src/products/player/analytics/*.js',
 
-				'client/src/components/errorLogger/errorLogger.js',
 				'client/src/components/core/**/*.js',
 				'client/src/components/project/ctrlLayout.js',
 				'client/src/components/project/ctrlRenderGraph.js',

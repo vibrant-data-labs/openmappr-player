@@ -14,11 +14,7 @@
     }
     ieFix();
 
-    angular.module('errorLogger', []);
-
-    angular.module('mappr', [
-        'errorLogger'
-    ]);
+    angular.module('mappr');
 
     angular.module('common', []);
 
