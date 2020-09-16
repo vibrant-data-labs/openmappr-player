@@ -1,4 +1,4 @@
-angular.module('mappr')
+angular.module('common')
 .service('AttrModifierService', ['$q', '$http', '$rootScope', '$timeout', 'networkService', 'dataService', 'AttrInfoService', 'AttrSanitizeService', 'BROADCAST_MESSAGES',
 function($q, $http, $rootScope, $timeout, networkService, dataService, AttrInfoService, AttrSanitizeService, BROADCAST_MESSAGES) {
     "use strict";

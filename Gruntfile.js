@@ -262,9 +262,6 @@ module.exports = function(grunt) {
 			var obj = {};
 			obj[prod_build_dir + '/js/tmp/mappr.min.js'] = [
 				'client/src/libs/sigmamods/**/*.js',
-				'client/src/products/mappr/app/*.js',
-				'client/src/products/mappr/*.js',
-				'client/src/products/mappr/analytics/*.js',
 				'client/src/components/**/*.js'
 			];
 			return obj;
@@ -346,7 +343,6 @@ module.exports = function(grunt) {
 			}
 		},
 		files: [
-			{src: 'client/src/products/mappr/index_mappr.jade'},
 			{src: 'client/src/products/player/index_player.jade'},
 			{src: 'client/src/products/sources/index_sources.jade'}
 		]
@@ -434,7 +430,6 @@ module.exports = function(grunt) {
 		    }
 		},
 		files: [
-			{src: prod_build_dir + '/views/tmp/products/mappr/index_mappr.jade', dest: prod_build_dir + '/views/index_mappr.jade'},
 			{src: prod_build_dir + '/views/tmp/products/player/index_player.jade', dest: prod_build_dir + '/views/index_player.jade'},
 			{src: prod_build_dir + '/views/tmp/products/sources/index_sources.jade', dest: prod_build_dir + '/views/index_sources.jade'},
 			// {
@@ -469,7 +464,6 @@ module.exports = function(grunt) {
 			assets: ['js/**/*.js']
 		},
 		src: [prod_build_dir + '/views/index_player.jade',
-				prod_build_dir + '/views/index_mappr.jade',
 				prod_build_dir + '/views/index_sources.jade']
 	});
 
@@ -776,7 +770,6 @@ module.exports = function(grunt) {
 			expand: true,
 			cwd: 'client/src/',
 			src: [	'components/**/*.js',
-					'products/mappr/**/*.js',
 					'products/player/**/*.js',
 					'products/sources/**/*.js'
 				],
@@ -830,7 +823,6 @@ module.exports = function(grunt) {
 			}
 		},
 		files: [
-			{src: 'client/src/products/mappr/index_mappr.jade'},
 			{src: 'client/src/products/player/index_player.jade'},
 			{src: 'client/src/products/sources/index_sources.jade'}
 		]
@@ -895,7 +887,6 @@ module.exports = function(grunt) {
 		    }
 		},
 		files: [
-			{src: dev_build_dir + '/views/tmp/products/mappr/index_mappr.jade', dest: dev_build_dir + '/views/index_mappr.jade'},
 			{src: dev_build_dir + '/views/tmp/products/player/index_player.jade', dest: dev_build_dir + '/views/index_player.jade'},
 			{src: dev_build_dir + '/views/tmp/products/sources/index_sources.jade', dest: dev_build_dir + '/views/index_sources.jade'},
 			{
@@ -921,7 +912,6 @@ module.exports = function(grunt) {
 	addTask('includeSource', 'dev_jade', {
 		files: (function() {
 			var obj = {};
-			obj[dev_build_dir + '/views/index_mappr.jade'] = dev_build_dir + '/views/index_mappr.jade';
 			obj[dev_build_dir + '/views/index_player.jade'] = dev_build_dir + '/views/index_player.jade';
 			obj[dev_build_dir + '/views/index_sources.jade'] = dev_build_dir + '/views/index_sources.jade';
 			// obj[dev_build_dir + '/views/survey.jade'] = dev_build_dir + '/views/survey.jade';
@@ -941,7 +931,6 @@ addTask('cacheBust', 'dev', {
 			assets: ['js/**/*.js', 'css/**/*.css']
 		},
 		src: ['client/build/dev/views/index_player.jade',
-			'client/build/dev/views/index_mappr.jade',
 			'client/build/dev/views/index_sources.jade']
 	});
 
