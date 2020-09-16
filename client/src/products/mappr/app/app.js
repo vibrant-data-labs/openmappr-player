@@ -14,11 +14,9 @@
     }
     ieFix();
 
-    angular.module('dataIngestion', []);
     angular.module('errorLogger', []);
 
     angular.module('mappr', [
-        'dataIngestion',
         'errorLogger'
     ]);
 
@@ -65,9 +63,6 @@
             $routeProvider.when('/user-profile',                        {templateUrl:   '#{server_prefix}#{view_path}/components/user_mgmnt/user/profile/profile.html',         access: [USER_ROLES.user, USER_ROLES.owner, USER_ROLES.admin]});
             // $routeProvider.when('/user-timeline',                       {templateUrl:   '#{server_prefix}#{view_path}/partials/dashboard/timeline.html',        access: [USER_ROLES.user, USER_ROLES.admin]});
             $routeProvider.when('/user-surveys',                        {templateUrl:   '#{server_prefix}#{view_path}/components/dashboard/dashboard/mapps.html',      access: [USER_ROLES.user, USER_ROLES.admin]});
-            //project
-            $routeProvider.when('/projects/:pid',                       {templateUrl:   '#{server_prefix}#{view_path}/components/project/project.html',                   access: [USER_ROLES.user, USER_ROLES.admin]});
-            $routeProvider.when('/projects/:pid/:vnum',                 {templateUrl:   '#{server_prefix}#{view_path}/components/project/project.html',                   access: [USER_ROLES.user, USER_ROLES.admin]});
             //player
             // $routeProvider.when('/p/:urlStr',                           {templateUrl:   '#{server_prefix}#{view_path}/partials/player.html',                    access: [USER_ROLES.anon, USER_ROLES.user, USER_ROLES.admin]});
             // $routeProvider.when('/play/:urlStr',                        {templateUrl:   '#{server_prefix}#{view_path}/partials/player.html',                    access: [USER_ROLES.anon, USER_ROLES.user, USER_ROLES.admin]});

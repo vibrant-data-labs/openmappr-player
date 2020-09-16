@@ -18,10 +18,8 @@ function($scope, $routeParams, $route, $location, $rootScope, $interval, $timeou
 
     // Simple templates Prefetching
     var templatePaths = [
-        '#{server_prefix}#{view_path}/partials/project.html',
 
         '#{server_prefix}#{view_path}/partials/project/athenapanel.html',
-        '#{server_prefix}#{view_path}/partials/project/createMapModal.html',
         '#{server_prefix}#{view_path}/partials/common/summaryPanel.html',
         '#{server_prefix}#{view_path}/partials/project/layoutpanel.html',
         '#{server_prefix}#{view_path}/partials/project/playerEditor.html',
@@ -30,8 +28,6 @@ function($scope, $routeParams, $route, $location, $rootScope, $interval, $timeou
         '#{server_prefix}#{view_path}/partials/project/stylepanel.html',
         // '#{server_prefix}#{view_path}/partials/project/tagpanel.html',
         // '#{server_prefix}#{view_path}/partials/project/versions.html',
-
-        '#{server_prefix}#{view_path}/partials/di/spreadsheets.html',
 
         // '#{server_prefix}#{view_path}/partials/legend/global.html',
         //'#{server_prefix}#{view_path}/partials/legend/nodecard.html',
