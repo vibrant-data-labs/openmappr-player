@@ -1,8 +1,10 @@
 const fs = require('fs'),
-        path = require('path'),
-        AWS = require('aws-sdk'),
-        { argv } = require('yargs'),
-        digitalOceanConfig = require('./config/digitalOcean');
+    path = require('path'),
+    AWS = require('aws-sdk'),
+    digitalOceanConfig = require('./config/digitalOcean'),
+    glob = require('glob'),
+    cliProgress = require('cli-progress'),
+    inquirer = require('inquirer');
 
 const spacesEndpoint = new AWS.Endpoint(digitalOceanConfig.spacesEndpoint);
 const s3 = new AWS.S3({
@@ -11,68 +13,52 @@ const s3 = new AWS.S3({
     secretAccessKey: digitalOceanConfig.secretAccessKey,
 });
 
-const rootDirectory = argv.rootDirectory;
-const bucket = argv.bucket;
-const acl = argv.acl;
-const staticFilesOnly = argv.staticFilesOnly;
-const dataOnly = argv.dataOnly;
+const getDirectories = async function (src) {
+    return new Promise((resolve, reject) => glob(src + '/**/*', function (err, res) { resolve(res); }));
+};
 
-var filesCollection = [];
-const directoriesToSkip = [];
+const bar1 = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
 
-if (staticFilesOnly) {
-    directoriesToSkip.push('data');
-}
+async function readFilesAndUpload() {
+    const res = await inquirer.prompt([
+        {
+          type: 'input',
+          name: 'path',
+          message: 'Enter the relative path to directory you want to publish',
+        },
+        {
+            type: 'input',
+            name: 'bucket',
+            message: 'Enter the name of the bucket',
+          },
+      ]);
 
-if (dataOnly) {
-    directoriesToSkip.push('css');
-}
+    const files = await getDirectories(res.path);
+    bar1.start(files.length, 0);
+    let i = 0;
+    for (let item of files) {
+        i++;
+        bar1.update(i);
+        if (!fs.lstatSync(item).isFile()) continue;
 
-function readDirectorySynchronously(directory) {
-    var currentDirectorypath = directory;
-    var currentDirectory = fs.readdirSync(currentDirectorypath, 'utf8');
+        var params = {
+            Body: fs.readFileSync(item),
+            Bucket: res.bucket,
+            Key: item.replace(/^publish/, ''),
+        };
+        await new Promise((resolve, reject) => s3.putObject(params, function(err, data) {
+            if (err) reject(err);
+            else  resolve(data);
+        })).catch(console.error);
+    }
+    bar1.stop();
+};
 
-    currentDirectory.forEach(file => {
-        var fileShouldBeSkipped = directoriesToSkip.indexOf(file) > -1;
-        var pathOfCurrentItem = path.join(directory + '/' + file);
-        if (!fileShouldBeSkipped && fs.statSync(pathOfCurrentItem).isFile()) {
-            filesCollection.push(pathOfCurrentItem);
-        }
-        else if (!fileShouldBeSkipped) {
-            var directorypath = path.join(directory + '/' + file);
-            readDirectorySynchronously(directorypath);
-        }
-    });
-}
 
-const rootFolder = __dirname.split(path.sep);
-rootFolder.pop();
-readDirectorySynchronously(path.join(...rootFolder, 'publish'));
-
-console.log(`Found ${filesCollection.length} files`);
-
-let processedFiles = 0;
-// for(let i = 0; i < filesCollection.length; i++) {
-//     var fileKey = filesCollection[i].split(path.sep).reverse();
-//     var lastItem = fileKey.pop();
-//     while (lastItem !== 'publish') {
-//         lastItem = fileKey.pop();
-//     }
-
-//     fileKey = path.join(...fileKey.reverse());
-//     fileKey = fileKey.replace(path.sep, '/');
-//     s3.putObject({
-//         bucket: bucket,
-//         key: rootDirectory ? (rootDirectory + '/' + fileKey) : fileKey,
-//         Body: fs.readFileSync(filesCollection[i]),
-//         ACL: acl || 'private',
-//     }, function (err, data) {
-//         processedFiles++;
-//         if (err) console.log(err, err.stack);
-//         else console.log(data);
-
-//         if (processedFiles === filesCollection.length) {
-//             process.exit(0);
-//         }
-//     });
-// }
+readFilesAndUpload().then(() => {
+    console.log('All files were published');
+    process.exit(0);
+}).catch(error => {
+    console.error(error);
+    process.exit(1);
+});

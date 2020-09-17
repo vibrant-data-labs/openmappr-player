@@ -1,0 +1,100 @@
+.modal-header
+	.row.vert-align
+		.col-xs-9
+			h6
+				span Recipe Layout Settings
+		.col-xs-3.vert-align.right
+			button.header-btn(ng-click="saveSettings()")
+				i.fa.fa-cloud-upload
+				span.h7 Save
+			button.close-btn(type="button", ng-click="closeModal()")
+				span.icon &times;
+.modal-body
+	.container-fluid
+		.row
+			.col-xs-2.border-right
+				.scroll-list 
+					.row
+						.col-xs-12
+							.menu-item(ng-repeat="layout in recipe.layout_gen.layouts" ng-click="setCurrLayout($index, layout)" ng-class="{'active':($index == currLayoutInd)}")
+								span.row.vert-align
+									.col-xs-10
+										.h6.truncate(ng-if="layout.name") {{layout.name}}
+										.h6.truncate(ng-if="!layout.name") {{layout.plotType}} {{$index+1}}
+									.col-xs-2
+										button.power-btn.secondary-btn.error-btn.pull-right(ng-click="removeLayout($index); $event.stopPropagation();" uib-tooltip="Delete Layout" tooltip-append-to-body="true")
+											i.fa.fa-times.fa-2x
+							button.menu-item(ng-click="createLayout()" ng-if="recipe.layout_gen.layouts.length != 0")
+								.h6 Create New Layout
+			.col-xs-10.scroll-container 
+				div(ng-if="currLayout")
+					//layouts
+					.width-100.over-hidden
+						.header
+							.row.vert-align 
+								.col-xs-5
+									h6.title.text-uppercase Layout
+								.col-xs-7 
+									div(uib-dropdown dropdown-append-to-body)
+										span.uib-dropdown-toggle(uib-dropdown-toggle, auto-close="outsideClick" uib-tooltip="Choose Layout" tooltip-placement="top" tooltip-append-to-body="true")
+											span.text-uppercase.h6.text-link {{currLayout.plotType || "Choose Layout Type"}}&nbsp;
+											i.fa.fa-caret-down
+										.uib-dropdown-menu.uib-dropdown-menu-flexing(uib-dropdown-menu)
+											.uib-dropdown-click-close
+											.uib-dropdown-flex-content
+												.uib-dropdown-flex
+													ul.list-unstyled.dd-list
+														li.row.vert-align(ng-repeat="layout in layouts" ng-click="setLayoutType(layout);" ng-class="{active: layout.name == 'currLayout.name'}")
+															.col-sm-12
+																h6.no-margin.pointable-cursor
+																	span.no-text-transform {{layout.name}}
+						.panel-list.flex-fill.panel-scroll.flex-vert-container
+							div(ng-show="currLayout.plotType == layout.plotType", ng-repeat="layout in layouts")
+								div
+									.section-body.panel-list
+										ul.panel-sublist.list-unstyled
+											li.panel-item.no-hover(ng-if="layout.name == 'Cluster'")
+												h6.title.text-uppercase Create New Cluster Layout
+											li.panel-item.no-hover
+												.row.vert-align
+													.col-xs-5
+														h6 Layout Name
+													.col-xs-7
+														input.form-control(type="text" ng-model="currLayout.name" placeholder="{{currLayout.plotType}}")
+												.clearfix
+												.divider
+											li.panel-subitem(ng-repeat = "opt in layout.options.primary", ng-mouseenter='settingsUI.setHoverSetting(opt)', ng-show='opt.enabled', ng-class='settingsUI.getClass(opt)', ng-click="$event.stopPropagation()")
+												.row.vert-align
+													.col-xs-5(uib-tooltip="{{opt.tooltip}}" tooltip-placement="left" tooltip-append-to-body="true")
+														h6(ng-if='opt.title!=""') {{opt.title}}
+													.col-xs-7
+														settings-input(opt="opt", attrs="nodeAttrs", ng-model="currLayout[opt.key]")
+												.clearfix
+												.divider
+								div(ng-if="layout.options.optional.length > 0 && layout.showOptional")
+									.row.vert-align
+										.col-xs-12
+											h6.title.text-uppercase Settings
+									ul.panel-sublist.list-unstyled
+										li.panel-subitem(ng-repeat = "opt in layout.options.optional", ng-mouseenter='settingsUI.setHoverSetting(opt)', ng-show='opt.enabled', ng-class='settingsUI.getClass(opt)', ng-click="$event.stopPropagation()")
+											.row.vert-align
+												.col-xs-5(uib-tooltip="{{opt.tooltip}}" tooltip-placement="left" tooltip-append-to-body="true")
+													h6(ng-if='opt.title!=""') {{opt.title}}
+												.col-xs-7
+													settings-input(opt="opt", attrs="nodeAttrs", ng-model="currLayout[opt.key]")
+											.divider
+								div(ng-if="layout.options.optional.length > 0")
+									ul.panel-sublist.list-unstyled
+										li.panel-subitem
+											.row
+												.col-xs-12
+													a.h6.pointable-cursor.pull-right.no-margin(ng-if="!layout.showOptional" type="button" ng-click="layout.showOptional = true;")
+														em Advanced Options&hellip;
+													a.h6.pointable-cursor.pull-right.no-margin(ng-if="layout.showOptional" type="button" ng-click="layout.showOptional = false;")
+														em Hide Options&hellip;
+											.clearfix
+											.divider
+				div(ng-if="!currLayout")
+					h5 Create a layout for this recipe.
+					button.power-btn(ng-click="createLayout()") Create Layout
+					.divider

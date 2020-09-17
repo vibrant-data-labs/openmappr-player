@@ -1,0 +1,51 @@
+.row
+    .col-xs-12.vert-align
+        .tag-checkbox.dark.pull-left
+            input(id="group-by-toggle", type="checkbox", ng-model="opInst.isGroupingEnabled")
+            label(for="group-by-toggle")
+        h6.pull-left Group By
+.divider
+.group-by-container(ng-show="opInst.isGroupingEnabled")
+        h6 Select the attributes which will be used to group the nodes. The algorithm will run on each group separately.
+        .row.vert-align(ng-repeat="groupRow in opInst.groupRows track by $index")
+            .col-xs-6
+                .ui-select
+                    select(ng-model='groupRow.groupAttr', ng-options='attr.title for attr in attrList track by attr.id', ng-change="updateAttrId(groupRow)")
+            .col-xs-1
+                button.ui-btn(ng-click="addGroupRow(opInst, $index)")
+                    i.fa.fa-plus
+            .col-xs-1
+                button.ui-btn(ng-click="removeGroupRow(opInst, $index)")
+                    i.fa.fa-minus
+            .divider
+    .divider
+
+// Summary Section
+.row(ng-show="opInst.isGroupingEnabled")
+    .col-xs-12.vert-align
+        .tag-checkbox.dark.pull-left
+            input(id="summary-of-toggle", type="checkbox", ng-model="opInst.isSummaryEnabled")
+            label(for="summary-of-toggle")
+        h6.pull-left Summary Of
+.divider
+.group-by-container(ng-show="opInst.isSummaryEnabled")
+    h6 Select the attributes which will be summarized for each group or network and be selectable in the Attr Dropdowns.
+    div(ng-repeat="summaryRow in opInst.summaryRows track by $index")
+        .row.vert-align
+            .col-xs-6
+                .ui-select
+                    select(ng-model='summaryRow.summaryAttr', ng-options='attr.title for attr in summaryAttrList track by attr.id', ng-change="updateSummaryAttrId(summaryRow)")
+            .col-xs-1
+                button.ui-btn(ng-click="addSummaryRow(opInst, $index)")
+                    i.fa.fa-plus
+            .col-xs-1
+                button.ui-btn(ng-click="removeSummaryRow(opInst, $index)")
+                    i.fa.fa-minus
+        .row.vert-align
+            .col-xs-2.vert-align(ng-repeat="genInfo in summaryRow.generations track by genInfo.genName")
+                .tag-checkbox.dark.pull-left
+                    input(id="gen-info-toggle-{{genInfo.genName}}-{{$index}}", type="checkbox", ng-model="genInfo.isChecked", ng-change="updateSummaryAttrId(summaryRow)")
+                    label(for="gen-info-toggle-{{genInfo.genName}}-{{$index}}") 
+                h6.pull-left {{genInfo.genName}}
+        .divider
+.divider

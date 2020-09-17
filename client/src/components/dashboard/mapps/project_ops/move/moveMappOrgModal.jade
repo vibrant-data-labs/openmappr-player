@@ -1,0 +1,34 @@
+.modal-header
+	.row.vert-align
+		.col-xs-6
+			h6
+				span Move Mapp{{(numberOfProjects > 1) ? 's' : ''}}
+		.col-xs-6.vert-align.right
+			button.header-btn(ng-click="moveMappToSelectedOrg()") 
+				span.h7 Move
+			button.close-btn(type="button", ng-click="closeModal()")
+				span.icon &times;
+.modal-body
+	.container-fluid
+		.row
+			.col-xs-12(ng-show="errorMsg")
+				span {{errorMsg}}
+			.col-xs-12
+				.col-xs-5 Current Folder
+				.col-xs-2
+				.col-xs-5 Move To
+			.col-xs-12
+				.col-xs-5
+					span {{::currentOrg.orgName | uppercase}}
+				.col-xs-2 ----->>
+				.col-xs-5(ng-show="!showError")
+					.row(ng-repeat="org in userOrgsList")
+						input.col-xs-2(type="radio", ng-model="userSelection.orgRef", value="{{::org.ref}}")
+						span {{::org.orgName | uppercase}}
+				.col-xs-5(ng-show="showError")
+					h5.text-danger You are not an owner of any other organisations.
+		.divider
+		.divider
+		.row 
+			.col-xs-12
+				button.power-btn.pull-right(type="button" ng-click="moveMappToSelectedOrg();") Move Mapp{{(numberOfProjects > 1) ? 's' : ''}}

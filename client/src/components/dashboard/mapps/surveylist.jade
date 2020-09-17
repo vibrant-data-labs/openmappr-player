@@ -1,0 +1,978 @@
+.page.page-surveylist.list-lg(ng-init="ui.setPage('user-surveys')")
+	.panel
+		ul.list-group
+			li.animate-fade-out.list-group-item.published(ng-repeat = "stItem in org.selected.surveyTemplates | orderBy: org.surveySortType : org.surveySortReverse | filter:{surveyName: org.surveySearchKey}", ng-click='surveyTemplate.selectSurveyTemplate(stItem, $event);', ng-class="{'in-focus': stItem.edit}", uib-tooltip="Edit Survey", tooltip-placement="top", tooltip-append-to-body="true" )
+				.row
+					//SURVEY CARD
+					.col-xs-12.project
+						.proj-list-menu.pull-right(ng-if="!stItem.edit" ng-click="ui.openSurveyMenu(stItem); $event.stopPropagation();" ng-mouseleave="stItem.showMenu = false;")
+							.toggle.animate-fade-out.text-light(ng-if="!stItem.showMenu")
+								i.fa.fa-ellipsis-h.fa-4x()
+							ul.list-inline.animate-fade-right(ng-show="stItem.showMenu")
+								li(dir-delete-confirm obj-name="{{stItem.surveyName}}" action='surveyTemplate.removeSurveyTemplate(stItem.ref); $event.stopPropagation()') 
+									.background.bg-danger
+									i.fa.fa-3x.fa-trash-o
+									.h6 Remove
+								li(ng-if='!stItem.surveyInfo.isPublished', ng-click='surveyTemplate.openDataUploadModal(stItem.ref); $event.stopPropagation();') 
+									.background.bg-warning
+									i.fa.fa-3x.fa-file-excel-o
+									.h6 Upload XLSX
+								li(ng-if='!stItem.surveyInfo.isPublished', ng-click='ui.generateSurveyPreview(stItem.ref); $event.stopPropagation();') 
+									.background.bg-info
+									i.fa.fa-3x.fa-eye
+									.h6 Preview
+								li(ng-if='!stItem.surveyInfo.isPublished', ng-click='surveyTemplate.publishSurvey(stItem); $event.stopPropagation();') 
+									.background.bg-success
+									i.fa.fa-3x.fa-paper-plane
+									.h6 Publish
+								li(href="{{ui.getSurveyUrl(stItem.ref)}}" , ng-if='stItem.surveyInfo.isPublished', ng-click='surveyTemplate.viewSurvey(stItem); $event.stopPropagation();') 
+									.background.bg-warning
+									i.fa.fa-3x.fa-paper-plane
+									.h6 View
+								li(ng-if='!stItem.surveyInfo.isPublished && !stItem.surveyInfo.isConcluded', ng-click='surveyTemplate.generateCoupons(stItem); $event.stopPropagation();') 
+									.background.bg-primary
+									i.fa.fa-3x.fa-ticket
+									.h6 Generate Coupons
+								li(ng-if="(user.current._id == stItem.owner.ref) && stItem.surveyInfo.isPublished", ng-click='surveyTemplate.concludeSurvey(stItem); $event.stopPropagation()') 
+									.background.bg-info
+									i.fa.fa-3x.fa-lock
+									.h6 Conclude
+								li(ng-if="(user.current._id == stItem.owner.ref) && (stItem.surveyInfo.isPublished || stItem.surveyInfo.isConcluded)", ng-click='surveyTemplate.getSurveyDataAsXLSX(stItem); $event.stopPropagation()') 
+									.background.bg-success
+									i.fa.fa-3x.fa-cloud-download
+									.h6 Get Responses
+								//- li(ng-if="(user.current._id == stItem.owner.ref) && (stItem.surveyInfo.isPublished || stItem.surveyInfo.isConcluded)", ng-click='surveyTemplate.getSurveyDataAnalytics(stItem); $event.stopPropagation()') 
+								//- 	.background.bg-primary
+								//- 	i.fa.fa-3x.fa-cloud-download
+								//- 	.h6 Get Analytics
+						a.close-btn.pull-right(ng-if="stItem.edit" uib-tooltip="Cancel", tooltip-placement="top", tooltip-append-to-body="true" ng-click="$event.stopPropagation(); ui.cancelSurveyTemplateEditMode(stItem);") &times;
+						.truncate.accelerate
+							.thumb.pull-left
+								.circle.text-dark-light
+									i.fa.fa-edit
+
+							.pull-left(ng-if="stItem.edit")
+								.form-group
+									input.form-control.h2.no-text-transform.stop-prop(type="text", placeholder="{{surveyTemplate.selected.surveyName}}", ng-model="surveyTemplate.selected.surveyName" dir-select-all)
+								.space
+							.title.text-ultralight.h2.no-text-transform(ng-if="!stItem.edit")
+								| {{stItem.surveyName}}
+							.owner.text-small.vert-align
+								img.img-circle.img30_30(ng-src="{{user.current.picture}}")
+								.space
+								| {{stItem.owner.name}} {{{true:'(you)', false:''}[user.current._id == stItem.owner.ref]}}
+				div(ng-if="stItem.edit")
+					.divider
+					.row
+						.col-xs-8(ng-if="surveyTemplate.selected.isPublished")
+							.thumb-spacer.pull-left
+							i.fa.fa-check
+							.space.text-small This survey is {{{true: ' closed.', false: ' open and accepting answers.'}[surveyTemplate.selected.isConcluded]}}
+					.divider
+					.row
+						.col-xs-8
+							.thumb-spacer.pull-left
+							i.fa.fa-bullhorn
+							.space.text-small(ng-if="surveyTemplate.selected.isPublished") This survey is published at: 
+								a.text-primary(ng-href="{{ui.getSurveyUrl(stItem.ref)}}" target="_blank") {{ui.getSurveyUrl(stItem.ref)}}
+							.space.text-small(ng-if="!surveyTemplate.selected.isPublished") This survey is not published yet.
+				div(ng-if="surveyTemplate.selected.useCoupons")
+					.divider
+					.row
+						.col-xs-8
+							.thumb-spacer.pull-left
+							i.fa.fa-ticket
+							.space.text-small Coupons: {{surveyTemplate.selected.coupons.length}} [{{surveyTemplate.selected.noOfCouponsUsed}} used]. Coupons will given to users who have answered more than {{surveyTemplate.selected.couponCriteria}} questions.
+				.row(ng-if="stItem.edit" ng-click="$event.stopPropagation();")
+					form.col-xs-12
+						h3 Survey Settings
+						uib-accordion
+							uib-accordion-group(heading="General")
+								h4 General
+								.input-group
+									span.input-group-addon Background Image: 
+									input.form-control.text-ultralight.text-muted(type="text", ng-model="surveyTemplate.selected.template.backgroundImage" dir-select-all)
+								.divider
+								.space
+								.input-group
+									label.input-group-addon Theme:
+									.ui-select
+										select(ng-model="surveyTemplate.selected.template.base" ng-options='theme.value as theme.name for theme in surveyTemplate.themes')
+									label.input-group-addon Locale: 
+									.ui-select
+										select(ng-model="surveyTemplate.selected.template.locale" ng-options='locale.value as locale.name for locale in surveyTemplate.locales')
+								.divider
+								.space
+								.input-group
+									span.input-group-addon Logo Image: 
+									input.form-control.text-ultralight.text-muted(type="text", ng-model="surveyTemplate.selected.template.logo" dir-select-all)
+									span.input-group-addon Logo Link: 
+									input.form-control.text-ultralight.text-muted(type="text", ng-model="surveyTemplate.selected.template.logoLink" dir-select-all)
+								.divider
+								.space
+								.row.vert-align
+									.col-xs-6
+										.pull-left Show Category Names at Top of Slides:&nbsp;
+										.pull-left
+											.onoffswitch(ng-click="surveyTemplate.selected.template.showCatsInSlides = !surveyTemplate.selected.template.showCatsInSlides;")
+												input.onoffswitch-checkbox(id='show-video-switch' type='checkbox', ng-model='surveyTemplate.selected.template.showCatsInSlides')
+												label.onoffswitch-label(for='show-video-switch')
+													.onoffswitch-inner
+													.onoffswitch-switch
+									.col-xs-6
+										.pull-left Can Answer After Submission:&nbsp;
+										.pull-left
+											.onoffswitch(ng-click="surveyTemplate.selected.template.canAnswerAfterSubmission = !surveyTemplate.selected.template.canAnswerAfterSubmission;")
+												input.onoffswitch-checkbox(id='show-video-switch' type='checkbox', ng-model='surveyTemplate.selected.template.canAnswerAfterSubmission')
+												label.onoffswitch-label(for='show-video-switch')
+													.onoffswitch-inner
+													.onoffswitch-switch
+								.divider
+								.space
+								.divider
+								.row.vert-align
+									.col-xs-4
+										.pull-left Show Intro:&nbsp;
+										.pull-left
+											.onoffswitch(ng-click="surveyTemplate.selected.template.showIntro = !surveyTemplate.selected.template.showIntro;")
+												input.onoffswitch-checkbox(id='show-video-switch' type='checkbox', ng-model='surveyTemplate.selected.template.showIntro')
+												label.onoffswitch-label(for='show-video-switch')
+													.onoffswitch-inner
+													.onoffswitch-switch
+									.col-xs-4
+										.pull-left Show Invite:&nbsp;
+										.pull-left
+											.onoffswitch(ng-click="surveyTemplate.selected.template.showInvite = !surveyTemplate.selected.template.showInvite;")
+												input.onoffswitch-checkbox(id='show-video-switch' type='checkbox', ng-model='surveyTemplate.selected.template.showInvite')
+												label.onoffswitch-label(for='show-video-switch')
+													.onoffswitch-inner
+													.onoffswitch-switch
+									.col-xs-4
+										.pull-left Show Timeline:&nbsp;
+										.pull-left
+											.onoffswitch(ng-click="surveyTemplate.selected.template.showTimeline = !surveyTemplate.selected.template.showTimeline;")
+												input.onoffswitch-checkbox(id='show-video-switch' type='checkbox', ng-model='surveyTemplate.selected.template.showTimeline')
+												label.onoffswitch-label(for='show-video-switch')
+													.onoffswitch-inner
+													.onoffswitch-switch
+									.col-xs-4
+										.pull-left Show FAQ:&nbsp;
+										.pull-left
+											.onoffswitch(ng-click="surveyTemplate.selected.template.showFaq = !surveyTemplate.selected.template.showFaq;")
+												input.onoffswitch-checkbox(id='show-video-switch' type='checkbox', ng-model='surveyTemplate.selected.template.showFaq')
+												label.onoffswitch-label(for='show-video-switch')
+													.onoffswitch-inner
+													.onoffswitch-switch
+									.col-xs-4
+										.pull-left Hide Profile:&nbsp;
+										.pull-left
+											.onoffswitch(ng-click="surveyTemplate.selected.template.hideProfile = !surveyTemplate.selected.template.hideProfile;")
+												input.onoffswitch-checkbox(id='show-video-switch' type='checkbox', ng-model='surveyTemplate.selected.template.hideProfile')
+												label.onoffswitch-label(for='show-video-switch')
+													.onoffswitch-inner
+													.onoffswitch-switch
+								
+							uib-accordion-group(heading="Header")
+								h4 Header
+								.input-group
+									span.input-group-addon Title: 
+									input.form-control.text-ultralight.text-muted(type="text", placeholder="{{surveyTemplate.selected.template.header.title}}", ng-model="surveyTemplate.selected.template.header.title" dir-select-all)
+									span.input-group-addon Title Helper: 
+									input.form-control.text-ultralight.text-muted(type="text", ng-model="surveyTemplate.selected.template.header.titleHelper" dir-select-all)
+								.space
+								.input-group
+									span.input-group-addon Highlight Color: 
+									input(type="color" ng-model="surveyTemplate.selected.template.header.renderStyle.col")
+								
+							uib-accordion-group(heading="Intro")
+								h4 Intro
+								.input-group
+									span.input-group-addon Video Url: 
+									input.form-control.text-ultralight.text-muted(type="text", ng-model="surveyTemplate.selected.template.intro.videoUrl" dir-select-all)
+								.space
+								.row.vert-align
+									.col-xs-6
+										.pull-left Show Video:&nbsp;
+										.pull-left
+											.onoffswitch(ng-click="surveyTemplate.selected.template.intro.showIntroVideo = !surveyTemplate.selected.template.intro.showIntroVideo;")
+												input.onoffswitch-checkbox(id='show-video-switch' type='checkbox', ng-model='surveyTemplate.selected.template.intro.showIntroVideo')
+												label.onoffswitch-label(for='show-video-switch')
+													.onoffswitch-inner
+													.onoffswitch-switch
+									.col-xs-6
+										.pull-left Hide Intro Link in Top Nav:&nbsp;
+										.pull-left
+											.onoffswitch(ng-click="surveyTemplate.selected.template.intro.hideIntroNav = !surveyTemplate.selected.template.intro.hideIntroNav;")
+												input.onoffswitch-checkbox(id='show-video-switch' type='checkbox', ng-model='surveyTemplate.selected.template.intro.hideIntroNav')
+												label.onoffswitch-label(for='show-video-switch')
+													.onoffswitch-inner
+													.onoffswitch-switch
+								.space
+								.input-group
+									span.input-group-addon Highlight Color: 
+									input(type="color" ng-model="surveyTemplate.selected.template.intro.renderStyle.col")
+								.space
+								div
+									span.h3 Slides
+									uib-accordion
+										uib-accordion-group(ng-repeat="section in surveyTemplate.selected.template.intro.sections")
+											uib-accordion-heading
+												span(ng-bind-html="section.slides[0].title || 'Slide '+$index")
+											.form-group(ng-repeat="slide in section.slides")
+												.input-group
+													span.input-group-addon Title: 
+													input.form-control.text-ultralight.text-muted(type="text" ng-model="slide.title" dir-select-all)
+												.space
+												.input-group
+													span.input-group-addon Description: 
+													.ui-editor(text-angular, ng-model="slide.descr")
+												.space
+												.input-group
+													span.input-group-addon Image: 
+													input.form-control.text-ultralight.text-muted(type="text" ng-model="slide.img" dir-select-all)
+												.space
+												.input-group
+													button.btn.btn-xs.btn-default.pull-right(ng-click="surveyTemplate.deleteIntroSlide($parent.$index)")
+														| Delete Slide
+											.space
+										uib-accordion-group(ng-click="surveyTemplate.addIntroSlide(surveyTemplate.selected.template)" heading="+ Add Intro Slide")
+											
+
+								.space
+								.divider
+							uib-accordion-group(heading="Invite")
+								h4 Invite
+								.input-group
+									span.input-group-addon Title: 
+									input.form-control.text-ultralight.text-muted(type="text", ng-model="surveyTemplate.selected.template.invite.title" dir-select-all)
+								.space
+								.input-group
+									span.input-group-addon Description: 
+									.ui-editor(text-angular, ng-model="surveyTemplate.selected.template.invite.descr")
+								.space
+								.input-group
+									span.input-group-addon Gmail Email to Send Invite: 
+									input.form-control.text-ultralight.text-muted(type="text", ng-model="surveyTemplate.selected.template.invite.email" dir-select-all)
+									span.input-group-addon Gmail Password to Send Invite: 
+									input.form-control.text-ultralight.text-muted(type="text", ng-model="surveyTemplate.selected.template.invite.password" dir-select-all)
+								.space
+								.input-group
+									span.input-group-addon Email Subject: 
+									input.form-control.text-ultralight.text-muted(type="text", ng-model="surveyTemplate.selected.template.invite.subject" dir-select-all)
+								.space
+								.input-group
+									span.input-group-addon Top Email HTML: 
+									.ui-editor(text-angular, ng-model="surveyTemplate.selected.template.invite.htmlTop")
+								.space
+								.input-group
+									span.input-group-addon Email Body: 
+									.ui-editor(text-angular, ng-model="surveyTemplate.selected.template.invite.body")
+								.space
+								.input-group
+									span.input-group-addon Bottom Email HTML: 
+									.ui-editor(text-angular, ng-model="surveyTemplate.selected.template.invite.htmlBottom")
+								.space
+								.input-group
+									span.input-group-addon Image Link: 
+									input.form-control.text-ultralight.text-muted(type="text", ng-model="surveyTemplate.selected.template.invite.img" dir-select-all)
+								.space
+								.input-group
+									span.input-group-addon Highlight Color: 
+									input(type="color" ng-model="surveyTemplate.selected.template.invite.renderStyle.col")
+								
+							uib-accordion-group(heading="Frequently Asked Questions")
+								h4 Frequently Asked Questions
+								.input-group
+									span.input-group-addon Title: 
+									input.form-control.text-ultralight.text-muted(type="text", ng-model="surveyTemplate.selected.template.faq.title" dir-select-all)
+								.space
+								.input-group
+									span.input-group-addon Description: 
+									.ui-editor(text-angular, ng-model="surveyTemplate.selected.template.faq.descr")
+								.space
+								.input-group
+									span.input-group-addon Highlight Color: 
+									input(type="color" ng-model="surveyTemplate.selected.template.faq.renderStyle.col")
+								
+							uib-accordion-group(heading="Login")
+								h4 Login
+								.input-group
+									span.input-group-addon Title: 
+									input.form-control.text-ultralight.text-muted(type="text", ng-model="surveyTemplate.selected.template.login.title" dir-select-all)
+								.space
+								.input-group
+									span.input-group-addon Description: 
+									.ui-editor(text-angular, ng-model="surveyTemplate.selected.template.login.descr")
+									//- input.form-control.text-ultralight.text-muted(type="text", ng-model="surveyTemplate.selected.template.login.descr" dir-select-all)
+								.space
+								.input-group
+									span.input-group-addon Survey Password: 
+									input.form-control.text-ultralight.text-muted(type="text", ng-model="surveyTemplate.selected.template.login.password" dir-select-all)
+								.space
+								.row.vert-align
+									.col-xs-4
+										.pull-left Use Password:&nbsp;
+										.pull-left
+											.onoffswitch(ng-click="surveyTemplate.selected.template.login.usePassword = !surveyTemplate.selected.template.login.usePassword;")
+												input.onoffswitch-checkbox(id='show-video-switch' type='checkbox', ng-model='surveyTemplate.selected.template.login.usePassword')
+												label.onoffswitch-label(for='show-video-switch')
+													.onoffswitch-inner
+													.onoffswitch-switch
+								.space
+								.row.vert-align
+									.col-xs-4
+										.pull-left Show Opt-in for Email:&nbsp;
+										.pull-left
+											.onoffswitch(ng-click="surveyTemplate.selected.template.login.optInForEmail = !surveyTemplate.selected.template.login.optInForEmail;")
+												input.onoffswitch-checkbox(id='show-video-switch' type='checkbox', ng-model='surveyTemplate.selected.template.login.optInForEmail')
+												label.onoffswitch-label(for='show-video-switch')
+													.onoffswitch-inner
+													.onoffswitch-switch
+									.col-xs-4
+										.pull-left Use Manual login for Primary Login:&nbsp;
+										.pull-left
+											.onoffswitch(ng-click="surveyTemplate.selected.template.login.isManualPrimary = !surveyTemplate.selected.template.login.isManualPrimary;")
+												input.onoffswitch-checkbox(id='show-video-switch' type='checkbox', ng-model='surveyTemplate.selected.template.login.isManualPrimary')
+												label.onoffswitch-label(for='show-video-switch')
+													.onoffswitch-inner
+													.onoffswitch-switch
+								.space
+								.row.vert-align
+									.col-xs-4
+										.pull-left Use Login:&nbsp;
+										.pull-left
+											.onoffswitch(ng-click="surveyTemplate.selected.template.login.useLogin = !surveyTemplate.selected.template.login.useLogin;")
+												input.onoffswitch-checkbox(id='show-video-switch' type='checkbox', ng-model='surveyTemplate.selected.template.login.useLogin')
+												label.onoffswitch-label(for='show-video-switch')
+													.onoffswitch-inner
+													.onoffswitch-switch
+									.col-xs-4
+										.pull-left Use Facebook Login:&nbsp;
+										.pull-left
+											.onoffswitch(ng-click="surveyTemplate.selected.template.login.useFBLogin = !surveyTemplate.selected.template.login.useFBLogin;")
+												input.onoffswitch-checkbox(id='show-video-switch' type='checkbox', ng-model='surveyTemplate.selected.template.login.useFBLogin')
+												label.onoffswitch-label(for='show-video-switch')
+													.onoffswitch-inner
+													.onoffswitch-switch
+									.col-xs-4
+										.pull-left Use Google Login:&nbsp;
+										.pull-left
+											.onoffswitch(ng-click="surveyTemplate.selected.template.login.useGoogLogin = !surveyTemplate.selected.template.login.useGoogLogin;")
+												input.onoffswitch-checkbox(id='show-video-switch' type='checkbox', ng-model='surveyTemplate.selected.template.login.useGoogLogin')
+												label.onoffswitch-label(for='show-video-switch')
+													.onoffswitch-inner
+													.onoffswitch-switch
+								.space
+								.input-group
+									span.input-group-addon Terms of Use: 
+									.ui-editor(text-angular, ng-model="surveyTemplate.selected.template.login.termsOfUse")
+								.space
+								.input-group
+									span.input-group-addon Data Policy: 
+									.ui-editor(text-angular, ng-model="surveyTemplate.selected.template.login.dataPolicy")
+								.space
+								.input-group
+									span.input-group-addon Privacy Policy: 
+									.ui-editor(text-angular, ng-model="surveyTemplate.selected.template.login.privacyPolicy")
+								.space
+								.input-group
+									span.input-group-addon Highlight Color: 
+									input(type="color" ng-model="surveyTemplate.selected.template.login.renderStyle.col")
+								
+							uib-accordion-group(heading="Profile")
+								h4 Profile
+								.input-group
+									span.input-group-addon Title: 
+									input.form-control.text-ultralight.text-muted(type="text", ng-model="surveyTemplate.selected.template.profile.title" dir-select-all)
+								.space
+								.input-group
+									span.input-group-addon Description: 
+									.ui-editor(text-angular, ng-model="surveyTemplate.selected.template.profile.descr")
+								.space
+								.row.vert-align
+									.col-xs-4
+										.pull-left Show % Profile Complete:&nbsp;
+										.pull-left
+											.onoffswitch(ng-click="surveyTemplate.selected.template.profile.showProfilePercent = !surveyTemplate.selected.template.profile.showProfilePercent;")
+												input.onoffswitch-checkbox(id='show-video-switch' type='checkbox', ng-model='surveyTemplate.selected.template.profile.showProfilePercent')
+												label.onoffswitch-label(for='show-video-switch')
+													.onoffswitch-inner
+													.onoffswitch-switch
+									.col-xs-4
+										.pull-left Force Profile Completion:&nbsp;
+										.pull-left
+											.onoffswitch(ng-click="surveyTemplate.selected.template.profile.completeProfile = !surveyTemplate.selected.template.profile.completeProfile;")
+												input.onoffswitch-checkbox(id='show-video-switch' type='checkbox', ng-model='surveyTemplate.selected.template.profile.completeProfile')
+												label.onoffswitch-label(for='show-video-switch')
+													.onoffswitch-inner
+													.onoffswitch-switch
+									.col-xs-4
+										.pull-left Show Media Upload Section:&nbsp;
+										.pull-left
+											.onoffswitch(ng-click="surveyTemplate.selected.template.profile.showMedia = !surveyTemplate.selected.template.profile.showMedia;")
+												input.onoffswitch-checkbox(id='show-video-switch' type='checkbox', ng-model='surveyTemplate.selected.template.profile.showMedia')
+												label.onoffswitch-label(for='show-video-switch')
+													.onoffswitch-inner
+													.onoffswitch-switch
+									.col-xs-4
+										.pull-left Show Social (Instagram &amp; Twitter) Section:&nbsp;
+										.pull-left
+											.onoffswitch(ng-click="surveyTemplate.selected.template.profile.showSocial = !surveyTemplate.selected.template.profile.showSocial;")
+												input.onoffswitch-checkbox(id='show-video-switch' type='checkbox', ng-model='surveyTemplate.selected.template.profile.showSocial')
+												label.onoffswitch-label(for='show-video-switch')
+													.onoffswitch-inner
+													.onoffswitch-switch
+									.col-xs-4
+										.pull-left Allow Option for Users to Hide their Profile from the Public:&nbsp;
+										.pull-left
+											.onoffswitch(ng-click="surveyTemplate.selected.template.profile.hideProfileOption = !surveyTemplate.selected.template.profile.hideProfileOption;")
+												input.onoffswitch-checkbox(id='show-video-switch' type='checkbox', ng-model='surveyTemplate.selected.template.profile.hideProfileOption')
+												label.onoffswitch-label(for='show-video-switch')
+													.onoffswitch-inner
+													.onoffswitch-switch
+								.space
+								.input-group
+									span.input-group-addon Instructions: 
+									.ui-editor(text-angular, ng-model="surveyTemplate.selected.template.profile.instructions")
+								.space
+								.input-group
+									span.input-group-addon Twitter Instructions: 
+									.ui-editor(text-angular, ng-model="surveyTemplate.selected.template.profile.twitterInstructions")
+								.space
+								.input-group
+									span.input-group-addon Instagram Instructions: 
+									.ui-editor(text-angular, ng-model="surveyTemplate.selected.template.profile.instagramInstructions")
+								.space
+								.input-group
+									span.input-group-addon Media Instructions: 
+									.ui-editor(text-angular, ng-model="surveyTemplate.selected.template.profile.mediaInstructions")
+								.space
+								.input-group
+									span.input-group-addon Social Hash: 
+									input.form-control.text-ultralight.text-muted(type="text", ng-model="surveyTemplate.selected.template.profile.socialHash" dir-select-all)
+								.space
+								.divider
+								.divider
+								.h3 Media Tags
+								.input-group(ng-repeat-start="tag in surveyTemplate.selected.template.profile.mediaTags")
+									input.form-control.text-ultralight.text-muted(type="text" ng-model="tag" dir-select-all)
+									span.input-group-addon 
+										i.fa.fa-close(ng-click="surveyTemplate.deleteMediaTag($index)")
+								.space(ng-repeat-end)
+								.input-group
+									span.input-group-addon New Tag: 
+									input.form-control.text-ultralight.text-muted(ng-model="surveyTemplate.profileMediaTag" type="text" dir-select-all)
+								.space
+								.divider
+								.input-group.pull-right
+									button.btn.btn-default.pull-right(ng-click="surveyTemplate.addMediaTag()")
+										| Add Media Tag
+								.divider
+								.space
+								.h3 Profile Questions
+								div(ng-repeat-start="question in surveyTemplate.selected.template.profile.questions")
+									.input-group
+										label.input-group-addon Title: 
+										input.form-control.text-ultralight.text-muted(type="text" ng-model="question.titleText" dir-select-all)
+										label.input-group-addon Question Type:  
+										select.form-control(ng-model="question.renderType" ng-options='type.value as type.name for type in surveyTemplate.profileQuestionTypes')
+										label.input-group-addon Category: 
+										select.form-control(ng-model="question.categoryId" ng-options='cat.value as cat.name for cat in surveyTemplate.profileQuestionCats')
+										a.input-group-addon(ng-click="surveyTemplate.deleteProfileQuestion($index)") 
+											i.fa.fa-close
+								.space(ng-repeat-end)
+								div
+									.input-group
+										label.input-group-addon Title: 
+										input.form-control.text-ultralight.text-muted(type="text" ng-model="surveyTemplate.newProfileQuestion.titleText" dir-select-all)
+										label.input-group-addon Question Type:  
+										select.form-control(ng-model="surveyTemplate.newProfileQuestion.renderType" ng-options='type.value as type.name for type in surveyTemplate.profileQuestionTypes')
+										label.input-group-addon Category: 
+										select.form-control(ng-model="surveyTemplate.newProfileQuestion.categoryId" ng-options='cat.value as cat.name for cat in surveyTemplate.profileQuestionCats')
+								.space
+								.divider
+								.input-group.pull-right
+									button.btn.btn-default.pull-right(ng-click="surveyTemplate.addProfileQuestion()")
+										| Add New Profile Question
+								.divider
+								.space
+								.input-group
+									span.input-group-addon Highlight Color: 
+									input(type="color" ng-model="surveyTemplate.selected.template.profile.renderStyle.col")
+								
+							uib-accordion-group(heading="Thanks")
+								h4 Thanks
+								.input-group
+									span.input-group-addon Title: 
+									input.form-control.text-ultralight.text-muted(type="text", ng-model="surveyTemplate.selected.template.thanks.title" dir-select-all)
+								.space
+								.input-group
+									span.input-group-addon Image: 
+									input.form-control.text-ultralight.text-muted(type="text", ng-model="surveyTemplate.selected.template.thanks.img" dir-select-all)
+								.space
+								.input-group
+									span.input-group-addon Description: 
+									.ui-editor(text-angular, ng-model="surveyTemplate.selected.template.thanks.descr")
+								.space
+								.row.vert-align
+									.col-xs-4
+										.pull-left Show Profile Button:&nbsp;
+										.pull-left
+											.onoffswitch(ng-click="surveyTemplate.selected.template.thanks.showProfileBtn = !surveyTemplate.selected.template.thanks.showProfileBtn;")
+												input.onoffswitch-checkbox(id='show-video-switch' type='checkbox', ng-model='surveyTemplate.selected.template.thanks.showProfileBtn')
+												label.onoffswitch-label(for='show-video-switch')
+													.onoffswitch-inner
+													.onoffswitch-switch
+								.space
+								.input-group
+									span.input-group-addon Highlight Color: 
+									input(type="color" ng-model="surveyTemplate.selected.template.thanks.renderStyle.col")
+								
+							uib-accordion-group(heading="Concluded")
+								h4 Concluded
+								.input-group
+									span.input-group-addon Title: 
+									input.form-control.text-ultralight.text-muted(type="text", ng-model="surveyTemplate.selected.template.concluded.title" dir-select-all)
+								.space
+								.input-group
+									span.input-group-addon Description: 
+									.ui-editor(text-angular, ng-model="surveyTemplate.selected.template.concluded.descr")
+								.space
+								.input-group
+									span.input-group-addon Highlight Color: 
+									input(type="color" ng-model="surveyTemplate.selected.template.concluded.renderStyle.col")
+								.space
+								.row.vert-align
+									.pull-left Conclude Survey:&nbsp;
+									.pull-left
+										.onoffswitch(ng-click="surveyTemplate.selected.isConcluded = !surveyTemplate.selected.isConcluded;")
+											input.onoffswitch-checkbox(id='concluded-switch' type='checkbox', ng-model='surveyTemplate.selected.isConcluded')
+											label.onoffswitch-label(for='concluded-switch')
+												.onoffswitch-inner
+												.onoffswitch-switch
+						.divider
+						.divider
+						div.pull-right
+							button.btn.btn-xs.btn-default(ng-click="ui.cancelSurveyTemplateEditMode(stItem)")
+								| Cancel
+							.space
+							input.btn.btn-xs.btn-default(type="submit" value="Save" ng-click="surveyTemplate.updateSurveyTemplate(surveyTemplate.selected)")
+					.col-xs-12
+						//SURVEY CARD EXPANSION
+						.row
+							.col-xs-4
+								h3 Categories &amp; Slides
+							.col-xs-8
+								.divider
+								.divider
+								.vert-align.pull-right
+									h4.pull-right Link Mapping:&nbsp;
+									//- .space
+									//- a.btn-line-default.btn-icon-round.btn-icon-round-sm.close-btn(uib-tooltip="Upload Issues to Use as Questions via Excel", tooltip-placement="left", tooltip-append-to-body="true", ng-click='$event.stopPropagation()')
+									//- 	i.fa.fa-file-excel-o
+									.space
+									a.btn-line-default.btn-icon-round.btn-icon-round-sm(uib-tooltip="Distribute Questions into Packets", tooltip-placement="left", tooltip-append-to-body="true", ng-click='surveyTemplate.openRenderSurveyModal(); $event.stopPropagation()')
+										i.fa.fa-sitemap
+
+
+
+						//CATEGORY LIST
+						ul.list-group(ng-controller="sortableController", ui-sortable="sortableCatOptions", ng-model="categoryList")
+							li.list-group-item.category.row(ng-repeat = "category in surveyTemplate.selected.template.categories track by $index", ng-click="ui.enterCategoryViewMode(category); $event.stopPropagation();", style="cursor: move; color:{{category.renderStyle.col}}; background-color:{{category.renderStyle.bgCol}}; font:{{category.renderStyle.font1}}")
+								.row.vert-align(name="surveycolors")
+									.col-xs-6(ng-if="!category.edit")
+										h4.category-title
+											| {{category.title}} 
+											.text-small [questions:{{category.slideList.length}}]
+											| {{{true:'[HIDDEN]', false:''}[category.isVisible]}}
+									.col-xs-4(ng-if="category.edit")
+										input.h4.form-control.pull-right(ng-if="category.edit", type="text", ng-model="category.title", placeholder = "{{category.title}}" dir-select-all)
+									.col-xs-2.text-ultralight.text-small(ng-if="category.edit")
+										div text-color: 
+											input(type="color", name="color-text" ng-model="category.renderStyle.col")
+									.col-xs-2.text-ultralight.text-small(ng-if="category.edit")
+										div back-color:
+											input(type="color" name="color-bkgrnd" ng-model="category.renderStyle.bgCol")
+									//- .col-xs-4.text-ultralight.text-small(ng-if="category.edit")
+									//- 	.input-group
+									//- 		span.input-group-addon
+									//- 			|font 1
+									//- 		input.input-sm.form-control(type="text", ng-model="category.renderStyle.font1", placeholder = "{{category.renderStyle.font1}}")
+									//- 	.space
+									//- 	.input-group
+									//- 		span.input-group-addon
+									//- 			|font 2
+									//- 		input.input-sm.form-control(type="text", ng-model="category.renderStyle.font2", placeholder = "{{category.renderStyle.font2}}")
+									
+									.col-xs-6(ng-if="!category.edit && !category.view")
+											a.pull-right.btn-line-default.btn-icon-round.btn-icon-round-sm(uib-tooltip="Open Category Settings", tooltip-placement="left", ng-click="ui.enterCategoryEditMode(category); $event.stopPropagation()", style="cursor: pointer;") 
+												i.fa.fa-cogs
+											.space.pull-right
+											a.pull-right.btn-line-default.btn-icon-round.btn-icon-round-sm(uib-tooltip="Manage Slides", tooltip-placement="top", ng-click="ui.enterCategoryViewMode(category); $event.stopPropagation()", style="cursor: pointer; margin-left:5px;") 
+												i.fa.fa-bars
+									.col-xs-6(ng-if="category.view")
+										span.pull-right(ng-if="category.view")
+											a.pull-right.btn-line-default.btn-icon-round.btn-icon-round-sm(ng-if="category.view", uib-tooltip="Hide Slides", tooltip-placement="top", ng-click="ui.closeCategoryViewMode(category); $event.stopPropagation();", style="cursor: pointer; margin-left:5px;") 
+												i.fa.fa-close
+											.space.pull-right
+											a.pull-right.btn-default.btn-xs.btn(ng-if="category.view && !surveyTemplate.selected.isPublished", uib-tooltip="Add a question to this category", tooltip-placement="left", ng-click="surveyTemplate.addSlide(stItem.ref, category); $event.stopPropagation();", style="cursor: pointer; margin-left:5px; margin-top:5px;") 
+												i.fa.fa-plus &nbsp; new question
+									.col-xs-4(ng-if="category.edit")
+										span.pull-right(ng-if="category.edit")
+											a.pull-right.btn-default.btn-icon-round.btn-icon-round-sm(uib-tooltip="Cancel", tooltip-placement="left", ng-click='category.edit = false; $event.stopPropagation()', style="cursor: pointer;")
+												i.fa.fa-close
+											.space.pull-right
+											a.btn.pull-right.btn-default.btn-icon-round.btn-icon-round-sm(type="submit" uib-tooltip="Save Category Settings", tooltip-placement="left", ng-click='surveyTemplate.updateCategory(stItem.ref, category); $event.stopPropagation()', style="cursor: pointer;")
+												i.fa.fa-check
+											.space.pull-right
+											a.pull-right.btn-default.btn-icon-round.btn-icon-round-sm(uib-tooltip="Delete Category", tooltip-placement="left", dir-delete-confirm obj-name="{{category.title}}" action='surveyTemplate.removeCategory(stItem.ref, category); $event.stopPropagation();', style="cursor: pointer;")
+												i.fa.fa-ban
+								//SLIDES LIST
+								ul.list-group(ui-sortable="sortableSlideOptions", ng-if="category.view", style="cursor: default;")
+									li.list-group-item.slide.animate-zoom(ng-repeat = "slideNum in category.slideList track by $index")
+										.row.slideRow.vert-align
+											.col-xs-10.vert-align
+												button.btn.btn-xs.btn-default.pull-left(ng-click="ui.toggleSlide(surveyTemplate.getSlideFromNum(slideNum))")
+													span(ng-if="!surveyTemplate.getSlideFromNum(slideNum).isOpen")
+														i.fa.fa-caret-right
+													span(ng-if="surveyTemplate.getSlideFromNum(slideNum).isOpen")
+														i.fa.fa-caret-down
+													span.text-small.text-muted &nbsp; {{slideNum}}
+												.h4(ng-click="ui.toggleSlide(surveyTemplate.getSlideFromNum(slideNum))", style="cursor: pointer;") &nbsp; {{surveyTemplate.getSlideFromNum(slideNum).titleShortText || surveyTemplate.getSlideFromNum(slideNum).titleText}}
+											.col-xs-2
+												button.btn.btn-xs.btn-default.pull-right(ng-click="surveyTemplate.removeSlide(stItem.ref, surveyTemplate.getSlideFromNum(slideNum));$event.stopPropagation()")
+													i.fa.fa-trash-o
+										form.slideForm(ng-if="surveyTemplate.getSlideFromNum(slideNum).isOpen")
+											.row.slideRow.vert-align
+												.col-xs-2.text-ultralight.text-small.text-right
+													span QuestionTitleText
+												.col-xs-8
+													input.input-sm.form-control(type="text", ng-model="surveyTemplate.getSlideFromNum(slideNum).titleText", placeholder = "{{surveyTemplate.getSlideFromNum(slideNum).titleText}}" dir-select-all)
+											.row.slideRow.vert-align
+												.col-xs-2.text-ultralight.text-small.text-right
+													span TitleShortText
+												.col-xs-8
+													input.input-sm.form-control(type="text", ng-model="surveyTemplate.getSlideFromNum(slideNum).titleShortText", placeholder = "{{surveyTemplate.getSlideFromNum(slideNum).titleShortText}}" dir-select-all)
+											.row.slideRow.vert-align
+												.col-xs-2.text-ultralight.text-small.text-right
+													span TitleSubText
+												.col-xs-8
+													input.input-sm.form-control(type="text", ng-model="surveyTemplate.getSlideFromNum(slideNum).titleSubText", placeholder = "{{surveyTemplate.getSlideFromNum(slideNum).titleSubText}}" dir-select-all)
+											//- .row.slideRow.vert-align
+											//- 	.col-xs-2.text-ultralight.text-small.text-right
+											//- 		span HelpText
+											//- 	.col-xs-8
+											//- 		input.input-sm.form-control(type="text", ng-model="surveyTemplate.getSlideFromNum(slideNum).titleHelpText", placeholder = "{{surveyTemplate.getSlideFromNum(slideNum).titleHelpText}}" dir-select-all)
+											.row.slideRow.vert-align
+												.col-xs-2.text-ultralight.text-small.text-right
+													span Required {{surveyTemplate.getSlideFromNum(slideNum).required}}
+												.col-xs-4
+														label.ui-radio.col-xs-4
+															input(name="radio1", type="radio", ng-model="surveyTemplate.getSlideFromNum(slideNum).required", value="true")
+															span Yes
+														label.ui-radio.col-xs-4
+															input(name="radio1", type="radio", ng-model="surveyTemplate.getSlideFromNum(slideNum).required", value="false")
+															span No
+												.col-xs-4
+											.row.slideRow.vert-align
+												.col-xs-2.text-ultralight.text-small.text-right
+													span Render Type
+												.col-xs-4
+													span.ui-select
+														select(ng-model="surveyTemplate.getSlideFromNum(slideNum).renderType")
+															option(value="text") Text
+															option(value="para") Paragraph Text
+															option(value="comment") Comment
+															option(value="radio") Multiple Choice
+															option(value="checkbox") Checkboxes
+															option(value="list") Choose From a list
+															option(value="switch") Yes No
+															option(value="range") Range
+															option(value="date") Date
+															option(value="time") Time
+															option(value="scale") Scale
+															option(value="matrix_radio") Matrix Multiple Choice
+															option(value="matrix_check") Matrix Checkboxes
+															option(value="file") Drag and Drop [TODO]
+
+											.divider
+											.row.slideRow.vert-align
+												// Text Option
+												.col-xs-offset-2.col-xs-4(ng-if="surveyTemplate.getSlideFromNum(slideNum).renderType == 'text'")
+													.callout.callout-info
+														.short-text-option.text-small User Answer
+												// Para Option
+												.col-xs-offset-2.col-xs-4(ng-if="surveyTemplate.getSlideFromNum(slideNum).renderType == 'para'")
+													.callout.callout-info
+														.long-text-option.text-small User Long Answer
+												// Comment Option
+												.col-xs-offset-2.col-xs-4(ng-if="surveyTemplate.getSlideFromNum(slideNum).renderType == 'comment'")
+													.callout.callout-info
+														.text-small {{surveyTemplate.getSlideFromNum(slideNum).titleText}}
+												// Date Option
+												.col-xs-offset-2.col-xs-4(ng-if="surveyTemplate.getSlideFromNum(slideNum).renderType == 'date'")
+													.callout.callout-info
+														.date-option(ng-controller="DatepickerDemoCtrl")
+															.input-group.ui-datepicker
+																span.input-group-addon
+																	i.fa.fa-calendar
+																input.form-control(type="text", datepicker-popup="dd-MMMM-yyyy" ng-model="dt", is-open="opened", min="minDate", max="'2015-06-22'", datepicker-options="dateOptions", date-disabled="disabled(date, mode)", ng-required="true", close-text="Close", required="required")
+												// Time Option
+												.col-xs-offset-2.col-xs-8(ng-if="surveyTemplate.getSlideFromNum(slideNum).renderType == 'time'")
+													.time-option(data-ng-controller='TimepickerDemoCtrl')
+														.row.text-small
+															.col-sm-6
+																.callout.callout-info
+																	div(ng-model='mytime', ng-change='changed()', style='display: inline-block;')
+																		timepicker.ui-timepicker(hour-step='hstep', minute-step='mstep', show-meridian='ismeridian')
+																	.divider
+																	p User Answer is: {{mytime | date:'shortTime' }}
+															//- .col-sm-4
+															//- 	p Settings
+															//- 	p Hours step is:
+															//- 		span.space
+															//- 		span.ui-select
+															//- 			select(ng-model='hstep', ng-options='opt for opt in options.hstep')
+															//- 	p Minutes step is:
+															//- 		span.ui-select
+															//- 			select(ng-model='mstep', ng-options='opt for opt in options.mstep')
+															//- 	button.btn.btn-info(ng-click='toggleMode()') 12H / 24H
+															//- 	.space
+															//- 	button.btn.btn-default(ng-click='update()') Set to 14:00
+															//- 	.space
+															//- 	button.btn.btn-danger(ng-click='clear()') Clear
+												// Scale Option
+												.col-xs-offset-2.col-xs-6(ng-if="surveyTemplate.getSlideFromNum(slideNum).renderType == 'scale'")
+													//- .input-group
+													//- 	span.input-group-addon
+													//- 		| max
+													//- 	input.input-sm.form-control(type="text", ng-model="surveyTemplate.getSlideFromNum(slideNum).answerRange.max", placeholder = "{{surveyTemplate.getSlideFromNum(slideNum).answerRange.max}}")
+													.callout.callout-info
+														rating
+												// Multiple Choice
+												.col-xs-offset-2.col-xs-8(ng-if="surveyTemplate.getSlideFromNum(slideNum).renderType == 'radio'")
+													dl
+														.row
+															span.col-xs-offset-2.col-xs-3 
+																.text-small.text-center Option
+															span.col-xs-offset-2.col-xs-3
+																.text-small Value
+														.divider
+														.row(ng-repeat = "option in surveyTemplate.getSlideFromNum(slideNum).answerOptions.rows track by $index")
+															dd
+																label.ui-radio.col-xs-1
+																	input(name="radio1", type="radio", value="option.descr")
+																	span.text-small 
+															span.text-small.col-xs-4 
+																input.input-sm.form-control(type="text", ng-model = "option.descr", placeholder="{{option.descr}}" dir-select-all)
+															span.text-small.col-xs-4
+																input.pull-right.input-sm.form-control(type="text", ng-model = "option.value", placeholder="{{option.value}}" dir-select-all)
+															span.text-small.col-xs-1
+																a.btn(ng-click="surveyTemplate.removeOptionsFromSlideAnswer(stItem.ref, slideNum, $index)")
+																	i.fa.fa-times
+														.row
+															dd
+																label.ui-radio.col-xs-1
+																	input(name="radio1", type="radio", value="option.descr")
+																	span.text-small 
+															span.text-small.col-xs-4 
+																button.input-sm.form-control(type="text", ng-click = "surveyTemplate.addOptionsToSlideAnswer(stItem.ref, slideNum)")
+																	.pull-left Add Option
+														.callout.callout-info
+															.row(ng-repeat = "option in surveyTemplate.getSlideFromNum(slideNum).answerOptions.rows track by $index")
+																dd
+																	label.ui-radio.col-xs-12
+																		input(name="radio1", type="radio", ng-model = "surveyTemplate.choice", ng-value="option.value")
+																		span.text-small
+																			| {{option.descr}}
+															.short-text-option.text-small selected value: {{surveyTemplate.choice}}
+												// checkboxes
+												.col-xs-offset-2.col-xs-8(ng-if="surveyTemplate.getSlideFromNum(slideNum).renderType == 'checkbox'")
+													dl
+														.row
+															span.col-xs-offset-2.col-xs-3 
+																.text-small.text-center Option
+															span.col-xs-offset-2.col-xs-3
+																.text-small Value
+														.divider
+														.row(ng-repeat = "option in surveyTemplate.getSlideFromNum(slideNum).answerOptions.rows track by $index")
+															dd
+																label.ui-checkbox.col-xs-1
+																	input(name="checkbox1", type="checkbox", value="option.descr")
+																	span.text-small 
+															span.text-small.col-xs-4 
+																input.input-sm.form-control(type="text", ng-model = "option.descr", placeholder="{{option.descr}}" dir-select-all)
+															span.text-small.col-xs-4
+																input.pull-right.input-sm.form-control(type="text", ng-model = "option.value", placeholder="{{option.value}}" dir-select-all)
+															span.text-small.col-xs-1
+																a.btn(ng-click="surveyTemplate.removeOptionsFromSlideAnswer(stItem.ref, slideNum, $index)")
+																	i.fa.fa-times
+														.row
+															dd
+																label.ui-checkbox.col-xs-1
+																	input(name="checkbox1", type="checkbox", value="option.descr")
+																	span.text-small 
+															span.text-small.col-xs-4 
+																button.input-sm.form-control(type="text", ng-click = "surveyTemplate.addOptionsToSlideAnswer(stItem.ref, slideNum)")
+																	.pull-left Add Option
+														.callout.callout-info
+															.row(ng-repeat = "option in surveyTemplate.getSlideFromNum(slideNum).answerOptions.rows track by $index")
+																dd
+																	label.ui-radio.col-xs-12
+																		input(name="checkbox1", type="checkbox", ng-value="option.value")
+																		span.text-small
+																			| &nbsp;{{option.descr}}
+															.short-text-option.text-small selected value:
+												//matrix checkboxes
+												.col-xs-offset-2.col-xs-8(ng-if="surveyTemplate.getSlideFromNum(slideNum).renderType == 'matrix_check'")
+													dl
+														.row
+															h3 Columns
+															span.text-small.col-xs-4 Column
+															span.text-small.col-xs-4 Value
+														.divider
+														.row(ng-repeat = "option in surveyTemplate.getSlideFromNum(slideNum).answerOptions.cols track by $index")
+															span.text-small.col-xs-4 
+																input.input-sm.form-control(type="text", ng-model = "option.descr", placeholder="{{option.descr}}" dir-select-all)
+															span.text-small.col-xs-4
+																input.pull-right.input-sm.form-control(type="text", ng-model = "option.value", placeholder="{{option.value}}" dir-select-all)
+															span.text-small.col-xs-1
+																a.btn(ng-click="surveyTemplate.removeMatrixColumnFromSlideAnswer(stItem.ref, slideNum, $index)")
+																	i.fa.fa-times
+														.row
+															span.text-small.col-xs-4 
+																button.input-sm.form-control(type="text", ng-click = "surveyTemplate.addMatrixColumnToSlideAnswer(stItem.ref, slideNum)")
+																	.pull-left Add Column
+														.row
+															h3 Rows
+															span.text-small.col-xs-4 Row
+															span.text-small.col-xs-4 Value
+														.divider
+														.row(ng-repeat = "option in surveyTemplate.getSlideFromNum(slideNum).answerOptions.rows track by $index")
+															span.text-small.col-xs-4 
+																input.input-sm.form-control(type="text", ng-model = "option.descr", placeholder="{{option.descr}}" dir-select-all)
+															span.text-small.col-xs-4
+																input.pull-right.input-sm.form-control(type="text", ng-model = "option.value", placeholder="{{option.value}}" dir-select-all)
+															span.text-small.col-xs-1
+																a.btn(ng-click="surveyTemplate.removeMatrixRowFromSlideAnswer(stItem.ref, slideNum, $index)")
+																	i.fa.fa-times
+														.row
+															span.text-small.col-xs-4 
+																button.input-sm.form-control(type="text", ng-click = "surveyTemplate.addMatrixRowToSlideAnswer(stItem.ref, slideNum)")
+																	.pull-left Add Row
+														.callout.callout-info
+															.row
+																dd
+																	span.text-small.col-xs-4
+																	span.text-small.col-xs-2(ng-repeat="col in surveyTemplate.getSlideFromNum(slideNum).matrix.columns track by $index")
+																		| {{col.descr}}
+															.row(ng-repeat = "row in surveyTemplate.getSlideFromNum(slideNum).answerOptions.rows track by $index")
+																dd
+																	span.text-small.col-xs-4
+																		| {{row.descr}}
+																	label.ui-radio.col-xs-2(ng-repeat="col in surveyTemplate.getSlideFromNum(slideNum).answerOptions.cols track by $index")
+																		input(name="{{row.value}}", type="radio", ng-value="col.value")
+																		span.text-small
+												// list
+												.col-xs-offset-2.col-xs-8(ng-if="surveyTemplate.getSlideFromNum(slideNum).renderType == 'list'")
+													dl
+														.row
+															span.col-xs-4
+																.text-small.text-center Option
+															span.col-xs-4
+																.text-small.text-center Value
+														.divider
+														.row(ng-repeat = "option in surveyTemplate.getSlideFromNum(slideNum).answerOptions.rows track by $index")
+															span.text-small.col-xs-4 
+																input.input-sm.form-control(type="text", ng-model = "option.descr", placeholder="{{option.descr}}" dir-select-all)
+															span.text-small.col-xs-4
+																input.pull-right.input-sm.form-control(type="text", ng-model = "option.value", placeholder="{{option.value}}" dir-select-all)
+															span.text-small.col-xs-1
+																a.btn(ng-click="surveyTemplate.removeOptionsFromSlideAnswer(stItem.ref, slideNum, $index)")
+																	i.fa.fa-times
+														.row
+															span.text-small.col-xs-4 
+																button.input-sm.form-control(type="text", ng-click = "surveyTemplate.addOptionsToSlideAnswer(stItem.ref, slideNum)")
+																	.pull-left Add Option
+													.callout.callout-info.text-small
+														select(ng-model = "surveyTemplate.choice", ng-options = "option.descr for option in surveyTemplate.getSlideFromNum(slideNum).answerOptions.rows")
+															option(value="") -- choose --
+														.divider
+														.short-text-option.text-small selected value: {{surveyTemplate.choice.value}}
+
+
+												// switch
+												.col-xs-offset-2.col-xs-8(ng-if="surveyTemplate.getSlideFromNum(slideNum).renderType == 'switch'")
+													dl
+														.row
+															span.col-xs-8
+																.text-small.text-center Option
+															span.col-xs-4
+																.text-small.text-center Value
+														.divider
+														.row(ng-repeat = "option in surveyTemplate.getSlideFromNum(slideNum).answerOptions.rows track by $index")
+															span.text-small.col-xs-8 
+																input.input-sm.form-control(type="text", ng-model = "option.descr", placeholder="{{option.descr}}" dir-select-all)
+															span.text-small.col-xs-4
+																input.pull-right.input-sm.form-control(type="text", ng-model = "option.value", placeholder="{{option.value}}" dir-select-all)
+													.divider
+													.callout.callout-info
+														.text-small user view
+														.divider
+														div.row
+															.col-xs-4.switch-left {{surveyTemplate.getSlideFromNum(slideNum).answerOptions.rows[0].descr}}
+															.col-xs-2
+																label.switch.pull-left
+																	input(type="checkbox", checked, ng-model="surveyTemplate.opt", ng-true-value= "1", ng-false-value= "0")
+																	i
+															.col-xs-4.switch-right {{surveyTemplate.getSlideFromNum(slideNum).answerOptions.rows[1].descr}}
+														.divider
+														.short-text-option.text-small
+															| value: {{surveyTemplate.getSlideFromNum(slideNum).answerOptions.rows[surveyTemplate.opt].value}}
+													
+												// Range
+												.col-xs-offset-2.col-xs-6(ng-if="surveyTemplate.getSlideFromNum(slideNum).renderType == 'range'")
+													.input-group
+														span.input-group-addon
+															| min
+														input.input-sm.form-control(type="text", ng-model="surveyTemplate.getSlideFromNum(slideNum).answerOptions.rows[0].value", placeholder = "{{surveyTemplate.getSlideFromNum(slideNum).answerOptions.rows[0].value}}" dir-select-all)
+													.space
+													.input-group
+														span.input-group-addon
+															| max
+														input.input-sm.form-control(type="text", ng-model="surveyTemplate.getSlideFromNum(slideNum).answerOptions.rows[1].value", placeholder = "{{surveyTemplate.getSlideFromNum(slideNum).answerOptions.rows[1].value}}" dir-select-all)
+													.space
+													.input-group
+														span.input-group-addon
+															| min description
+														input.input-sm.form-control(type="text", ng-model="surveyTemplate.getSlideFromNum(slideNum).answerOptions.rows[0].descr", placeholder = "{{surveyTemplate.getSlideFromNum(slideNum).answerOptions.rows[0].descr}}" dir-select-all)
+													.space
+													.input-group
+														span.input-group-addon
+															| max description
+														input.input-sm.form-control(type="text", ng-model="surveyTemplate.getSlideFromNum(slideNum).answerOptions.rows[1].descr", placeholder = "{{surveyTemplate.getSlideFromNum(slideNum).answerOptions.rows[1].descr}}" dir-select-all)
+													.divider
+													//- span.text-small user view [value: {{surveyTemplate.getSlideFromNum(slideNum).answerRange.val}} ]
+													//- div(ui-slider, min="{{surveyTemplate.getSlideFromNum(slideNum).answerRange.min}}", max="{{surveyTemplate.getSlideFromNum(slideNum).answerRange.max}}", ng-model="surveyTemplate.getSlideFromNum(slideNum).answerRange.val")
+											.row
+												.col-xs-offset-2.col-xs-3
+													input.btn.btn-xs.btn-default(type="submit" value="Save" ng-click="surveyTemplate.updateSlide(stItem.ref, slideNum)")
+													.space
+													button.btn.btn-xs.btn-default(ng-click="ui.toggleSlide(surveyTemplate.getSlideFromNum(slideNum))")
+														| Cancel
+											//- .divider
+								a.pull-right.btn-default.btn-xs.btn(ng-show="category.slideList.length > 0", ng-if="category.view", uib-tooltip="Add a question to this category", tooltip-placement="left", ng-click="surveyTemplate.addSlide(stItem.ref, category); $event.stopPropagation();", style="cursor: pointer; margin-left:5px; margin-top:5px;") 
+									span
+										i.fa.fa-plus &nbsp; new question
+							li.list-group-item.category.row(ng-click='surveyTemplate.addCategory(stItem.ref); $event.stopPropagation();', style="cursor: pointer;")
+								.text-center Add Another Category To <strong>{{stItem.surveyName}}</strong>	
+					.divider
+					//RESPONDENTS
+					.row
+						.col-xs-12(ng-if="surveyTemplate.selected.rawDataSetRef")
+							span rawDataSetRef: {{surveyTemplate.selected.rawDataSetRef}}
+						ul.list-group
+							li.list-group-item(ng-repeat="(key,val) in quesCount")
+								.text-small.text-muted [{{key}}]: 
+								.text {{val}}
+								.divider

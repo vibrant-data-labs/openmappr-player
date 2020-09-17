@@ -4,7 +4,7 @@
 * Applied per attribute
 * Used at 2 places - Data Modal & Filter Panel
 */
-angular.module('common')
+angular.module('mappr')
 .directive('dirAttrMod', ['$q', '$rootScope', '$timeout', 'AttrModifierService', 'AttrInfoService', 'dataService', 'networkService', 'dataGraph', 'uiService', 'BROADCAST_MESSAGES',
 function($q, $rootScope, $timeout, AttrModifierService, AttrInfoService, dataService, networkService, dataGraph, uiService, BROADCAST_MESSAGES) {
     'use strict';

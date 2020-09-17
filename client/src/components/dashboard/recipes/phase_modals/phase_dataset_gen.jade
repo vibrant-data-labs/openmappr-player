@@ -1,0 +1,16 @@
+.recipe-block
+	.recipe-block-item.row
+		.item-desc.col-xs-1 
+			.pull-right INGEST
+			.text.pull-right(ng-if="inProgress && !run_finished && finalCompletion > 0") {{finalCompletion | number : 2}}%
+		.col-xs-1
+			div(ng-include="'#{server_prefix}#{view_path}/components/dashboard/recipes/phase_modals/phase_indicator.html'")
+		.item-body.col-xs-9(ng-click="phasevm.onClick()")
+			button.power-btn.secondary-btn.pull-right 
+				i.fa.fa-pencil
+				| &nbsp;Edit
+			div(ng-repeat="attr in phasevm.cfg.attr_desc")
+				h6 {{::attr.id}} - 
+					span.text-qualify {{::attr.attrType}}, [{{attr.isRequired ? 'required' : ''}}]
+		//- .item-action.col-xs-1.soft-color
+		//- 	i.fa.fa-2x.fa-pencil

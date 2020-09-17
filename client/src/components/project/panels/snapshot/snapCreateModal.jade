@@ -1,0 +1,52 @@
+.modal-header
+	.row.vert-align
+		.col-xs-6
+			h6
+				span Create {{newSnapshotType}} Snapshot
+		.col-xs-6.vert-align.right
+			button.header-btn(type="button", ng-click="saveSnapshot()") 
+				i.fa.fa-camera
+				span.h7 Create
+			button.close-btn(type="button", ng-click="closeModal()")
+				span.icon &times;
+.modal-body(ng-switch="newSnapshot.type")
+	.row
+		.col-xs-12
+			h3 Title
+			//title
+			input.form-control(ng-model="newSnapshot.snapName")
+	.row
+		.col-xs-12
+			h3 Description
+			//descr
+			.ui-editor(text-angular, ng-model="newSnapshot.descr")
+			//- textarea.form-control(ng-model="newSnapshot.descr")
+	.row
+		//link
+		.col-xs-12
+			h3 Audio
+			input.form-control(ng-model="currSnapshot.audio" dir-select-all)
+	.row
+		//link
+		.col-xs-12
+			h3 Image Link
+			input.form-control(ng-model="newSnapshot.picture" dir-select-all)
+	.row
+		//embed code
+		.col-xs-12
+			h3 Embed Code
+			textarea.form-control(ng-model="newSnapshot.embed" dir-select-all)
+	.row
+		.col-xs-12
+			h3 Snapshot Text
+			textarea.form-control(rows="10" ng-model="newSnapshot.text" dir-select-all)
+	.row
+		.col-xs-12
+			//save
+			.divider
+			.divider
+			.text-danger {{snapCreationErr}}
+			button.pull-right.power-btn(ng-click="saveSnapshot()") Create Snapshot
+			.clearfix
+			.divider
+			.divider

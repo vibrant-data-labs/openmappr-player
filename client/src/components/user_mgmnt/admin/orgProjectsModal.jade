@@ -1,0 +1,52 @@
+.modal-header
+	.row.vert-align
+		.col-xs-8
+			h6
+				i.fa.fa-fw.fa-users
+				span {{selOrgVM.orgName}} Maps
+		.col-xs-4
+			button.close-btn(type="button", ng-click="$close()")
+				span.icon &times;
+.modal-body
+	.container-fluid
+		.row
+			input.span8.search(type="text", placeholder="search projects...", ng-model="projSearchText", ng-model-options="{debounce: 500}" dir-select-all)
+		.users-list#pad-wrapper
+			.row-fluid.table
+				table.table.table-hover
+					thead
+						tr
+							th.span1.sortable
+							th.span5.sortable Title
+							th.span2.sortable Owner
+							th.span1.sortable Last Modified
+							th.span1.sortable Mappr
+							th.span2.sortable
+
+					tbody
+						tr(data-ng-repeat="proj in selOrgVM.projects | filter: projSearchText | orderBy : orderComposite")
+							td {{$index+1}}
+							td
+								img.img-circle.avatar.hidden-phone()
+								a.name(ng-click="openEditProjModal(proj._id)") {{ proj.projName }}
+							td {{proj.mapprs.map_owner.email}}
+							td {{proj.settings.modifiedAt | date : medium}}
+							td
+								a.label.label-active(ng-hide="proj.mapprs.map_editors.length < 1") {{proj.mapprs.map_editors.length}}e
+								a.label.label-active(ng-hide="proj.mapprs.map_visitors.length < 1") {{proj.mapprs.map_visitors.length}}v
+							td
+								.uib-dropdown(uib-dropdown dropdown-append-to-body)
+									span(uib-dropdown-toggle auto-close="outsideClick") 
+										i.fa.fa-cog
+									.uib-dropdown-menu.uib-dropdown-menu-flexing(uib-dropdown-menu)
+										.uib-dropdown-click-close
+										//inline style to center dropdowns
+										.uib-dropdown-flex-content
+											.uib-dropdown-flex.right
+												ul.dd-list.list-unstyled
+													li.row.vert-align.no-hover
+														.col-xs-12.flex-container
+															button.h6.dropdown-btn.text-uppercase.flex-fill.nowrap.power-btn(ng-click="openEditProjModal(proj._id)") Edit Project
+													li.row.vert-align.no-hover
+														.col-xs-12.flex-container
+															button.h6.dropdown-btn.text-uppercase.flex-fill.nowrap.power-btn(ng-click="deleteProject(proj._id)") Delete Project

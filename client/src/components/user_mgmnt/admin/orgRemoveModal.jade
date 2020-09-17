@@ -1,0 +1,29 @@
+.modal-header
+	.row.vert-align
+		.col-xs-8
+			h6
+				span Remove Org
+		.col-xs-4
+			button.close-btn(type="button", ng-click="$close()")
+				span.icon &times;
+.modal-body
+	.container-fluid
+		.row
+			.list-group-item
+				.row
+					.col-xs-12
+						h5 This Org has :
+				.row
+					.col-xs-12
+						ul
+							li
+								h6 {{selOrgVM.projects.length}} projects &nbsp;&nbsp;
+									//- a.text-link(ng-href="", ng-click="viewOrgProjects();") View Projects
+							li
+								h6 {{selOrgVM.users.members.length}} users &nbsp;&nbsp;
+									//- a.text-link(ng-href="", ng-click="viewOrgUsers();") View Users
+				.divider
+				div
+					h6.no-margin.pull-left.error-text Are you sure you want to delete the Org?
+					button.power-btn.pull-right.error-btn(ng-click="selOrgVM.remove(); $close();")| Remove
+					.clearfix

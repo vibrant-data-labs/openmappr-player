@@ -1,0 +1,143 @@
+.modal-header
+    .row.vert-align
+        .col-xs-9
+            h6
+                span Recipe ETL Settings
+        .col-xs-3.vert-align.right
+            button.header-btn(ng-click="save()")
+                i.fa.fa-cloud-upload
+                span.h7 Save
+            button.close-btn(type="button", ng-click="closeModal()")
+                span.icon &times;
+.modal-body
+    div
+        .vert-align.row
+            .col-xs-3
+                label.h6.title.text-uppercase Enable ETL 
+            .col-xs-7
+                .bool.pull-left(uib-tooltip="Enable ETL" tooltip-placement="left" tooltip-append-to-body="true")
+                    .onoffswitch
+                        input.onoffswitch-checkbox(id='enable-etl', type='checkbox', ng-model='config.enabled')
+                        label.onoffswitch-label(for='enable-etl')
+                            .onoffswitch-inner
+                            .onoffswitch-switch
+        // select script
+        .row.vert-align
+            .col-xs-3 
+                h6 Script
+            .col-xs-7
+                .ui-select
+                    select(ng-model="config.scriptName" ng-options="item as item for item in scriptNameOpts", ng-change="loadScript(config.scriptName)")
+        .vert-align.row
+            .col-xs-3
+                label.h6.title.text-uppercase is Parquet File 
+            .col-xs-7
+                .bool.pull-left(uib-tooltip="is Parquet file" tooltip-placement="left" tooltip-append-to-body="true")
+                    .onoffswitch
+                        input.onoffswitch-checkbox(id='is-parquet-file', type='checkbox', ng-model='config.isParquet')
+                        label.onoffswitch-label(for='is-parquet-file')
+                            .onoffswitch-inner
+                            .onoffswitch-switch
+        .vert-align
+                    .col-xs-3 
+                        h6 Entity to analyse
+                    .col-xs-7
+                        .ui-select
+                            select(ng-model="config.entity" ng-options="item as item for item in entityOpts", ng-change="setEntity(config.entity)")
+        .vert-align.row
+            .col-xs-3
+                label.h6.title.text-uppercase Part Name
+            .col-xs-7
+                input.form-control.h5(ng-model="config.partName", placeholder="partName")
+
+        .divider-lg
+        // show colums in data
+        .row.top-align
+            .col-xs-3
+                h6.no-margin Available columns
+            .col-xs-7
+                .three-columns
+                    ul
+                        li(ng-repeat="col in dataCols | orderBy:'toString()'") {{col}}
+
+        // read options like seperator
+        .row.vert-align
+            .col-xs-3 
+                h6.text-uppercase Read Options 
+        .row.vert-align
+            .col-xs-3 
+                h6 tab_sep 
+            .col-xs-7 
+                .bool.pull-left(uib-tooltip="tab_sep", tooltip-placement="left", tooltip-append-to-body="true")
+                    .onoffswitch
+                        input.onoffswitch-checkbox(id='tag-sep', type='checkbox', ng-model='config.readOpts.tab_sep')
+                        label.onoffswitch-label(for='tag-sep')
+                            .onoffswitch-inner
+                            .onoffswitch-switch
+        .divider
+        hr
+        // filter config
+        h4 Data filtering
+        .divider-sm
+        a.power-btn.secondary-btn.left(target="_blank", href="https://docs.treasuredata.com/articles/hive-operators#predicate-operators") list of all valid operators
+        .divider-sm
+        // transaction row filtering
+        .row
+            .col-xs-12
+                h5 Transaction filtering
+                h7 Only those transactions for which this predicate is true are selected, eg: merchant in 'Lyft', 'Uber' AND state = 'CA'
+                .code
+                    input.form-control.h5(ng-model="config.filterSpec.rowFilter", placeholder="row filter predicate")
+        // value row filtering
+        .row
+            .col-xs-12
+                h5 transaction filtering via column value file
+                h7 Only those transactions for which the userId is equal to any value in the given file.
+                .row
+                    .col-xs-3 
+                        h6 enabled
+                    .col-xs-7 
+                        .bool.pull-left(uib-tooltip="enable col filter via files", tooltip-placement="left", tooltip-append-to-body="true")
+                            .onoffswitch
+                                input.onoffswitch-checkbox(id='col_filter', type='checkbox', ng-model='config.colValFiltersEnabled')
+                                label.onoffswitch-label(for='col_filter')
+                                    .onoffswitch-inner
+                                    .onoffswitch-switch
+                .row
+                    .code
+                        input.form-control.h5(ng-model="config.colValFilters.userID", placeholder="file with userID")
+        .row
+            .col-xs-12
+                h5 Attribute Value filtering
+                h7 Select all values for the attribute where the given predicate is true. then select all transactions where the value of the attribute is in the value set, 
+                h7 eg: attribute: userId, filter: category LIKE %Apparel%. Will select all transactions of user who have shopped in Apparel section atleast once.
+                .divider
+                div(ng-repeat="attrFilter in valueFilters")
+                    .divider
+                    .row.vert-align
+                        .col-xs-10
+                            .row.vert-align
+                                .col-xs-3
+                                    h6.no-margin Attribute
+                                .col-xs-9
+                                    .ui-select
+                                        select(ng-model="attrFilter.colId", ng-options="item as item for item in dataCols")
+                            .divider-sm
+                            .row.vert-align
+                                .col-xs-3
+                                    h6.no-margin Predicate
+                                .col-xs-9
+                                    input.form-control.h5.no-margin(ng-model="attrFilter.predicate", placeholder="value filter predicate")
+                        .col-xs-2
+                            button.power-btn.error-btn.secondary-btn.pull-left(ng-click="removeFilter($index)" uib-tooltip="Remove Value Filter" tooltip-append-to-body="true")
+                                i.fa.fa-2x.fa-times
+                            .clearfix
+                            .divider-sm
+                                
+                .divider-lg
+                .row
+                    .col-xs-12
+                        button.power-btn(ng-click="addFilter()") Add Value Filter
+        
+    .divider-lg
+    button.power-btn.right.pull-right(ng-click="save();") Save

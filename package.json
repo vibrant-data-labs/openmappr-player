@@ -7,17 +7,20 @@
     "node": ">=5.0.0"
   },
   "scripts": {
-    "start": "nodemon --watch server server.js",
-    "debug": "nodemon --debug --watch server server.js",
-    "test": "./node_modules/mocha/bin/mocha --recursive",
-    "build-resources": "node server/build-resources.js",
+    "build": "node server/build-resources.js",
+    "build:data": "node server/build-resources.js --dataOnly",
+    "build:static": "node server/build-resources.js --staticFilesOnly",
     "publish": "node server/publish-resources.js"
   },
   "dependencies": {
+    "aws-sdk": "^2.754.0",
     "bluebird": "^3.7.2",
     "child_process": "^1.0.2",
+    "cli-progress": "^3.8.2",
+    "del": "^5.1.0",
     "dotenv": "^8.2.0",
     "gexf": "^0.2.5",
+    "glob": "^7.1.6",
     "gridfs-stream": "^1.1.1",
     "grunt-cache-bust": "^1.7.0",
     "inquirer": "^7.3.3",
@@ -28,7 +31,6 @@
     "mongoose": "^5.10.5",
     "ncp": "^2.0.0",
     "onecolor": "^3.1.0",
-    "del": "^5.1.0",
     "streamifier": "^0.1.1",
     "yargs": "^15.4.1"
   },

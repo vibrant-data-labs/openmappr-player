@@ -1,0 +1,803 @@
+(function() {
+	'use strict';
+
+	angular.module('common')
+	.controller('GlobalLegendCtrl', ['$scope', '$rootScope','$timeout', '$q', 'uiService', 'AttrInfoService' ,'layoutService', 'snapshotService', 'networkService', 'nodeSelectionService','projFactory', 'renderGraphfactory', 'BROADCAST_MESSAGES', 'dataGraph',
+		function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutService, snapshotService, networkService, nodeSelectionService, projFactory, renderGraphfactory, BROADCAST_MESSAGES, dataGraph) {
+			/**
+			*
+			*
+			*	RESTRUCTURE PENDING
+			*
+			*
+			*
+			****/
+
+			var MAX_LEGEND_ITEMS = layoutService.MAX_COLOR_ITEMS;
+
+			/*
+			* Dev utils
+			*/
+			var logPrefix = '[ctrlGlobalLegend: ] ';
+			var clusterAttrs = ['Cluster', 'Clusters', 'Cluster1', 'Cluster2', 'Cluster3', 'Cluster4'],
+				clusterAttr = 'Cluster'; //Current cluster attr
+
+			var switchingNetwork = false;
+
+			$scope.ui = {
+				clustersInfoOpen: true
+			};
+
+			/*
+			* Reset legend state
+			*/
+			reset();
+			/*
+			* Initialize legend
+			*/
+			//initLegend();
+
+			var tempLegendSorting = false;
+			$scope.legendSortOptions = [
+				{id: 1, title: 'frequency'},
+				{id: 2, title: 'alphabetic'}
+			];
+
+			$scope.legendSortOption = {
+				sortOp: '',
+				reverse: false
+			};
+
+			$scope.$on(BROADCAST_MESSAGES.project.load, reset);
+			/*
+			* Highlight category on node hover
+			*/
+			var categoriesToHighlight = [];
+			var highlightLegendCategoriesThrottled = _.throttle(highlightLegendCategories, 100);
+			$scope.$on(BROADCAST_MESSAGES.overNodes, highlightLegendCategoriesThrottled);
+
+			$scope.$on(BROADCAST_MESSAGES.outNodes, function(e, data) {
+				outLegendCategories();
+			});
+
+			function outLegendCategories() {
+				highlightLegendCategoriesThrottled.cancel();
+				$scope.highlightingNodes = false;
+				_.each($scope.colorValueMap, function(mapCategory) {
+					mapCategory.highlightOnNodeHover = false;
+					// console.log(logPrefix + 'unhighlighting ', mapCategory);
+				});
+			}
+
+			$scope.$on(BROADCAST_MESSAGES.dataGraph.loaded, function(data) {
+				switchingNetwork = true;
+				// if(data) {
+				// 	$scope.nodeColorAttrs = layoutService.getNodeColorAttrs();
+				// 	$scope.nodeSizeAttrs = layoutService.getNodeSizeAttrs();
+				// 	$scope.edgeColorAttrs = layoutService.getEdgeColorAttrs();
+				// 	$scope.edgeSizeAttrs = layoutService.getEdgeSizeAttrs();
+				// }
+			});
+
+			/// Generate legend whenever
+			// 1) layout changes
+			// 2)mapprsettings get updated
+			// 3) rendergraph gets chnaged
+			setupLegend();
+			$scope.$on(BROADCAST_MESSAGES.layout.changed, triggerLegendSetup);
+			var inProcess = null;
+			$scope.$on(BROADCAST_MESSAGES.layout.mapprSettingsUpdated, function(event, data) {
+				if(!data.regenGraph) setupLegend(event, data);
+			});
+			$scope.$on(BROADCAST_MESSAGES.renderGraph.changed, triggerLegendSetup);
+			$scope.$on(BROADCAST_MESSAGES.renderGraph.loaded, triggerLegendSetup);
+
+
+			function reset () {
+				console.debug(logPrefix + "clearing global legend on legend load and new project load");
+				$scope.GLTabs = {
+					nodes: true,
+					edges: false
+				};
+				$scope.legend = {
+					colorNodesBy: null,
+					sizeNodesBy:null,
+					colorEdgesBy:null,
+					sizeEdgesBy:null
+				};
+				$scope.colorValueMap = [];
+				$scope.sizeValueMap = [];
+				$scope.edgeColorValueMap = [];
+				$scope.edgeSizeValueMap = [];
+				$scope.isNodeColorNumeric = false;
+				$scope.isNodeSizeNumeric = false;
+				$scope.isEdgeColorNumeric = false;
+				$scope.isEdgeSizeNumeric = false;
+				$scope.nodeColorAttrs = [];
+				$scope.nodeSizeAttrs = [];
+				$scope.edgeColorAttrs = [];
+				$scope.edgeSizeAttrs = [];
+				$scope.edgeAttrs = [];
+
+				$scope.colorAttr = 'OriginalColor';
+				$scope.sizeAttr = 'OriginalSize';
+				$scope.nodeLabel = 'OriginalLabel';
+
+				$scope.editEnabled = false;
+				$scope.editEnabledLabel = "Edit";
+
+				$scope.highlightingNodes = false;
+			}
+
+			function highlightLegendCategories(e, data) {
+				// console.log(logPrefix, data.nodes);
+				highlightLegendCategoriesThrottled.cancel();
+				//force apply
+				$timeout(function() {
+					$scope.highlightingNodes = true;
+					categoriesToHighlight.length = 0;
+					if(angular.isObject(data.nodes)) {
+						_.each(data.nodes, function(node) {
+							var cat = node.attr[$scope.mapprSettings.nodeColorAttr] || '';
+							cat && categoriesToHighlight.push(cat);
+						});
+
+						var graphData = dataGraph.getRawDataUnsafe();
+						var isNumericAttr = graphData && AttrInfoService.getNodeAttrInfoForRG().getForId($scope.mapprSettings.nodeColorAttr).isNumeric;
+
+						_.each(categoriesToHighlight, function(cat) {
+							var catToFind = isNumericAttr ? findClosestNumericAttrVal(cat) : cat.toString();
+							if(catToFind) {
+								var mapCategory = _.find($scope.colorValueMap, function(colorval) {
+									return colorval.originalTitle.trim().toLowerCase() == catToFind.trim().toLowerCase();
+								});
+
+								console.log('map category: ', mapCategory);
+
+								if(mapCategory) {
+									mapCategory.highlightOnNodeHover = true;
+								}
+							}
+						});
+					}
+
+				});
+
+				function findClosestNumericAttrVal(catNumColor) {
+					if(!catNumColor) {
+						throw new Error('Color value expected');
+					}
+					return _.reduce($scope.colorValueMap, function(prev, curr) {
+						return Math.abs(curr.num - catNumColor) < Math.abs(prev.num - catNumColor) ? curr : prev;
+					}).name;
+				}
+			}
+
+			//////
+			/// Numeric attrib coloring editor
+			//////
+
+			///
+			/// Setup LEGEND STUFF
+			//  Pre legend-generation
+			///
+			function triggerLegendSetup() {
+				if(switchingNetwork) {
+					var x = $scope.$on(BROADCAST_MESSAGES.sigma.rendered, function() {
+						x();
+						reset();
+						$scope.nodeColorAttrs = layoutService.getNodeColorAttrs();
+						$scope.nodeSizeAttrs = layoutService.getNodeSizeAttrs();
+						$scope.edgeColorAttrs = layoutService.getEdgeColorAttrs();
+						$scope.edgeSizeAttrs = layoutService.getEdgeSizeAttrs();
+						setupLegend();
+						switchingNetwork = false;
+					});
+				}
+				else {
+					setupLegend();
+				}
+			}
+			function setupLegend(event,data){
+				if(!$scope.layout) {
+					// throw new Error('No layout, can\'t generate legend!');
+					return;
+				}
+				if($scope.editEnabled) {
+					console.info(logPrefix + 'legend in edit mode, skipping regeneration.');
+					return;
+				}
+				console.group(logPrefix + 'starting legend generation.');
+				$scope.nodeColorAttrs = $scope.nodeColorAttrs.length > 0
+					? $scope.nodeColorAttrs
+					: layoutService.getNodeColorAttrs();
+				$scope.nodeSizeAttrs = $scope.nodeSizeAttrs.length > 0 ? $scope.nodeSizeAttrs : layoutService.getNodeSizeAttrs();
+				$scope.edgeColorAttrs = $scope.edgeColorAttrs.length > 0
+					? $scope.edgeColorAttrs
+					: layoutService.getEdgeColorAttrs();
+				$scope.edgeSizeAttrs = $scope.edgeSizeAttrs.length > 0 ? $scope.edgeSizeAttrs : layoutService.getEdgeSizeAttrs();
+
+				$scope.legendSortOption.sortOp = _.find($scope.legendSortOptions, {'title': $scope.layout.setting('legendSortOption')});
+				$scope.legendSortOption.reverse = $scope.layout.setting('legendSortIsReverse');
+
+				generateLegend('nodes');
+				generateLegend('edges');
+				console.groupEnd();
+			}
+
+			$scope.colorByAttrUpdate = function colorByAttrUpdate(){
+				console.log(logPrefix + 'colorBy: ', $scope.legend.colorNodesBy.id);
+				$scope.mapprSettings.nodeColorAttr =  $scope.legend.colorNodesBy.id;
+				if(clusterAttrs.indexOf($scope.mapprSettings.nodeColorAttr) > -1) {
+					buildClusterInfo();
+				}
+			};
+
+			function buildClusterInfo() {
+				var currNw = networkService.getCurrentNetwork();
+				if(!currNw) throw new Error('Current network not set');
+				var clusterInfo = _.find(currNw.clusterInfo, 'name', $scope.mapprSettings.nodeColorAttr);
+				var clusterInfoValsMap = {};
+
+				if(clusterInfo && clusterInfo.clusters) {
+					clusterInfoValsMap = _.indexBy(clusterInfo.clusters, 'linkingAttrName')
+				}
+
+				_.each($scope.colorValueMap, function(colorVal) {
+					console.log(colorVal);
+					var clusterVal = colorVal.originalTitle;
+					colorVal.bridgers = [];
+					colorVal.archetypes = [];
+
+					var clusterValInfo = clusterInfoValsMap[clusterVal];
+					if( clusterValInfo ) {
+						if(_.isArray(clusterValInfo.Bridgers)) {
+							colorVal.bridgers = _.map(clusterValInfo.Bridgers, function(nodeId) {
+								return '' + nodeId;
+							});
+						}
+						if(_.isArray(clusterValInfo.MostCentral)) {
+							colorVal.archetypes = _.map(clusterValInfo.MostCentral, function(nodeId) {
+								return '' + nodeId;
+							});
+						}
+
+					}
+				});
+			}
+
+			$scope.sizeByAttrUpdate = function sizeByAttrUpdate(){
+				console.log(logPrefix + 'sizeBy: ', $scope.legend.sizeNodesBy.id);
+				$scope.mapprSettings.nodeSizeAttr =  $scope.legend.sizeNodesBy.id;
+			};
+
+			$scope.colorByEdgeAttrUpdate = function colorByEdgeAttrUpdate(){
+				console.log(logPrefix + 'colorEdgesBy: ', $scope.legend.colorEdgesBy.id);
+				$scope.mapprSettings.edgeColorAttr =  $scope.legend.colorEdgesBy.id;
+			};
+
+			$scope.sizeByEdgeAttrUpdate = function sizeByEdgeAttrUpdate(){
+				console.log(logPrefix + 'sizeEdgesBy: ', $scope.legend.sizeEdgesBy.id);
+				$scope.mapprSettings.edgeSizeAttr =  $scope.legend.sizeEdgesBy.id;
+			};
+
+
+			// Color Changer
+			var tempColorChangesMap = {};
+			$scope.changeColor = function(l, col) {
+				var colorAttr = $scope.mapprSettings.nodeColorAttr;
+				$scope.mapprSettings.nodeUserColorMap[colorAttr] = $scope.mapprSettings.nodeUserColorMap[colorAttr] || {};
+				var map = $scope.mapprSettings.nodeUserColorMap[colorAttr];
+				console.log(logPrefix + 'Got color map: %O', map);
+				console.log(logPrefix + 'assigning color', col);
+				if(!_.has(tempColorChangesMap, l.originalTitle)) {
+					if(_.has(map, l.originalTitle)) {
+						tempColorChangesMap[l.originalTitle] = {
+							colorval: map[l.originalTitle],
+							fromMPSettings: true
+						};
+					}
+					else {
+						tempColorChangesMap[l.originalTitle] = {
+							colorval: l.colorval,
+							fromMPSettings: false
+						};
+					}
+				}
+				map[l.originalTitle] = col;
+				l.color = {
+					'color': col
+				};
+			};
+
+
+			/*
+			* Nodes/Edges selection from legend
+			*/
+			$scope.selectNodesByAttrib = function selectNodesByAttrib(attrInfo, value, $event) {
+				var attrId = attrInfo ? attrInfo.id : undefined;
+				nodeSelectionService.clearSelections();
+				nodeSelectionService.selectNodesByAttrib(attrId, value, $event, true);
+			};
+
+			var hoverTimer;
+			$scope.hoverNodesByAttrib = function hoverNodesByAttrib(attrInfo, value, $event, delay) {
+				outLegendCategories();
+				var attrId = attrInfo ? attrInfo.id : undefined;
+				var hoverFn = function() {
+					nodeSelectionService.hoverNodesByAttrib(attrId, value, $event);
+				};
+				if(hoverTimer !== undefined) {
+					clearTimeout(hoverTimer);
+					hoverTimer = undefined;
+				}
+				if(delay > 0) {
+					hoverTimer = setTimeout(hoverFn, delay);
+				} else {
+					hoverFn();
+				}
+			};
+
+			$scope.hoverNodesByIds = _.debounce(hoverNodesByIds, 100);
+			$scope.selectNodesByIds = _.debounce(selectNodesByIds, 100);
+			$scope.hoverNodeNeighborByIds = _.debounce(hoverNodeNeighborByIds, 100);
+			$scope.selectNodeNeighborByIds = _.debounce(selectNodeNeighborByIds, 100);
+
+			function hoverNodesByIds(nodeIds, $event) {
+				nodeSelectionService.hoverNodeIdList(nodeIds, $event);
+			}
+
+			function selectNodesByIds(nodeIds, $event) {
+				nodeSelectionService.selectNodeIdList(nodeIds, $event);
+			}
+
+			function hoverNodeNeighborByIds(nodeIds, $event) {
+				nodeSelectionService.hoverNodeNeighborIdList(nodeIds, $event);
+			}
+
+			function selectNodeNeighborByIds(nodeIds, $event) {
+				nodeSelectionService.selectNodeNeighborIdList(nodeIds, $event);
+			}
+
+			// works only for exact matches
+			// attr - by which edge Attr
+			// value - select nodes for which the value of above mentioned attr is 'value'
+			$scope.selectEdgesByAttrib = function selectEdgesByAttrib(attrInfo, value, $event) {
+				var newSelection = _.isEmpty($scope.nodeSel);
+				var attrTitle = attrInfo ? attrInfo.id : undefined;
+				nodeSelectionService.selectEdgesByAttrib(attrTitle, value, $event, newSelection);
+			};
+
+			// Legend sorting
+
+
+			$scope.sortLegend = function sortLegend() {
+				tempLegendSorting = true;
+				generateLegend('nodes');
+				generateLegend('edges');
+			};
+
+			// Legend editing
+			$scope.enableEdit = function enableEdit() {
+				console.debug('click on enable edit');
+				$scope.editEnabled = true;
+			};
+
+			$scope.discardEdits = function() {
+				$scope.editEnabled = false;
+				var map = $scope.mapprSettings.nodeUserColorMap[$scope.mapprSettings.nodeColorAttr];
+				_.each(tempColorChangesMap, function(colorProp, key) {
+					if(colorProp.fromMPSettings) {
+						map[key] = colorProp.colorval;
+					}
+					else {
+						delete map[key];
+					}
+				});
+				tempColorChangesMap = {};
+				setupLegend();
+			};
+
+			$scope.saveEdits = function saveEdits(updateAll) {
+				//blur any focused element so will save on enter
+				$(':focus').blur();
+				//have to wait for element to unfocus before saving in order to correctly save on enter
+				$timeout(function() {
+					tempColorChangesMap = {};
+
+					$scope.mapprSettings.legendSortOption = $scope.legendSortOption.sortOp.title;
+					$scope.mapprSettings.legendSortIsReverse = $scope.legendSortOption.reverse;
+					$scope.editEnabled = false;
+					tempLegendSorting = false;
+
+					//
+					// Update snapshots as well
+					//
+
+					var currSnap = snapshotService.getCurrentSnapshot();
+					var snapsToUpdate =  currSnap ? [currSnap] : [];
+					if(updateAll) {
+						snapsToUpdate = snapshotService.getSnapshotsUnsafe();
+					}
+					var updatedSnaps = _.map(snapsToUpdate, function(snapshot) {
+						// update mappr Settings
+						// snapshot.layout.settings.legendColorCustomiserNode = $scope.layout.setting('legendColorCustomiserNode');
+						snapshot.layout.settings.nodeUserColorMap = $scope.layout.setting('nodeUserColorMap');
+						snapshot.layout.settings.legendSortOption = $scope.legendSortOption.sortOp.title;
+						snapshot.layout.settings.legendSortIsReverse = $scope.legendSortOption.reverse;
+						return snapshotService.updateSnapshot(snapshot);
+					});
+
+					$q.all(updatedSnaps)
+					.then(function(snaps) {
+						_.each(snaps, function(snap) {
+							uiService.logSuccess('Snapshot ' + snap.snapName + ' updated');
+						});
+					},function(err) {
+						console.warn("Error in updating snapshots:", err);
+					});
+				});
+			};
+
+			$scope.changeClusterName = function(clusterItem) {
+				if(clusterItem.name === clusterItem.originalTitle) {
+					console.warn(logPrefix + 'Cluster name not changed');
+					return;
+				}
+				var colorAttrId = $scope.legend.colorNodesBy.id,
+					oldVal = clusterItem.originalTitle,
+					newVal = clusterItem.name,
+					changeMap = {};
+
+				console.log(logPrefix + "Update Text for Value: %s to: %s", oldVal, newVal);
+				changeMap[oldVal] = newVal;
+
+				dataGraph.changeNodeCatNames(colorAttrId, changeMap)
+				.then(function(data) {
+					clusterItem.originalTitle = newVal;
+					// update color mapping
+					var map = $scope.mapprSettings.nodeUserColorMap[colorAttrId];
+					if(map && map[oldVal] != null) {
+					    map[newVal] = map[oldVal];
+					    delete map[oldVal];
+					}
+					$scope.layout.setup(); // update all layouts
+					renderGraphfactory.redrawGraph();
+				}, function(err) {
+					console.error(logPrefix + 'Cluster name not updated');
+					console.log(logPrefix + 'Reverting to old val');
+					clusterItem.name = clusterItem.originalTitle;
+				});
+			};
+
+			$scope.cancelClusterNameEdit = function(clusterItem) {
+				console.log(logPrefix + 'Canceling cluster name change');
+				clusterItem.name = clusterItem.originalTitle;
+			};
+
+			/*
+			* Private functions
+			*/
+
+			function generateLegend(entity){
+				console.time(logPrefix + '[generateLegend]' + entity);
+				//
+				// Legend Mappings
+				//
+				// We want a color -> attrib value mapping.
+				if(entity=='nodes'){
+					dataGraph.getRawData().then(function(graphData) {
+
+						$scope.legend.colorNodesBy = _.find($scope.nodeColorAttrs, 'id', $scope.mapprSettings.nodeColorAttr);
+						$scope.legend.sizeNodesBy = _.find($scope.nodeSizeAttrs, 'id', $scope.mapprSettings.nodeSizeAttr);
+						console.assert($scope.legend.colorNodesBy, "$scope.legend.colorNodesBy can't be null");
+						console.assert($scope.legend.sizeNodesBy, "$scope.legend.sizeNodesBy can't be null");
+						// $scope.legend.colorEdgesBy = _.find($scope.edgeColorAttrs, 'id', $scope.mapprSettings.edgeColorAttr);
+						// $scope.legend.sizeEdgesBy = _.find($scope.edgeSizeAttrs, 'id', $scope.mapprSettings.edgeSizeAttr);
+						//console.log('mapprsettings %O', $scope.mapprSettings);
+						//console.log('nodeattrs %O', $scope.nodeAttrs);
+						console.log(logPrefix + 'node legend %O', $scope.legend);
+
+						colorMap(graphData);
+						sizeMap(graphData);
+						if(clusterAttrs.indexOf($scope.mapprSettings.nodeColorAttr) > -1) {
+							buildClusterInfo();
+						}
+					});
+				} else if(entity =='edges'){
+					dataGraph.getRawData().then(function(graphData) {
+						$scope.legend.colorEdgesBy = _.find($scope.edgeColorAttrs, 'id', $scope.mapprSettings.edgeColorAttr);
+						$scope.legend.sizeEdgesBy = _.find($scope.edgeSizeAttrs, 'id', $scope.mapprSettings.edgeSizeAttr);
+
+						//console.log('mapprsettings %O', $scope.mapprSettings);
+						//console.log('nodeattrs %O', $scope.nodeAttrs);
+						console.log(logPrefix + 'edge legend %O', $scope.legend);
+
+						edgeColorMap(graphData);
+						edgeSizeMap(graphData);
+					});
+				}
+				console.timeEnd(logPrefix + '[generateLegend]' + entity);
+			}
+
+			function ColorObject (name, num, color, originalTitle) {
+				this.name = name;
+				this.num = num; // count or the numeric value
+				this.color = {
+					'color': color
+				};
+				this.colorval =  color;
+				this.highlightOnNodeHover =  false;
+				this.originalTitle = originalTitle;
+				this.bridgers = [];
+				this.archetypes = [];
+			}
+			/**
+			 * colorMap generates colorMap data. It also limits the list size to 100.
+			 * @param  {[type]} graphData [description]
+			 * @return {[type]}           [description]
+			 */
+			function colorMap(graphData) {
+				console.log(logPrefix + 'Building colorMap');
+				var layout = $scope.layout;
+				$scope.colorAttr = $scope.mapprSettings.nodeColorAttr;
+				var attrInfo = AttrInfoService.getNodeAttrInfoForRG().getForId($scope.colorAttr);
+
+				console.debug(logPrefix + 'attrInfo: ', attrInfo);
+				if(!attrInfo) {
+					console.warn(logPrefix + "colorMap got invalid AttrInfo for attr:",$scope.colorAttr);
+					return;
+				}
+				$scope.isNodeColorNumeric = attrInfo.isNumeric;
+				$scope.colorValueMap = [];
+				var temp = null;
+				var sortFunc = _.noop();
+				var reverseFunc = _.noop();
+
+				var legendSortOp = $scope.layout.setting('legendSortOption');
+				var legendSortIsReverse = $scope.layout.setting('legendSortIsReverse');
+				if(tempLegendSorting) {
+					// Sort legend while editing
+					legendSortOp = $scope.legendSortOption.sortOp.title;
+					legendSortIsReverse = $scope.legendSortOption.reverse;
+				}
+
+				switch(legendSortOp) {
+					case 'frequency':
+						if(legendSortIsReverse) {
+							sortFunc = function(a, b) {
+								return b.num - a.num;
+							};
+						}
+						else {
+							sortFunc = function(a, b) {
+								return a.num - b.num;
+							};
+						}
+
+						break;
+					case 'alphabetic':
+						if(legendSortIsReverse) {
+							sortFunc = function(a, b) {
+								if(a.name.toLowerCase() > b.name.toLowerCase()) return -1;
+								if(a.name.toLowerCase() < b.name.toLowerCase()) return 1;
+								return 0;
+							};
+						}
+						else {
+							sortFunc = function(a, b) {
+								if(a.name.toLowerCase() < b.name.toLowerCase()) return -1;
+								if(a.name.toLowerCase() > b.name.toLowerCase()) return 1;
+								return 0;
+							};
+						}
+						break;
+					default:
+						// Nothing
+				}
+
+				if(attrInfo.isNumeric) {
+					console.log('bounds: ', attrInfo.bounds, MAX_LEGEND_ITEMS);
+					temp = _.map(attrInfo.bounds, function(val, stat) {
+						var col = d3.rgb(layout.scalers.color(val)).toString();
+						return new ColorObject(stat, val, col, stat);
+					}).sort(function(a,b) {
+						return b.num - a.num;
+					});
+					$scope.colorValueMap = _.take(temp, MAX_LEGEND_ITEMS);
+
+					//color picker object
+					$scope.colorPickerNodeArr = [];
+					$scope.colorPickerNodeArr = colorPickerFromColorMap($scope.colorValueMap);
+					console.log('colorpicker: ', $scope.colorValueMap);
+				} else {
+					temp = [];
+					for (var key in attrInfo.valuesCount) {
+						var name = key;
+						var count = attrInfo.valuesCount[key];
+						var col = d3.rgb(layout.scalers.color(key)).toString();
+						temp.push(new ColorObject(name, count, col, key));
+					}
+					$scope.colorValueMap = _.take(temp.sort(sortFunc), MAX_LEGEND_ITEMS);
+					// Customize Legend
+
+				}
+			}
+
+			//convert colorValueMap to colorPicker object
+			function colorPickerFromColorMap(colValMap) {
+				var minCol = _.min(colValMap, 'num').colorval;
+				var maxCol = _.max(colValMap, 'num').colorval;
+				return [
+					{
+						name:'Min',
+						col:minCol,
+						value:0
+					},
+					{
+						name:'Max',
+						col:maxCol,
+						value:1
+					}
+				];
+			}
+
+			function edgeColorMap(graphData) {
+				console.group(logPrefix + 'Building edgeColorMap');
+				var layout = $scope.layout;
+				$scope.edgeColorAttr = $scope.mapprSettings.edgeColorAttr;
+				var attrInfo = AttrInfoService.getLinkAttrInfoForRG().getForId($scope.edgeColorAttr);
+				if(!attrInfo) {
+					console.warn(logPrefix + "edgeColorMap got invalid AttrInfo for attr:",$scope.edgeColorAttr);
+					return;
+				}
+				$scope.isEdgeColorNumeric = attrInfo.isNumeric;
+				$scope.edgeColorValueMap = [];
+				var temp = [];
+				if(attrInfo.isNumeric) {
+					console.log('numeric');
+					temp = _.map(attrInfo.bounds, function(val, stat) {
+						var col = d3.rgb(layout.scalers.edgeColor(val)).toString();
+						return new ColorObject(stat + ' ('+val+')', val, col, stat);
+					}).sort(function(a,b) {
+						return b.num - a.num;
+					});
+					$scope.edgeColorValueMap = _.take(temp, MAX_LEGEND_ITEMS);
+
+					$scope.colorPickerEdgeArr = [];
+					$scope.colorPickerEdgeArr = colorPickerFromColorMap($scope.edgeColorValueMap);
+				} else {
+					temp = [];
+					for (var key in attrInfo.valuesCount) {
+						var val = attrInfo.valuesCount[key];
+						temp.push(new ColorObject(key, val, d3.rgb(layout.scalers.edgeColor(key)).toString(), key));
+					}
+					$scope.edgeColorValueMap = _.take(temp.sort(function(a,b) { return b.num - a.num;}), MAX_LEGEND_ITEMS);
+				}
+
+				console.groupEnd($scope.edgeColorValueMap);
+			}
+
+			function sizeMap(graphData) {
+				console.log(logPrefix + 'Building sizeMap');
+				var layout = $scope.layout;
+				$scope.sizeAttr = $scope.mapprSettings.nodeSizeAttr;
+				var attrInfo = AttrInfoService.getNodeAttrInfoForRG().getForId($scope.sizeAttr);
+				if(!attrInfo) {
+					console.warn(logPrefix + "sizeMap got invalid AttrInfo for attr:",$scope.sizeAttr);
+					return;
+				}
+				$scope.isNodeSizeNumeric = attrInfo.isNumeric;
+				$scope.sizeValueMap = [];
+				var temp = null;
+				if (attrInfo.isNumeric) {
+					console.log('numeric');
+					temp = _.map(attrInfo.bounds, function(val, stat) {
+						var scaledVal = 10 + (val - attrInfo.bounds.min) * (30 - 10)/(attrInfo.bounds.max-attrInfo.bounds.min);
+						return {
+							name: stat + ' (' + val + ')',
+							val : val,
+							size: {
+								'background-color': '#444',
+								raw: scaledVal,
+								width: scaledVal + 'px',
+								height: scaledVal + 'px'
+							}
+						};
+					}).sort(function(a,b) {
+						return b.val - a.val;
+					});
+					$scope.sizeValueMap = _.take(temp, MAX_LEGEND_ITEMS);
+				} else {
+					temp = [];
+					for (var key in attrInfo.valuesCount) {
+						var val = attrInfo.valuesCount[key];
+						temp.push({
+							name: key,
+							num: val,
+							size: {
+								'background-color': '#444',
+								raw: layout.scalers.size(key),
+								width: layout.scalers.size(key) + 'px',
+								height: layout.scalers.size(key) + 'px'
+							}
+						});
+					}
+					$scope.sizeValueMap = _.take(temp.sort(function(a,b) { return b.num - a.num;}), MAX_LEGEND_ITEMS);
+				}
+
+				$scope.sizeValueMap.sort(function(a,b){return a.size.raw > b.size.raw ? -1 : 1;});
+				//console.log($scope.sizeValueMap);
+			}
+
+			function edgeSizeMap(graphData) {
+				console.log(logPrefix + 'Building edgeSizeMap');
+				var layout = $scope.layout;
+				$scope.sizeAttr = $scope.mapprSettings.edgeSizeAttr;
+				var attrInfo = AttrInfoService.getLinkAttrInfoForRG().getForId($scope.sizeAttr);
+				if(!attrInfo) {
+					console.warn(logPrefix + "edgeSizeMap got invalid AttrInfo for attr:",$scope.sizeAttr);
+					return;
+				}
+				$scope.isEdgeSizeNumeric = attrInfo.isNumeric;
+				$scope.edgeSizeValueMap = [];
+				var temp = null;
+				if(attrInfo.isNumeric) {
+					console.log('numeric');
+					temp = _.map(attrInfo.bounds, function(val, stat) {
+						var scaledVal = (val - attrInfo.bounds.min) * (30 - 10)/(attrInfo.bounds.max-attrInfo.bounds.min);
+						return {
+							name: stat + ' (' + val + ')',
+							val : val,
+							size: {
+								'background-color': '#444',
+								raw: scaledVal,
+								// width: scaledVal + 'px',
+								height: scaledVal + 'px'
+							}
+						};
+					}).sort(function(a,b) {
+						return b.val - a.val;
+					});
+					$scope.edgeSizeValueMap = _.take(temp, MAX_LEGEND_ITEMS);
+				} else {
+
+					temp = [];
+					for (var key in attrInfo.valuesCount) {
+						var val = attrInfo.valuesCount[key];
+						temp.push({
+							name: key,
+							num: val,
+							size: {
+								'background-color': '#444',
+								raw: layout.scalers.edgeSize(key),
+								// width: layout.scalers.edgeSize(key) + 'px',
+								height: layout.scalers.edgeSize(key) + 'px'
+							}
+						});
+					}
+					$scope.edgeSizeValueMap = _.take(temp.sort(function(a,b) { return b.num - a.num;}), MAX_LEGEND_ITEMS);
+				}
+				// for (var key in attrInfo.valuesCount) {
+				// 	console.debug('attrInfo: ', attrInfo);
+				// 	var val = attrInfo.valuesCount[key];
+				// 	var scaledVal = 10 + (val - attrInfo.bounds.min) * (30 - 10)/(attrInfo.bounds.max-attrInfo.bounds.min);
+				// 	$scope.edgeSizeValueMap.push({
+				// 		name: key,
+				// 		num: val,
+				// 		size: {
+				// 			'background-color': '#444',
+				// 			raw:  layout.scalers.edgeSize(key),
+				// 			// width: layout.scalers.edgeSize(key) + 'px',
+				// 			height: layout.scalers.edgeSize(key) + 'px'
+				// 		}
+				// 	});
+				// }
+
+				$scope.edgeSizeValueMap = _.take($scope.edgeSizeValueMap.sort(function(a,b){return b.size.raw - a.size.raw;}), 50);
+				//console.log($scope.sizeValueMap);
+			}
+
+		}
+	]);
+}());

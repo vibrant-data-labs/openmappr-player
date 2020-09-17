@@ -1,0 +1,15 @@
+.row(ng-controller="LinkedInCtrl")
+	.col-xs-12
+		h3 LinkedIn
+	.col-xs-12(ng-switch="currentState")
+		//- Not authorized, show auth button
+		.row(ng-switch-when="not_authorized")
+			.col-xs-12
+				.btn.btn-primary.btn-primary(ng-click="authorizeUser()") Authorize
+		//- If authorized, show the import button
+		.row(ng-switch-when="authorized")
+			.col-xs-12
+				.row(ng-repeat="field in fields")
+					.col-xs-6 {{field.name}}
+					.col-xs-6
+						input(type="checkbox", ng-model="field.isChecked")

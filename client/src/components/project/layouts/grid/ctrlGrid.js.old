@@ -1,0 +1,1652 @@
+angular.module('mappr')
+.controller('gridCtrl',['$scope', 'dataGraph', 
+function ($scope, dataGraph) {
+	'use strict';
+	
+
+	//watch for graph data change
+	$scope.$watch( function () { return dataGraph.currentGraph().fragList; }, function (data) {
+		if(data.length === 0) {
+			return;
+		}
+
+		var currGraph = dataGraph.currentGraph();
+		spreadData = graph2Spread(currGraph.getAllNodeAttrs(), currGraph.getAllEdgeAttrs(), currGraph.getAllNodes(), currGraph.getAllEdges());
+		ndGrid.setColumns(spreadData.ndColumns);
+		ndGrid.setData(spreadData.ndData, true);
+		edGrid.setColumns(spreadData.edColumns);
+		edGrid.setData(spreadData.edData, true);
+
+		$nodesDataBtn.find('.legend-text').text(spreadData.ndData.length);
+		$edgesDataBtn.find('.legend-text').text(spreadData.edData.length);
+		$nodesDataBtn.addClass('active');
+
+		if(dataTab == 'nodes') {
+			ndGrid.render();
+			$(edEle).hide();
+			$(ndEle).show();
+		} else {
+			edGrid.render();
+			$(ndEle).hide();
+			$(edEle).show();
+		}	
+
+	}, true);
+
+
+	function saveAllData() {
+		var graph = dataGraph.currentGraph();
+		var data = spread2Graph();
+		graph.setAllData(data, 'spreadsheet');
+	}
+
+	function saveDelta(data) {
+		var graph = dataGraph.currentGraph();
+		graph.setDeltaData(data, 'spreadsheet');
+
+	}
+
+	//
+	//beginning of grid stuff from old dirGrid.js
+
+	var $grid, ndEle, edEle, spreadData, dataTab, $nodesDataBtn, $edgesDataBtn, $resizer, ndGrid, edGrid;
+
+	//number of columns before beginning to list attributes as columns
+	var nodeAttrInd = 9;
+	var edgeAttrInd = 6;
+
+	//used for graph2Spread and spread2Graph so will keep things DRY
+	var nodeProps = ['id', 'label', 'size', 'posX', 'posY', 'color', 'visible', 'jitterX', 'jitterY'];
+	var edgeProps = ['id', 'label', 'source', 'target', 'visible', 'color'];
+
+	//for panel resizing
+	var gridResizeTop = 50;
+	var gridResizeHeight, gridResizeTopOrig, gridResizeHeightOrig;	
+
+	//scale to spread color by and size by by
+	var legendScale = 10;
+
+	//types of columns (attributes)
+	var columnTypes = ['text', 'number', 'radio', 'checkbox', 'file', 'link'];
+	var spreadData = {ndColumns:[], edColumns:[], ndData:[], edData:[]};
+	
+
+	//for editing attribute
+	$scope.gridAttr = {
+		context:null,
+		content:{
+			id:null,
+			name:null,
+			type:null,
+			values:null,
+			min:null,
+			max:null,
+			options:null,
+			visible:true
+		},
+		isDirty:false,
+		isEdit:false
+	};
+
+
+
+	$scope.grid = {
+		initJQuery: function() {
+			$grid = $('#grid-container .spread-container');
+			ndEle = $('#nodes');
+			edEle = $('#edges');
+			dataTab = "nodes";
+			$nodesDataBtn = $('#grid-container .nodes-btn');
+			$edgesDataBtn = $('#grid-container .edges-btn');
+			//has to know when resizing, so it can rerender grid
+			$resizer = $grid.parent();	
+
+			//adding 45 because of new container for project.html
+			gridResizeHeight = $resizer.height()+45;
+			gridResizeTopOrig = gridResizeTop;
+			gridResizeHeightOrig = gridResizeHeight;
+
+			$resizer.resizable({
+				handles: {
+					n: '.resize-handle'
+				},
+				resize: function(e, ui) {
+					ndGrid.resizeCanvas();
+					edGrid.resizeCanvas();
+				},
+				stop: function(e, ui) {
+					
+					gridResizeTop = $resizer.css('top');
+					gridResizeHeight = $resizer.height()+45;
+					ndGrid.resizeCanvas();
+					edGrid.resizeCanvas();
+				}
+			});
+
+
+
+			$nodesDataBtn.on('click', function(e) {
+					dataTab = "nodes";
+					e.stopPropagation();
+					ndGrid.gotoCell(0,0,false);
+					$(edEle).hide();
+					$(ndEle).show();
+					var $vp = $(ndEle).find('.slick-viewport');
+					$vp.scrollTop($vp.scrollTop()+5);
+					ndGrid.resizeCanvas();
+					$(this).addClass('active');
+					$edgesDataBtn.removeClass('active');
+					$(this).css({
+						zIndex:3
+					});
+					$edgesDataBtn.css({
+						zIndex:2
+					});
+			});
+
+			$edgesDataBtn.on('click', function(e) {
+
+					dataTab = "edges";
+					e.stopPropagation();
+					edGrid.gotoCell(0,0,false);
+					$(ndEle).hide();
+					$(edEle).show();
+					var $vp = $(edEle).find('.slick-viewport');
+					$vp.scrollTop($vp.scrollTop()+5);
+					edGrid.resizeCanvas();
+					$(this).addClass('active');
+					$nodesDataBtn.removeClass('active');
+					$(this).css({
+						zIndex:3
+					});
+					$nodesDataBtn.css({
+						zIndex:2
+					});
+			});
+
+			//initialize slickgrid
+			initGrid();
+		}
+	};
+
+	function initGrid() {
+		ndGrid = makegrid('node', ndEle, spreadData.ndData, spreadData.ndColumns);
+		edGrid = makegrid('edge', edEle, spreadData.edData, spreadData.edColumns);
+	}
+
+
+	// Converts an RGB object to a hex string
+	var rgb2hex = function(rgb) {
+		if (typeof rgb !== "undefined" && rgb !== null && (rgb.length === 3)) {
+			//console.log(rgb);
+			var hex = [
+				rgb[0].toString(16),
+				rgb[1].toString(16),
+				rgb[2].toString(16)
+			];
+			$.each(hex, function(nr, val) {
+				if (val.length === 1) hex[nr] = '0' + val;
+			});
+			return '#' + hex.join('');
+		} else {
+			return '#000';
+		}
+	};
+	// Converts a hex string to an RGB object
+	var hex2rgb = function(hex) {
+		hex = parseInt(((hex.indexOf('#') > -1) ? hex.substring(1) : hex), 16);
+		var c = [];
+		c.push(hex >> 16);
+		c.push((hex & 0x00FF00) >> 8);
+		c.push(hex & 0x0000FF);
+		return c;
+	};
+
+	//DATA TRANSFORMS
+	function graph2Spread(nodeAttrs, edgeAttrs, nodes, edges) {
+		var nodecl = [];
+		var edgecl = [];
+		var nd = [];
+		var ed = [];
+
+
+		//header menu
+		var propertyColMenu = {
+			menu:{
+					items: [{
+						iconImage: "",
+						title: "Property",
+						disabled: true
+					}]
+				}
+		};
+
+		//use for coloring rows
+		function renderColor(cellNode, row, dataContext, colDef) {
+			var $cN = $(cellNode);
+			var node = ndGrid.getCellNode(row, 0);
+			$(node)
+				.append('<div class="color-swatch" style="background:'+dataContext.col+';"/>');
+			$cN.parent().off('mousenter.color, mouseleave.color');
+			$cN.parent().on('mouseenter.color', function() {
+				$(this).css({
+					backgroundColor:dataContext.col
+				});
+			});
+			$cN.parent().on('mouseleave.color', function() {
+				$(this).css({
+					backgroundColor:'transparent'
+				});
+			});
+
+		}
+
+
+		// BOOLEAN EDITOR
+		function TrueFalseSelectEditor(args) {
+
+			var $select;
+			var defaultValue;
+			var scope = this;
+
+			this.init = function() {
+
+				$select = $("<SELECT tabIndex='0' class='editor-yesno'><OPTION value='true'>true</OPTION><OPTION value='false'>false</OPTION></SELECT>");
+				$select.appendTo(args.container);
+				$select.focus();
+			};
+
+			this.destroy = function() {
+				$select.remove();
+			};
+
+			this.focus = function() {
+				$select.focus();
+			};
+
+			this.loadValue = function(item) {
+				$select.val((defaultValue = item[args.column.field]) ? "true" : "false");
+				$select.select();
+			};
+
+			this.serializeValue = function() {
+				return ($select.val() == "true");
+			};
+
+			this.applyValue = function(item, state) {
+				item[args.column.field] = state;
+			};
+
+			this.isValueChanged = function() {
+				return ($select.val() != defaultValue);
+			};
+
+			this.validate = function() {
+				var val = $select.val();
+				if (val != "true" && val != "false") {
+					return {
+						valid: false,
+						msg: "Please Enter either true or false"
+					};
+				}
+				return {
+					valid: true,
+					msg: null
+				};
+			};
+
+			this.init();
+		}
+
+		//node columns
+		nodecl[0] = {id:0, name: 'NodeID', field : 'id', sortable:true, editor: Slick.Editors.Text,header: propertyColMenu};
+		nodecl[1] = {id:1, name: 'Label', field : 'label', sortable:true, editor: Slick.Editors.Text,header: propertyColMenu};
+		nodecl[2] = {id:2, name: 'Size', field : 'size', sortable:true, editor: Slick.Editors.Text,header: propertyColMenu};
+		nodecl[3] = {id:3, name: 'PosX', field : 'posX', sortable:true,editor: Slick.Editors.Text,header: propertyColMenu};
+		nodecl[4] = {id:4, name: 'PosY', field : 'posY', sortable:true,editor: Slick.Editors.Text,header: propertyColMenu};
+		nodecl[5] = {id:5, name: 'Color', field : 'col', sortable:true,editor: Slick.Editors.LongText,header: propertyColMenu, asyncPostRender:renderColor};
+		nodecl[6] = {id:6, name: 'Visible', field : 'visible', sortable:true,editor: TrueFalseSelectEditor,header: propertyColMenu};
+		nodecl[7] = {id:7, name: 'JitterX', field : 'jitterX', sortable:true,editor: Slick.Editors.Text,header: propertyColMenu};
+		nodecl[8] = {id:8, name: 'JitterY', field : 'jitterY', sortable:true,editor: Slick.Editors.Text,header: propertyColMenu};
+		
+		//remove any attrs that are added programattically
+		// lrData.attrs = _.filter(lrData.attrs, function(attr) {
+		// 	return attr.title != 'nodeId';
+		// });
+		
+		//get all possible attribute columns
+
+		//Change db schema for attrs title-> name
+		var index = 0;
+		_.forOwn(nodeAttrs, function(val, key) {
+			var colId = nodeAttrInd+index;
+
+			var hideTitle = "Hide Column";
+			if (val.visible === false) {
+				hideTitle = "Show Column";
+			}
+			nodecl.push({
+				id: colId,
+				name: key,
+				field: key,
+				type: val.type || "string",
+				sortable: true,
+				cardType: val.cardType,
+				cardOptions: val.cardOptions,
+				visible: val.visible,
+				headerCssClass: val.visible ? '' : 'col-hidden',
+				editor: Slick.Editors.Text, //change depending on card type
+				header: {
+					menu: {
+						items: [{
+							iconImage: "",
+							title: "ID: [col" + colId + "]",
+							disabled: true
+						}, {
+							iconImage: "../images/sort-asc.gif",
+							title: "Properties",
+							command: "set-prop"
+						}, {
+							title: hideTitle,
+							command: "hide",
+							tooltip: "Can't hide this column"
+						}, {
+							title: "Color By",
+							command: "color-by",
+							tooltip: ""
+						}, {
+							title: "Size By",
+							command: "size-by",
+							tooltip: ""
+						}, {
+							title: "Make Category",
+							command: "mk-cat",
+							tooltip: ""
+						}, {
+							title: "Insert Left",
+							command: "add-col-lf",
+							tooltip: ""
+						}, {
+							title: "Insert Right",
+							command: "add-col-rt",
+							tooltip: ""
+						}, {
+							title: "Delete Column",
+							command: "del-col",
+							tooltip: ""
+						}]
+					}
+				}
+			});
+			index++;
+		});
+
+		//nodes
+		_.each(nodes, function(node){
+			if (typeof node.id !== "undefined") {
+				var x_node = {};
+				x_node.id = node.id;
+				x_node.label = node.label;
+				x_node.size = node.size;
+				x_node.posX = node.x;
+				x_node.posY = node.y;
+				x_node.col = rgb2hex(node.color);
+				x_node.visible = node.active;
+				x_node.jitterX = node.jitterX;
+				x_node.jitterY = node.jitterY;
+
+				_.forOwn(node.attr, function(val, key) {
+					if(val) {
+						x_node[key] = val.value;
+					}
+				});
+
+				nd.push(x_node);
+			}
+		});
+
+		//edge columns
+		edgecl[0] = {id:0, name: 'EdgeID', field : 'id', sortable:true, editor: Slick.Editors.Text, header: propertyColMenu};
+		edgecl[1] = {id:1, name: 'Label', field : 'label', sortable:true, editor: Slick.Editors.Text,header: propertyColMenu};
+		edgecl[2] = {id:2, name: 'Source', field : 'source', sortable:true, editor: Slick.Editors.Text,header: propertyColMenu};
+		edgecl[3] = {id:3, name: 'Target', field : 'target', sortable:true,editor: Slick.Editors.Text,header: propertyColMenu};
+		edgecl[4] = {id:4, name: 'Color', field : 'col', sortable:true,editor: Slick.Editors.LongText,header: propertyColMenu, asyncPostRender:renderColor};
+		edgecl[5] = {id:5, name: 'Visible', field : 'visible', sortable:true,editor: TrueFalseSelectEditor,header: propertyColMenu};
+
+		index = 0;
+		_.forOwn(edgeAttrs, function(val, key) {
+			var colId = edgeAttrInd+index;
+			edgecl.push(
+				{	id: colId,
+					name: key,
+					field: key,
+					sortable:true,
+					cardType: val.cardType,
+					cardOptions: val.cardOptions,
+					visible: val.visible,
+					headerCssClass: val.visible ? '' : 'col-hidden',
+					editor: Slick.Editors.Text,
+					header :{
+						menu: {
+							items: [{
+								iconImage: "",
+								title: "ID: [col" + colId + "]",
+								disabled: true
+							},{
+								iconImage: "/img/icons/slickgrid/sort-asc.gif",
+								title: "Properties",
+								command: "set-prop"
+							}, {
+								title: "Hide Column",
+								command: "hide",
+								tooltip: "Can't hide this column"
+							}, {
+								title: "Color By",
+								command: "color-by",
+								tooltip: ""
+							}, {
+								title: "Insert Left",
+								command: "add-col-lf",
+								tooltip: ""
+							},{
+								title: "Insert Right",
+								command: "add-col-rt",
+								tooltip: ""
+							}, {
+								title: "Delete Column",
+								command: "del-col",
+								tooltip: ""
+							}]
+						}
+					}
+				}
+			);
+			index++;
+		});
+
+		//edges
+		var ind = 0;
+		_.each(edges, function(edge){
+			//console.log('------e------');
+			//console.log(edge);
+			var x_edge = {};
+			if(edge.id === null) {
+				edge.id = ind;
+			}
+			ind++;
+			x_edge.id = edge.id;
+			x_edge.label = edge.label;
+			x_edge.source = edge.source;
+			x_edge.target = edge.target;
+			x_edge.visible = edge.visible;
+			//make sure color defined
+			if (edge.color && edge.color !== null && edge.color.length === 3) {
+				x_edge.col = rgb2hex(edge.color);
+			}
+			_.forOwn(edge.attr, function(val, key) {
+				if(val) {
+					x_edge[key] = val.value;
+				}
+			});
+			//console.log(x_edge);
+			ed.push(x_edge);
+		});
+
+		return {ndColumns: nodecl, ndData: nd, edColumns: edgecl, edData: ed};
+	};
+
+	var spread2Graph = function() {
+		console.log('spread2Graph called');
+		var graphData = {nodes:[], edges:[]};
+		var nodeAttrs = [];
+		var edgeAttrs = [];
+
+		//write attrs
+		var ndColumns = ndGrid.getColumns();
+		for (var i = 0; i < ndColumns.length; i++) {
+			if(nodeProps.indexOf(ndColumns[i].name) !== -1) {
+				continue;
+			}
+			nodeAttrs.push({
+				id: ndColumns[i].id,
+				title: ndColumns[i].name,
+				type: ndColumns[i].type,
+				cardType: ndColumns[i].cardType,
+				cardOptions:ndColumns[i].cardOptions,
+				options: ndColumns[i].options,
+				visible: ndColumns[i].visible
+			});
+		}
+
+		//write nodes
+		var ndData= ndGrid.getData();
+		for (var j = 0; j < ndData.length; j++) {
+			var attributes = [];
+			for (var i = 0; i < nodeAttrs.length; i++) {
+				//need to push i as id and not attr id to correctly reorder
+				// attributes.push({
+				// 	id: i,
+				// 	val: ndData[j][layerData.attrs[i].title]
+				// });
+				var key = nodeAttrs[i].title;
+				attributes[key] = _.cloneDeep(nodeAttrs[i]);
+				attributes[key].id = i;
+				attributes[key].value = ndData[j][key];
+			}
+			//console.log(attributes);
+			//console.log(JSON.stringify(dataArr[j]));
+			graphData.nodes.push({
+				id: ndData[j].id,
+				label: ndData[j].label,
+				size: Number(ndData[j].size),
+				x: Number(ndData[j].posX),
+				y: Number(ndData[j].posY),
+				color: hex2rgb(ndData[j].col),
+				active:ndData[j].visible,
+				jitterX: Number(ndData[j].jitterX),
+				jitterY: Number(ndData[j].jitterY),
+				attr: attributes
+			});
+		}
+
+		//write attrs
+		//0-edgeAttrInd are properties
+		// for (var i = columns.length - 1; i >= 6; i--) { optimization possible!
+		var edColumns = edGrid.getColumns();
+		for (var i = 0; i < edColumns.length; i++) {
+			if(edgeProps.indexOf(edColumns[i].name) !== -1) {
+				continue;
+			}
+			edgeAttrs.push({
+				id: i-edgeAttrInd,
+				title: edColumns[i].name,
+				type: edColumns[i].type,
+				cardType: edColumns[i].cardType,
+				cardOptions:edColumns[i].cardOptions,
+				options: edColumns[i].options,
+				visible: edColumns[i].visible
+			});
+		}
+			// console.log(layerData.edgeAttrs);
+
+		//write edges
+		var edData = edGrid.getData();
+		for (var j = 0; j < edData.length; j++) {
+			var attributes = [];
+			for (var i = 0; i < edgeAttrs.length; i++) {
+				//need to push i as id and not attr id to correctly reorder
+				// attributes.push({
+				// 	id: i,
+				// 	val: edData[j][layerData.edgeAttrs[i].title]
+				// });
+				var key = edgeAttrs[i].title;
+				attributes[key] = _.cloneDeep(edgeAttrs[i]);
+				attributes[key].id = i;
+				attributes[key].value = edData[j][key];
+					
+			}
+			//console.log(JSON.stringify(dataArr[j]));
+			var obj = {
+				id: edData[j].id,
+				label: edData[j].label,
+				source: edData[j].source,
+				target: edData[j].target,
+				attr: attributes
+			};
+			//edges don't have to have a color
+			if(edData[j].col && edData[j].col !== null && edData[j].col !== "") {
+				obj.color = hex2rgb(edData[j].col);
+			}
+			graphData.edges.push(obj);
+		}
+		console.debug('graphData', graphData);
+		return graphData;
+	};
+
+	var makegrid = function (gridType, ele, data, columns) {
+
+		var grid;
+		var type = gridType; //node or edge
+
+		//needed for highlighting rows & cols only when cell is changed
+		var currentCell = -1;
+		var currentRow = -1;
+
+
+		//OPTIONs
+		var options = {
+			enableCellNavigation: true,
+			enableColumnReorder: true,
+			//multiColumnSort: true,
+			enableAddRow: true,
+			asyncEditorLoading: false,
+			editable: true,
+			autoEdit: false,
+			enableAsyncPostRender: true
+			//showHeaderRow : false
+		};
+
+		//DATAVIEW
+		//var dataView = new Slick.Data.DataView({ inlineFilters: true });
+
+
+		// CELL FORMATTER
+
+		function FormulaEditor(args) {
+			var _self = this;
+			var _editor = new Slick.Editors.Text(args);
+			var _selector;
+
+			$.extend(this, _editor);
+
+			function init() {
+				// register a plugin to select a range and append it to the textbox
+				// since events are fired in reverse order (most recently added are executed first),
+				// this will override other plugins like moverows or selection model and will
+				// not require the grid to not be in the edit mode
+				_selector = new Slick.CellRangeSelector();
+				_selector.onCellRangeSelected.subscribe(_self.handleCellRangeSelected);
+				args.grid.registerPlugin(_selector);
+
+			}
+
+			this.destroy = function() {
+				_selector.onCellRangeSelected.unsubscribe(_self.handleCellRangeSelected);
+				grid.unregisterPlugin(_selector);
+				_editor.destroy();
+			};
+
+			this.handleCellRangeSelected = function(e, args) {
+				_editor.setValue(
+					_editor.getValue() +
+					grid.getColumns()[args.range.fromCell].name +
+					args.range.fromRow +
+					":" +
+					grid.getColumns()[args.range.toCell].name +
+					args.range.toRow
+				);
+			};
+
+			init();
+		}
+
+
+
+		//GRID
+		grid = new Slick.Grid(ele, data, columns, options);
+		grid.getCanvasNode().focus();
+		grid.setSelectionModel(new Slick.CellSelectionModel());
+
+		// dataView.setItems(data);
+		// console.log('-- data view --');
+
+		//CALLBACKS
+		grid.onAddNewRow.subscribe(function(e, args) {
+			// console.log('new row');
+			var item = args.item;
+			var column = args.column;
+			grid.invalidateRow(data.length);
+			data.push(item);
+			grid.updateRowCount();
+			grid.render();
+			saveAllData();
+		});
+		grid.onSelectedRowsChanged.subscribe(function(e, args) {
+			//console.log(grid.getSelectedRows());
+		});
+		grid.onColumnsReordered.subscribe(function(e, args) {
+			console.log('columns reordered');
+			saveAllData();
+		});
+		grid.onCellChange.subscribe(function(e, args) {
+			console.log("[spreadsheet] cellchange - broadcasting delta");
+			
+			var at = (grid.getColumns())[args.cell].field;
+			var val = (at === 'col') ? hex2rgb(args.item[at]) : args.item[at];
+
+			var node = grid.getCellNode(args.row, grid.getColumnIndex(0));
+			var nodeId = $(node).text();
+			//see if is attribute
+			var isAttr = nodeProps.indexOf(at) === -1 ? true : false;
+			//translation
+			if(!isAttr) {
+				switch(at) {
+					case 'posX':
+						at = 'x';
+						break;
+					case 'posY':
+						at = 'y';
+						break;
+					case 'visible':
+						at = 'active';
+						break;
+					case 'col':
+						at = 'color';
+						break;
+					default:					
+				}
+			}
+			//convert to number if needed
+			if(attr == 'x' || attr == 'y' || attr == 'size' || attr == 'jitterX' || attr == 'jitterY') {
+				at = Number(at);
+			}
+			saveDelta({
+				action: gridType+"-update", 
+				row: nodeId, 
+				attr: at, 
+				value: val,
+				isAttr: isAttr
+			});
+
+			//$scope.status.msg = "[spreadsheet] broadcasting delta...";
+			$scope.$apply();
+		});
+
+		// $scope.spreadDelta2layer = function(delta){
+		//	//row update -> node / edge update
+		//	//delta content {row: 1, cell: 6, item: row}
+		// }
+
+		//http://jsfiddle.net/hXECL/3/
+		var makeActiveCellEditableSwitch = true;
+
+		grid.onKeyDown.subscribe(function(e, handler) {
+				if (e.which == 90 && (e.ctrlKey || e.metaKey)) { // CTRL + (shift) + z
+					if (e.shiftKey) {
+						undoRedoBuffer.redo();
+					} else {
+						undoRedoBuffer.undo();
+					}
+				} else if (e.which == 37) { //left
+					makeActiveCellEditableSwitch = true;
+				} else if (e.which == 39) { //right
+					makeActiveCellEditableSwitch = true;
+				} else if (e.which == 38) { //up
+					makeActiveCellEditableSwitch = true;
+				} else if (e.which == 40) { //down
+					makeActiveCellEditableSwitch = true;
+				} else if (e.which == 9) { //tab
+					makeActiveCellEditableSwitch = true;
+				} else if (e.which == 13) { //enter
+					data = grid.getData();
+					columns = grid.getColumns();
+					if(grid.getActiveCell().row == grid.getData().length) {
+						var x_node = {};
+						_.each(columns, function(col) {
+							x_node[col.field] = "";
+						});
+						data.push(x_node);
+						grid.updateRowCount();
+						grid.render();
+					}
+					//grid.navigateDown();
+					makeActiveCellEditableSwitch = true;
+				} else if (e.which == 27) { //esc
+					makeActiveCellEditableSwitch = true;
+					grid.resetActiveCell();
+				} else if (e.which == 8) { //backspace
+					var $inp = $(grid.getActiveCellNode()).find('input');	
+					if($inp.is(':focus')) {
+						return;
+					}
+					console.log('firing backspace');
+					makeActiveCellEditableSwitch = true;
+					$inp.val('');
+					grid.editActiveCell();
+				} else if(!(e.ctrlKey || e.metaKey)) {
+					var $inp = $(grid.getActiveCellNode()).find('input');	
+					if($inp.is(':focus')) {
+						return;
+					}
+					//return;
+					//this breaks the edit cell capabilities by 
+					//not appending to cell and rewriting contents
+					//on keypress
+					if (makeActiveCellEditableSwitch ) {
+						grid.editActiveCell(Slick.Editors.Text);
+						makeActiveCellEditableSwitch = false;
+					}
+				}
+		});
+
+		//set column highlight for current cell
+		grid.onActiveCellChanged.subscribe(function(e, handler) {
+			if(handler.row) {
+				var cell = handler.cell;
+				if(currentCell == cell) {
+					return;
+				}
+				var cols = grid.getColumns();
+				var col = cols[cell];
+				for(var i = cols.length-1; i > -1; i--) {
+					cols[i].cssClass = "";
+					cols[i].headerCssClass = "";
+				}
+				cols[col.id].cssClass = "col-active";
+				cols[col.id].headerCssClass = "col-active";
+				grid.setColumns(cols);
+				currentCell = cell;
+			}
+		});
+
+
+		grid.onClick.subscribe(function(e, handler) {
+			makeActiveCellEditableSwitch = true;
+			var targetCell = grid.getCellFromEvent(e);
+			var cols = grid.getColumns();
+			var col = cols[targetCell.cell];
+			var attr = col.field;
+			var node = grid.getCellNode(targetCell.row, grid.getColumnIndex(0));
+			var nodeId = $(node).text();
+			// $scope.evt.content = {action: 'click', row: nodeId, attr: attr};
+			// $scope.evt.source = 'spreadsheet';
+			// $scope.evt.context = dataTab;
+			//$scope.evt.notify();
+			$scope.$apply();
+		});
+
+		grid.onDblClick.subscribe(function(e, handler) {
+			//console.log('dblclick');
+			makeActiveCellEditableSwitch = true;
+			var targetCell = grid.getCellFromEvent(e);
+			var col = grid.getColumns()[targetCell.cell];
+			var attr = col.field;
+			var node = grid.getCellNode(targetCell.row, grid.getColumnIndex(0));
+			var nodeId = $(node).text();
+			// $scope.evt.content = {action: 'dblclick', row: nodeId, attr: attr};
+			// $scope.evt.source = 'spreadsheet';
+			// $scope.evt.context = dataTab;
+			//$scope.evt.notify();
+			$scope.$apply();
+		});
+
+		grid.onSort.subscribe(function(e, args) {
+			console.log('sort');
+			var sortcol = args.sortCol.field;
+			var isNumber = function(n) {
+				return !isNaN(parseFloat(n)) && isFinite(n);
+			};
+			var data = grid.getData();
+			data.sort(function comparer(a, b) {
+				var x = a[sortcol],
+					y = b[sortcol];
+				if (isNumber(x) && isNumber(y)) {
+					x = parseFloat(x);
+					y = parseFloat(y);
+				}
+				return args.sortAsc ? (x == y ? 0 : (x < y ? 1 : -1)) : (x == y ? 0 : (x > y ? 1 : -1));
+			});
+			grid.invalidate();
+			grid.render();
+		});
+
+		grid.onBeforeEditCell.subscribe(function(e, args) {
+
+			// if (!isCellEditable(args.row, args.cell, args.item)) {
+			//	return false;
+			//}
+
+			// if (args.row === 4) {
+			//	return false;
+			//  }
+		});
+
+		function overEvent(row) {
+			// var r = dataView.getItems();
+			// console.log(r);
+		}
+
+
+		grid.onMouseEnter.subscribe(function(e, args) {
+			var targetCell = grid.getCellFromEvent(e);
+			//overEvent(targetCell.row);
+			var targetCell = grid.getCellFromEvent(e);
+			var attr = grid.getColumns()[targetCell.cell].field;
+			var $node = $(grid.getCellNode(targetCell.row, grid.getColumnIndex(0)));
+			var nodeId = $node.text();
+			// $scope.evt.content = {action: 'mouseenter', row: nodeId, attr: attr};
+			// $scope.evt.source = 'spreadsheet';
+			// $scope.evt.context = dataTab;
+			//$scope.evt.notify();
+			//$scope.$apply();
+
+			//console.log($scope.evt.content);
+			//console.log(grid.getCellFromEvent(e));
+
+		});
+
+		grid.onMouseLeave.subscribe(function(e, args) {
+			var targetCell = grid.getCellFromEvent(e);
+			var col = grid.getColumns()[targetCell.cell];
+			var attr = col.field;
+			var node = grid.getCellNode(targetCell.row, grid.getColumnIndex(0));
+			var nodeId = $(node).text();
+			// $scope.evt.content = {action: 'mouseleave', row: nodeId, attr: attr};
+			// $scope.evt.source = 'spreadsheet';
+			// $scope.evt.context = dataTab;
+			//$scope.evt.notify();
+			//$scope.$apply();
+			//console.log($scope.evt.content);
+			//console.log(grid.getCellFromEvent(e));
+			//add class to column and row
+
+		});
+
+
+		//for scrolling when dragging to select cells
+		var $spreadContainer = $('.spread-container');
+		var isMouseDown = false;
+		// need to use pure js so can grab at capture phase since cell range selector stopping event propogation
+		$spreadContainer.get(0).addEventListener('mousedown', function(e, args){ 
+			isMouseDown = true;
+		}, true);
+
+		// need to use pure js so can grab at capture phase since cell range selector stopping event propogation
+		$spreadContainer.get(0).addEventListener('mouseup', function(e, args) {
+			isMouseDown = false;
+		}, true)
+
+		$spreadContainer.on('mousemove', function(e){ //#myGrid is id of div of grid container
+			if(isMouseDown) {
+				var parentOffset = $(this).offset(); 
+				var diffX = ( ( parentOffset.left + $spreadContainer.width() ) - e.pageX);
+				var diffY = ( ( parentOffset.top + $spreadContainer.height() ) - e.pageY);
+				if (diffX < 59 && diffX > 17){ //change the minimum and maximum area where you want to scroll. mine requirement is 59 and 17. You can find your custom position by some alerting or console.log
+					$('.slick-viewport').scrollLeft($('.slick-viewport ').scrollLeft() + 10);
+				}
+				if (diffY < 100 && diffY > 17){ //change the minimum and maximum area where you want to scroll. mine requirement is 59 and 17. You can find your custom position by some alerting or console.log
+					$('.slick-viewport').scrollTop($('.slick-viewport ').scrollTop() + 10);
+				}	
+			}
+		});
+
+		
+
+		//UNDO REDO PLUGIN
+		var undoRedoBuffer = {
+			commandQueue: [],
+			commandCtr: 0,
+
+			queueAndExecuteCommand: function(editCommand) {
+				this.commandQueue[this.commandCtr] = editCommand;
+				this.commandCtr++;
+				editCommand.execute();
+			},
+
+			undo: function() {
+				if (this.commandCtr === 0)
+					return;
+
+				this.commandCtr--;
+				var command = this.commandQueue[this.commandCtr];
+
+				if (command && Slick.GlobalEditorLock.cancelCurrentEdit()) {
+					command.undo();
+				}
+			},
+			redo: function() {
+				if (this.commandCtr >= this.commandQueue.length)
+					return;
+				var command = this.commandQueue[this.commandCtr];
+				this.commandCtr++;
+				if (command && Slick.GlobalEditorLock.cancelCurrentEdit()) {
+					command.execute();
+				}
+			}
+		};
+		var pluginOptions = {
+			clipboardCommandHandler: function(editCommand) {
+				undoRedoBuffer.queueAndExecuteCommand.call(undoRedoBuffer, editCommand);
+			},
+			addColumn:function(args) {
+				var columns = grid.getColumns();
+				var newColId = args.column.id + 1;
+				columns.splice(newColId, 0, {
+					id: newColId,
+					name: 'New Attrib',
+					field: 'col' + newColId,
+					sortable: true,
+					editor: Slick.Editors.Text
+				});
+				//update
+				columns[newColId].header = {
+					menu: {
+						items: [{
+							title: "ID: [col" + columns[newColId].id + "]",
+							disabled: true
+						}, {
+							iconImage: "../images/sort-asc.gif",
+							title: "Properties",
+							command: "set-prop"
+						}, {
+							title: "Hide Column",
+							command: "hide",
+							tooltip: "Can't hide this column"
+						}, {
+							title: "Color By",
+							command: "color-by",
+							tooltip: ""
+						}, {
+							title: "Size By",
+							command: "size-by",
+							tooltip: ""
+						}, {
+							title: "Make Category",
+							command: "mk-cat",
+							tooltip: ""
+						}, {
+							title: "Insert Left",
+							command: "add-col-lf",
+							tooltip: ""
+						}, {
+							title: "Insert Right",
+							command: "add-col-rt",
+							tooltip: ""
+						}, {
+							title: "Delete Column",
+							command: "del-col",
+							tooltip: ""
+						}]
+					}
+				};
+				for (var i = columns.length - 1; i > newColId; i--) {
+					columns[i].id = i;
+					columns[i].header.menu.items[0].title = "Col ID:" + columns[i].id;
+				}
+				grid.setColumns(columns);
+				grid.render();
+			}
+		};
+		var CellExternalCopyPlugin = new Slick.CellExternalCopyManager(pluginOptions);
+		var pasteTimeout;
+		CellExternalCopyPlugin.onPasteCells.subscribe(function(e, args) {
+			console.log('paste');
+			//TODO: TIMEOUT IN CASE MULTIPLE PASTE
+			if(pasteTimeout) {
+				clearTimeout(pasteTimeout);
+			}
+			pasteTimeout = setTimeout(function() {
+				saveAllData();
+			}, 100);
+		});
+		grid.registerPlugin(CellExternalCopyPlugin);
+
+		//HEADER MENU PLUGIN
+		var headerMenuPlugin = new Slick.Plugins.HeaderMenu({});
+		headerMenuPlugin.onBeforeMenuShow.subscribe(function(e, args) {
+			var menu = args.menu;
+			// We can add or modify the menu here, or cancel it by returning false.
+			// var i = menu.items.length;
+			// menu.items.push({
+			//	title: "Menu item " + i,
+			//	command: "item" + i
+			// });
+		});
+		headerMenuPlugin.onCommand.subscribe(function(e, args) {
+			switch (args.command) {
+				case 'add-col-lf':
+					var columns = grid.getColumns();
+					var newColId = args.column.id;
+					columns.splice(newColId, 0, {
+						id: newColId,
+						name: 'New Attrib '+columns.length,
+						field: 'col' + newColId,
+						sortable: true,
+						editor: Slick.Editors.Text
+					});
+					var hideTitle = "Hide Column";
+					if(columns[newColId].visible === false) {
+						hideTitle = "Show Column";
+					}
+					//update
+					columns[newColId].header = {
+						menu: {
+							items: [{
+								title: "ID: [col" + columns[newColId].id + "]",
+								disabled: true
+							}, {
+								iconImage: "../images/sort-asc.gif",
+								title: "Properties",
+								command: "set-prop"
+							}, {
+								title: hideTitle,
+								command: "hide",
+								tooltip: "Can't hide this column"
+							}, {
+								title: "Make Category",
+								command: "mk-cat",
+								tooltip: ""
+							}, {
+								title: "Insert Left",
+								command: "add-col-lf",
+								tooltip: ""
+							}, {
+								title: "Insert Right",
+								command: "add-col-rt",
+								tooltip: ""
+							}, {
+								title: "Delete Column",
+								command: "del-col",
+								tooltip: ""
+							}]
+						}
+					};
+					for (var i = columns.length - 1; i > newColId; i--) {
+						columns[i].id = i;
+						columns[i].header.menu.items[0].title = "Col ID:" + columns[i].id;
+					}
+					grid.setColumns(columns);
+					grid.render();
+					break;
+				case 'add-col-rt':
+					var columns = grid.getColumns();
+					var newColId = args.column.id + 1;
+					console.log('newcolid: '+newColId);
+					columns.splice(newColId, 0, {
+						id: newColId,
+						name: 'New Attrib '+columns.length,
+						field: 'col' + newColId,
+						sortable: true,
+						editor: Slick.Editors.Text
+					});
+					//update
+					columns[newColId].header = {
+						menu: {
+							items: [{
+								title: "ID: [col" + columns[newColId].id + "]",
+								disabled: true
+							}, {
+								iconImage: "../images/sort-asc.gif",
+								title: "Properties",
+								command: "set-prop"
+							}, {
+								title: "Hide Column",
+								command: "hide",
+								tooltip: "Can't hide this column"
+							}, {
+								title: "Make Category",
+								command: "mk-cat",
+								tooltip: ""
+							}, {
+								title: "Insert Left",
+								command: "add-col-lf",
+								tooltip: ""
+							}, {
+								title: "Insert Right",
+								command: "add-col-rt",
+								tooltip: ""
+							}, {
+								title: "Delete Column",
+								command: "del-col",
+								tooltip: ""
+							}]
+						}
+					};
+					for (var i = columns.length - 1; i > newColId; i--) {
+						columns[i].id = i;
+						if(columns[i].header.menu) {
+							columns[i].header.menu.items[0].title = "Col ID:" + columns[i].id;
+						}
+					}
+					grid.setColumns(columns);
+					grid.render();
+					break;
+				case 'del-col':
+					var columns = grid.getColumns();
+					var newColId = args.column.id;
+					columns.splice(newColId, 1);
+					for (var i = columns.length - 1; i >= newColId; i--) {
+						columns[i].id = i;
+						columns[i].header.menu.items[0].title = "Col ID:" + columns[i].id;
+					}
+					grid.setColumns(columns);
+					grid.render();
+					break;
+				case 'set-prop':
+					var columns = grid.getColumns();
+					var data = grid.getData();
+					var min;
+					var max;
+					var values = [];
+					_.each(data, function(at) {
+						var val = at[args.column.name];
+						// console.log(val);
+						//push values into values array
+						values.push(val);
+						//check if number and if so, get min and max
+						if(!isNaN(val)) {
+							if(min === undefined) {
+								min = val;
+								max = val;
+							} else {
+								min = Math.min(val, min);
+								max = Math.max(val, max);
+							}
+						}
+					});
+					//check column type against our own types
+					//if not one, then determine if string or text
+					var colType = args.column.type;
+					if(columnTypes.indexOf(colType) == -1) {
+						if(min) {
+							colType = "number";
+						} else {
+							colType = "string";
+						}
+					}
+					var attrId = args.column.id;
+					if(gridType == 'node') {
+						attrId-=nodeAttrInd;
+					} else {
+						attrId-=edgeAttrInd;
+					}
+					$scope.gridAttr = {
+						context:gridType, //node or edge
+						content:{
+							id:attrId,
+							name:args.column.name,
+							type:args.column.type,
+							cardType:args.column.cardType,
+							cardOptions:args.column.cardOptions,
+							values:values,
+							min:min,
+							max:max,
+							visible:args.column.visible
+						},
+						isDirty:false, //don't set to dirty until you want to save
+						isEdit:true
+					};
+					$scope.$apply();
+
+					break;
+				case 'hide':
+
+					var columns = grid.getColumns();
+					var newColId = args.column.id;
+					var column = columns[newColId];
+					column.visible = !column.visible;
+					//set column menu to show
+					if(column.visible) {
+						column.header.menu.items[2].title = "Hide Column";
+						column.headerCssClass = "";
+					} else {
+						column.header.menu.items[2].title = "Show Column";
+						column.headerCssClass = "col-hidden";
+					}
+					columns[newColId] = column;
+					grid.setColumns(columns);
+
+					break;
+				case 'color-by':
+					var columns = grid.getColumns();
+					var data = grid.getData();
+					var min;
+					var max;
+					var legendType;
+					var values = [];
+					var colors = [];
+					var totals = [];
+					var attrName = args.column.name; 
+					//to check if string
+					var isString = false;
+					_.each(data, function(at) {
+						var val = at[attrName];
+						// console.log(val);
+						//push values into values array
+						// values.push(val);
+						//check if number and if so, get min and max
+						if(!isNaN(val) && isFinite(val)) {
+							if(min === undefined) {
+								min = val;
+								max = val;
+							} else {
+								min = Math.min(val, min);
+								max = Math.max(val, max);
+							}
+						} else {
+							isString = true;
+						}
+						// throw into array to categorize
+						if(values.indexOf(val) == -1) {
+							values.push(val);
+						}
+					});
+					//set up rainbow for getting colors
+					var rainbow = new Rainbow();
+					//if category, use spectrum
+					rainbow.setSpectrum('ee4444', 'cc6600', '0099ff', 'ffcc00', '66cccc', '99cc00', '993399');
+					//is category
+					if(isString) {
+						//sort values alphabetically
+						values.sort();
+						//if values are strings, then legend type is category
+						legendType = 'category';
+						//set up totals array as length of categories and assign zero
+						for (var i = values.length - 1; i >= 0; i--) {
+							totals.push(0);
+						}
+						//if only one value, set all to red
+						if(values.length == 1) {
+							_.each(data, function(at) {
+								at.col = '#ff0000';
+								totals[0]++;
+							});
+							colors = ['ff0000'];
+						} else {
+							rainbow.setNumberRange(1, values.length);
+							var tot = values.length;
+							_.each(data, function(at) {
+								var val = at[attrName];
+								var num = values.indexOf(val)+1;
+								//fucking brits
+								at.col = rainbow.colourAt(num);
+								colors[num-1] = at.col;
+								totals[num-1]++;
+							});
+						}
+					} else {
+						//if values are numbers, then legend type is gradient
+						legendType = 'gradient';
+						totals.push(0);
+						//if only one value, set all to red
+						if(values.length == 1) {
+							_.each(data, function(at) {
+								at.col = '#ff0000';
+								totals[0]++;
+							});
+							colors = ['ff0000'];
+						} else {
+							rainbow.setNumberRange(min, max);
+							//if number, set gradient between 2 colors
+							rainbow.setSpectrum('ee4444', '3399ff');
+							var rat = legendScale/(max - min);
+							_.each(data, function(at) {
+								var val = at[attrName];
+								//fucking brits
+								at.col = rainbow.colourAt(val);
+								//just push total into first since gradient
+								totals[0]++;
+							});
+							values = [min, max];
+							colors = ['ee4444', '3399ff'];
+						}
+					}
+					//get total (edges or nodes)
+					var tot = _.reduce(totals, function(sum, num) {
+						return sum + num;
+					});
+					$scope.legend.source = 'spreadsheet';
+					if(dataTab == "nodes") {
+						//set legend based on values and colors
+						$scope.legend.nodes.title = "NODES "+tot;
+						$scope.legend.nodes.color = {
+							type: legendType,
+							colors: colors,
+							values: values,
+							labels: values,
+							totals: totals,
+							attr: attrName
+						};
+					} else {
+						//set legend based on values and colors
+						$scope.legend.edges.title = "EDGES "+tot;
+						$scope.legend.edges.color = {
+							type: legendType,
+							colors: colors,
+							values: values,
+							labels: values,
+							totals: totals,
+							attr: attrName
+						};
+					}
+					break;
+				case 'size-by':
+					var columns = grid.getColumns();
+					var data = grid.getData();
+					var min;
+					var max;
+					var legendType;
+					var values = [];
+					var sizes = [];
+					var totals = [];
+					var attrName = args.column.name;
+					//to check if string
+					var isString = false;
+					_.each(data, function(at) {
+						var val = at[attrName];
+						// console.log(val);
+						//push values into values array
+						// values.push(val);
+						//check if number and if so, get min and max
+						if(!isNaN(val) && isFinite(val)) {
+							if(min === undefined) {
+								min = val;
+								max = val;
+							} else {
+								min = Math.min(Number(val), min);
+								max = Math.max(Number(val), max);
+							}
+						} else {
+							isString = true;
+						}
+						// throw into array to categorize
+						if(values.indexOf(val) == -1) {
+							values.push(val);
+						}
+					});
+					//loop through again to add size values
+					// var size = (val - min) / (max - min) * 10;
+					if(isString) {
+						//sort values alphabetically
+						values.sort();
+						legendType = 'category';
+
+						var tot = values.length;
+						//set up totals array as length of categories and assign zero
+						for (var i = values.length - 1; i >= 0; i--) {
+							totals.push(0);
+						}
+						_.each(data, function(at) {
+							var val = at[attrName];
+							var ind = values.indexOf(val);
+							//look for val in array and use to get ratio
+							at.size = Number(((ind+1)/tot*legendScale)).toFixed(2);
+							sizes[ind] = at.size;
+							totals[ind]++;
+						});
+					} else {
+						legendType = 'gradient';
+						totals.push(0);
+						var rat = legendScale/(max - min);
+						_.each(data, function(at) {
+							var val = at[attrName];
+							//get ratio of number on a scale of 1-10
+							at.size = Number((val - min) * rat).toFixed(2);
+							totals[0]++;
+						});
+						values = [min, max];
+						sizes = [1, 10];
+					}
+					ndGrid.setData(data, true);
+
+					//get total (nodes)
+					var tot = _.reduce(totals, function(sum, num) {
+						return sum + num;
+					});
+					//set legend based on values and sizes
+					$scope.legend.source = 'spreadsheet';
+					$scope.legend.nodes.title = "NODES "+tot;
+					$scope.legend.nodes.size = {
+						type: legendType,
+						sizes: sizes,
+						values: values,
+						labels: values,
+						totals: totals,
+						attr: attrName
+					};
+					break;
+				default:
+					alert("Command: " + args.command);
+			}
+			//don't set property save since doing in its own directive
+			if(args.command != "set-prop") {
+				saveAllData();
+			}
+		});
+
+		grid.registerPlugin(headerMenuPlugin);
+
+		//for resizing container for grid
+	//	$resizer.on('resize', function() {
+	//		grid.resizeCanvas();
+	//		console.log('resizing');
+	//	})
+	//var resize = function() {
+	//	grid.resizeCanvas();
+	//	console.log('resizing');
+	// }
+
+
+		return grid;
+	};
+
+
+
+
+
+	//WATCH IN
+	// $scope.$watch('in', function(oldVal, newVal){
+	// 	if(newVal!=oldVal){
+	// 		console.log($scope.in);
+	// 		console.log('[spreadsheet] layer data change - updating spreadsheets');
+	// 		// ndGrid.gotoCell(0,0,false);
+	// 		// edGrid.gotoCell(0,0,false);
+	// 		spreadData = graph2Spread($scope.in.content);
+	// 		ndGrid.setColumns(spreadData.ndColumns);
+	// 		ndGrid.setData(spreadData.ndData, true);
+	// 		edGrid.setColumns(spreadData.edColumns);
+	// 		edGrid.setData(spreadData.edData, true);
+
+	// 		$nodesDataBtn.find('.legend-text').text(spreadData.ndData.length);
+	// 		$edgesDataBtn.find('.legend-text').text(spreadData.edData.length);
+	// 		$nodesDataBtn.addClass('active');
+
+	// 		if(dataTab == 'nodes') {
+	// 			ndGrid.render();
+	// 			$(edEle).hide();
+	// 			$(ndEle).show();
+	// 		} else {
+	// 			edGrid.render();
+	// 			$(ndEle).hide();
+	// 			$(edEle).show();
+	// 		}
+	// 	}
+	// }, true);
+
+	//WATCH EVT
+	// $scope.$watch('evt', function(oldVal, newVal) {
+	// 	if(newVal != oldVal) {
+	// 		//console.log($scope.evt);
+	// 		if ($scope.evt.source !== 'spreadsheet') {
+	// 			var evtContent = $scope.evt.content;
+	// 			switch(evtContent.action) {
+	// 				case 'mouseenter':
+	// 					console.log('[spreadsheet] mouseenter from controller');
+
+	// 					break;
+	// 				case 'mouseleave':
+	// 					console.log('[spreadsheet] mouseleave from controller');
+	// 					break;
+	// 				default:
+	// 			}
+	// 		}
+	// 	}
+	// }, true);
+
+	// //WATCH DELTA
+	// $scope.$watch('delta', function(oldVal, newVal){
+	// 	if(newVal!=oldVal){
+	// 		//console.log($scope.delta);
+	// 		console.log('[spreadsheet] delta detected from ' + $scope.delta.source);
+	// 		if ($scope.delta.source != 'spreadsheet') {
+	// 			console.log('[spreadsheet] can update only if the bits behave');
+	// 			//only thing currently available
+	// 			switch ($scope.delta.content.action) {
+	// 				case 'node-update':
+	// 					//find row by id
+	// 					var ndData= ndGrid.getData();
+	// 					var n = _.findWhere(ndData,{id:$scope.delta.content.row});
+	// 					n[$scope.delta.content.attr] = $scope.delta.content.value;
+	// 					ndGrid.setData(ndData);
+	// 					ndGrid.render();
+	// 				break;
+	// 				default:
+	// 			}
+	// 		} else {
+	// 			console.log('[spreadsheet] ignoring delta..');
+	// 		}
+	// 	}
+	// }, true);
+
+
+	//WATCH ATTR (FROM DIRATTREDIT)
+	$scope.$watch('gridAttr', function(oldVal, newVal) {
+
+		//console.log($scope.gridAttr);
+		//change column name only if dirty (from save in modal)
+		if(oldVal != newVal && $scope.gridAttr.isDirty) {
+			if($scope.gridAttr.context == 'node') {
+				ndGrid.updateColumnHeader($scope.gridAttr.content.id+nodeAttrInd, $scope.gridAttr.content.name);
+				ndGrid.render();
+			} else if($scope.gridAttr.context == 'edge') {
+				edGrid.updateColumnHeader($scope.gridAttr.content.id+edgeAttrInd, $scope.gridAttr.content.name);
+				edGrid.render();
+			}
+			//if undefined, then set to default (string)
+			if(!$scope.gridAttr.content.type) {
+				$scope.gridAttr.content.type = "string";
+			}
+			//save via delta
+			saveDelta({
+				action: $scope.gridAttr.context+'-attr-update',
+				attr: $scope.gridAttr.content.name,
+				value: {
+					type: $scope.gridAttr.content.type,
+					id: $scope.gridAttr.content.id,
+					cardOptions: $scope.gridAttr.content.cardOptions,
+					cardType: $scope.gridAttr.content.cardType,
+					visible: $scope.gridAttr.content.visible
+				}
+			});
+
+			//hide modal
+			$scope.gridAttr.isDirty = false;
+
+			//$scope.$apply();
+		}
+	}, true);
+
+	//needed for resizing
+	$scope.$watch('footerPanels', function(oldVal, newVal) {
+		if(oldVal != newVal) {
+			if($scope.rightPanels.isGridOpen) {
+				$resizer.css({
+					top: gridResizeTop,
+					height: gridResizeHeight
+				});
+			} else {
+				gridResizeTop = $resizer.css('top');
+				gridResizeHeight = $resizer.height();
+				$resizer.css({
+					top: gridResizeTopOrig,
+					height: gridResizeHeightOrig
+				});
+			}
+			setTimeout(function() {
+				ndGrid.resizeCanvas();
+			},300);
+		}
+	}, true);
+
+
+	}]);

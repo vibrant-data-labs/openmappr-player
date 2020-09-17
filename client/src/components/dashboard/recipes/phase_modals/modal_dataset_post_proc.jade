@@ -1,0 +1,10 @@
+.modal-header
+	.row.vert-align
+		.col-xs-10
+			h6
+				span Recipe Dataset Post-processing Settings
+		.col-xs-2.vert-align.right
+			button.close-btn(type="button", ng-click="closeModal()")
+				span.icon &times;
+.modal-body
+	.row(ng-include=' "#{server_prefix}#{view_path}/components/project/dataIngestion/common_ops/commonops.html" ')

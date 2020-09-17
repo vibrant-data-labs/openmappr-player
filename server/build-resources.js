@@ -10,42 +10,15 @@ const _ = require('lodash'),
   AppConfig = require('./services/AppConfig'),
   { execSync } = require('child_process'),
   { argv } = require('yargs'),
-  jade = require('jade');
+  jade = require('jade'),
+  inquirer = require('inquirer');
 
 const player_model = require('./player/player_model');
 
-const projId = argv.projId;
-const publishDataPath = argv.path;
 const dataOnly = argv.dataOnly;
 const staticFilesOnly = argv.staticFilesOnly;
-
-let hasError = false;
-if (!dataOnly && !publishDataPath) {
-  console.error('Argument --path should be provided!');
-  hasError = true;
-}
-
-if (!staticFilesOnly && !projId) {
-  console.error('Argument --projId should be provided!');
-  hasError = true;
-}
-
-if (!dataOnly && !staticFilesOnly && (!projId || !publishDataPath)) {
-  console.error('Arguments --projId and --path should be provided!');
-  hasError = true;
-}
-
-if (hasError) {
-  process.exit(1);
-}
-
-if (dataOnly) {
-  console.warn('--dataOnly is passed, generating data files only...');
-}
-
-if (staticFilesOnly) {
-  console.warn('--staticFilesOnly is passed, generating static resources only...');
-}
+let projId;
+let publishDataPath;
 
 var config = AppConfig.init({
   get: function (key) {
@@ -53,7 +26,7 @@ var config = AppConfig.init({
   }
 });
 
-if (!dataOnly || staticFilesOnly) {
+function runGrunt() {
   console.log('Running grunt...');
   execSync('grunt --force');
 }
@@ -61,23 +34,61 @@ if (!dataOnly || staticFilesOnly) {
 const outputPath = './client/build/dev/';
 const dataPath = outputPath + 'data/';
 
-if (!fs.existsSync(dataPath)) {
-  fs.mkdirSync(dataPath);
-}
-
-mongoose.connect(config.dbUrl, function (error) {
-  console.log('MONGO CONNECT ERR', error);
-});
-
 var playerSettings = null;
 
 async function buildResources() {
-  if (!staticFilesOnly) {
+  if (dataOnly || (!dataOnly && !staticFilesOnly)) {
+    console.log('Fetching projects...');
+    await mongoose.connect(config.dbUrl, { useNewUrlParser: true, useUnifiedTopology: true}, function(error) {
+      if (!error) return;
+      console.error('MONGO CONNECT ERR', error);
+      process.exit(1);
+    });
+
+    const projects = await projModel.listAllAsync();
+    const res = await inquirer.prompt([
+      {
+        type: 'list',
+        name: 'projId',
+        message: 'Select the project',
+        choices: projects.map(r => ({ name: r.projName, value: r._id.toString() })),
+        filter: function (val) {
+          return val.toLowerCase();
+        },
+      },
+    ]);
+
+    if (!res || !res.projId) {
+      console.error('project was not selected');
+      process.exit(2);
+    }
+
+    projId = res.projId;
+  }
+
+  if (staticFilesOnly || (!dataOnly && !staticFilesOnly)) {
+    const res = await inquirer.prompt([
+      {
+        type: 'input',
+        name: 'path',
+        message: 'Enter the relative path to generated json files (default /data/)',
+      },
+    ]);
+
+    publishDataPath = res && res.path ? res.path : '/data/';
+
+    runGrunt();
+  }
+
+  if (!staticFilesOnly || (!dataOnly && !staticFilesOnly)) {
+
+    if (!fs.existsSync(dataPath)) {
+      fs.mkdirSync(dataPath, { recursive: true });
+    }
 
     const proj = await projModel.listByIdAsync(projId);
     const player = await new Promise(resolve => player_model.listByProjectId(projId, function (err, data) { resolve(data); }));
 
-    console.log('BUILD-RESOURCES', proj.dataset.ref);
     playerSettings = player;
     const projData = JSON.stringify({ ...proj._doc, player }, null, 4);
     fs.writeFileSync(dataPath + 'settings.json', projData);

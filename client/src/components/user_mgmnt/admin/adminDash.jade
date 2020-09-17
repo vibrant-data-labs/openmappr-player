@@ -1,0 +1,153 @@
+.page.page-profile.over-auto.height-100(ng-controller="MapprAdminCtrl")
+	.top-header
+		header.header-bar.simple
+			.top-nav
+				ul.list-unstyled.vert-align.left-menu.pull-left
+					//LOGO + TEXT
+					li.menu-nav.vert-align(ng-mouseleave="showProjMenu = false;")
+						div.btn-group(ng-mouseenter="showProjMenu = true;" uib-tooltip="Projects", tooltip-placement="right")
+							a.proj-logo.text-center.vert-align(href="/user-projects")
+								i.icon-mappr-logo(ng-if="!showProjMenu")
+								i.fa.fa-arrow-left.fa-2x(ng-if="showProjMenu")
+					li.menu-nav
+						h5 Mappr Admin
+					li.menu-nav
+						button.power-btn.wide(ng-if="adminUserSection == 'org'" type="button", ng-click="openOrgCreateModal()") Create Organization
+						button.power-btn.wide(ng-if="adminUserSection == 'user'" type="button", ng-click="openUserCreateModal()") Create User
+					li.search
+						.square-btn.pull-left.search-input
+							div(ng-if="adminUserSection == 'org'")
+								input.h4.form-control(type="text", placeholder="search orgs...", ng-model="orgSearchText" dir-select-all)
+								i.fa.fa-search
+							div(ng-if="adminUserSection == 'user'")
+								input.h4.form-control(type="text", placeholder="search users...", ng-model="userSearchText" dir-select-all)
+								i.fa.fa-search
+				ul.list-unstyled.vert-align.pull-right.no-margin
+					li.uib-dropdown.text-normal.nav-profile.menu-nav(uib-dropdown dropdown-append-to-body)
+						a(uib-dropdown-toggle auto-close="outsideClick" href='javascript:;' uib-tooltip="profile", tooltip-placement="bottom")
+							//img.img-circle.img35_35(ng-src='{{user.current.picture}}', alt='{{user.current.name}}')
+							.circle-btn
+								span.h4 {{user.current.name | limitTo: 1}}
+						.uib-dropdown-menu.uib-dropdown-menu-flexing(uib-dropdown-menu)
+							.uib-dropdown-click-close
+							.uib-dropdown-flex-content(style="margin-left:43px;")
+								.uib-dropdown-flex.right
+									ul.list-unstyled.dd-list
+										//- ng-repeat here
+										li.row.vert-align
+											a(href="/user-profile") 
+												.col-xs-12
+													.h6.no-margin Profile
+
+										li.row
+											a.vert-align(ng-click="logout()")
+												.col-xs-7
+													h6.no-margin.truncate {{user.current.email}}
+												.col-xs-5
+													h6.no-margin.truncate Log Out
+	.list-lg
+		uib-tabset
+			uib-tab(select="setAdminUserSection('org')")
+				uib-tab-heading
+					h6.no-margin Organizations
+				.tab-content
+					.list-group-item.no-border
+						.row.vert-align
+							.col-xs-1 
+								i.fa.fa-2x.fa-fw.fa-users.hidden
+							.col-xs-5
+								h6.no-margin Name
+							.col-xs-2
+								h6.no-margin Created 
+							.col-xs-1 
+								h6.no-margin Maps
+							.col-xs-1 
+								h6.no-margin Members 
+							.col-xs-1 
+								h6.no-margin Pending 
+							.col-xs-2
+					ul.list-unstyled
+						li.list-group-item.no-hover(ng-repeat="orgVM in orgVMs | filter:orgSearchText | orderBy: '-createdAt' ")
+							.row.vert-align
+								.col-xs-1 
+									i.fa.fa-2x.fa-fw.fa-users
+								.col-xs-5
+									h6.name {{ orgVM.orgName }}
+									a.subtext(ng-click="showUser(user._id)") {{ user.email }}
+								.col-xs-2
+									h6 {{ orgVM.createdAt | date : medium }}
+								.col-xs-1
+									h6 {{ orgVM.projects.length}}
+								.col-xs-1
+									h6 {{ orgVM.users.members.length }}
+								.col-xs-1
+									h6 {{ orgVM.users.pending.length }}
+								.col-xs-2
+									.uib-dropdown(uib-dropdown dropdown-append-to-body)
+										span.text-link.h6(uib-dropdown-toggle auto-close="outsideClick") 
+											span.pointable-cursor(ng-class="ddClass")
+												span Manage 
+												i.fa.fa-angle-down
+										.uib-dropdown-menu.uib-dropdown-menu-flexing(uib-dropdown-menu)
+											.uib-dropdown-click-close
+											.uib-dropdown-flex-content(style="margin-left: 80px;")
+												.uib-dropdown-flex.right
+													ul.list-unstyled.dd-list
+														//- li.divider
+														li.row.vert-align.pointable-cursor(ng-click="openOrgEditModal(orgVM)")
+															.col-xs-12 Edit Org
+														li.row.vert-align.pointable-cursor(ng-click="openOrgRemoveModal(orgVM)")
+															.col-xs-12 Remove Org
+														li.row.vert-align.pointable-cursor(ng-click="openOrgUsersModal(orgVM)")
+															.col-xs-12 Users
+														li.row.vert-align.pointable-cursor(ng-click="openOrgProjectsModal(orgVM)")
+															.col-xs-12 Projects
+
+			uib-tab(select="setAdminUserSection('user')")
+				uib-tab-heading
+					h6.no-margin Users
+				.tab-content
+					.list-group-item.no-border 
+						.row.vert-align
+							.col-xs-1 
+								i.fa.fa-2x.fa-fw.fa-users.hidden
+							.col-xs-5
+								h6.no-margin Name
+							.col-xs-2
+								h6.no-margin Joined 
+							.col-xs-1 
+								h6.no-margin Maps
+							.col-xs-1 
+								h6.no-margin Orgs
+							.col-xs-2
+					ul.list-unstyled
+						li.list-group-item.no-hover(ng-repeat="user in userVMs | filter:userSearchText | orderBy : orderUserComposite")
+							.row.vert-align
+								.col-xs-1 
+									i.fa.fa-2x.fa-fw.fa-user
+								.col-xs-5
+									h6.no-margin.name {{ user.name }}
+									a.subtext(ng-click="showUser(user._id)") {{ user.email }}
+								.col-xs-2
+									h6 {{ user.dateCreated | date : medium }}
+								.col-xs-1 
+									h6 {{ user.projects.length}}
+								.col-xs-1 
+									h6 {{ user.orgs.length }}
+								.col-xs-2
+									.uib-dropdown(uib-dropdown dropdown-append-to-body)
+										span.text-link.h6(uib-dropdown-toggle auto-close="outsideClick") 
+											span.pointable-cursor(ng-class="ddClass")
+												span Manage 
+												i.fa.fa-angle-down
+										.uib-dropdown-menu.uib-dropdown-menu-flexing(uib-dropdown-menu)
+											.uib-dropdown-click-close
+											.uib-dropdown-flex-content(style="margin-left: 80px;")
+												.uib-dropdown-flex.right
+													ul.list-unstyled.dd-list
+														li.row.vert-align.pointable-cursor(ng-click="openUserEditModal(user)")
+															.col-xs-12 Edit User
+														li.row.vert-align.pointable-cursor(ng-click="openUserDeleteModal(user)")
+															.col-xs-12 Delete User
+														li.row.vert-align.pointable-cursor(ng-click="openUserOrgsModal(user)")
+															.col-xs-12 View Orgs

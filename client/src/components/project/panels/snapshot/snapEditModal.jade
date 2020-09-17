@@ -1,0 +1,80 @@
+.modal-header
+	.row.vert-align
+		.col-xs-6
+			h6
+				span Edit Snapshot
+		.col-xs-6.vert-align.right
+			button.header-btn(type="button", ng-click="saveSnapshot()") 
+				span
+					i.fa.fa-download
+					span.h7 Save
+			button.close-btn(type="button", ng-click="closeModal()")
+				span.icon &times;
+form.modal-body
+	.row
+		.col-xs-7.vert-align
+			h6.nowrap Save Selection?:&nbsp;&nbsp;&nbsp;
+			.ui-select
+				select(ng-model="currSnapshot.processSelection" ng-options="obj.value as obj.label for obj in overrideSelectionOpts")
+					//- option(value="false" ng-selection="!currSnapshot.processSelection") Do not apply the current selection to this snapshot.
+					//- option(value="true" ng-selection="currSnapshot.processSelection") Override the snapshot's previous selection
+			//- input(type="checkbox", ng-model="currSnapshot.processSelection" id="processSelection")
+			//- label(for="processSelection")
+		//- .col-xs-10
+		//- 	h4 Override Snapshot selection with current selection
+	//- .row
+	//- 	.col-xs-6
+	//- 		h3 Type
+	//- 		input.form-control(ng-model="currSnapshot.type")
+	.row
+		.col-xs-12
+			h3 Title
+			//title
+			input.form-control(ng-model="currSnapshot.snapName" dir-select-all)
+	.row
+		.col-xs-12
+			h3 Subtitle
+			input.form-control(ng-model="currSnapshot.subtitle" dir-select-all)
+	.row
+		.col-xs-12
+			h3 Description
+			//descr
+			.ui-editor(text-angular, ng-model="currSnapshot.descr")
+			//- textarea.form-control(ng-model="currSnapshot.descr")
+	//- .row
+	//- 	//link
+	//- 	.col-xs-12
+	//- 		h3 Audio
+	//- 		input.form-control(ng-model="currSnapshot.audio" dir-select-all)
+	//- .row
+	//- 	//link
+	//- 	.col-xs-12
+	//- 		h3 Image Link
+	//- 		input.form-control(ng-model="currSnapshot.picture" dir-select-all)
+	//- .row
+	//- 	//embed code
+	//- 	.col-xs-12
+	//- 		h3 Embed Code
+	//- 		textarea.form-control(ng-model="currSnapshot.embed" dir-select-all)
+	//- .row
+	//- 	.col-xs-12
+	//- 		h3 Snapshot Text
+	//- 		textarea.form-control(rows="10" ng-model="currSnapshot.text" dir-select-all)
+	.row
+		.col-xs-12
+			//save
+			.divider
+			.divider
+			.row.vert-align
+				.col-xs-3
+					//- button.pull-left.btn.btn-default(ng-click="deleteConfirm = true;") Delete Snapshot
+				.col-xs-6
+					//- div.vert-align(ng-if="deleteConfirm")
+					//- 	h5.absolute-bottom-left Are you sure?&nbsp;&nbsp;
+					//- 		a.text-info(ng-click="deleteSnapshot()") Yes&nbsp;&nbsp;
+					//- 		a.text-info(ng-click="cancelDelete();") No
+				.col-xs-3
+					button.pull-right.power-btn(type="submit" ng-click="saveSnapshot()") Save
+			.clearfix
+			.divider
+			.divider

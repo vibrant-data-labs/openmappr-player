@@ -1,0 +1,256 @@
+.row(ng-controller="SpreadSheetCtrl")
+	//- When spreadsheet data is available
+	.list-wrapper.max-height.nowrap.width-100(ng-if="diModalData.dataAvailable")
+		.summary-btn.vert-align(ng-click="diModalData.summaryOpen = !diModalData.summaryOpen" ng-class="{'active':diModalData.summaryOpen}" uib-tooltip="Summary" tooltip-placement="left" tooltip-append-to-body="true")
+			i.fa.fa-ellipsis-h
+
+		.list.animate(ng-class="{'col-xs-8': diModalData.summaryOpen, 'col-xs-12': !diModalData.summaryOpen}")
+			//- When merging maps
+			div(ng-if="diModalData.editMode")
+				div(ng-if="spreadSheetData.mergeMachine.conflicts")
+					h4.bg-danger {{spreadSheetData.mergeMachine.mergeErrorObj.error}}
+					h4 {{spreadSheetData.mergeMachine.mergeErrorObj.action}}
+				.title-style.vert-align(ng-show="spreadSheetData.mergeMachine.datasetAdditions.length > 0")
+					h5.text-success {{spreadSheetData.mergeMachine.datasetAdditions.length}} new nodes will be added.
+				div
+					.row.title-style.vert-align
+						.col-xs-4
+							.row.vert-align
+								.col-xs-2
+									a.select-btn.btn-icon-round.btn-icon-round-sm.btn-line-default(uib-tooltip="{{ {true:'ex', false: 'in'}[spreadSheetData.mergeMachine.allNewSelected]+ 'clude all'}}" tooltip-placement="right" ng-click="spreadSheetData.mergeMachine.toggleAllAttrs('new')" ng-class="{true:'active', false: ''}[spreadSheetData.mergeMachine.allNewSelected]")
+										i.fa(ng-class = "{true:'fa-check', false:'fa-check white'}[spreadSheetData.mergeMachine.allNewSelected]")
+								.col-xs-10
+									h4 Attributes(New)
+						.col-xs-4
+							.row.vert-align
+								.col-xs-2
+									a.select-btn.btn-icon-round.btn-icon-round-sm.btn-line-default(uib-tooltip="{{ {true:'ex', false: 'in'}[spreadSheetData.mergeMachine.allExistingSelected]+ 'clude all'}}" tooltip-placement="right" ng-click="spreadSheetData.mergeMachine.toggleAllAttrs('existing')" ng-class="{true:'active', false: ''}[spreadSheetData.mergeMachine.allExistingSelected]")
+										i.fa(ng-class = "{true:'fa-check', false:'fa-check white'}[spreadSheetData.mergeMachine.allExistingSelected]")
+								.col-xs-10
+									h4 Attributes(Existing)
+					.row.border-section.title-style(ng-repeat="attr in spreadSheetData.mergeMachine.attrListing")
+						.row-bkgrnd(ng-class="{'bg-primary':(attr.state == 'add' || attr.state == 'update'), 'bg-danger': (attr.state == 'delete')}")
+						.col-xs-4
+							div(ng-if="attr.inNewData")
+								.row.vert-align
+									.col-xs-2
+										a.select-btn.btn-icon-round.btn-icon-round-sm.btn-line-default(ng-click="attr.togglePreferNew(); spreadSheetData.mergeMachine.checkForAllAttrSelection('new');" ng-class="{true:'active', false: ''}[attr.preferNew]")
+											i.fa(ng-class = "{true:'fa-check', false:'fa-check white'}[attr.preferNew]")
+									.col-xs-10 
+										h5 {{::attr.id}}
+										h6.count {{attr.counts.total_new}} values
+						.col-xs-4
+							div(ng-if="attr.inExistingData")
+								.row.vert-align
+									.col-xs-2
+										a.select-btn.btn-icon-round.btn-icon-round-sm.btn-line-default(ng-click="attr.togglePreferExisting(); spreadSheetData.mergeMachine.checkForAllAttrSelection('existing');" ng-class="{true:'active', false: ''}[attr.preferExisting]")
+											i.fa(ng-class = "{true:'fa-check', false:'fa-check white'}[attr.preferExisting]")
+									.col-xs-10
+										h5 {{::attr.id}}
+										h6.count {{attr.counts.total_existing}} values
+						.col-xs-3
+							h6.row.vert-align(ng-class="{'text-light':(attr.state == 'no_change'), 'text-primary':(attr.state == 'add' || attr.state == 'update'), 'text-danger':(attr.state == 'delete') }")
+								.col-xs-3
+									span(ng-if="attr.state == 'add' || attr.state == 'update'")
+										i.fa.fa-2x.fa-plus
+									span(ng-if="attr.state == 'delete'")
+										span(ng-if="!attr.isRequired")
+											i.fa.fa-2x.fa-minus
+										span(ng-if="attr.isRequired")
+											i.fa.fa-2x.fa-times
+									span(ng-if="attr.state == 'no_change'")
+										i.fa.fa-2x.fa-minus 
+										i.fa.fa-2x.fa-minus(style="margin-top: -19px; display: block;")
+								.col-xs-9
+									span {{attr.stateLine}}
+									button.btn.btn-xs(ng-if="attr.state == 'delete' && attr.isRequired", uib-tooltip="{{attr.persistReason}}" tooltip-append-to-body="true" ng-click="") ?
+			//- When creating maps
+			div(ng-if="!diModalData.editMode")
+				div(ng-if="diModalData.tabsStatus.nodes")
+					.row.title-style(ng-if="spreadSheetData.createData.removedReservedAttrs.length > 0")
+						.col-xs-10
+							h5.no-margin.text-danger Following attributes were removed because they conflict with our reserved attribute names!
+							span.h6(ng-repeat="attrTitle in spreadSheetData.createData.removedReservedAttrs") {{::attrTitle}},&nbsp;
+							.divider
+							.divider
+					.row.title-style.vert-align
+						.col-xs-1
+							//- input(type="checkbox", ng-checked="spreadSheetData.attrsData.allLocalAttrsSelected", ng-click="toggleAllLocalAttrs()")
+							a.select-btn.btn-icon-round.btn-icon-round-sm.btn-line-default(uib-tooltip="{{ {true:'ex', false: 'in'}[spreadSheetData.attrsData.allLocalAttrsSelected]+ 'clude all'}}" tooltip-placement="right" ng-click="toggleAllLocalAttrs()")
+								i.fa(ng-class = "{true:'fa-times', false:'fa-check white'}[spreadSheetData.attrsData.allLocalAttrsSelected]", ng-click="setAllLocalAttrsSelection()")
+						.col-xs-4
+							h4 Attributes
+							//h6.count {{::spreadSheetData.nodesCount}} values
+						.col-xs-2
+							h4 Type
+					.clearfix
+					.row.border-section.title-style.vert-align.show-on-hover-target.no-active(ng-repeat="attr in spreadSheetData.attrsData.combinedAttrs" ng-show="::attr.local", ng-class="{true: 'active'}[attr.isLocalChecked]")
+						.col-xs-1
+							a.select-btn.btn-icon-round.btn-icon-round-sm.show-on-hover.btn-line-default(uib-tooltip="{{ {true:'ex', false: 'in'}[attr.isLocalChecked]+ 'clude'}}" tooltip-placement="right" ng-click="attr.isLocalChecked = !attr.isLocalChecked;")
+								i.fa(ng-class = "{true:'fa-times', false:'fa-check white'}[attr.isLocalChecked]", ng-click="setAllLocalAttrsSelection()")
+						.col-xs-4
+							.row.vert-align(ng-show="editTitle")
+								.truncate.col-xs-8(ng-show="editTitle", ng-class = "{true:'', false:'text-muted-light'}[attr.visible]")
+									input.h6.form-control(ng-model="attr.title", ng-minlength='1')
+								.col-xs-2.h6.visible-btn(uib-tooltip="Save" type="button", ng-click="validateNewAttrTitle(attr, spreadSheetData.attrsData.combinedAttrs); editTitle = false;") 
+									i.fa.fa-check
+								.col-xs-2.h6.visible-btn(uib-tooltip="Cancel" type="button", ng-click="attr.title = attr.id; editTitle = false;")
+									i.fa.fa-times
+							div(ng-show="!editTitle")
+								h5(ng-class = "{true:'', false:'text-muted-light'}[attr.isLocalChecked]") {{attr.title}}
+								h6.count(ng-class = "{true:'', false:'text-muted-light'}[attr.isLocalChecked]") {{::attr.attrNodeCount}} values
+						.col-xs-2
+							.ui-select(ng-show="attr.isLocalChecked")
+								select(ng-model = "attr.newAttrType", ng-change="changeNodeAttrType(attr);", ng-options="atype for atype in spreadSheetData.attrTypes")
+									option(value='{{attr.attrType}}')
+						.col-xs-4
+						.col-xs-1
+							h6
+								a.visible-btn.show-on-hover(ng-show="attr.isLocalChecked" ng-click="editTitle = true;" uib-tooltip="Edit")
+									i.fa.fa-pencil
+						//- .col-xs-1
+						//- a.btn-line-primary.btn-icon-round.btn-icon-round-sm.show-on-hover.text-muted.text-center(type="button", ng-click="" uib-tooltip="Info") 
+						//- 	i.fa.fa-info
+
+				div(ng-if="diModalData.tabsStatus.links")
+					div(ng-if="::spreadSheetData.attrsData.nwLinkAttrs.length > 0")
+						.row.title-style
+							.col-xs-1
+							.col-xs-4
+								h4 Attributes
+								h6.count {{::spreadSheetData.linksCount}} values
+							.col-xs-2
+								h4 Type
+						.clearfix
+						.row.border-section.title-style.vert-align.show-on-hover-target(ng-repeat="attr in spreadSheetData.attrsData.nwLinkAttrs")
+							.col-xs-1
+							.col-xs-4
+								h5 {{::attr.title}}
+								h6.count {{::attr.attrLinkCount}} values
+							.col-xs-2
+								.ui-select
+									select(ng-model = "attr.newAttrType", ng-change="changeLinkAttrType(attr);", ng-options="atype for atype in spreadSheetData.attrTypes")
+										option(value='{{attr.attrType}}')
+							.col-xs-4
+							.col-xs-1
+								a.visible-btn.show-on-hover(ng-click="attr.visible = !attr.visible;" uib-tooltip="Visibility")
+									i.fa(ng-class = "{true:'fa-eye', false:'fa-eye-slash text-muted'}[attr.visible]")
+							//- .col-xs-1
+							//- 	a.btn-line-primary.btn-icon-round.btn-icon-round-sm.show-on-hover.text-muted.text-center(type="button", ng-click="" uib-tooltip="Info")
+							//- 		i.fa.fa-info
+					div(ng-if="::spreadSheetData.attrsData.nwLinkAttrs.length < 1")
+						.row.title-style
+							.col-xs-12
+								h4 No attributes were found associated with the links
+		.meta-list.col-xs-4.animate-to-left(ng-if="diModalData.summaryOpen")
+			div(ng-if="!diModalData.editMode")
+				h4 Summary
+				.row.border-section.title-style
+					.col-xs-12
+						span Source Info
+					.col-xs-12
+						span {{::spreadSheetData.file.name}}
+				.row.border-section.title-style
+					.col-xs-4
+						span &nbsp;&nbsp;{{spreadSheetData.nodesCount}} Rows
+					.col-xs-4
+						span &nbsp;&nbsp;{{spreadSheetData.edgesCount}} Edges
+					.col-xs-4
+						span {{spreadSheetData.createData.localColumns.length}} Columns
+				//- .row.border-section.title-style
+				//- 	.col-xs-12
+				//- 		span Scope
+				//- 	.col-xs-12
+				//- 		span This attribute is available to all the networks in the map.
+				//- 	.col-xs-12
+				//- 		span(style="cursor:pointer; color:blue;") change..
+			div(ng-if="diModalData.editMode")
+				h4 Info
+				.row.border-section.title-style
+					.col-xs-12 {{spreadSheetData.file.name}}
+				.row.border-section.title-style
+					.col-xs-4.text-center
+						i.fa.fa-fw.fa-list
+						span {{spreadSheetData.nodesCount}} Rows
+					.col-xs-4.text-center
+						i.fa.fa-fw.fa-expand
+						span {{spreadSheetData.edgesCount}} Links
+					.col-xs-4.text-center
+						i.fa.fa-fw.fa-list-alt
+						span {{spreadSheetData.mergeData.localColumns.length}} 
+						span Attrs
+				.row.border-section.title-style
+					.col-xs-12
+						h4 Merge Summary
+					div(ng-if="spreadSheetData.mergeData.isDifferent")
+						.col-xs-12(ng-show="::spreadSheetData.mergeData.summary.nodesAdded.length === 1") - {{::spreadSheetData.mergeData.summary.nodesAdded.length}} node will be added
+						.col-xs-12(ng-show="::spreadSheetData.mergeData.summary.nodesAdded.length > 1") - {{::spreadSheetData.mergeData.summary.nodesAdded.length}} nodes will be added
+						.col-xs-12(ng-show="::spreadSheetData.mergeData.summary.nodesUpdated.length === 1") - {{::spreadSheetData.mergeData.summary.nodesUpdated.length}} node will be updated
+						.col-xs-12(ng-show="::spreadSheetData.mergeData.summary.nodesUpdated.length > 1") - {{::spreadSheetData.mergeData.summary.nodesUpdated.length}} nodes will be updated
+						.col-xs-12(ng-show="::spreadSheetData.mergeData.summary.attrsAdded.length === 1") - {{::spreadSheetData.mergeData.summary.attrsAdded.length}} node attribute will be added
+						.col-xs-12(ng-show="::spreadSheetData.mergeData.summary.attrsAdded.length > 1") - {{::spreadSheetData.mergeData.summary.attrsAdded.length}} node attributes will be added
+					.title-style(ng-if="!spreadSheetData.mergeData.isDifferent")
+						.col-xs-12
+							p Nothing new
+				.divider
+				.row.border-section.title-style(ng-if="spreadSheetData.mergeData.mergeConflicts")
+					.col-xs-12
+						h4.text-danger Merge Errors
+						.col-xs-12 Following attributes can't be deleted because they are currently being used in one or more snapshots:
+						.col-xs-12
+							.col-xs-3 Attribute
+							.col-xs-9 Snapshots
+						.col-xs-12(ng-repeat="(attrName, snapsList) in spreadSheetData.mergeData.conflictedAttrs")
+							.col-xs-3 {{::attrName}}
+							.col-xs-9
+								span(ng-repeat="snap in snapsList")
+									span {{::snap}}
+									span ,&nbsp;
+
+	//- Spreadhseet data not available, display spreadhseet tabs
+	.col-xs-12(ng-if="!diModalData.dataAvailable")
+		.divider
+		.divider
+		.row(ng-if="diModalData.subview === 'file'")
+			div(ng-controller="LocalSheetsCtrl")
+				.col-xs-12.text-center(ngf-drop="uploadLocalFiles($files)", ngf-multiple="false", ngf-drag-over-class="'over'" accept=".xls, .xlsx, .csv, .gexf")
+					//- h3 Drag your file here
+					//- p or if you prefer
+					h3.drag-and-drop.vert-align Drag &amp; Drop a File Here
+						i.fa.fa-file
+					h3.muted or
+					button.power-btn(ngf-select="uploadLocalFiles($files)" accept=".xls, .xlsx, .csv, .gexf") Choose File
+					.divider
+					.divider
+					.divider
+					h6
+						strong File Notes:&nbsp;
+						| We currently support .xls, .xlsx, .csv and .gexf files only.
+		.row(ng-if="diModalData.subview === 'url'")
+			form.col-xs-12.text-center(ng-controller="LocalSheetsCtrl")
+				h4.no-margin.text-left Add a URL
+				.divider
+				input.form-control(type="url", ng-model="uploadInfo.importUrl", placeholder="Enter the url to the data file...")
+				.divider
+				.divider
+				button.power-btn(ng-hide="uploadInfo.importUrl == ''" type="submit", ng-click="importFromUrl()", ng-disabled="!uploadInfo.importUrl") Import Data
+				.divider
+				.divider
+				.divider
+				h6
+					strong File Notes:&nbsp;
+					| We currently support .xls, .xlsx, .csv and .gexf files only.
+		.row(ng-if="diModalData.subview === 'googlespreadsheet'")
+			.col-xs-12(ng-controller="GoogleSpreadsheetCtrl")
+				.row.vert-align.title-style
+					.col-xs-10
+						h3 Your Spreadsheets
+					.col-xs-2
+						button.pull-right.power-btn(ng-show="showAuthorizeBtn", ng-click="handleAuthorize()") Authorize
+						button.pull-right.power-btn(ng-show="showRefreshBtn", ng-click="refreshFiles()") Refresh
+				.row.vert-align.title-style(ng-repeat="spreadsheet in spreadsheets")
+					.col-xs-10
+						h5 {{spreadsheet.title}}
+					.col-xs-2.pull-right
+						button.btn.btn-xs.btn-primary(type="button", ng-click="uploadSpreadsheet(spreadsheet)") Upload
+						//- h5{{spreadsheet.title}}

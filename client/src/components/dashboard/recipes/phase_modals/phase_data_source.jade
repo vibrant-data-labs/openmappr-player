@@ -1,0 +1,36 @@
+//data source
+.recipe-block(ng-if="phasevm.cfg.srcType == 'URL'" ng-click="phasevm.onClick()")
+	.recipe-block-item.row
+		.item-desc.col-xs-1 DATASRC
+			.text(ng-if="inProgress && !run_finished && finalCompletion > 0") {{finalCompletion | number : 2}}%
+		.col-xs-1
+			div(ng-include="'#{server_prefix}#{view_path}/components/dashboard/recipes/phase_modals/phase_indicator.html'")
+		.item-body.col-xs-9
+			button.power-btn.secondary-btn.pull-right() 
+				i.fa.fa-link
+				|&nbsp;Change URL
+			div(ng-repeat="src in srcUrls")
+				p.text {{src}}
+				p.text-qualify URL
+		//- .item-action.col-xs-1.soft-color
+		//- 	i.fa.fa-2x.fa-pencil
+.recipe-block(ng-if="phasevm.cfg.srcType == 'uploadedData'" ng-click="phasevm.onClick()" accept=".xls, .xlsx, .csv, .gexf")
+	.recipe-block-item.row
+		.item-desc.col-xs-1
+			span.pull-right DATASRC
+			.text(ng-if="inProgress && !run_finished && phasevm.finalCompletion > 0") {{phasevm.finalCompletion}}%
+		.col-xs-1
+			div(ng-include="'#{server_prefix}#{view_path}/components/dashboard/recipes/phase_modals/phase_indicator.html'")
+		.item-body.col-xs-9.text-center
+			button.power-btn.secondary-btn.pull-right() 
+				i.fa.fa-upload
+				|&nbsp;Attach
+			div.text-left(ng-show="sourceInfos.length == 0") 
+				h6 No source attached
+			div.text-left(ng-repeat="info in sourceInfos")
+				h6 {{info.sourceURL}}
+				p.text-qualify {{info.sourceType}} file
+				p.text-qualify {{info.numColumns}} columns found
+				p.text-qualify {{info.numNodes}} nodes found
+		//- .item-action.col-xs-1.soft-color
+		//- 	i.fa.fa-2x.fa-pencil

@@ -1,0 +1,46 @@
+.modal-header
+	.row.vert-align
+		.col-xs-8
+			h6
+				span Edit Org Details
+		.col-xs-4
+			button.close-btn(type="button", ng-click="$close();")
+				span.icon &times;
+.modal-body
+	.container-fluid
+		.row
+			.list-group-item
+				.row.vert-align
+					.col-xs-3 
+						label.h5 Org Name
+					.col-xs-9
+						input.h5.form-control(type="text", placeholder="Org Name", ng-model="selOrgVM.orgName" dir-select-all)
+				div
+					.row.vert-align 
+						.col-xs-12 
+							h5 Org Settings
+					.row.vert-align
+						.col-xs-3 
+							label.h6 Max User Count
+						.col-xs-9
+							input.form-control(type="number", ng-model="selOrgVM.settings.userLimit")
+					.row.vert-align
+						.col-xs-3 
+							label.h6 Max Project Count
+						.col-xs-9
+							input.form-control(type="number", ng-model="selOrgVM.settings.projectLimit")
+					.row.vert-align
+						.col-xs-3 
+							label.h6 Max Datapoints
+						.col-xs-9
+							input.form-control(type="number", ng-model="selOrgVM.settings.datapointsLimit")
+					.row.vert-align
+						.col-xs-3 
+							label.h6 Max Storage Limit
+						.col-xs-9
+							input.form-control(type="number", ng-model="selOrgVM.settings.storageLimit")
+				.divider
+				.row
+					.col-xs-9
+					.col-xs-3
+						button.power-btn.pull-right(ng-click="selOrgVM.edit(); $close();")| Update

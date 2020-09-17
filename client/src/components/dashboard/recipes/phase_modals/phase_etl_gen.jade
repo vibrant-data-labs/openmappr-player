@@ -1,0 +1,25 @@
+.recipe-block
+    .recipe-block-item.row
+        .item-desc.col-xs-1 
+            .pull-right ETL
+            .text.pull-right(ng-if="inProgress && !run_finished && finalCompletion > 0") {{finalCompletion | number : 2}}%
+        .col-xs-1
+            div(ng-include="'#{server_prefix}#{view_path}/components/dashboard/recipes/phase_modals/phase_indicator.html'")
+        .item-body.col-xs-9(ng-click="phasevm.onClick()")
+            button.power-btn.secondary-btn.pull-right 
+                i.fa.fa-pencil
+                | &nbsp;Edit
+            div
+                h6 {{phasevm.cfg.enabled ? "Enabled" : "Disabled"}}
+            div(ng-if="phasevm.cfg.enabled")
+                h6 Using script 
+                    span.text-qualify {{::phasevm.cfg.scriptName}}
+                h6 For entity 
+                    span.text-qualify {{::phasevm.cfg.entity}}
+                h6(ng-if="phasevm.cfg.filterSpec.rowFilter.length > 0") Transaction filtered Using 
+                    span.text-qualify'{{::phasevm.cfg.filterSpec.rowFilter}}'
+                h6(ng-if="phasevm.cfg.colValFiltersEnabled") filtering userID with values in file
+                    sparn.text-qualify '{{::phasevm.cfg.colValFilters.userID}}'
+                div(ng-repeat="(colId, colFilter) in phasevm.cfg.filterSpec.filterByColValues")
+                    h6 {{::colId}} selected using 
+                        span.text-qualify '{{::colFilter}}'

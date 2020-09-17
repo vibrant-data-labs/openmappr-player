@@ -1,0 +1,74 @@
+.modal-header
+	.row.vert-align
+		.col-xs-8
+			h6
+				span {{selOrgVM.orgName}} Users
+		.col-xs-4.vert-align.right
+			//- button.header-btn(type="button", ng-if="newUser.email !== ''" ng-click="selOrgVM.addUser()" uib-tooltip="Invite User to Organization" tooltip-placement="left")
+			//- 	i.fa.fa-envelope-o
+			//- 	span.h7 Invite User
+			button.close-btn(type="button", ng-click="$close()")
+				span.icon &times;
+.modal-body
+	.container-fluid
+		.row
+			.col-xs-12
+				.h3 Invite People
+			.col-xs-12
+				.row.vert-align
+					.col-sm-3
+						input.h5.form-control(type='text', ng-model='newOrgUser.first_name', placeholder='FirstName' dir-select-all)
+					.col-sm-3
+						input.h5.form-control(type='text', ng-model='newOrgUser.last_name', placeholder='LastName' dir-select-all)
+					.col-sm-4
+						input.h5.form-control(type='email', ng-model='newOrgUser.email', placeholder='Email' dir-select-all)
+					.col-sm-2
+						span.ui-select
+							select(ng-model='newOrgUser.role')
+								option(value='owner') as owner
+								option(value='member', ng-selected="true") as member
+			.col-xs-12
+				button.power-btn.pull-right(ng-click="selOrgVM.addUser()") Add User
+
+		.row(ng-if="response.message")
+			.col-xs-11(ng-class="{'error': 'alert-danger', 'success': 'alert-info', 'info': 'alert-info', 'warning':'alert-warning'}[response.type]")
+				div
+					.h4 {{response.message}}
+				.divider
+		.row
+			.col-xs-12
+				.h3 Org's Users
+		.row
+			.col-xs-12
+				.form-group.row.vert-align(ng-repeat="user in selOrgVM.users.members")
+					.col-xs-1
+						i.fa.fa-1-5x.fa-fw.pull-right(ng-class="{isOwner: 'fa-star', isMember:'fa-user', isAdmin:'fa-gavel'}[user.role]")
+					.col-sm-3
+						label.control-label
+							h5 {{user.name}} {{{true:'(you)', false:''}[loggedInUser.id === user.ref]}}
+					.col-sm-4
+						label.control-label
+							h5 {{user.email}}
+					.col-sm-2
+						span.ui-select
+							select(ng-model="user.role", ng-change="selOrgVM.updateUserRole(user)")
+								option(value='owner', ng-selected="user.role == 'owner' ") owner
+								option(value='member', ng-selected="user.role == 'member' ") member
+					.col-sm-2
+						button.power-btn.error-btn.pull-right.nowrap(ng-click="selOrgVM.removeUser(user)") Remove From Org
+		.row
+			.col-xs-12
+				.h3 Invited Users
+		.row
+			.col-xs-12
+				.form-group.row.vert-align(ng-repeat="user in selOrgVM.users.pending")
+					.col-xs-1
+						i.fa.fa-1-5x.fa-fw.pull-right(ng-class="{isOwner: 'fa-star', isMember:'fa-user', isAdmin:'fa-gavel'}[user.role]")
+					.col-sm-3
+						label.control-label
+							h5 {{user.first_name}} {{user.last_name}} {{{true:'(you)', false:''}[loggedInUser.id === user.ref]}}
+					.col-sm-4
+						label.control-label
+							h5 {{user.email}}
+					.col-sm-2
+						button.power-btn.error-btn.pull-right(ng-click="selOrgVM.cancelUserInvite(user)") Cancel Invite

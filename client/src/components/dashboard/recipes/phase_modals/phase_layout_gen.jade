@@ -1,0 +1,18 @@
+.recipe-block
+	.recipe-block-item.row
+		.item-desc.col-xs-1 
+			.pull-right LAYOUT
+			.pull-right.text(ng-if="inProgress && !run_finished && finalCompletion > 0") {{finalCompletion | number : 2}}%
+		.col-xs-1
+			div(ng-include="'#{server_prefix}#{view_path}/components/dashboard/recipes/phase_modals/phase_indicator.html'")
+		.item-body.col-xs-9(ng-click="phasevm.onClick()")
+			button.power-btn.secondary-btn.pull-right 
+				i.fa.fa-pencil
+				| &nbsp;Edit
+			div(ng-if="phasevm.cfg.layouts.length", ng-repeat="layout in phasevm.cfg.layouts")
+				h6 {{::layout.name}}
+			div(ng-if="!phasevm.cfg.layouts.length")
+				h6 No layout specified
+				//- p.text-qualify {{::attr.attrType}}, [{{attr.isRequired ? 'required' : ''}}]
+		//- .item-action.col-xs-1.soft-color
+		//- 	i.fa.fa-2x.fa-pencil

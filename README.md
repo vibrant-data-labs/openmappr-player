@@ -1,52 +1,24 @@
-# OpenMappr 📊
-## [Documentation 📄](https://github.com/selfhostedworks/openmappr/wiki)
-#### [Install Scripts](https://github.com/selfhostedworks/openmappr/wiki/Install-Scripts)
-#### Development
-> Windows is not officially supported at this time.
+# OpenMappr Static 📊
+## Prerequisites
+- bower `npm install bower`
+- grunt `npm install grunt-cli`
 
-* [Prerequisites Install Guide for macOS](https://github.com/selfhostedworks/openmappr/wiki/Prerequisites-Install-Guide-for-macOS)
-* [Prerequisites Install Guide for Ubuntu](https://github.com/selfhostedworks/openmappr/wiki/Prerequisites-Install-Guide-for-Ubuntu)
-* [Prerequisites Install Guide for Fedora](https://github.com/selfhostedworks/openmappr/wiki/Prerequisites-Install-Guide-for-Fedora)
-* [How to validate prerequisites are installed](https://github.com/selfhostedworks/openmappr/wiki/How-to-validate-prerequisites-are-installed)
+## Configuration
+### MongoDB connection
+Replace the `dbUrl` parameter in the `server/config/local.js` to match the required MongoDB instance.
+### DigitalOcean connection
+Replace all the credentials in the `server/config/digitalOcean.js`.
 
-#### Deployment
-* [How to connect to an OpenMappr server](https://github.com/selfhostedworks/openmappr/wiki/How-to-connect-to-an-Openmappr-server)
-* [How to deploy a production server](https://github.com/selfhostedworks/openmappr/wiki/How-to-deploy-a-production-server)
-* [How to use a local or remote Mongo host](https://github.com/selfhostedworks/openmappr/wiki/How-to-use-a-local-or-remote-Mongo-host)
-* [How to integrate Sendgrid for feedback](https://github.com/selfhostedworks/openmappr/wiki/How-to-integrate-Sendgrid-for-feedback)
+## Generating files
+Command below will build all the assets, including project-specific files and place it inside `publish` directory.
+```npm run build```
+To generate only project files run the following command:
+```npm run build:data```
+CLI will navigate you to select the required project
 
-## Starting local development 👨‍💻
-First you need to install the following prerequisites.  The installation instructions may vary based on your operating system.  Please review the prerequisite install guides listed above.
-* Git
-* Docker & Docker Compose
-* Node.js 8.12.0 ([nvm](https://github.com/nvm-sh/nvm) is recommended)
-* NPM along with the `yo`, `bower`, and `grunt-cli` packages
-* Ruby along with the `sass` and `compass` gems
+To generate only static files run the following command:
+```npm run build:static```
 
-
-Then you will want to download or clone the project, and open up a terminal inside the project folder.
-```bash
-git clone https://github.com/selfhostedworks/openmappr.git
-cd openmappr
-```
-After doing so, run the following commands to install all the dependencies:
-```bash
-npm install
-bower install
-```
-To build the client and perform JS ops, run:
-```bash
-grunt
-``` 
-Next you will want to run the following command to bring up the local docker compose stack:
-```bash
-docker-compose -f docker-compose.local.yml up -d
-```
-After it finishes, you can start the server with:
-```bash
-./run_local_mode.sh
-```
-And navigate to [localhost:8080](http://localhost:8080) with your web browser.
-
-## Exiting local development 💤
-To shut down the development server, press `ctrl`+`c` to exit, and then run `docker-compose down` to shut down the docker stack.
+## Publish to Digital Ocean
+If you have configured digital ocean properly, run the following command to deploy all the assets to DO:
+```npm run deploy```

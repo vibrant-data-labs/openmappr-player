@@ -1,0 +1,67 @@
+.modal-header
+    .row.vert-align
+        .col-xs-6
+            h6
+                span Recipe Datasource
+        .col-xs-6
+            button.close-btn(type="button", ng-click="closeModal()")
+                span.icon &times;
+.modal-body
+    .container-fluid
+        .row
+            .col-xs-2.border-right
+                .scroll-list 
+                    .row
+                        .col-xs-12
+                            .menu-item(ng-click="recipe.data_ingest.srcType = 'URL'" ng-class="{active:recipe.data_ingest.srcType == 'URL'}")
+                                .row.vert-align
+                                    .col-xs-2
+                                        i.fa.fa-fw.fa-link
+                                    .col-xs-10
+                                        .h6.truncate 
+                                            span URL 
+                            .menu-item(ng-click="recipe.data_ingest.srcType = 'uploadedData'" ng-class="{active:recipe.data_ingest.srcType == 'uploadedData'}")
+                                .row.vert-align
+                                    .col-xs-2 
+                                        i.fa.fa-fw.fa-cloud-upload
+                                    .col-xs-10
+                                        .h6.truncate 
+                                            span Upload File 
+                            
+            .col-xs-10.scroll-container 
+                div(ng-if="recipe.data_ingest.srcType == 'uploadedData'")
+                    .width-100.over-hidden
+                        .divider-lg
+                        .row
+                            .col-xs-12.text-center(ngf-drop="uploadArtifact($files)", ngf-multiple="false", ngf-drag-over-class="'over'" accept=".xls, .xlsx, .csv, .gexf")
+                                //- h3 Drag your file here
+                                //- p or if you prefer
+                                h3.drag-and-drop.vert-align Drag &amp; Drop a File Here
+                                    i.fa.fa-file
+                                h3.muted or
+                                button.power-btn(ngf-select="uploadArtifact($files)" accept=".xls, .xlsx, .csv, .gexf") Choose File
+                                .divider
+                                .divider
+                                .divider
+                                h6
+                                    strong File Notes:&nbsp;
+                                    | We currently support .xls, .xlsx, .csv and .gexf files only.
+                                //- .row(ng-show="upload_file_started")
+                                //-     h3 Upload Progress
+                                //-     p
+                                //-         div Status: {{upload_file_status}}
+                div(ng-if="recipe.data_ingest.srcType == 'URL'")
+                    .width-100.over-hidden
+                        .divider
+                        .vert-align.row
+                            .col-xs-3
+                                h5 Datasource URL:
+                            .col-xs-9
+                                input.form-control.h5(ng-model="recipe.data_ingest.srcUrl" placeholder="URL to data")
+                        .row 
+                            .col-xs-12 
+                                button.power-btn.pull-right(type="button" ng-click="saveSettings()") Save
+                        .divider
+                                    
+                            
+                            

@@ -1,0 +1,123 @@
+.recipe-config
+	//title block
+	.recipe-block
+		.recipe-block-item.row
+			.col-xs-offset-1.col-xs-1
+				.title-icon
+					i.fa.fa-magic(style="margin: 7px 0px 0px 7px;")
+			.col-xs-9.vert-align(ng-click="")
+				.recipe-title.pull-left.flex-fill(ng-hide="editRecipeName") {{vm.recipe.name}}
+				.recipe-title.pull-left.flex-fill(ng-show="editRecipeName")
+					input.form-control.width-100(type="text" ng-model="vm.tempName")
+				.recipe-title-action.pull-right(ng-hide="editRecipeName")
+					button.power-btn.secondary-btn.nowrap.right(ng-click="editRecipeName = true;") 
+						i.fa.fa-fw.fa-pencil
+						span edit name
+				.recipe-title-action.pull-right(ng-show="editRecipeName")
+					button.power-btn.secondary-btn(ng-click="editRecipeName = false;")
+						span cancel
+					button.power-btn.nowrap(ng-click="vm.saveRecipeName(); editRecipeName = false;")
+						i.fa.fa-fw.fa-check &nbsp;
+						span save
+				.clearfix
+				.divider
+	//code block
+	div(ng-if="showRecipeCode")
+		.recipe-block
+			.recipe-block-item.row
+				.item-desc.col-xs-1 CODE
+				.col-xs-10
+					textarea.pre.recipe-config-edit(ng-model="vm.code") {{vm.code}}
+	// phase diagram
+	div(ng-if="!showRecipeCode")
+		.error-block(ng-show="vm.failureData")
+			.recipe-block
+				.recipe-block-item.row
+					.item-desc.col-xs-1.error-text ERROR
+					.col-xs-1
+						.item-icon
+							i.fa.fa-fw.fa-exclamation-triangle.error-text
+					.item-body.col-xs-9
+						p.text error `{{vm.failureData.failureType}}` in phase `{{vm.failureData.phase}}`
+						p.text {{vm.failureData.message}}
+		.recipe-block(ng-show="vm.latestMsg")
+			.recipe-block-item.row
+				.item-desc.col-xs-1.error-text Messages
+				.col-xs-1
+					.item-icon
+						i.fa.fa-fw.fa-info-circle
+				.item-body.col-xs-9
+					p.text {{vm.latestMsg}}
+		dir-data-source-phase(ng-if="vm.phases.data_source", phasevm = "vm.phases.data_source", recipevm="vm")
+		dir-etl-gen-phase(ng-if="vm.phases.etl_gen", phasevm = "vm.phases.etl_gen", recipevm="vm")
+		dir-dataset-gen-phase(ng-if="vm.phases.dataset_gen", phasevm = "vm.phases.dataset_gen", recipevm="vm")
+		dir-dataset-post-proc-phase(ng-if="vm.phases.dataset_post_proc", phasevm = "vm.phases.dataset_post_proc", recipevm="vm")
+		//- dir-project-gen-phase(ng-if="vm.phases.project_gen", phasevm = "vm.phases.project_gen", recipevm="vm")
+		dir-network-gen-phase(ng-if="vm.phases.network_gen", phasevm = "vm.phases.network_gen", recipevm="vm")
+		dir-layout-gen-phase(ng-if="vm.phases.layout_gen", phasevm = "vm.phases.layout_gen", recipevm="vm")
+		dir-snap-gen-phase(ng-if="vm.phases.snapshot_gen", phasevm = "vm.phases.snapshot_gen", recipevm="vm")
+		dir-player-gen-phase(ng-if="vm.phases.player_gen", phasevm = "vm.phases.player_gen", recipevm="vm")
+		
+	.recipe-block
+		.recipe-block-item.row
+			.col-xs-offset-1.col-xs-1
+			.col-xs-9
+				.recipe-title-action.pull-right
+					button.power-btn.secondary-btn(ng-hide="showRecipeCode" ng-click="showRecipeCode=true")
+						i.fa.fa-fw.fa-code &nbsp;
+						span edit json
+					button.power-btn.secondary-btn(ng-show="showRecipeCode" ng-click="showRecipeCode=false;")
+						span cancel
+					button.power-btn(ng-show="showRecipeCode" ng-click="vm.onUpdate(); showRecipeCode=false;")
+						i.fa.fa-fw.fa-check &nbsp;
+						span save
+					//- button.btn.btn-xs.btn-default
+					//- 	i.fa.fa-plus &nbsp;add
+					button.power-btn(ng-hide="showRecipeCode" ng-click="vm.executeRecipe()")
+						i.fa.fa-play.fa-fw &nbsp;
+						span Start New Run
+// recipe runs
+//- .recipe-runs
+	.run.row
+		.col-xs-offset-1.col-xs-1
+			.title-icon
+				i.fa.fa-repeat(style="margin: 7px 0px 0px 7px;")
+		.col-xs-1
+			.run-title-text RUNS
+	.run.row(ng-repeat="run in vm.recipeRuns | orderBy: '-createdAt'")
+		.col-xs-offset-1.col-xs-1
+			.run-img(ng-if="run.isSuccessful")
+				i.fa.fa-fw.fa-check-circle
+			.run-img(ng-if="!run.isSuccessful")
+				i.fa.fa-fw.fa-exclamation-triangle.error-text
+			//img(src="http://fightworkshop.com/wp-content/uploads/2015/05/success-icon.png" alt="" width="50" height="50")
+		.run-body.col-xs-8(ng-click="run.toggleLogs()")
+			button.power-btn.secondary-btn.pull-right(ng-hide="run.showLogs")
+				i.fa.fa-search
+				| &nbsp;Show Details
+			button.power-btn.secondary-btn.pull-right(ng-show="run.showLogs")
+				i.fa.fa-search-minus
+				| &nbsp;Hide Details
+			p.text {{::run.name}}
+			p.text Sources: {{::run.dataSources.length}} 
+			p.text Networks: {{::run.networks.length}} 
+			p.text Projects: {{::run.projects.length}}
+			//- .run-stats-block(ng-repeat="nw in run.networks")
+			//- 	p.text numNodes {{::nw.stats.numNodes}}
+			//- 	p.text numLinks {{::nw.stats.numLinks}}
+			//- 	p.text numClusters {{::nw.stats.numClusters}}
+			//- 	p.text Per Cluster Stats
+			//- 	div(ng-repeat="cluster in nw.stats.clusterInfos | limitTo:5")
+			//- 		p.text {{cluster.linkingAttrName}}
+			//- 		p.text numNodes {{cluster.numNodes}}
+			//- 		p.text numBridgers {{cluster.numBridgers}}
+			//- 		p.text numMostCentral {{cluster.numMostCentral}}
+
+			div(ng-show="run.showLogs && (run.isLogLoaded || run.isLogLoading)")
+				span(ng-if="run.isLogLoading") Loading logs...
+				span(ng-if="run.isLogLoaded") Logs
+					.col-xs-12
+						.row.log-text(ng-repeat="log in run.logs track by $index")
+							.col-xs-1 {{::log.logType}}
+							.col-xs-2 {{::log.formattedDate}}
+							.col-xs-6 {{::log.msg}}
