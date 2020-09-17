@@ -1,7 +1,7 @@
 # OpenMappr Static 📊
 ## Prerequisites
-- bower `npm install bower`
-- grunt `npm install grunt-cli`
+- bower `npm install -g bower`
+- grunt `npm install -g grunt-cli`
 
 ## Configuration
 ### MongoDB connection
