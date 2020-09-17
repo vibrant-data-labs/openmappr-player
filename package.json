@@ -20,6 +20,7 @@
     "gexf": "^0.2.5",
     "gridfs-stream": "^1.1.1",
     "grunt-cache-bust": "^1.7.0",
+    "inquirer": "^7.3.3",
     "jade": "^1.11.0",
     "lodash": "^3.10.1",
     "md5": "^2.0.0",
