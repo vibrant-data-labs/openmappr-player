@@ -9,7 +9,7 @@
 
 		.panel-scroll.flex-fill.flex-vert-container(ng-controller="FilterPanelCtrl")
 			//- span {{filteredDistrAttrs.length}} of {{nodeDistrAttrs.length}}
-			ul.filter-list(dir-attr-modifiers="", data-dir-virtual-scroll="", variable-height="", container-item-count="nodeDistrAttrs.length" dir-kill-tooltip-on-scroll, ng-if="ui.renderDistr", on-scroll="onScroll")
+			ul.filter-list(data-dir-virtual-scroll="", variable-height="", container-item-count="nodeDistrAttrs.length" dir-kill-tooltip-on-scroll, ng-if="ui.renderDistr", on-scroll="onScroll")
 				li.filter-list__item(
 					ng-repeat="attr in ui.filteredAttrs = (nodeDistrAttrs | filter: {title : ui.statsSearchKey}) track by attr.id",
 					ng-if="attr.visible", ng-class="{'attr-hidden':!attr.visible, 'first': ($index == 1), 'chart-first-item': attr.isFirstChart, 'tags-first-item': attr.isFirstTag}",

@@ -4,7 +4,7 @@
 * Provides methods to update indivual attr or multiple attrs at once
 * Child directive - dirAttrMod.js(dir-attr-mod)
 */
-angular.module('mappr')
+angular.module('common')
 .directive('dirAttrModifiers', ['$rootScope', '$q', 'AttrModifierService', 'dataService', 'networkService', 'projFactory', 'dataGraph', 'uiService',
 function($rootScope, $q, AttrModifierService, dataService, networkService, projFactory, dataGraph, uiService) {
     'use strict';

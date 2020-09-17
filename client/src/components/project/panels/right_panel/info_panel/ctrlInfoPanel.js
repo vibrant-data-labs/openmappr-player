@@ -72,7 +72,6 @@ angular.module('common')
     * Scope methods
     */
             $scope.addNeighborsToSelection = addNeighborsToSelection;
-            $scope.openNetworkDataModal = openNetworkDataModal;
 
             $scope.exportSelection = $rootScope.MAPP_EDITOR_OPEN ? exportSelectionFromApp : exportSelectionFromPlayer;
             $rootScope.exportSelection = $scope.exportSelection;
@@ -240,30 +239,6 @@ angular.module('common')
                 var nids = _.pluck(graphSelectionService.getSelectedNodeNeighbours(), 'id');
                 graphSelectionService.selectByIds(nids, 0);
                 FilterPanelService.rememberSelection(false);
-            }
-
-            function openNetworkDataModal() {
-
-                var modalInstance = $uibModal.open({
-                    templateUrl: '#{server_prefix}#{view_path}/components/project/data_modal/networkDataModal.html',
-                    controller: 'NetworkDataModalCtrl',
-                    size: 'lg',
-                    resolve: {
-                        mapprSettings: function () {
-                            return $scope.mapprSettings;
-                        }
-                    }
-                });
-
-                //Called when modal is closed
-                modalInstance.result.then(
-                    function () {
-                        console.log('Closing network data modal');
-                    },
-                    function () {
-                        console.warn("Modal dismissed at: " + new Date());
-                    }
-                );
             }
 
             function initialise() {
