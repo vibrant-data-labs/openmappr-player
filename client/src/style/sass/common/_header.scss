@@ -179,12 +179,12 @@
             }
 
             &:hover {
-                @include scale3d(1.2, 1.2, 1);
+                transform: scale3d(1.2, 1.2, 1);
             }
         }
 
         .white-tooltip {
-            @include scale3d(1, 1, 1);
+            transform: scale3d(1, 1, 1);
             //disappaers without
             background: $body-bg;
             border-radius: 10px;

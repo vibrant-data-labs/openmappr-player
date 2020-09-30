@@ -240,7 +240,7 @@
 
   .small-btn {
     .link-mask {
-      @include scale3d(.6, .6, 1);
+      transform: scale3d(.6, .6, 1);
       margin: -6px;
     }
 

@@ -211,7 +211,7 @@
 
         h4 {
             @include rotate(270deg);
-            @include transform-origin(0%, 0%);
+            transform-origin: 0% 0%;
             color: $text-color;
             font-weight: 500;
             left: 20px;

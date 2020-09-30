@@ -10,7 +10,9 @@
     "build": "node server/build-resources.js",
     "build:data": "node server/build-resources.js --dataOnly",
     "build:static": "node server/build-resources.js --staticFilesOnly",
-    "publish": "node server/publish-resources.js"
+    "publish": "node server/publish-resources.js",
+    "publish:map": "TODO: publish map json files",
+    "publish:player": "TODO: publish universal resources"
   },
   "dependencies": {
     "aws-sdk": "^2.754.0",
@@ -30,7 +32,9 @@
     "moment": "^2.28.0",
     "mongoose": "^5.10.5",
     "ncp": "^2.0.0",
+    "node-sass": "^4.14.1",
     "onecolor": "^3.1.0",
+    "sass": "^1.26.11",
     "streamifier": "^0.1.1",
     "yargs": "^15.4.1"
   },
@@ -60,6 +64,6 @@
     "jit-grunt": "^0.9.1",
     "mocha": "^2.5.3",
     "supertest": "^1.2.0",
-    "time-grunt": "^1.2.2"
+    "time-grunt": "^1.4.0"
   }
 }

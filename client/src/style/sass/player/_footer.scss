@@ -17,7 +17,7 @@
 
     .description {
         // @include transform(translate3d(0, -100%, 0));
-        @include transform(translate3d(0, -60px, 0));
+        transform: translate3d(0, -60px, 0);
         @include transition(all .5s ease-out);
         left: 0;
         padding: 0;
@@ -28,12 +28,12 @@
 
         &.closed,
         &.one-snap {
-            @include transform(translate3d(0, 0, 0));
+            transform: translate3d(0, 0, 0);
         }
 
         &.closed {
             &.one-snap {
-                @include transform(translate3d(0, 60px, 0));
+                transform: translate3d(0, 60px, 0);
             }
         }
 
@@ -171,21 +171,21 @@
 
         &:hover {
             .description {
-                @include transform(translate3d(0, -100%, 0));
+                transform: translate3d(0, -100%, 0);
 
                 &.closed,
                 &.one-snap,
                 &.open {
-                    @include transform(translate3d(0, -100%, 0));
+                    transform: translate3d(0, -100%, 0);
                 }
 
                 &.closed {
                     &.one-snap {
-                        @include transform(translate3d(0, -100%, 0));
+                        transform: translate3d(0, -100%, 0);
                     }
 
                     &.force-closed {
-                        @include transform(translate3d(0, 0, 0));
+                        transform: translate3d(0, 0, 0);
                     }
                 }
             }

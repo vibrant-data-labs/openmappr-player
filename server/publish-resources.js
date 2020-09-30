@@ -44,7 +44,7 @@ async function readFilesAndUpload() {
         var params = {
             Body: fs.readFileSync(item),
             Bucket: res.bucket,
-            Key: item.replace(/^publish/, ''),
+            Key: item.replace(/^publish\//, ''),
         };
         await new Promise((resolve, reject) => s3.putObject(params, function(err, data) {
             if (err) reject(err);

@@ -8,8 +8,6 @@ function initConfig(app) {
     var config = require('../config/local.js');
     _.extend(_config, config);
 
-    console.log("Loaded config:", _config);
-
     return _config;
 }
 module.exports = {

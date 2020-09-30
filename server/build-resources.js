@@ -11,7 +11,8 @@ const _ = require('lodash'),
   { execSync } = require('child_process'),
   { argv } = require('yargs'),
   jade = require('jade'),
-  inquirer = require('inquirer');
+  inquirer = require('inquirer'),
+  sass = require('sass');
 
 const player_model = require('./player/player_model');
 
@@ -25,6 +26,19 @@ var config = AppConfig.init({
     return process.env[key];
   }
 });
+
+function compileScss() {
+  console.log('Compiling SCSS...');
+  const playerResult = sass.renderSync({
+    file: './client/src/style/sass/player.scss'
+  });
+  fs.writeFileSync('./client/src/style/css/player.css', playerResult.css);
+
+  const mapprResult = sass.renderSync({
+    file: './client/src/style/sass/sass.scss'
+  });
+  fs.writeFileSync('./client/src/style/css/sass.css', mapprResult.css);
+}
 
 function runGrunt() {
   console.log('Running grunt...');
@@ -76,7 +90,7 @@ async function buildResources() {
     ]);
 
     publishDataPath = res && res.path ? res.path : '/data/';
-
+    compileScss();
     runGrunt();
   }
 

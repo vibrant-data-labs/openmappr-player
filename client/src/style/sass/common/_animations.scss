@@ -131,55 +131,55 @@
 @include keyframes(slideInLeft) {
     0% {
         opacity:0;
-      @include transform(translate(100%, 0));
+        transform: translate(100%, 0);
     }
 
     100% {
         opacity:1;
-      @include transform(translate(0, 0));
+        transform: translate(0, 0);
     }
 }
 @include keyframes(slideInLeftNoFade) {
     0% {
-      @include transform(translate(100%, 0));
+        transform: translate(100%, 0);
     }
 
     100% {
-      @include transform(translate(0, 0));
+        transform: translate(0, 0);
     }
 }
 
 @include keyframes(slideOverLeft) {
     0% {
-      @include transform(translate(0, 0));
+        transform: translate(0, 0);
     }
 
     100% {
-      @include transform(translate(-100%, 0));
+        transform: translate(-100%, 0);
     }
 }
 
 
 @include keyframes(slideInRightNoFade) {
     0% {
-        @include transform(translate(-100%, 0));
+        transform: translate(-100%, 0);
     }
 
     100% {
-        @include transform(translate(0, 0));
+        transform: translate(0, 0);
     }
 }
 @include keyframes (slideOutLeft) {
 
     0% {
         opacity:1;
-      @include transform(translate(0, 0));
+        transform: translate(0, 0);
     }
 
 
     100% {
         opacity:0;
-      @include transform(translate(100%, 0));
+        transform: translate(100%, 0);
     }
 }
 @include keyframes (slideOutLeftFade) {
@@ -242,41 +242,41 @@
 // top slide
 @include keyframes(slideInFromBottom) {
     0% {
-      @include transform(translate(0, 100%));
+        transform: translate(0, 100%);
     }
 
     100% {
-      @include transform(translate(0, 0));
+        transform: translate(0, 0);
     }
 }
 @include keyframes(slideOutToTop) {
     0% {
-      @include transform(translate(0, 0));
+        transform: translate(0, 0);
     }
 
     100% {
-      @include transform(translate(0, -100%));
+        transform: translate(0, -100%);
     }
 }
 
 
 @include keyframes(slideInFromTop) {
     0% {
-      @include transform(translate(0, -100%));
+        transform: translate(0, -100%);
     }
 
     100% {
-      @include transform(translate(0, 0));
+        transform: translate(0, 0);
     }
 }
 
 @include keyframes(slideOutToBottom) {
     0% {
-      @include transform(translate(0, 0));
+        transform: translate(0, 0);
     }
 
     100% {
-      @include transform(translate(0, 100%));
+        transform: translate(0, 100%);
     }
 }
 
