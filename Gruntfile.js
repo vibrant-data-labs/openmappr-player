@@ -213,7 +213,7 @@ module.exports = function(grunt) {
 	addTask('copy', 'prod_fontawesome', {
 		files: [{
 			expand: true,
-			cwd: 'client/src/bower_components/fontawesome/fonts',
+			cwd: 'client/src/fonts',
 			src: ['*'],
 			dest: prod_build_dir + '/fonts/'
 		}]
@@ -758,7 +758,7 @@ module.exports = function(grunt) {
 	addTask('copy', 'dev_fontawesome', {
 		files: [{
 			expand: true,
-			cwd: 'client/src/bower_components/fontawesome/fonts',
+			cwd: 'client/src/fonts',
 			src: ['*'],
 			dest: dev_build_dir + '/fonts/'
 		}]
