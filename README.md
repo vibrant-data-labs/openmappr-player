@@ -1,13 +1,12 @@
 # OpenMappr Static 📊
 ## Prerequisites
-- bower `npm install -g bower`
 - grunt `npm install -g grunt-cli`
 
 ## Configuration
 ### MongoDB connection
 Replace the `dbUrl` parameter in the `server/config/local.js` to match the required MongoDB instance.
-### DigitalOcean connection
-Replace all the credentials in the `server/config/digitalOcean.js`.
+### AWS S3 connection
+Place the valid API keys into the `server/config/s3.js`.
 
 ## Generating files
 Command below will build all the assets, including project-specific files and place it inside `publish` directory.
@@ -24,7 +23,15 @@ To generate only static files run the following command:
 
 ```npm run build:static```
 
-## Publish to Digital Ocean
-If you have configured digital ocean properly, run the following command to deploy all the assets to DO:
+## Publish to S3
+If you have configured s3 properly, run the following command to deploy all the assets from `publish` folder to S3 bucket:
 
 ```npm run publish```
+
+If you want to publish only static files, run the following command:
+
+```npm run publish:player```
+
+If you want to update the data only, run the following command:
+
+```npm run publish:map```

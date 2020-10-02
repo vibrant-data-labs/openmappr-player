@@ -11,8 +11,8 @@
     "build:data": "node server/build-resources.js --dataOnly",
     "build:static": "node server/build-resources.js --staticFilesOnly",
     "publish": "node server/publish-resources.js",
-    "publish:map": "TODO: publish map json files",
-    "publish:player": "TODO: publish universal resources"
+    "publish:map": "node server/publish-resources.js --dataOnly",
+    "publish:player": "node server/publish-resources.js --staticFilesOnly"
   },
   "dependencies": {
     "aws-sdk": "^2.754.0",
@@ -29,6 +29,7 @@
     "jade": "^1.11.0",
     "lodash": "^3.10.1",
     "md5": "^2.0.0",
+    "mime-types": "^2.1.27",
     "moment": "^2.28.0",
     "mongoose": "^5.10.5",
     "ncp": "^2.0.0",

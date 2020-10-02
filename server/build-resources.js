@@ -89,7 +89,7 @@ async function buildResources() {
       },
     ]);
 
-    publishDataPath = res && res.path ? res.path : 'http://localhost:8080/';
+    publishDataPath = res && res.path ? res.path : '/data/';
     compileScss();
     runGrunt();
   }
