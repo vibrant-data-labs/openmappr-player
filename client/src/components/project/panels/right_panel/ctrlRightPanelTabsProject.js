@@ -31,17 +31,6 @@ angular.module('common')
                 isSet: false,
                 isExpanded: false
             };
-            $scope.togglePanel = function () {
-                if ($scope.expandedState.isSet) {
-                    if ($scope.expandedState.isExpanded) {
-                        document.body.classList.remove('side-menu-compressed');
-                    } else {
-                        document.body.classList.add('side-menu-compressed');
-                    }
-                }
-                $scope.expandedState.isSet = true;
-                $scope.expandedState.isExpanded = document.body.classList.contains('side-menu-compressed');
-            }
 
             $scope.expandPanel = function () {
                 if (!$scope.expandedState.isSet) {
@@ -59,26 +48,6 @@ angular.module('common')
                 if (!$scope.expandedState.isSet) {
                     document.body.classList.add('side-menu-compressed');
                 }
-            }
-            // send support email
-            $scope.sendSupportEmail = function () {
-                $http.post('/support', {
-                    message: document.forms[0].elements[0].value
-                })
-                .then(function(response) {
-                    document.forms[0].elements[0].value = "";
-                    document.getElementById("floatingForm").style.display = "none";
-                }).catch(function(err) {
-                    console.log(err)
-                });
-            }
-            // toggle floating contact form
-            $scope.toggleForm = function () {
-              if (document.getElementById("floatingForm").style.display == "block") {
-                document.getElementById("floatingForm").style.display = "none";
-              } else {
-                document.getElementById("floatingForm").style.display = "block";
-              }
             }
 
             $scope.rightPanelTabs = [

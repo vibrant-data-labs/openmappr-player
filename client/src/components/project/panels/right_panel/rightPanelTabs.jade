@@ -48,9 +48,12 @@
       //  span.tabs-menu__link.tabs-menu__link_support
       //    span.tabs-menu__text Speak a human
 
-      li.tabs-menu__item(ng-click="toggleForm()")
-        span.tabs-menu__link.tabs-menu__link_feedback
-          span.tabs-menu__text Feedback & Bugs
+      li.tabs-menu__item
+        a(href="mailto:support@openmappr.org" target="_blank")
+          span.tabs-menu__link.tabs-menu__link_feedback( 
+            data-toggle="tooltip" 
+            uib-tooltip="Submit Feedback"
+            tooltip-placement="right")
 
       li.tabs-menu__item(ng-click="togglePanel()")
         span.tabs-menu__link.toggle

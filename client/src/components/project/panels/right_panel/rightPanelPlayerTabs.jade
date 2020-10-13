@@ -32,11 +32,12 @@
           uib-tooltip="Info: See project information"
           tooltip-placement="right")
 
-      li.tabs-menu__item(ng-click="toggleForm()")
-        span.tabs-menu__link.tabs-menu__link_feedback( 
-          data-toggle="tooltip" 
-          uib-tooltip="Feedback & Bugs"
-          tooltip-placement="right")
+      li.tabs-menu__item
+        a(href="mailto:support@openmappr.org" target="_blank")
+          span.tabs-menu__link.tabs-menu__link_feedback( 
+            data-toggle="tooltip" 
+            uib-tooltip="Submit Feedback"
+            tooltip-placement="right")
 
       li.tabs-menu__item(ng-click="exportCurrentData()")
         span.tabs-menu__link.tabs-menu__link_export( 
