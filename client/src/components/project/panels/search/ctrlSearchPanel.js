@@ -165,7 +165,7 @@ function($scope, $rootScope, $timeout, searchService, BROADCAST_MESSAGES, uiServ
 
         $scope.ui.processingQuery = true;
 
-        searchService.searchNodes($scope.globalSearch.text, dataRef, filterAttrIds, $scope.player.settings.searchAlg)
+        searchService.searchNodes($scope.globalSearch.text, dataRef, filterAttrIds, $scope.player.player.settings.searchAlg)
         .then(function(hits) {
             var subsetNodes = subsetService.currentSubset();
             if (subsetNodes && subsetNodes.length) {

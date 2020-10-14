@@ -49,15 +49,17 @@ function($q, $http, dataGraph, cfpLoadingBar) {
                 var data = _.reduce(allNodes, function (acc, cv) {
                     cfpLoadingBar.set(idx / allNodes.length);
                     var hitsData = _.reduce(filterAttrIds, function (attrAcc, attrCv) {
-                        var sourceTxt = cv.attr[attrCv].toString().toLowerCase();
-                        var searchTxt = text.toLowerCase();
-                        if (cv.attr[attrCv] && _.contains(sourceTxt, searchTxt)) {
-                            var sourceArr = sourceTxt.split(' ');
-                            var index = _.findIndex(sourceArr, x => _.contains(x, searchTxt));
-                            var highlightPart = sourceArr.slice(index > 5 ? index - 5 : 0, index + 6);
-                            attrAcc[attrCv] = highlightPart.map(x => 
-                                    _.contains(x, searchTxt) ? '<i>' + x + '</i>' : x
-                                ).join(attrCv === 'Keywords' ? ', ' : ' ');
+                        if (cv.attr[attrCv]) {
+                            var sourceTxt = cv.attr[attrCv].toString().toLowerCase();
+                            var searchTxt = text.toLowerCase();
+                            if (cv.attr[attrCv] && _.contains(sourceTxt, searchTxt)) {
+                                var sourceArr = sourceTxt.split(' ');
+                                var index = _.findIndex(sourceArr, x => _.contains(x, searchTxt));
+                                var highlightPart = sourceArr.slice(index > 5 ? index - 5 : 0, index + 6);
+                                attrAcc[attrCv] = highlightPart.map(x => 
+                                        _.contains(x, searchTxt) ? '<i>' + x + '</i>' : x
+                                    ).join(attrCv === 'Keywords' ? ', ' : ' ');
+                            }
                         }
 
                         return attrAcc;

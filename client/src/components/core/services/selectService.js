@@ -198,7 +198,7 @@ angular.module('common')
                     filterAttrIds = _.map(filterAttrVMs, 'id');
                 }
 
-                return searchService.searchNodes(selectData.searchText, dataRef, filterAttrIds, selectData.scope.player.settings.searchAlg).then(function(hits) {
+                return searchService.searchNodes(selectData.searchText, dataRef, filterAttrIds, selectData.scope.player.player.settings.searchAlg).then(function(hits) {
                     var currentSubset = subsetService.currentSubset();
                     if (currentSubset && currentSubset.length) {
                         hits = _.filter(hits, function(hit) {
