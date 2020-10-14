@@ -8,6 +8,7 @@ const _ = require('lodash'),
   projModel = require("./project/proj_model"),
   dataUtils = require("./utils/dataUtils"),
   AppConfig = require('./services/AppConfig'),
+  indexConfig = require('./config/index_config'),
   { execSync } = require('child_process'),
   { argv } = require('yargs'),
   jade = require('jade'),
@@ -171,12 +172,8 @@ function buildIndex() {
       directAccess: true,
       isFinal: false
     }),
-    playerTitle: 'Enter the title here',
-    backgroundColor: '#fff',
-    colorTheme: 'light',
-    snapshotImg: '/img/openmappr_socialmedia.png',
     playerDataPath: publishDataPath,
-    player_prefix_index: ''
+    ...indexConfig
   };
 
   return new Promise((resolve) => {
