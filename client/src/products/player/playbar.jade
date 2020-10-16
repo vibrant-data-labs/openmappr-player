@@ -68,7 +68,7 @@
                   dl.filter-section
                     dt.filter-section__label
                       | Search Results  
-                      span(ng-if="operation.searchAttr") &nbsp;({{operation.searchAttr.title}})
+                      span(ng-if="operation.searchAttr && operation.searchAttr.title") &nbsp;({{operation.searchAttr.title}})
                       | :
 
                     dd.filter-section__content
