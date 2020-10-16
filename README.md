@@ -1,6 +1,7 @@
 # OpenMappr Static 📊
 ## Prerequisites
 - grunt `npm install -g grunt-cli`
+- install npm dependencies `npm install`
 
 ## Configuration
 ### MongoDB connection
