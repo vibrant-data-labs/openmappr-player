@@ -186,10 +186,10 @@ async function prepareToPublish() {
   const publishOutputPath = './publish';
   if (fs.existsSync(publishOutputPath)) {
     const del = require('del');
-    await del(publishOutputPath);
+    await del([`${publishOutputPath}/**/*`, `!${publishOutputPath}/data`]);
+  } else {
+    fs.mkdirSync(publishOutputPath);
   }
-
-  fs.mkdirSync(publishOutputPath);
 
   const { ncp } = require('ncp');
 
