@@ -44,6 +44,14 @@ function($q, $http, dataGraph, cfpLoadingBar) {
 
         // NAIVE SEARCH
         if (searchAlg === 'naive') {
+            return new Promise(resolve => {
+                var data = matchSorter(allNodes, text, {keys: filterAttrIds}); //probably, filterAttrIds should be passed as nested properties with 'attr.'
+                cfpLoadingBar.complete();
+                resolve(data);
+            });
+        }
+
+        if (searchAlg === 'naiveOld') {
             var idx = 0;
             return new Promise(resolve => {
                 var data = _.reduce(allNodes, function (acc, cv) {
