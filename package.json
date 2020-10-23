@@ -10,9 +10,11 @@
     "build": "node server/build-resources.js",
     "build:data": "node server/build-resources.js --dataOnly",
     "build:static": "node server/build-resources.js --staticFilesOnly",
-    "publish": "node server/publish-resources.js",
-    "publish:map": "node server/publish-resources.js --dataOnly",
-    "publish:player": "node server/publish-resources.js --staticFilesOnly"
+    "publish-resources": "node server/publish-resources.js",
+    "publish-resources:map": "node server/publish-resources.js --dataOnly",
+    "publish-resources:player": "node server/publish-resources.js --staticFilesOnly",
+    "publish-project": "node server/publish-project.js",
+    "publish-player": "node server/publish-player.js"
   },
   "dependencies": {
     "aws-sdk": "^2.754.0",
@@ -64,6 +66,7 @@
     "jasmine": "^2.4.1",
     "jit-grunt": "^0.9.1",
     "mocha": "^2.5.3",
+    "npm": "^6.14.8",
     "supertest": "^1.2.0",
     "time-grunt": "^1.4.0"
   }
