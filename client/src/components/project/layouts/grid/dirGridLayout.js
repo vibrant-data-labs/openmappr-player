@@ -8,7 +8,7 @@ angular.module('common')
             **************************************/
             var dirDefn = {
                 restrict: 'EA',
-                templateUrl: '#{server_prefix}#{view_path}/components/project/layouts/grid/gridLayout.html',
+                templateUrl: '#{player_prefix_index}/components/project/layouts/grid/gridLayout.html',
                 scope: true,
                 controller: ['$scope', '$timeout', '$rootScope', ControllerFn],
                 link: postLinkFn

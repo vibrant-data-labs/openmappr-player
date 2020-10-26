@@ -16,7 +16,7 @@ angular.module('common')
             var dirDefn = {
                 restrict: 'AE',
                 scope: true,
-                templateUrl: '#{server_prefix}#{view_path}/components/project/panels/right_panel/info_panel/selectionInfo.html',
+                templateUrl: '#{player_prefix_index}/components/project/panels/right_panel/info_panel/selectionInfo.html',
                 controller: ['$scope', ControllerFn]
             };
 

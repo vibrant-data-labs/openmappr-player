@@ -8,7 +8,7 @@ angular.module('common')
     **************************************/
             var dirDefn = {
                 restrict: 'EA',
-                templateUrl: '#{server_prefix}#{view_path}/components/project/distributions/renderers/neighborsDetail.html',
+                templateUrl: '#{player_prefix_index}/components/project/distributions/renderers/neighborsDetail.html',
                 link: postLinkFn
             };
 

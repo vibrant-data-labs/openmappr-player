@@ -10,7 +10,7 @@ function(FilterPanelService, SelectorService, AttrInfoService, BROADCAST_MESSAGE
         restrict: 'AE',
         require: '?^dirAttrRenderer',
         scope: {},
-        templateUrl: '#{server_prefix}#{view_path}/components/project/distributions/filters/checkboxFilter.html',
+        templateUrl: '#{player_prefix_index}/components/project/distributions/filters/checkboxFilter.html',
         link: postLinkFn
     };
 

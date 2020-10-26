@@ -11,7 +11,7 @@ angular.module('common')
     var dirDefn = {
         restrict: 'E',
         scope: true,
-        templateUrl: '#{server_prefix}#{view_path}/components/project/export/export.html',
+        templateUrl: '#{player_prefix_index}/components/project/export/export.html',
         link: postLinkFn
     };
 

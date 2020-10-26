@@ -236,7 +236,7 @@ angular.module('player')
             if(browserDetectService.isOldBrowser()) {
                 //display modal
                 $uibModal.open({
-                    templateUrl: '#{server_prefix}#{view_path}/player/oldBrowserModal.html',
+                    templateUrl: '#{player_prefix_index}/player/oldBrowserModal.html',
                     size: 'lg'
                 });
             }
@@ -357,7 +357,7 @@ angular.module('player')
                 else {
                     userEmailP = $q(function(resolve, reject) {
                         var modalInstance = $uibModal.open({
-                            templateUrl : '#{server_prefix}#{view_path}/player/auth/userEmailAuthModal.html',
+                            templateUrl : '#{player_prefix_index}/player/auth/userEmailAuthModal.html',
                             controller : 'UserEmailAuthCtrl',
                             scope: $scope
                         });
@@ -529,7 +529,7 @@ angular.module('player')
 
             function openAuthModal() {
                 var modalInstance = $uibModal.open({
-                    templateUrl : '#{server_prefix}#{view_path}/player/auth/playerAuthModal.html',
+                    templateUrl : '#{player_prefix_index}/player/auth/playerAuthModal.html',
                     controller : 'PlayerAuthModalCtrl',
                     scope: $scope
                 });

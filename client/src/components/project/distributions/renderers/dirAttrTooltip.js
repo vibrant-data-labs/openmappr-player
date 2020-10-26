@@ -20,7 +20,7 @@ function($timeout, $compile) {
     ************ Local Data **************
     **************************************/
 
-    var templateUrl = '#{server_prefix}#{view_path}/components/project/distributions/renderers/attrTooltip.html';
+    var templateUrl = '#{player_prefix_index}/components/project/distributions/renderers/attrTooltip.html';
     //delay time for hover
     var hoverDelay = 1000;
     //timeout for hover delay

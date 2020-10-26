@@ -9,12 +9,12 @@
   "scripts": {
     "build": "node server/build-resources.js",
     "build:data": "node server/build-resources.js --dataOnly",
-    "build:static": "node server/build-resources.js --staticFilesOnly",
     "publish-resources": "node server/publish-resources.js",
     "publish-resources:map": "node server/publish-resources.js --dataOnly",
     "publish-resources:player": "node server/publish-resources.js --staticFilesOnly",
-    "publish-project": "node server/publish-project.js",
-    "publish-player": "node server/publish-player.js"
+    "publish-project": "node server/build-resources.js --indexOnly && node server/publish-resources.js --indexOnly",
+    "publish-project:offline": "npm run build",
+    "publish-player": "node server/build-resources.js --staticFilesOnly && node server/publish-resources.js --staticFilesOnly --online"
   },
   "dependencies": {
     "aws-sdk": "^2.754.0",

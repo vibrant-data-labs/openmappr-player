@@ -11,7 +11,7 @@ angular.module('common')
                 restrict: 'AE',
                 require: '?^dirAttrRenderer',
                 template: '<div ng-include="getTemplate()"></div>',
-                // templateUrl: '#{server_prefix}#{view_path}/partials/renderers/tagListSimple.html',
+                // templateUrl: '#{player_prefix_index}/partials/renderers/tagListSimple.html',
                 scope: true,
                 link: postLinkFn
             };
@@ -51,9 +51,9 @@ angular.module('common')
                 //get correct template based on type
                 scope.getTemplate = function() {
                     if(attrs.template == 'tagCloud') {
-                        return '#{server_prefix}#{view_path}/partials/renderers/tagCloud.html';
+                        return '#{player_prefix_index}/partials/renderers/tagCloud.html';
                     } else {
-                        return '#{server_prefix}#{view_path}/partials/renderers/tagListSimple.html';
+                        return '#{player_prefix_index}/partials/renderers/tagListSimple.html';
                     }
                 };
 

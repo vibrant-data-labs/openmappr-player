@@ -49,15 +49,15 @@
 
 
             //player
-            $routeProvider.when('/',                           {templateUrl:   '#{server_prefix}#{view_path}/player/player.html'});
-            // $routeProvider.when('/play/:urlStr',                        {templateUrl:   '#{server_prefix}#{view_path}/player/player.html'});
-            // $routeProvider.when('/play/:urlStr/compare',                 {templateUrl:   '#{server_prefix}#{view_path}/player/player.html'});
-            // $routeProvider.when('/play/:urlStr/select',                 {templateUrl:   '#{server_prefix}#{view_path}/player/player.html'});
+            $routeProvider.when('/',                           {templateUrl:   '#{player_prefix_index}/player/player.html'});
+            // $routeProvider.when('/play/:urlStr',                        {templateUrl:   '#{player_prefix_index}/player/player.html'});
+            // $routeProvider.when('/play/:urlStr/compare',                 {templateUrl:   '#{player_prefix_index}/player/player.html'});
+            // $routeProvider.when('/play/:urlStr/select',                 {templateUrl:   '#{player_prefix_index}/player/player.html'});
 
-            // $routeProvider.when('/play/auth/:urlStr',                   {templateUrl:   '#{server_prefix}#{view_path}/player/playerBlank.html'});
+            // $routeProvider.when('/play/auth/:urlStr',                   {templateUrl:   '#{player_prefix_index}/player/playerBlank.html'});
 
             //404
-            $routeProvider.when('/404',                                 {templateUrl:   '#{server_prefix}#{view_path}/partials/404'});
+            $routeProvider.when('/404',                                 {templateUrl:   '#{player_prefix_index}/partials/404'});
             //otherwise
             // $routeProvider.otherwise(                                   {redirectTo:    '/user-projects'});
 
@@ -96,7 +96,8 @@
                 'self',
                 // Allow loading from our assets domain.
                 'https://s3-us-west-2.amazonaws.com/new-mappr-builds/**',
-                'http://d1vk2agkq7tezn.cloudfront.net/**'
+                'http://d1vk2agkq7tezn.cloudfront.net/**',
+                '#{player_prefix_index_source}/**'
             ]);
         })
 

@@ -8,7 +8,7 @@ function($timeout, $rootScope, dataGraph, graphSelectionService, AttrInfoService
     **************************************/
     var dirDefn = {
         restrict: 'EA',
-        templateUrl: "#{server_prefix}#{view_path}/components/project/overlays/ext_user_overlay/extUserOverlay.html",
+        templateUrl: "#{player_prefix_index}/components/project/overlays/ext_user_overlay/extUserOverlay.html",
         scope: {
             loadInfo: '=',
             mapprSettings: '=',

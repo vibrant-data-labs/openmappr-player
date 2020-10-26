@@ -18,7 +18,7 @@ angular.module('common')
             sortConfig: '=', // Model for sort => {sortType: 'alphabetical', sortOrder: 'desc'}
             alignToRight: '<'
         },
-        templateUrl: '#{server_prefix}#{view_path}/components/project/sort_menu/sortMenu.html',
+        templateUrl: '#{player_prefix_index}/components/project/sort_menu/sortMenu.html',
         link: postLinkFn
     };
 

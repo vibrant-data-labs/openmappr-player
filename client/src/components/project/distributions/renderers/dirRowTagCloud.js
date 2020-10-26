@@ -10,7 +10,7 @@ function($timeout, $q, FilterPanelService, dataGraph, AttrInfoService, SelectorS
     var dirDefn = {
         restrict: 'AE',
         require: '?^dirAttrRenderer',
-        templateUrl: '#{server_prefix}#{view_path}/components/project/distributions/renderers/rowTagCloud.html',
+        templateUrl: '#{player_prefix_index}/components/project/distributions/renderers/rowTagCloud.html',
         scope: true,
         link: postLinkFn
     };

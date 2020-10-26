@@ -13,12 +13,15 @@ const _ = require('lodash'),
   { argv } = require('yargs'),
   jade = require('jade'),
   inquirer = require('inquirer'),
-  sass = require('sass');
+  sass = require('sass'),
+  s3Config = require('./config/s3Config');
+  const getLastCommit = require('./publish-player');
 
 const player_model = require('./player/player_model');
 
 const dataOnly = argv.dataOnly;
 const staticFilesOnly = argv.staticFilesOnly;
+const indexOnly = argv.indexOnly;
 let projId;
 let publishDataPath;
 
@@ -50,6 +53,7 @@ const outputPath = './client/build/dev/';
 const dataPath = outputPath + 'data/';
 
 var playerSettings = null;
+var playerBuildPrefix = '';
 
 async function buildResources() {
   if (dataOnly || (!dataOnly && !staticFilesOnly)) {
@@ -82,15 +86,14 @@ async function buildResources() {
   }
 
   if (staticFilesOnly || (!dataOnly && !staticFilesOnly)) {
-    const res = await inquirer.prompt([
-      {
-        type: 'input',
-        name: 'path',
-        message: 'Enter the relative path to generated json files (default /data/)',
-      },
-    ]);
-
-    publishDataPath = res && res.path ? res.path : '/data/';
+    const lastCommitInfo = await getLastCommit();
+    const lastCommitDate = lastCommitInfo.toString().substring(0, 10);
+    playerBuildPrefix = 'http://' + s3Config.bucketDefaultPrefix + lastCommitDate + '.s3-website-us-east-1.amazonaws.com'
+    const mappingData = fs.readFileSync('./mapping.json');
+    const jsonData = JSON.parse(mappingData);
+    jsonData.sourceUrl = playerBuildPrefix;
+    fs.writeFileSync('./mapping.json', JSON.stringify(jsonData), { flag: 'w'});
+    publishDataPath = '/data/';
     compileScss();
     runGrunt();
   }
@@ -173,7 +176,8 @@ function buildIndex() {
       isFinal: false
     }),
     playerDataPath: publishDataPath,
-    ...indexConfig
+    ...indexConfig,
+    player_prefix_index_source: playerBuildPrefix,
   };
 
   return new Promise((resolve) => {
@@ -212,7 +216,112 @@ function _shouldSanitizeClusterInfo(nw) {
 }
 
 
-buildResources().catch((err) => {
-  console.error('[Build error]: ' + err);
-  process.exit(1);
-});
+if (indexOnly) {
+(async function() {
+  const lastCommitInfo = await getLastCommit();
+  const lastCommitDate = lastCommitInfo.toString().substring(0, 10);
+  playerBuildPrefix = 'http://' + s3Config.bucketDefaultPrefix + lastCommitDate + '.s3-website-us-east-1.amazonaws.com'
+  const mappingData = fs.readFileSync('./mapping.json');
+  const jsonData = JSON.parse(mappingData);
+  jsonData.sourceUrl = playerBuildPrefix;
+  fs.writeFileSync('./mapping.json', JSON.stringify(jsonData), { flag: 'w'});
+
+  compileScss();
+  runGrunt();
+
+  if (!fs.existsSync(dataPath)) {
+    fs.mkdirSync(dataPath, { recursive: true });
+  }
+
+  console.log('Fetching projects...');
+  await mongoose.connect(config.dbUrl, { useNewUrlParser: true, useUnifiedTopology: true}, function(error) {
+    if (!error) return;
+    console.error('MONGO CONNECT ERR', error);
+    process.exit(1);
+  });
+
+  const projects = await projModel.listAllAsync();
+  const res = await inquirer.prompt([
+    {
+      type: 'list',
+      name: 'projId',
+      message: 'Select the project',
+      choices: projects.map(r => ({ name: r.projName, value: r._id.toString() })),
+      filter: function (val) {
+        return val.toLowerCase();
+      },
+    },
+  ]);
+
+  if (!res || !res.projId) {
+    console.error('project was not selected');
+    process.exit(2);
+  }
+
+  projId = res.projId;
+
+  const proj = await projModel.listByIdAsync(projId);
+  const player = await new Promise(resolve => player_model.listByProjectId(projId, function (err, data) { resolve(data); }));
+
+  playerSettings = player;
+  const projData = JSON.stringify({ ...proj._doc, player }, null, 4);
+  fs.writeFileSync(dataPath + 'settings.json', projData);
+
+  const datasetRef = proj.dataset.ref;
+  const dataset = await DSModel.readDataset(datasetRef, false);
+
+  console.log("Found ds with %s datapoints", dataset.datapoints.length);
+  const data = JSON.stringify(dataset, null, 4);
+  fs.writeFileSync(dataPath + 'nodes.json', data);
+
+  var networks = [];
+  for (let i = 0; i < proj.networks.length; i++) {
+    let nw = await DSModel.readNetwork(proj.networks[i].ref, false, false);
+
+    if (nw.networkInfo.properlyParsed && !_shouldSanitizeClusterInfo(nw)) {
+      console.log("[getAllNetworks] Network pure, returning as it is");
+    }
+    else {
+      if (!nw.networkInfo.properlyParsed) {
+        console.log("[getAllNetworks]network is impure, sanitizing it");
+        nw = dataUtils.sanitizeNetwork(nw);
+      }
+      if (_shouldSanitizeClusterInfo(nw)) {
+        console.log("[getAllNetworks] sanitizing cluster info");
+        nw = dataUtils.sanitizeClusterInfo(nw);
+      }
+      nw = await DSModel.updateNetwork(nw);
+    }
+
+    networks.push(nw);
+  }
+
+  const networksData = JSON.stringify(networks, null, 4);
+  fs.writeFileSync(dataPath + 'links.json', networksData);
+
+  const html = await buildIndex()
+  console.log("HTML fetched.");
+  fs.writeFileSync(outputPath + 'index.html', html);
+
+  console.log("HTML is rendered.");
+  console.log('Preparing items to publish...');
+  const publishOutputPath = './publish';
+  if (fs.existsSync(publishOutputPath)) {
+    const del = require('del');
+    await del([`${publishOutputPath}/**/*`, `!${publishOutputPath}/data`]);
+  } else {
+    fs.mkdirSync(publishOutputPath);
+  }
+
+  const { ncp } = require('ncp');
+  await new Promise((resolve) => ncp(outputPath + '/data', publishOutputPath + '/data', () => resolve()));
+  await new Promise((resolve) => ncp(outputPath + '/index.html', publishOutputPath + '/index.html', () => resolve()));
+
+})().then(() => process.exit(0));
+
+} else {
+  buildResources().catch((err) => {
+    console.error('[Build error]: ' + err);
+    process.exit(1);
+  });
+}

@@ -21,7 +21,7 @@
                     ng-repeat="nodes in comparedNodesObj"
                 )
                     .card(
-                        ng-include=' "#{server_prefix}#{view_path}/components/project/layouts/grid/gridCard.html" '
+                        ng-include=' "#{player_prefix_index}/components/project/layouts/grid/gridCard.html" '
                         ng-repeat="node in nodes"
                         ng-mouseenter="setHover(node)"
                         ng-mouseleave="setHover()",
@@ -57,7 +57,7 @@
                     ng-repeat="nodes in sortedNodesObj"
                 )
                     .card(
-                        ng-include=' "#{server_prefix}#{view_path}/components/project/layouts/grid/gridCard.html" '
+                        ng-include=' "#{player_prefix_index}/components/project/layouts/grid/gridCard.html" '
                         ng-repeat="node in nodes"
                         ng-mouseenter="setHover(node)"
                         ng-mouseleave="setHover()",

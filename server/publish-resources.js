@@ -7,9 +7,12 @@ const fs = require('fs'),
     inquirer = require('inquirer'),
     mime = require('mime-types'),
     { argv } = require('yargs');
+const getLastCommit = require('./publish-player');
 
 const dataOnly = argv.dataOnly;
 const staticFilesOnly = argv.staticFilesOnly;
+const online = argv.online;
+const indexOnly = argv.indexOnly;
 
 const s3 = new AWS.S3({
     accessKeyId: s3Config.accessKeyId,
@@ -24,30 +27,46 @@ const bar1 = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
 
 async function readFilesAndUpload() {
     const buckets = await s3.listBuckets().promise();
-    const res = await inquirer.prompt([
-        {
-            type: 'confirm',
-            name: 'useExisting',
-            message: 'Do you want to use existing bucket?',
-        },
-        {
-            type: 'input',
-            name: 'newBucket',
-            message: 'Enter the bucket name',
-            when: function (answers) {
-                return !answers.useExisting;
-            }
-        },
-        {
-            type: 'list',
-            name: 'bucket',
-            message: 'Select the bucket',
-            choices: buckets.Buckets.map(r => ({ name: r.Name, value: r.Name })),
-            when: function (answers) {
-                return !!answers.useExisting;
-            }
-        },
-    ]);
+    const lastCommitInfo = await getLastCommit();
+    const lastCommitDate = lastCommitInfo.toString().substring(0, 10);
+
+    let res = null;
+    if (staticFilesOnly && online) {
+
+        const bucketName = s3Config.bucketDefaultPrefix + lastCommitDate;
+        let useNew = !buckets.Buckets.find(x => x.Name === bucketName);
+
+        res = {
+            useExisting: !useNew,
+            newBucket: bucketName,
+            bucket: bucketName
+        };
+    } else {
+        res = await inquirer.prompt([
+            {
+                type: 'confirm',
+                name: 'useExisting',
+                message: 'Do you want to use existing bucket?',
+            },
+            {
+                type: 'input',
+                name: 'newBucket',
+                message: 'Enter the bucket name',
+                when: function (answers) {
+                    return !answers.useExisting;
+                }
+            },
+            {
+                type: 'list',
+                name: 'bucket',
+                message: 'Select the bucket',
+                choices: buckets.Buckets.map(r => ({ name: r.Name, value: r.Name })),
+                when: function (answers) {
+                    return !!answers.useExisting;
+                }
+            },
+        ]);
+    }
 
     let bucketName = '';
     if (res.useExisting) {
@@ -72,7 +91,15 @@ async function readFilesAndUpload() {
 
     let path = 'publish';
     let excludedFiles = [];
-    if (dataOnly) {
+    if (indexOnly) {
+        excludedFiles = [
+            'publish/css/**/*',
+            'publish/fonts/**/*',
+            'publish/img/**/*',
+            'publish/js/**/*',
+            'publish/partials/**/*',
+        ];
+    } else if (dataOnly) {
         path = 'publish/data';
     } else if (staticFilesOnly) {
         excludedFiles = [
@@ -83,9 +110,9 @@ async function readFilesAndUpload() {
     const files = await getDirectories(path, excludedFiles);
     bar1.start(files.length, 0);
     let i = 0;
-    for (let i = 0; i < files.length; i += 5) {
+    for (let i = 0; i < files.length; i += 50) {
         bar1.update(i);
-        let items = files.slice(i, i + 5);
+        let items = files.slice(i, i + 50);
         await Promise.all(
             items.map(item => {
                 if (!fs.lstatSync(item).isFile()) return Promise.resolve();

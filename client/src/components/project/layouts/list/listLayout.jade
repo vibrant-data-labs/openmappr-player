@@ -59,7 +59,7 @@
 				.clearfix
 				.cards
 					.card.nowrap(ng-if="node.isCompared" ng-repeat="node in sortedNodesObj"  ng-mouseenter="setHover(node)" ng-mouseleave="setHover()", ng-class="{highlighted: node.inHover, 'selected': selectedNodeIds.indexOf(node.id) !== -1}" data-nodeid="{{node.id}}", dir-list-row="" ng-click="$event.stopPropagation();" node="node")
-						.height-100(ng-include=' "#{server_prefix}#{view_path}/components/project/layouts/list/listRow.html" ')
+						.height-100(ng-include=' "#{player_prefix_index}/components/project/layouts/list/listRow.html" ')
 				.clearfix
 			.nodes
 				h7.text-uppercase(ng-show="comparingNodes")
@@ -75,7 +75,7 @@
 									i.icon-legend-dots(style="color:{{node.colorStr}};")
 								span {{node.category}}
 						.card.nowrap(ng-if="!node.isHeader && node.isVisible" ng-mouseenter="setHover(node)" ng-mouseleave="setHover()", ng-class="{highlighted: node.inHover, 'selected': selectedNodeIds.indexOf(node.id) !== -1}" data-nodeid="{{node.id}}", dir-list-row="" ng-click="$event.stopPropagation();")
-							.height-100(ng-include=' "#{server_prefix}#{view_path}/components/project/layouts/list/listRow.html" ')
+							.height-100(ng-include=' "#{player_prefix_index}/components/project/layouts/list/listRow.html" ')
 			//- .text-center.vert-align.height-50(ng-hide="allNodesRendered")
 			//-     h4.width-100
 			//-         i.fa.fa-spinner.fa-pulse.fa-2x

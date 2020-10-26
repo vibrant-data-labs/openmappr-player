@@ -22,10 +22,10 @@ function($q, $rootScope, $timeout, AttrModifierService, AttrInfoService, dataSer
             var url = '';
             switch(tAttrs.placement) {
             case 'selection':
-                url = '#{server_prefix}#{view_path}/components/project/attr_modifiers/attrModSelection.html';
+                url = '#{player_prefix_index}/components/project/attr_modifiers/attrModSelection.html';
                 break;
             default:
-                url = '#{server_prefix}#{view_path}/components/project/attr_modifiers/attrModModal.html';
+                url = '#{player_prefix_index}/components/project/attr_modifiers/attrModModal.html';
             }
             return url;
         },

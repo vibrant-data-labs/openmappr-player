@@ -8,7 +8,7 @@ angular.module('common')
     var dirDefn = {
         restrict: 'AE',
         require: '?^dirAttrRenderer',
-        templateUrl: '#{server_prefix}#{view_path}/components/project/distributions/renderers/textList.html',
+        templateUrl: '#{player_prefix_index}/components/project/distributions/renderers/textList.html',
         scope: {
             strings: '='
         },

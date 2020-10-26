@@ -8,7 +8,7 @@ function(graphSelectionService, hoverService, linkService, dataGraph, zoomServic
     **************************************/
     var dirDefn = {
         restrict: 'AE',
-        templateUrl: '#{server_prefix}#{view_path}/components/project/panels/right_panel/info_panel/neighborNodes.html',
+        templateUrl: '#{player_prefix_index}/components/project/panels/right_panel/info_panel/neighborNodes.html',
         scope: {
             nodeNeighbors: '=',
             linkInfoAttrs: '='

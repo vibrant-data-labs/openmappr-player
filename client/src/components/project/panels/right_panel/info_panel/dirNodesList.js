@@ -20,7 +20,7 @@ function(BROADCAST_MESSAGES, hoverService, selectService, subsetService, FilterP
             sortTypes: '=',
             sortInfo: '=',
         },
-        templateUrl: '#{server_prefix}#{view_path}/components/project/panels/right_panel/info_panel/nodesList.html',
+        templateUrl: '#{player_prefix_index}/components/project/panels/right_panel/info_panel/nodesList.html',
         link: postLinkFn
     };
 

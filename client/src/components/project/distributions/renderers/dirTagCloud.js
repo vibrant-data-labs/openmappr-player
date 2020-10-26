@@ -10,7 +10,7 @@ angular.module('common')
             var dirDefn = {
                 restrict: 'AE',
                 require: '?^dirAttrRenderer',
-                templateUrl: '#{server_prefix}#{view_path}/components/project/distributions/renderers/tagCloud.html',
+                templateUrl: '#{player_prefix_index}/components/project/distributions/renderers/tagCloud.html',
                 scope: true,
                 link: postLinkFn
             };

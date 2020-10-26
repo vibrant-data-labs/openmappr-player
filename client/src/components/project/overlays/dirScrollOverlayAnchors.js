@@ -15,7 +15,7 @@ function ($timeout, snapshotService, dataGraph) {
     **************************************/
     var dirDefn = {
         restrict: 'EA',
-        templateUrl: '#{server_prefix}#{view_path}/components/project/overlays/scrollOverlayAnchors.html',
+        templateUrl: '#{player_prefix_index}/components/project/overlays/scrollOverlayAnchors.html',
         link: postLinkFn
     };
 

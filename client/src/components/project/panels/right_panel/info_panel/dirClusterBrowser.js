@@ -8,7 +8,7 @@ function(graphSelectionService, FilterPanelService) {
     **************************************/
     var dirDefn = {
         restrict: 'AE',
-        templateUrl: '#{server_prefix}#{view_path}/components/project/panels/right_panel/info_panel/clusterBrowser.html',
+        templateUrl: '#{player_prefix_index}/components/project/panels/right_panel/info_panel/clusterBrowser.html',
         scope: {
             nodeGroups: '=',
             selGroup: '=',

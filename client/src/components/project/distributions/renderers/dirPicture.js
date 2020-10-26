@@ -9,7 +9,7 @@ function($rootScope, $sce, $window, BROADCAST_MESSAGES) {
     var dirDefn = {
         restrict: 'AE',
         require: '?^dirAttrRenderer',
-        templateUrl: '#{server_prefix}#{view_path}/components/project/distributions/renderers/picture.html',
+        templateUrl: '#{player_prefix_index}/components/project/distributions/renderers/picture.html',
 
         scope: {
             url: '=',

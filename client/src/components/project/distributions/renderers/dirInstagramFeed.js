@@ -14,7 +14,7 @@ function($sce, $timeout, $http) {
         //        '<div ng-bind-html="pic.embedSafe"></div>'+
         //        '</div>'+
         //        '</div>',
-        templateUrl: '#{server_prefix}#{view_path}/components/project/distributions/renderers/instagramFeed.html',
+        templateUrl: '#{player_prefix_index}/components/project/distributions/renderers/instagramFeed.html',
         scope: {
             handle: '@',
             search: '@'

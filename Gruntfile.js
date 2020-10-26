@@ -30,8 +30,9 @@ module.exports = function(grunt) {
 	var server_prefix_prod = mapping.s3Url + buildId;
 	// var mapp_prefix_prod = 'https://s3-us-west-2.amazonaws.com/mappr-public-mapps';
 	var view_path_prod = '/views/partials';
-	var server_prefix_dev = '';
 	var view_path_dev = '/partials';
+
+	var server_prefix_dev = mapping.sourceUrl + view_path_dev;
     var build_server = 'dev';
 
     if(/staging/.test(APP_VERSION)) {
@@ -759,9 +760,8 @@ module.exports = function(grunt) {
 
 	addTask('copy', 'dev_js_app', {
 		options: {
-			processContent: function (content, srcpath) {
-		        return content.replace(/#{server_prefix}/g, server_prefix_dev)
-		        			.replace(/#{view_path}/g, view_path_dev);
+			process: function (content, srcpath) {
+		        return content.replace(/#{player_prefix_index_source}/g, mapping.sourceUrl).replace(/#{player_prefix_index}/g, server_prefix_dev);
 		        			// .replace(/#{mapp_prefix}/g, mapp_prefix_dev)
 		        			// .replace(/#{production}/g, false);
 		    }
@@ -859,8 +859,8 @@ module.exports = function(grunt) {
 			client: false,
 			pretty: true,
 			data: {
-				server_prefix: server_prefix_dev,
-				view_path: view_path_dev
+				player_prefix_index: server_prefix_dev,
+				player_prefix_index_source: mapping.sourceUrl
 			}
 		},
 		files: [{
@@ -881,9 +881,8 @@ module.exports = function(grunt) {
 
 	addTask('copy', 'dev_jade', {
 		options: {
-			processContent: function (content, srcpath) {
-		        return content.replace(/#{server_prefix}/g, server_prefix_dev)
-		        			.replace(/#{view_path}/g, view_path_dev);
+			process: function (content, srcpath) {
+		        return content.replace(/#{player_prefix_index_source}/g, mapping.sourceUrl).replace(/#{player_prefix_index}/g, server_prefix_dev);
 		    }
 		},
 		files: [

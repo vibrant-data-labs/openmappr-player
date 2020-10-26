@@ -7,7 +7,7 @@ angular.module('player')
     **************************************/
     var dirDefn = {
         restrict: 'AE',
-        templateUrl: '#{server_prefix}#{view_path}/products/player/clusterView.html',
+        templateUrl: '#{player_prefix_index}/products/player/clusterView.html',
         scope: {
             clusters: '=',
             totalNodesCount: '='

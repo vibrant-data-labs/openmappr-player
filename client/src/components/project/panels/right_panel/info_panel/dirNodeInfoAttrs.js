@@ -12,7 +12,7 @@ angular.module('common')
                     selNode: '=',
                     pinnedMedia: '='
                 },
-                templateUrl: '#{server_prefix}#{view_path}/components/project/panels/right_panel/info_panel/nodeInfoAttrs.html',
+                templateUrl: '#{player_prefix_index}/components/project/panels/right_panel/info_panel/nodeInfoAttrs.html',
                 link: postLinkFn
             };
 

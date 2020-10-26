@@ -12,7 +12,6 @@ function getLastCommit() {
         }
     
         const req = https.request(options, res => {
-            console.log(`statusCode: ${res.statusCode}`);
             let rawData = '';
     
             res.on('data', d => {
@@ -21,7 +20,6 @@ function getLastCommit() {
     
             res.on('end', () => {
                 const data = JSON.parse(rawData);
-                console.log('data', data);
                 resolve(data.commit.commit.author.date);
             });
         })
@@ -38,27 +36,4 @@ function getLastCommit() {
     
 }
 
-function publishPlayer() {
-    console.log('Running build:data...');
-    npm.load(() => {
-        npm.run('build:data', (err) => {
-            console.log('AFTER SCRIPT 1');
-            npm.run('publish-resources:map', (err) => {
-                console.log('AFTER SCRIPT 2');
-                process.exit(0);
-            });
-        });
-        
-    });
-    
-}
-
-//publishPlayer();
-
-getLastCommit().then((lastCommitDate) => {
-    console.log('Last commit date', lastCommitDate);
-    process.exit(0);
-}).catch(error => {
-    console.error(error);
-    process.exit(1);
-});
+module.exports = getLastCommit;

@@ -8,7 +8,7 @@ angular.module('common')
             **************************************/
             var dirDefn = {
                 restrict: 'EA',
-                templateUrl: '#{server_prefix}#{view_path}/components/project/layouts/list/listLayout.html',
+                templateUrl: '#{player_prefix_index}/components/project/layouts/list/listLayout.html',
                 controller: ['$scope', '$element', '$timeout', '$rootScope', ControllerFn],
                 scope: true,
                 link: postLinkFn

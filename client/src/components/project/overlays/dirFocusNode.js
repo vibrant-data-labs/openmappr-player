@@ -8,7 +8,7 @@ function ($timeout) {
     **************************************/
     var dirDefn = {
         restrict: 'EA',
-        templateUrl: '#{server_prefix}#{view_path}/components/project/overlays/focusNode.html',
+        templateUrl: '#{player_prefix_index}/components/project/overlays/focusNode.html',
         // template:'<svg id="focus-node"></svg>',
         scope: {
             node: "=",

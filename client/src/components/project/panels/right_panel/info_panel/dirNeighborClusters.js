@@ -8,7 +8,7 @@ function(graphSelectionService, FilterPanelService, hoverService) {
     **************************************/
     var dirDefn = {
         restrict: 'AE',
-        templateUrl: '#{server_prefix}#{view_path}/components/project/panels/right_panel/info_panel/neighborClusters.html',
+        templateUrl: '#{player_prefix_index}/components/project/panels/right_panel/info_panel/neighborClusters.html',
         scope: {
             selGroup: '=',
             nodeGroups: '='
