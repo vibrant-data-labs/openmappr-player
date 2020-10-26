@@ -1029,9 +1029,5 @@ addTask('cacheBust', 'dev', {
 		'clean:dev_tmp',
 	];
 
-	if (process.env.NODE_ENV !== 'local') {
-		tasks.push('cacheBust:dev');
-	}
-
 	grunt.registerTask('default', tasks);
 };
