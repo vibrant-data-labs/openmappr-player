@@ -155,17 +155,7 @@ html(lang='en', data-ng-app='hcApp' style="background: #{backgroundColor}" )
 		script(src='https://cdnjs.cloudflare.com/ajax/libs/intro.js/2.9.3/intro.min.js')
 		script(src='https://cdn.jsdelivr.net/npm/angular-intro.js@3.4.0/src/deprecated.angular-intro.js')
 		script(src='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js')
-		script(src='https://unpkg.com/@babel/standalone/babel.min.js')
-		script(src="https://cdn.jsdelivr.net/npm/match-sorter@5.0.0/dist/match-sorter.cjs.min.js")
 			
-		script(type='text/babel').
-			(function() {
-				console.log('before require');
-				const {matchSorter} = require('match-sorter');
-				console.log('after require', matchSorter);
-				window.matchSorter = matchSorter;
-			}());
-
 	  // @if compiled = false
 		//-<!-- build:js #{env}/js/player/vendor.js -->
 
@@ -185,6 +175,8 @@ html(lang='en', data-ng-app='hcApp' style="background: #{backgroundColor}" )
 		script(src="../../libs/d3.color.min.js")
 		script(src="../../libs/es6Shims.js")
 		script(src="../../libs/fuzzysort.js")
+		script(src="../../libs/removeAccents.js")
+		script(src="../../libs/matchSorter.js")
 
 		//licenses
 		script(src="../../libs/licenseList.js")
