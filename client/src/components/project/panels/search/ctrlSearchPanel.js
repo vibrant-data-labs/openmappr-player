@@ -45,6 +45,10 @@ function($scope, $rootScope, $timeout, searchService, BROADCAST_MESSAGES, uiServ
     * Scope methods
     */
     $scope.searchFn = _.debounce(searchFn, 500);
+    $scope.searchFocus = function() {
+        $scope.ui.showInfoIcon = true;
+        $scope.$parent.$parent.$parent.$parent.searchDropdownVisible = false;
+    }
     $scope.attrToggled = attrToggled;
     $scope.selectNode = selectNode;
     $scope.selectAllNodes = selectAllNodes;

@@ -46,7 +46,7 @@
       input.search-box__input(
         ng-show="!ui.overlayOpen"
         type="text", ng-model="globalSearch.text",
-        ng-keyup="searchFn($event)" ng-focus="ui.showInfoIcon = true" ng-blur="ui.showInfoIcon = false",
+        ng-keyup="searchFn($event)" ng-focus="searchFocus()" ng-blur="ui.showInfoIcon = false",
         placeholder="Search"
       )
 
