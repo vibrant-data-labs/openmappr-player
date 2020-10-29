@@ -86,13 +86,21 @@ async function buildResources() {
   }
 
   if (staticFilesOnly || (!dataOnly && !staticFilesOnly)) {
-    const lastCommitInfo = await getLastCommit();
-    const lastCommitDate = lastCommitInfo.toString().substring(0, 10);
-    playerBuildPrefix = 'http://' + s3Config.bucketDefaultPrefix + lastCommitDate + '.s3-website-us-east-1.amazonaws.com'
-    const mappingData = fs.readFileSync('./mapping.json');
-    const jsonData = JSON.parse(mappingData);
-    jsonData.sourceUrl = playerBuildPrefix;
-    fs.writeFileSync('./mapping.json', JSON.stringify(jsonData), { flag: 'w'});
+    if (!dataOnly && !staticFilesOnly) {
+      const mappingData = fs.readFileSync('./mapping.json');
+      const jsonData = JSON.parse(mappingData);
+      jsonData.sourceUrl = '';
+      fs.writeFileSync('./mapping.json', JSON.stringify(jsonData), { flag: 'w' });
+    } else {
+      const lastCommitInfo = await getLastCommit();
+      const lastCommitDate = lastCommitInfo.toString().substring(0, 10);
+      playerBuildPrefix = 'http://' + s3Config.bucketDefaultPrefix + lastCommitDate + '.s3.us-east-1.amazonaws.com';
+      const mappingData = fs.readFileSync('./mapping.json');
+      const jsonData = JSON.parse(mappingData);
+      jsonData.sourceUrl = playerBuildPrefix;
+      fs.writeFileSync('./mapping.json', JSON.stringify(jsonData), { flag: 'w' });
+    }
+    
     publishDataPath = '/data/';
     compileScss();
     runGrunt();
@@ -106,6 +114,9 @@ async function buildResources() {
 
     const proj = await projModel.listByIdAsync(projId);
     const player = await new Promise(resolve => player_model.listByProjectId(projId, function (err, data) { resolve(data); }));
+
+    // set default search algorithm
+    player.settings.searchAlg = 'matchSorter';
 
     playerSettings = player;
     const projData = JSON.stringify({ ...proj._doc, player }, null, 4);
@@ -175,9 +186,9 @@ function buildIndex() {
       directAccess: true,
       isFinal: false
     }),
-    playerDataPath: publishDataPath,
     ...indexConfig,
     player_prefix_index_source: playerBuildPrefix,
+    playerDataPath: publishDataPath,
   };
 
   return new Promise((resolve) => {
@@ -218,9 +229,10 @@ function _shouldSanitizeClusterInfo(nw) {
 
 if (indexOnly) {
 (async function() {
+  publishDataPath = '/data/';
   const lastCommitInfo = await getLastCommit();
   const lastCommitDate = lastCommitInfo.toString().substring(0, 10);
-  playerBuildPrefix = 'http://' + s3Config.bucketDefaultPrefix + lastCommitDate + '.s3-website-us-east-1.amazonaws.com'
+  playerBuildPrefix = 'http://' + s3Config.bucketDefaultPrefix + lastCommitDate + '.s3.us-east-1.amazonaws.com'
   const mappingData = fs.readFileSync('./mapping.json');
   const jsonData = JSON.parse(mappingData);
   jsonData.sourceUrl = playerBuildPrefix;

@@ -68,7 +68,7 @@ function($q, $http, projFactory) {
 
     function getPlayerDocLocally() {
         console.log('[playerFactory.getPlayerDocLocally]');
-        return $http.get(DATA_PATH + 'settings.json').then(function(response) {
+        return $http.get(DATA_PATH + 'settings.json?t=' + Date.now()).then(function(response) {
             console.log(response);
             if(response.status === 500) {
                 currPlayerDefer.reject('Some error');

@@ -43,7 +43,7 @@ function($q, $http, dataGraph, cfpLoadingBar) {
         var allNodes = dataGraph.getAllNodes();
 
         // NAIVE SEARCH
-        if (searchAlg === 'naive') {
+        if (searchAlg === 'matchSorter') {
             return new Promise(resolve => {
                 var data = matchSorter(allNodes, text, {
                     keys: filterAttrIds.map(r => 'attr.' + r),
@@ -60,7 +60,7 @@ function($q, $http, dataGraph, cfpLoadingBar) {
             });
         }
 
-        if (searchAlg === 'naiveOld') {
+        if (searchAlg === 'substring') {
             var idx = 0;
             return new Promise(resolve => {
                 var data = _.reduce(allNodes, function (acc, cv) {
