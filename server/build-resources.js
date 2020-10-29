@@ -276,6 +276,9 @@ if (indexOnly) {
   const player = await new Promise(resolve => player_model.listByProjectId(projId, function (err, data) { resolve(data); }));
 
   playerSettings = player;
+  // set default search algorithm
+  player.settings.searchAlg = 'matchSorter';  
+  
   const projData = JSON.stringify({ ...proj._doc, player }, null, 4);
   fs.writeFileSync(dataPath + 'settings.json', projData);
 
