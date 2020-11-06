@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-    playerTitle: 'Enter the title here',
+    playerTitle: '10yrs of TED Talks | py2Map',
     backgroundColor: '#fff',
     colorTheme: 'light',
     snapshotImg: '/img/openmappr_socialmedia.png',

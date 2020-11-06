@@ -103,3 +103,5 @@ Thumbs.db
 ################
 .env
 /publish
+/server/config/s3Config.js
+/server/config/local.js
