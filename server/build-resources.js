@@ -14,8 +14,10 @@ const _ = require('lodash'),
   jade = require('jade'),
   inquirer = require('inquirer'),
   sass = require('sass'),
-  s3Config = require('./config/s3Config');
+  s3Config = require('./config/s3Config'),
+  { ncp } = require('ncp');
   const getLastCommit = require('./publish-player');
+  
 
 const player_model = require('./player/player_model');
 
@@ -163,7 +165,6 @@ async function buildResources() {
     console.log("HTML is rendered.");
     await prepareToPublish();
   } else {
-    const { ncp } = require('ncp');
     const publishOutputPath = './publish';
     ncp(outputPath + '/data', publishOutputPath + '/data', function () {
       console.log("JSON data is saved.");
@@ -205,8 +206,6 @@ async function prepareToPublish() {
   } else {
     fs.mkdirSync(publishOutputPath);
   }
-
-  const { ncp } = require('ncp');
 
   let i = 0;
   const callbackHandler = function (err) {
@@ -323,15 +322,13 @@ if (indexOnly) {
   const publishOutputPath = './publish';
   if (fs.existsSync(publishOutputPath)) {
     const del = require('del');
-    await del([`${publishOutputPath}/**/*`, `!${publishOutputPath}/data`]);
+    await del([`${publishOutputPath}/**/*`]);
   } else {
     fs.mkdirSync(publishOutputPath);
   }
-
-  const { ncp } = require('ncp');
+  
   await new Promise((resolve) => ncp(outputPath + '/data', publishOutputPath + '/data', () => resolve()));
   await new Promise((resolve) => ncp(outputPath + '/index.html', publishOutputPath + '/index.html', () => resolve()));
-
 })().then(() => process.exit(0));
 
 } else {
