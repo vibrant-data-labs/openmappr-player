@@ -89,6 +89,19 @@ async function readFilesAndUpload() {
         }
     }).promise();
 
+    await s3.putBucketCors({
+        Bucket: bucketName,
+        CORSConfiguration: {
+            CORSRules: [
+                {
+                    AllowedMethods: [ "GET", "POST" ],
+                    AllowedOrigins: ["*"],
+                    AllowedHeaders: ["*"]
+                }
+            ]
+        }
+    }).promise();
+
     let path = 'publish';
     let excludedFiles = [];
     if (indexOnly) {
