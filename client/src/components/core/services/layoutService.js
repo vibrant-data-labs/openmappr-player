@@ -540,7 +540,7 @@ function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partiti
             invertY: true,
             scatterAspect: 0.5,
             //Geo mapbox settings
-            mapboxMapID: 'vibrantdata.ioeefmpb',//'vibrantdata.j5c7ofm2',//'vibrantdata.ic45fi91'
+            mapboxMapID: 'mapbox/light-v10',
 
             //
             nodeOnHover: 'expand', //'expand', 'select', 'pop', 'focus'

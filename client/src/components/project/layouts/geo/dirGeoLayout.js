@@ -65,7 +65,10 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
         if($scope.plotType === "geo") {
             $('.angular-leaflet-map').height($('#project-layout').height());
 
-            var mapID = $scope.mapprSettings.mapboxMapID || 'vibrantdata.j5c7ofm2';
+            var mapID = $scope.mapprSettings.mapboxMapID || 'mapbox/light-v10';
+            if (mapID.indexOf('vibrantdata') > -1) {
+                mapID = 'mapbox/light-v10';
+            }
             //added for custom mapbox styling
             angular.extend($scope, {
                 defaults: {
@@ -75,7 +78,7 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
                     zoomControl: false
                 },
                 tiles: {
-                    url: "https://a.tiles.mapbox.com/v3/" + mapID + "/{z}/{x}/{y}.png"
+                    url: "https://api.mapbox.com/styles/v1/" + mapID + "/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZXJpY2JlcmxvdyIsImEiOiJja2h6MjA5bGkwY283MndvaDMyMzN0eXlmIn0.9f_Dm_N5IHHgGS4bfidgtA",
                 }
             });
             $scope.events = {
@@ -126,7 +129,10 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
         var deregisters = [];
         var disableViewReset = false;
 
-        var mapID = scope.mapprSettings.mapboxMapID || 'vibrantdata.j5c7ofm2';
+        var mapID = $scope.mapprSettings.mapboxMapID || 'mapbox/light-v10';
+        if (mapID.indexOf('vibrantdata') > -1) {
+            mapID = 'mapbox/light-v10';
+        }
         onBoxZoomEnd = function(bounds) {
             var layout = layoutService.getCurrentIfExists();
             var sig = renderGraphfactory.sig();
@@ -143,7 +149,7 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
                 console.log('[dirGeo]mapboxMapID Changed! (%s -> %s)', oldVal, newVal);
                 mapID = newVal;
                 scope.tiles = {
-                    url : "https://a.tiles.mapbox.com/v3/" + mapID + "/{z}/{x}/{y}.png"
+                    url: "https://api.mapbox.com/styles/v1/" + mapID + "/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZXJpY2JlcmxvdyIsImEiOiJja2h6MjA5bGkwY283MndvaDMyMzN0eXlmIn0.9f_Dm_N5IHHgGS4bfidgtA",
                 };
             }
         });
