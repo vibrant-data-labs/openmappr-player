@@ -59,6 +59,19 @@ angular.module('common')
                 $scope.showNeighborLine = false;
             };
 
+            $scope.getImgStyle = function(info) {
+                if (!info.imageShow || !info.image) {
+                    return {
+                        'background': info.colorStr,
+                        'border-color': 'darken(' + info.color + ')'
+                    }
+                }
+
+                return {
+                    'background-image': 'url(' + info.image + ')',
+                    'border-color': 'darken(' + info.color + ')'
+                }
+            };
 
             $scope.attrRenderClicked = function () {
                 $scope.cancelOverlay(true);

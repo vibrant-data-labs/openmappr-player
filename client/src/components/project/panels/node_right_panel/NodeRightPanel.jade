@@ -9,10 +9,10 @@
               .section__icons.icons
                 .section__icons-icon(ng-repeat="link in nodeRightInfo.section1" ng-if="link.type == 'link'")
                   a(href="{{link.value}}" target="_blank" uib-tooltip="Go to {{link.tooltip}}" tooltip-placement="left" tooltip-append-to-body="true" ng-class="link.class")
-                    img(alt="{{link.value}}" src="{{link.icon}}")
+                    img(alt="{{link.value}}" ng-src="link.icon")
                 .section__icons-icon(ng-repeat="email in nodeRightInfo.section1" ng-if="email.type == 'email'")
                   a(href="mailto:{{email.value}}" target="_blank" uib-tooltip="{{email.tooltip}}" tooltip-placement="left" tooltip-append-to-body="true" ng-class="email.class")
-                    img(alt="{{email.value}}" src="{{email.icon}}")                    
+                    img(alt="{{email.value}}" ng-src="email.icon")                    
                 .section__icons-icon.close
                   button(ng-click='cancelOverlay(); triggerInteraction();')
 
@@ -21,12 +21,7 @@
                 .img-user
                   .img-user
                     div.img(
-                      ng-if="!info.imageShow || !info.image",
-                      style="background:{{info.colorStr}}; border-color: {{darken(info.color)}}"
-                    )
-                    div.img(
-                      ng-if="info.imageShow && info.image"
-                      style="background-image: url({{info.image}}); border-color: {{darken(info.color)}}"
+                      ng-style="getImgStyle(info)"
                     )
                 .info-user
                   h6 {{info.name}}
