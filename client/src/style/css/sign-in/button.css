@@ -88,37 +88,37 @@
 }
 /* line 91, ../../sass/sign-in/button.scss */
 .button_type_play-toolbar.button_icon_check::before {
-  background-image: url("/img/play-toolbar/check.svg");
+  background-image: deployedUrl("/img/play-toolbar/check.svg");
 }
 /* line 95, ../../sass/sign-in/button.scss */
 .button_type_play-toolbar.button_icon_chevron-left::before {
-  background-image: url("/img/play-toolbar/arrow-left.svg");
+  background-image: deployedUrl("/img/play-toolbar/arrow-left.svg");
 }
 /* line 99, ../../sass/sign-in/button.scss */
 .button_type_play-toolbar.button_icon_chevron-right::before {
-  background-image: url("/img/play-toolbar/arrow-right.svg");
+  background-image: deployedUrl("/img/play-toolbar/arrow-right.svg");
 }
 /* line 103, ../../sass/sign-in/button.scss */
 .button_type_play-toolbar.button_icon_cancel::before {
-  background-image: url("/img/play-toolbar/cancel.svg");
+  background-image: deployedUrl("/img/play-toolbar/cancel.svg");
 }
 /* line 107, ../../sass/sign-in/button.scss */
 .button_type_play-toolbar.button_icon_target::before {
-  background-image: url("/img/play-toolbar/target.svg");
+  background-image: deployedUrl("/img/play-toolbar/target.svg");
 }
 /* line 111, ../../sass/sign-in/button.scss */
 .button_type_play-toolbar.button_icon_plus::before {
-  background-image: url("/img/play-toolbar/plus.svg");
+  background-image: deployedUrl("/img/play-toolbar/plus.svg");
 }
 /* line 115, ../../sass/sign-in/button.scss */
 .button_type_play-toolbar.button_icon_minus::before {
-  background-image: url("/img/play-toolbar/minus.svg");
+  background-image: deployedUrl("/img/play-toolbar/minus.svg");
 }
 /* line 119, ../../sass/sign-in/button.scss */
 .button_type_play-toolbar.button_icon_search::before {
-  background-image: url("/img/play-toolbar/search.svg");
+  background-image: deployedUrl("/img/play-toolbar/search.svg");
 }
 /* line 123, ../../sass/sign-in/button.scss */
 .button_type_play-toolbar.button_icon_help::before {
-  background-image: url("/img/play-toolbar/help.svg");
+  background-image: deployedUrl("/img/play-toolbar/help.svg");
 }

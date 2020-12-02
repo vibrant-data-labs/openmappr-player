@@ -52,7 +52,7 @@
         &.opened::after {
           width: 8px;
           height: 5px;
-          background: url('../img/search/arrow-down.svg') 50% no-repeat;
+          background: deployedUrl('/img/search/arrow-down.svg') 50% no-repeat;
           position: absolute;
           content: '';
           top: 50%;
@@ -63,7 +63,7 @@
         &.closed::after {
           width: 8px;
           height: 5px;
-          background: url('../img/search/arrow-down.svg') 50% no-repeat;
+          background: deployedUrl('/img/search/arrow-down.svg') 50% no-repeat;
           position: absolute;
           content: '';
           top: 50%;

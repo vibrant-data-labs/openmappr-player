@@ -33,15 +33,25 @@ var config = AppConfig.init({
   }
 });
 
-function compileScss() {
+function compileScss(deployedUrl) {
   console.log('Compiling SCSS...');
   const playerResult = sass.renderSync({
-    file: './client/src/style/sass/player.scss'
+    file: './client/src/style/sass/player.scss',
+    functions: {
+      'deployedUrl($path)' : function(path) {
+        return new sass.types.String('url(' + deployedUrl + path.getValue() + ')');
+      }
+    }
   });
   fs.writeFileSync('./client/src/style/css/player.css', playerResult.css);
 
   const mapprResult = sass.renderSync({
-    file: './client/src/style/sass/sass.scss'
+    file: './client/src/style/sass/sass.scss',
+    functions: {
+      'deployedUrl($path)' : function(path) {
+        return new sass.types.String('url("' + deployedUrl + path.getValue() + '")');
+      }
+    }
   });
   fs.writeFileSync('./client/src/style/css/sass.css', mapprResult.css);
 }
@@ -104,7 +114,7 @@ async function buildResources() {
     }
     
     publishDataPath = '/data/';
-    compileScss();
+    compileScss(playerBuildPrefix);
     runGrunt();
   }
 
@@ -237,7 +247,7 @@ if (indexOnly) {
   jsonData.sourceUrl = playerBuildPrefix;
   fs.writeFileSync('./mapping.json', JSON.stringify(jsonData), { flag: 'w'});
 
-  compileScss();
+  compileScss(playerBuildPrefix);
   runGrunt();
 
   if (!fs.existsSync(dataPath)) {

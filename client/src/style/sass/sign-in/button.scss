@@ -89,39 +89,39 @@
       &.button {
         &_icon {
           &_check::before {
-            background-image: url('/img/play-toolbar/check.svg');
+            background-image: deployedUrl('/img/play-toolbar/check.svg');
           }
 
           &_chevron-left::before {
-            background-image: url('/img/play-toolbar/arrow-left.svg');
+            background-image: deployedUrl('/img/play-toolbar/arrow-left.svg');
           }
 
           &_chevron-right::before {
-            background-image: url('/img/play-toolbar/arrow-right.svg');
+            background-image: deployedUrl('/img/play-toolbar/arrow-right.svg');
           }
 
           &_cancel::before {
-            background-image: url('/img/play-toolbar/cancel.svg');
+            background-image: deployedUrl('/img/play-toolbar/cancel.svg');
           }
 
           &_target::before {
-            background-image: url('/img/play-toolbar/target.svg');
+            background-image: deployedUrl('/img/play-toolbar/target.svg');
           }
 
           &_plus::before {
-            background-image: url('/img/play-toolbar/plus.svg');
+            background-image: deployedUrl('/img/play-toolbar/plus.svg');
           }
 
           &_minus::before {
-            background-image: url('/img/play-toolbar/minus.svg');
+            background-image: deployedUrl('/img/play-toolbar/minus.svg');
           }
 
           &_search::before {
-            background-image: url('/img/play-toolbar/search.svg');
+            background-image: deployedUrl('/img/play-toolbar/search.svg');
           }
 
           &_help::before {
-            background-image: url('/img/play-toolbar/help.svg');
+            background-image: deployedUrl('/img/play-toolbar/help.svg');
           }
         }
       }

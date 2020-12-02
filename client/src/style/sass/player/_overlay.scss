@@ -3,7 +3,7 @@
 // Style for initial modal overlay in player
 
 .intro-overlay {
-    background: $intro-overlay-bg  url('/img/intro-overlay.png') 50% no-repeat;
+    background: $intro-overlay-bg  deployedUrl('/img/intro-overlay.png') 50% no-repeat;
     background-size: cover;
     bottom: 0;
     left: $side-menu-width;

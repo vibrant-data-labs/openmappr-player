@@ -1,6 +1,6 @@
 /* line 2, ../../sass/sign-in/sign-in.scss */
 .page-signin {
-  background: #449BB9 url(../img/bg.png) 50% no-repeat;
+  background: #449BB9 deployedUrl("/img/bg.png") 50% no-repeat;
   background-size: cover;
   height: 100%;
 }

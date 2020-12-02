@@ -25,7 +25,7 @@
     line-height: 26px;
     color: #000;
     border-radius: 3px;
-    background: url('/img/play-toolbar/search-purple.svg') 6px 50% no-repeat;
+    background: deployedUrl('/img/play-toolbar/search-purple.svg') 6px 50% no-repeat;
     background-size: 12px;
 
     &::placeholder {
@@ -34,7 +34,7 @@
   }
 
   &__close {
-    background: url('/img/play-toolbar/cancel-grey.svg') 50% no-repeat;
+    background: deployedUrl('/img/play-toolbar/cancel-grey.svg') 50% no-repeat;
     position: absolute;
     right: 0;
     top: 0;
@@ -44,7 +44,7 @@
     padding: 0;
 
     &:hover {
-      background-image: url('/img/play-toolbar/cancel.svg');
+      background-image: deployedUrl('/img/play-toolbar/cancel.svg');
     }
   }
 
@@ -104,14 +104,14 @@
     &::before {
       width: 12px;
       height: 9px;
-      background: url('../img/search/check.svg') 50% no-repeat;
+      background: deployedUrl('/img/search/check.svg') 50% no-repeat;
       left: 4px;
     }
 
     &::after {
       width: 8px;
       height: 5px;
-      background: url('../img/search/arrow-down.svg') 50% no-repeat;
+      background: deployedUrl('/img/search/arrow-down.svg') 50% no-repeat;
       right: 4px;
       transition: transform .15s;
     }
@@ -156,7 +156,7 @@
     }
 
     &_selected {
-      background: url('../img/search/check.svg') 5px 50% no-repeat;
+      background: deployedUrl('/img/search/check.svg') 5px 50% no-repeat;
     }
   }
 }

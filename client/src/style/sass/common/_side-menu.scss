@@ -54,7 +54,7 @@
     .logo {
       width: 36px;
       height: 36px;
-      background: url('/img/logo-light_compact.svg') 50% no-repeat;
+      background: deployedUrl('/img/logo-light_compact.svg') 50% no-repeat;
 
       &__image {
         display: none;

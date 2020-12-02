@@ -177,7 +177,7 @@ a {
 }
 
 .vdat-logo {
-    background-image: url('/img/vibrantdata-logo.png');
+    background-image: deployedUrl('/img/vibrantdata-logo.png');
     background-size: cover;
     height: 120px;
     margin-right: 20px;

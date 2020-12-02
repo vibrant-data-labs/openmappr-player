@@ -104,103 +104,103 @@
 
     &_info {
       &::before {
-        background-image: url('/img/tabs-menu/fa-info-circle_white.svg');
+        background-image: deployedUrl('/img/tabs-menu/fa-info-circle_white.svg');
       }
     }
 
     &_slides {
       &::before {
-        background-image: url('/img/tabs-menu/fa-play-circle-o_white.svg');
+        background-image: deployedUrl('/img/tabs-menu/fa-play-circle-o_white.svg');
       }
     }
 
     &_filter {
       &::before {
-        background-image: url('/img/tabs-menu/fa-filter_white.svg');
+        background-image: deployedUrl('/img/tabs-menu/fa-filter_white.svg');
       }
     }
 
     &_legend {
       &::before {
-        background-image: url('/img/tabs-menu/legend_white.svg');
+        background-image: deployedUrl('/img/tabs-menu/legend_white.svg');
       }
     }
 
     &_list {
       &::before {
-        background-image: url('/img/tabs-menu/fa-list-ul_white.svg');
+        background-image: deployedUrl('/img/tabs-menu/fa-list-ul_white.svg');
       }
     }
 
     &_knowledge-base {
       &::before {
-        background-image: url('/img/tabs-menu/knowledge-base_white.svg');
+        background-image: deployedUrl('/img/tabs-menu/knowledge-base_white.svg');
       }
     }
 
     &_settings {
       &::before {
-        background-image: url('/img/tabs-menu/settings_white.svg');
+        background-image: deployedUrl('/img/tabs-menu/settings_white.svg');
       }
     }
 
     &_report {
       &::before {
-        background-image: url('/img/tabs-menu/report_white.svg');
+        background-image: deployedUrl('/img/tabs-menu/report_white.svg');
       }
     }
 
     &_bug {
       &::before {
-        background-image: url('/img/tabs-menu/bug_white.svg');
+        background-image: deployedUrl('/img/tabs-menu/bug_white.svg');
       }
     }
 
     &_support {
       &::before {
-        background-image: url('/img/tabs-menu/support_white.svg');
+        background-image: deployedUrl('/img/tabs-menu/support_white.svg');
       }
     }
 
     &_groups {
       &::before {
-        background-image: url('/img/tabs-menu/groups_white.svg');
+        background-image: deployedUrl('/img/tabs-menu/groups_white.svg');
       }
     }
 
     &_style {
       &::before {
-        background-image: url('/img/tabs-menu/style_white.svg');
+        background-image: deployedUrl('/img/tabs-menu/style_white.svg');
       }
     }
 
     &_database {
       &::before {
-        background-image: url('/img/tabs-menu/database_white.svg');
+        background-image: deployedUrl('/img/tabs-menu/database_white.svg');
       }
     }
 
     &_player {
       &::before {
-        background-image: url('/img/tabs-menu/player_white.svg');
+        background-image: deployedUrl('/img/tabs-menu/player_white.svg');
       }
     }
 
     &_snapshots {
       &::before {
-        background-image: url('/img/tabs-menu/snapshots_white.svg');
+        background-image: deployedUrl('/img/tabs-menu/snapshots_white.svg');
       }
     }
 
     &_feedback {
       &::before {
-        background-image: url('/img/tabs-menu/feedback.svg');
+        background-image: deployedUrl('/img/tabs-menu/feedback.svg');
       }
     }
 
     &_export {
       &::before {
-        background-image: url('/img/tabs-menu/export_white.svg');
+        background-image: deployedUrl('/img/tabs-menu/export_white.svg');
       }
     }
 
@@ -211,7 +211,7 @@
       opacity: 1;
 
       &::before {
-        background-image: url('/img/tabs-menu/toggle_white.svg');
+        background-image: deployedUrl('/img/tabs-menu/toggle_white.svg');
       }
     }
   }

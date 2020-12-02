@@ -121,7 +121,7 @@
       content: '';
       border-radius: 2px;
       border: 1px solid #E2E2E2;
-      background: #fff url('../img/search/arrow-down.svg') 50% no-repeat;
+      background: #fff deployedUrl('/img/search/arrow-down.svg') 50% no-repeat;
       background-size: 8px 5px;
       top: 7px;
       right: 6px;
@@ -139,7 +139,7 @@
     }
 
     .button_icon_cancel {
-      background-image: url('/img/play-toolbar/cancel.svg');
+      background-image: deployedUrl('/img/play-toolbar/cancel.svg');
       background-repeat: no-repeat;
       width: 8px;
       height: 8px;
