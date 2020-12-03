@@ -12,7 +12,7 @@ angular.module('common')
                 template: '<div class="histogram" ng-mouseleave="outBar()" ng-mousemove="overBar($event)">' +
                     '<div class="tooltip-positioner" uib-tooltip="{{tooltipText}}" tooltip-append-to-body="true" tooltip-is-open="openTooltip"></div>' +
                     '</div>' +
-                    '<dir-range-filter ng-if="showFilter" ng-class="{disableFilter: disableFilter}" attr="attrInfo"></dir-range-filter>' +
+                    '<dir-range-filter ng-if="showFilter" ng-class="{disableFilter: disableFilter}" attr="attrInfo" log="isLogScale"></dir-range-filter>' +
                     `<div ng-show="hasLogScale" class="log-scale-toggle">
                         <input type="checkbox" ng-change="toggleLogScale()" ng-model="isLogScale"/>
                         <label>log</label>

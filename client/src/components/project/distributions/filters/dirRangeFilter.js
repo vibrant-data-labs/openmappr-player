@@ -12,6 +12,7 @@ angular.module('common')
                 templateUrl: '#{player_prefix_index}/components/project/distributions/filters/rangeFilter.html',
                 scope: {
                     attr: '=',
+                    log: '='
                 },
                 link: postLinkFn
             };
@@ -82,7 +83,7 @@ angular.module('common')
                         var valueRange = getValueRangeFilterRange(scope.filterRange[0], scope.filterRange[1]);
                         if (valueRange.min == attrInfo.stats.min && valueRange.max == attrInfo.stats.max) {
                             selectService.selectNodes({ attr: attrInfo.attr.id, forceDisable: true });
-                        } else if (attrInfo.isLogScale) {
+                        } else if (scope.log) {
                             selectService.selectNodes({ attr: attrInfo.attr.id, min: Math.pow(10, valueRange.min), max: Math.pow(10, valueRange.max), force: true});
                         } else {
                             selectService.selectNodes({ attr: attrInfo.attr.id, min: valueRange.min, max: valueRange.max, force: true});
