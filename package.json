@@ -9,6 +9,7 @@
   "scripts": {
     "build": "node server/build-resources.js",
     "build:data": "node server/build-resources.js --dataOnly",
+    "build:index": "node server/build-resources.js --indexOnly --noData",
     "publish-resources": "node server/publish-resources.js",
     "publish-resources:map": "node server/publish-resources.js --dataOnly",
     "publish-resources:player": "node server/publish-resources.js --staticFilesOnly",

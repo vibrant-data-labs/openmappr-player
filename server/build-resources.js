@@ -16,14 +16,15 @@ const _ = require('lodash'),
   sass = require('sass'),
   s3Config = require('./config/s3Config'),
   { ncp } = require('ncp');
-  const getLastCommit = require('./publish-player');
-  
+const getLastCommit = require('./publish-player');
+
 
 const player_model = require('./player/player_model');
 
 const dataOnly = argv.dataOnly;
 const staticFilesOnly = argv.staticFilesOnly;
 const indexOnly = argv.indexOnly;
+const noData = argv.noData;
 let projId;
 let publishDataPath;
 
@@ -38,7 +39,7 @@ function compileScss(deployedUrl) {
   const playerResult = sass.renderSync({
     file: './client/src/style/sass/player.scss',
     functions: {
-      'deployedUrl($path)' : function(path) {
+      'deployedUrl($path)': function (path) {
         return new sass.types.String('url(' + deployedUrl + path.getValue() + ')');
       }
     }
@@ -48,7 +49,7 @@ function compileScss(deployedUrl) {
   const mapprResult = sass.renderSync({
     file: './client/src/style/sass/sass.scss',
     functions: {
-      'deployedUrl($path)' : function(path) {
+      'deployedUrl($path)': function (path) {
         return new sass.types.String('url("' + deployedUrl + path.getValue() + '")');
       }
     }
@@ -70,7 +71,7 @@ var playerBuildPrefix = '';
 async function buildResources() {
   if (dataOnly || (!dataOnly && !staticFilesOnly)) {
     console.log('Fetching projects...');
-    await mongoose.connect(config.dbUrl, { useNewUrlParser: true, useUnifiedTopology: true}, function(error) {
+    await mongoose.connect(config.dbUrl, { useNewUrlParser: true, useUnifiedTopology: true }, function (error) {
       if (!error) return;
       console.error('MONGO CONNECT ERR', error);
       process.exit(1);
@@ -112,7 +113,7 @@ async function buildResources() {
       jsonData.sourceUrl = playerBuildPrefix;
       fs.writeFileSync('./mapping.json', JSON.stringify(jsonData), { flag: 'w' });
     }
-    
+
     publishDataPath = '/data/';
     compileScss(playerBuildPrefix);
     runGrunt();
@@ -237,109 +238,111 @@ function _shouldSanitizeClusterInfo(nw) {
 
 
 if (indexOnly) {
-(async function() {
-  publishDataPath = '/data/';
-  const lastCommitInfo = await getLastCommit();
-  const lastCommitDate = lastCommitInfo.toString().substring(0, 10);
-  playerBuildPrefix = 'http://' + s3Config.bucketDefaultPrefix + lastCommitDate + '.s3.us-east-1.amazonaws.com'
-  const mappingData = fs.readFileSync('./mapping.json');
-  const jsonData = JSON.parse(mappingData);
-  jsonData.sourceUrl = playerBuildPrefix;
-  fs.writeFileSync('./mapping.json', JSON.stringify(jsonData), { flag: 'w'});
+  (async function () {
+    publishDataPath = '/data/';
+    const lastCommitInfo = await getLastCommit();
+    const lastCommitDate = lastCommitInfo.toString().substring(0, 10);
+    playerBuildPrefix = 'http://' + s3Config.bucketDefaultPrefix + lastCommitDate + '.s3.us-east-1.amazonaws.com'
+    const mappingData = fs.readFileSync('./mapping.json');
+    const jsonData = JSON.parse(mappingData);
+    jsonData.sourceUrl = playerBuildPrefix;
+    fs.writeFileSync('./mapping.json', JSON.stringify(jsonData), { flag: 'w' });
 
-  compileScss(playerBuildPrefix);
-  runGrunt();
+    compileScss(playerBuildPrefix);
+    runGrunt();
 
-  if (!fs.existsSync(dataPath)) {
-    fs.mkdirSync(dataPath, { recursive: true });
-  }
-
-  console.log('Fetching projects...');
-  await mongoose.connect(config.dbUrl, { useNewUrlParser: true, useUnifiedTopology: true}, function(error) {
-    if (!error) return;
-    console.error('MONGO CONNECT ERR', error);
-    process.exit(1);
-  });
-
-  const projects = await projModel.listAllAsync();
-  const res = await inquirer.prompt([
-    {
-      type: 'list',
-      name: 'projId',
-      message: 'Select the project',
-      choices: projects.map(r => ({ name: r.projName, value: r._id.toString() })),
-      filter: function (val) {
-        return val.toLowerCase();
-      },
-    },
-  ]);
-
-  if (!res || !res.projId) {
-    console.error('project was not selected');
-    process.exit(2);
-  }
-
-  projId = res.projId;
-
-  const proj = await projModel.listByIdAsync(projId);
-  const player = await new Promise(resolve => player_model.listByProjectId(projId, function (err, data) { resolve(data); }));
-
-  playerSettings = player;
-  // set default search algorithm
-  player.settings.searchAlg = 'matchSorter';  
-  
-  const projData = JSON.stringify({ ...proj._doc, player }, null, 4);
-  fs.writeFileSync(dataPath + 'settings.json', projData);
-
-  const datasetRef = proj.dataset.ref;
-  const dataset = await DSModel.readDataset(datasetRef, false);
-
-  console.log("Found ds with %s datapoints", dataset.datapoints.length);
-  const data = JSON.stringify(dataset, null, 4);
-  fs.writeFileSync(dataPath + 'nodes.json', data);
-
-  var networks = [];
-  for (let i = 0; i < proj.networks.length; i++) {
-    let nw = await DSModel.readNetwork(proj.networks[i].ref, false, false);
-
-    if (nw.networkInfo.properlyParsed && !_shouldSanitizeClusterInfo(nw)) {
-      console.log("[getAllNetworks] Network pure, returning as it is");
-    }
-    else {
-      if (!nw.networkInfo.properlyParsed) {
-        console.log("[getAllNetworks]network is impure, sanitizing it");
-        nw = dataUtils.sanitizeNetwork(nw);
-      }
-      if (_shouldSanitizeClusterInfo(nw)) {
-        console.log("[getAllNetworks] sanitizing cluster info");
-        nw = dataUtils.sanitizeClusterInfo(nw);
-      }
-      nw = await DSModel.updateNetwork(nw);
+    if (!fs.existsSync(dataPath)) {
+      fs.mkdirSync(dataPath, { recursive: true });
     }
 
-    networks.push(nw);
-  }
+    const publishOutputPath = './publish';
+    if (fs.existsSync(publishOutputPath)) {
+      const del = require('del');
+      await del([`${publishOutputPath}/**/*`]);
+    } else {
+      fs.mkdirSync(publishOutputPath);
+    }
+    if (!noData) {
+      console.log('Fetching projects...');
+      await mongoose.connect(config.dbUrl, { useNewUrlParser: true, useUnifiedTopology: true }, function (error) {
+        if (!error) return;
+        console.error('MONGO CONNECT ERR', error);
+        process.exit(1);
+      });
 
-  const networksData = JSON.stringify(networks, null, 4);
-  fs.writeFileSync(dataPath + 'links.json', networksData);
+      const projects = await projModel.listAllAsync();
+      const res = await inquirer.prompt([
+        {
+          type: 'list',
+          name: 'projId',
+          message: 'Select the project',
+          choices: projects.map(r => ({ name: r.projName, value: r._id.toString() })),
+          filter: function (val) {
+            return val.toLowerCase();
+          },
+        },
+      ]);
 
-  const html = await buildIndex()
-  console.log("HTML fetched.");
-  fs.writeFileSync(outputPath + 'index.html', html);
+      if (!res || !res.projId) {
+        console.error('project was not selected');
+        process.exit(2);
+      }
 
-  console.log("HTML is rendered.");
-  console.log('Preparing items to publish...');
-  const publishOutputPath = './publish';
-  if (fs.existsSync(publishOutputPath)) {
-    const del = require('del');
-    await del([`${publishOutputPath}/**/*`]);
-  } else {
-    fs.mkdirSync(publishOutputPath);
-  }
-  
-  await new Promise((resolve) => ncp(outputPath + '/data', publishOutputPath + '/data', () => resolve()));
-  await new Promise((resolve) => ncp(outputPath + '/index.html', publishOutputPath + '/index.html', () => resolve()));
-})().then(() => process.exit(0));
+      projId = res.projId;
+
+      const proj = await projModel.listByIdAsync(projId);
+      const player = await new Promise(resolve => player_model.listByProjectId(projId, function (err, data) { resolve(data); }));
+
+      playerSettings = player;
+      // set default search algorithm
+      player.settings.searchAlg = 'matchSorter';
+
+      const projData = JSON.stringify({ ...proj._doc, player }, null, 4);
+      fs.writeFileSync(dataPath + 'settings.json', projData);
+
+      const datasetRef = proj.dataset.ref;
+      const dataset = await DSModel.readDataset(datasetRef, false);
+
+      console.log("Found ds with %s datapoints", dataset.datapoints.length);
+      const data = JSON.stringify(dataset, null, 4);
+      fs.writeFileSync(dataPath + 'nodes.json', data);
+
+      var networks = [];
+      for (let i = 0; i < proj.networks.length; i++) {
+        let nw = await DSModel.readNetwork(proj.networks[i].ref, false, false);
+
+        if (nw.networkInfo.properlyParsed && !_shouldSanitizeClusterInfo(nw)) {
+          console.log("[getAllNetworks] Network pure, returning as it is");
+        }
+        else {
+          if (!nw.networkInfo.properlyParsed) {
+            console.log("[getAllNetworks]network is impure, sanitizing it");
+            nw = dataUtils.sanitizeNetwork(nw);
+          }
+          if (_shouldSanitizeClusterInfo(nw)) {
+            console.log("[getAllNetworks] sanitizing cluster info");
+            nw = dataUtils.sanitizeClusterInfo(nw);
+          }
+          nw = await DSModel.updateNetwork(nw);
+        }
+
+        networks.push(nw);
+      }
+
+      const networksData = JSON.stringify(networks, null, 4);
+      fs.writeFileSync(dataPath + 'links.json', networksData);
+
+      console.log("HTML is rendered.");
+      console.log('Preparing items to publish...');
+
+      await new Promise((resolve) => ncp(outputPath + '/data', publishOutputPath + '/data', () => resolve()));
+    }
+
+    const html = await buildIndex()
+    console.log("HTML fetched.");
+    fs.writeFileSync(outputPath + 'index.html', html);
+    await new Promise((resolve) => ncp(outputPath + '/index.html', publishOutputPath + '/index.html', () => resolve()));
+  })().then(() => process.exit(0));
 
 } else {
   buildResources().catch((err) => {
