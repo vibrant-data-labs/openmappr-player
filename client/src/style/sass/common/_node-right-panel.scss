@@ -290,6 +290,11 @@
       &-wide {
         max-width: 100%;
       }
+
+      &.disappearing {
+        opacity: 0;
+        transition: all 1s;
+      }
     }
     .tag-list__item {
       text-overflow: ellipsis;

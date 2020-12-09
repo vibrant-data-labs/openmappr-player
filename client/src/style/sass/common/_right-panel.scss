@@ -96,6 +96,13 @@
       &:hover {
         border-color: darken(#E2E2E2, 16);
       }
+      &.disappearing {
+        opacity: 0;
+        transition: opacity 1s;
+      }
+      &.loading {
+        opacity: 0;
+      }
     }
 
     .cat-item {
