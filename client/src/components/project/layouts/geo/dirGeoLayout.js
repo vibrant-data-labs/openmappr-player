@@ -129,7 +129,7 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
         var deregisters = [];
         var disableViewReset = false;
 
-        var mapID = $scope.mapprSettings.mapboxMapID || 'mapbox/light-v10';
+        var mapID = scope.mapprSettings.mapboxMapID || 'mapbox/light-v10';
         if (mapID.indexOf('vibrantdata') > -1) {
             mapID = 'mapbox/light-v10';
         }
