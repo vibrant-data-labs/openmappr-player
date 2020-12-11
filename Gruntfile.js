@@ -131,6 +131,165 @@ module.exports = function(grunt) {
 		configObj[plugin][task] = config;
 	}
 
+	addTask('uglify', 'dev_player', {
+		options: (function() {
+			var config = {
+				mangle: false,
+				sourceMap: false,
+				compress: {
+					drop_console: true,
+					drop_debugger: true
+				}
+			};
+
+			config.sourceMapName = dev_build_dir + '/sourceMaps/player.min.map';
+			return config;
+		}()),
+		files: (function() {
+			var obj = {};
+			obj[dev_build_dir + '/js/player.min.js'] = [
+				'client/src/products/player/app/app.js',
+
+				"client/src/components/core/directives/dirInfiniteScroll.js",
+				"client/src/components/core/directives/dirProgressiveRendering.js",
+				"client/src/components/core/directives/dirSelectAll.js",
+				"client/src/components/core/directives/dirTextTruncate.js",
+				"client/src/components/core/filters/filters.js",
+				"client/src/components/core/services/AttrInfoService.js",
+				"client/src/components/core/services/AttrSanitizeService.js",
+				"client/src/components/core/services/BreadCrumbService.js",
+				"client/src/components/core/services/PartitionService.js",
+				"client/src/components/core/services/SelectionSetService.js",
+				"client/src/components/core/services/SelectorService.js",
+				"client/src/components/core/services/aggregatorService.js",
+				"client/src/components/core/services/attrUIService.js",
+				"client/src/components/core/services/browserDetectService.js",
+				"client/src/components/core/services/dataService.js",
+				"client/src/components/core/services/datagraph.js",
+				"client/src/components/core/services/embedlyService.js",
+				"client/src/components/core/services/eventBridgeFactory.js",
+				"client/src/components/core/services/extAPIService.js",
+				"client/src/components/core/services/graphHoverService.js",
+				"client/src/components/core/services/graphSelectionService.js",
+				"client/src/components/core/services/hoverService.js",
+				"client/src/components/core/services/inputMgmtService.js",
+				"client/src/components/core/services/labelRenderer.js",
+				"client/src/components/core/services/labelService.js",
+				"client/src/components/core/services/layoutService.js",
+				"client/src/components/core/services/linkService.js",
+				"client/src/components/core/services/localStorageFactory.js",
+				"client/src/components/core/services/networkService.js",
+				"client/src/components/core/services/nodeRenderer.js",
+				"client/src/components/core/services/nodeSelectionService.js",
+				"client/src/components/core/services/orgFactory.js",
+				"client/src/components/core/services/playerFactory.js",
+				"client/src/components/core/services/projectFactory.js",
+				"client/src/components/core/services/rendergraphfactory.js",
+				"client/src/components/core/services/repositionService.js",
+				"client/src/components/core/services/searchService.js",
+				"client/src/components/core/services/selectService.js",
+				"client/src/components/core/services/snapshotService.js",
+				"client/src/components/core/services/subsetService.js",
+				"client/src/components/core/services/tagService.js",
+				"client/src/components/core/services/uiHelper.js",
+				"client/src/components/core/services/uiService.js",
+				"client/src/components/core/services/urlShortenService.js",
+				"client/src/components/core/services/zoomService.js",
+				"client/src/components/core/stats/distrCommon.js",
+				"client/src/components/core/stats/rankDistr.js",
+				"client/src/components/core/stats/sigtest.js",
+				"client/src/components/core/stats/statUtils.js",
+				"client/src/components/core/stats/tagDistr.js",
+				"client/src/components/core/stats/valDistr.js",
+				"client/src/components/core/utils/eventSystem.js",
+				"client/src/components/project/ctrlLayout.js",
+				"client/src/components/project/ctrlRenderGraph.js",
+				"client/src/components/project/layouts/geo/dirGeoLayout.js",
+				"client/src/components/project/layouts/grid/dirGridCard.js",
+				"client/src/components/project/layouts/grid/dirGridLayout.js",
+				"client/src/components/project/layouts/list/dirColResizer.js",
+				"client/src/components/project/layouts/list/dirListLayout.js",
+				"client/src/components/project/layouts/list/dirListRow.js",
+				"client/src/components/project/layouts/scatterplot/dirAxes_new.js",
+				"client/src/components/project/layouts/sigma/dirSigma.js",
+				"client/src/components/project/distributions/filters/dirCheckboxFilter.js",
+				"client/src/components/project/distributions/filters/dirRangeFilter.js",
+				"client/src/components/project/distributions/filters/dirTagListSort.js",
+				"client/src/components/project/distributions/filters/neighborsFilter.js",
+				"client/src/components/project/distributions/renderers/dirAttrDistribution.js",
+				"client/src/components/project/distributions/renderers/dirAttrRenderer.js",
+				"client/src/components/project/distributions/renderers/dirAttrTooltip.js",
+				"client/src/components/project/distributions/renderers/dirCategoryList.js",
+				"client/src/components/project/distributions/renderers/dirDateTime.js",
+				"client/src/components/project/distributions/renderers/dirEmail.js",
+				"client/src/components/project/distributions/renderers/dirHistogram.js",
+				"client/src/components/project/distributions/renderers/dirInstagramFeed.js",
+				"client/src/components/project/distributions/renderers/dirLinkThumb.js",
+				"client/src/components/project/distributions/renderers/dirLongText.js",
+				"client/src/components/project/distributions/renderers/dirMapEmbed.js",
+				"client/src/components/project/distributions/renderers/dirMediaEmbed.js",
+				"client/src/components/project/distributions/renderers/dirMediaList.js",
+				"client/src/components/project/distributions/renderers/dirNeighbors.js",
+				"client/src/components/project/distributions/renderers/dirNeighborsDetail.js",
+				"client/src/components/project/distributions/renderers/dirPicture.js",
+				"client/src/components/project/distributions/renderers/dirPieChart.js",
+				"client/src/components/project/distributions/renderers/dirRankBar.js",
+				"client/src/components/project/distributions/renderers/dirRowTagCloud.js",
+				"client/src/components/project/distributions/renderers/dirTagCloud.js",
+				"client/src/components/project/distributions/renderers/dirTagList.js",
+				"client/src/components/project/distributions/renderers/dirTagListSimple.js",
+				"client/src/components/project/distributions/renderers/dirTextList.js",
+				"client/src/components/project/distributions/renderers/dirTwitterFeed.js",
+				"client/src/components/project/distributions/renderers/dirValueBar.js",
+				"client/src/components/project/distributions/renderers/dirWideTagCloud.js",
+				"client/src/components/project/overlays/dirFocusNode.js",
+				"client/src/components/project/overlays/dirScrollOverlayAnchors.js",
+				"client/src/components/project/overlays/ext_user_overlay/dirExtUserOverlay.js",
+				"client/src/components/project/overlays/node_overlay/MetaAttrFactory.js",
+				"client/src/components/project/overlays/node_overlay/ctrlNodeOverlay.js",
+				"client/src/components/project/overlays/node_overlay/dirElemReady.js",
+				"client/src/components/project/overlays/node_overlay/utils.js",
+				"client/src/components/project/overlays/node_pop/ctrlNodePop.js",
+				"client/src/components/project/sort_menu/dirSortMenu.js",
+				"client/src/components/project/panels/search/ctrlSearchPanel.js",
+				"client/src/components/project/panels/right_panel/ctrlRightPanel.js",
+				"client/src/components/project/panels/right_panel/def_data_groups/ctrlDataPresentation.js",
+				"client/src/components/project/panels/right_panel/distribution_panel/FilterPanelService.js",
+				"client/src/components/project/panels/right_panel/distribution_panel/Steps.js",
+				"client/src/components/project/panels/right_panel/distribution_panel/ctrlFilterPanel.js",
+				"client/src/components/project/panels/right_panel/distribution_panel/ctrlFilterPanelParent.js",
+				"client/src/components/project/panels/right_panel/distribution_panel/dirKillTooltipOnScroll.js",
+				"client/src/components/project/panels/right_panel/distribution_panel/dirVirtualScroll.js",
+				"client/src/components/project/panels/right_panel/info_panel/ctrlInfoPanel.js",
+				"client/src/components/project/panels/right_panel/info_panel/dirClusterBrowser.js",
+				"client/src/components/project/panels/right_panel/info_panel/dirNeighborClusters.js",
+				"client/src/components/project/panels/right_panel/info_panel/dirNeighborNodes.js",
+				"client/src/components/project/panels/right_panel/info_panel/dirNetworkInfo.js",
+				"client/src/components/project/panels/right_panel/info_panel/dirNodeBrowser.js",
+				"client/src/components/project/panels/right_panel/info_panel/dirNodeInfoAttrs.js",
+				"client/src/components/project/panels/right_panel/info_panel/dirNodesList.js",
+				"client/src/components/project/panels/right_panel/info_panel/dirSelectionInfo.js",
+				"client/src/components/project/panels/right_panel/info_panel/infoPanelService.js",
+				"client/src/products/player/ctrlApp.js",
+				"client/src/products/player/ctrlBottomTimeline.js",
+				"client/src/products/player/ctrlContextPanel.js",
+				"client/src/products/player/ctrlLayoutDropdown.js",
+				"client/src/products/player/ctrlRightPanelTabsPlayer.js",
+				"client/src/products/player/ctrlSlidePanel.js",
+				"client/src/products/player/ctrlSnapshotSidePanel.js",
+				"client/src/products/player/ctrlTopMenu.js",
+				"client/src/products/player/dirActivateSnapOnScroll.js",
+				"client/src/products/player/dirImageOnLoad.js",
+				"client/src/products/player/dirSocialShare.js",
+				"client/src/products/player/auth/ctrlPlayerAuth.js",
+				"client/src/products/player/auth/ctrlSurveyEmailAuth.js",
+				"client/src/products/player/analytics/analytics.config.js",
+				"client/src/products/player/analytics/analyticsService.js",
+			];
+			return obj;
+		}())
+	});
+
 	/**
 	* PRODUCTION TASKS
 	* Build related
@@ -243,93 +402,6 @@ module.exports = function(grunt) {
 			dest: prod_build_dir + '/img',
 			ext: '.gif'
 		}]
-	});
-
-	addTask('uglify', 'prod_mappr', {
-		options: (function() {
-			var config = {
-				mangle: false,
-				sourceMap: true,
-				compress: {
-					drop_console: true,
-					drop_debugger: true
-				}
-			};
-
-			config.sourceMapName = prod_build_dir + '/sourceMaps/mappr.min.map';
-			return config;
-		}()),
-		files: (function() {
-			var obj = {};
-			obj[prod_build_dir + '/js/tmp/mappr.min.js'] = [
-				'client/src/libs/sigmamods/**/*.js',
-				'client/src/components/**/*.js'
-			];
-			return obj;
-		}())
-	});
-
-	addTask('uglify', 'prod_player', {
-		options: (function() {
-			var config = {
-				mangle: false,
-				sourceMap: true,
-				compress: {
-					drop_console: true,
-					drop_debugger: true
-				}
-			};
-
-			config.sourceMapName = prod_build_dir + '/sourceMaps/player.min.map';
-			return config;
-		}()),
-		files: (function() {
-			var obj = {};
-			obj[prod_build_dir + '/js/tmp/player.min.js'] = [
-				'client/src/libs/sigmamods/**/*.js',
-				'client/src/products/player/app/*.js',
-				'client/src/products/player/auth/*.js',
-				'client/src/products/player/*.js',
-				'client/src/products/player/analytics/*.js',
-
-				'client/src/components/core/**/*.js',
-				'client/src/components/project/ctrlLayout.js',
-				'client/src/components/project/ctrlRenderGraph.js',
-				'client/src/components/project/distributions/*.js',
-				'client/src/components/project/layouts/**/*.js',
-				'client/src/components/project/distributions/**/*.js',
-				'client/src/components/project/overlays/**/*.js',
-				'client/src/components/project/panels/search/*.js',
-				'client/src/components/project/sort_menu/*.js',
-				'client/src/components/project/panels/right_panel/*.js',
-				'client/src/components/project/panels/right_panel/def_data_groups/*.js',
-				'client/src/components/project/panels/right_panel/distribution_panel/*.js',
-				'client/src/components/project/panels/right_panel/info_panel/*.js',
-				'!client/src/components/project/panels/right_panel/info_panel/ctrlNetworkUtils.js'
-			];
-			return obj;
-		}())
-	});
-
-	addTask('uglify', 'prod_sources', {
-		options: (function() {
-			var config = {
-				mangle: false,
-				sourceMap: true,
-				compress: {
-					drop_console: true,
-					drop_debugger: true
-				}
-			};
-			return config;
-		}()),
-		files: (function() {
-			var obj = {};
-			obj[prod_build_dir + '/js/sources.min.js'] = [
-				'client/src/products/sources/**/*.js'
-			];
-			return obj;
-		}())
 	});
 
 	addTask('jadeUsemin', 'prod_index', {
@@ -651,41 +723,6 @@ module.exports = function(grunt) {
 			'copy:prod_views_move_gzip'
 		]
 	});
-
-	grunt.registerTask('release', [
-		'clean:prod',
-		'concurrent:prod1',
-		'copy:prod_data',
-		'copy:prod_icons',
-		'copy:prod_css_icons',
-		'copy:prod_fonts',
-		'copy:prod_css_fonts',
-		'copy:prod_fontawesome',
-		'imagemin:prod',
-		'svgmin:prod',
-		'concat:prod_css_mappr',
-		'concat:prod_css_player',
-		'cssmin:prod',
-		'copy:prod_js_mappr',
-		'copy:prod_js_player',
-		'jadeUsemin:prod_index',
-		// 'jadeUsemin:prod_survey',
-		'preprocess:prod_jade',
-		'concurrent:prod2',
-		'clean:prod_tmp',
-		'cacheBust:prod',
-		'concurrent:prod3',
-		'clean:prod_pre_gzip',
-		'concurrent:prod4',
-		'clean:gzip_tmp',
-		'aws_s3:prod_upload',
-        // 'http_upload:upload_app_sourcemap_to_atatus',
-        // 'http_upload:upload_player_sourcemap_to_atatus'
-	]);
-
-
-
-
 
 	/**
 	* DEV TASKS

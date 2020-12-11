@@ -15,7 +15,9 @@ const _ = require('lodash'),
   inquirer = require('inquirer'),
   sass = require('sass'),
   s3Config = require('./config/s3Config'),
-  { ncp } = require('ncp');
+  { ncp } = require('ncp'),
+  minify = require('minify'),
+  glob = require('glob');
 const getLastCommit = require('./publish-player');
 
 
@@ -57,13 +59,194 @@ function compileScss(deployedUrl) {
   fs.writeFileSync('./client/src/style/css/sass.css', mapprResult.css);
 }
 
-function runGrunt() {
-  console.log('Running grunt...');
-  execSync('grunt --force');
-}
+const getDirectories = async function (src, ignore) {
+  return new Promise((resolve, reject) => glob(src + '/**/*', { ignore: ignore }, function (err, res) { resolve(res); }));
+};
 
 const outputPath = './client/build/dev/';
 const dataPath = outputPath + 'data/';
+
+async function runGrunt() {
+  console.log('Running grunt...');
+  execSync('grunt --force');
+
+  console.log('Minifying files...');
+  const files = ["/js/products/player/app/app.js",
+    "/js/lib/sigmamods/cameramods.js",
+    "/js/lib/sigmamods/canvas.edges.def.js",
+    "/js/lib/sigmamods/canvas.hovers.def.js",
+    "/js/lib/sigmamods/canvas.labels.def.js",
+    "/js/lib/sigmamods/canvas.nodes.aggr.js",
+    "/js/lib/sigmamods/canvas.nodes.def.js",
+    "/js/lib/sigmamods/captors.mouse.js",
+    "/js/lib/sigmamods/graphmods.js",
+    "/js/lib/sigmamods/mappr.utils.js",
+    "/js/lib/sigmamods/middlewares.resize.js",
+    "/js/lib/sigmamods/misc.bindLeafletEvents.js",
+    "/js/lib/sigmamods/misc.drawHovers.js",
+    "/js/lib/sigmamods/renderers.canvas.js",
+    "/js/lib/sigmamods/renderers.common.js",
+    "/js/lib/sigmamods/renderers.webgl.js",
+    "/js/lib/sigmamods/sigma.plugins.animate.js",
+    "/js/lib/sigmamods/sigma.renderers.snapshot.js",
+    "/js/lib/sigmamods/sigmamods.js",
+    "/js/lib/sigmamods/webgl.edges.curved.js",
+    "/js/lib/sigmamods/webgl.edges.def.js",
+    "/js/lib/sigmamods/webgl.nodes.def.js",
+    "/js/components/core/directives/dirInfiniteScroll.js",
+    "/js/components/core/directives/dirProgressiveRendering.js",
+    "/js/components/core/directives/dirSelectAll.js",
+    "/js/components/core/directives/dirTextTruncate.js",
+    "/js/components/core/filters/filters.js",
+    "/js/components/core/services/AttrInfoService.js",
+    "/js/components/core/services/AttrSanitizeService.js",
+    "/js/components/core/services/BreadCrumbService.js",
+    "/js/components/core/services/PartitionService.js",
+    "/js/components/core/services/SelectionSetService.js",
+    "/js/components/core/services/SelectorService.js",
+    "/js/components/core/services/aggregatorService.js",
+    "/js/components/core/services/attrUIService.js",
+    "/js/components/core/services/browserDetectService.js",
+    "/js/components/core/services/dataService.js",
+    "/js/components/core/services/datagraph.js",
+    "/js/components/core/services/embedlyService.js",
+    "/js/components/core/services/eventBridgeFactory.js",
+    "/js/components/core/services/extAPIService.js",
+    "/js/components/core/services/graphHoverService.js",
+    "/js/components/core/services/graphSelectionService.js",
+    "/js/components/core/services/hoverService.js",
+    "/js/components/core/services/inputMgmtService.js",
+    "/js/components/core/services/labelRenderer.js",
+    "/js/components/core/services/labelService.js",
+    "/js/components/core/services/layoutService.js",
+    "/js/components/core/services/linkService.js",
+    "/js/components/core/services/localStorageFactory.js",
+    "/js/components/core/services/networkService.js",
+    "/js/components/core/services/nodeRenderer.js",
+    "/js/components/core/services/nodeSelectionService.js",
+    "/js/components/core/services/orgFactory.js",
+    "/js/components/core/services/playerFactory.js",
+    "/js/components/core/services/projectFactory.js",
+    "/js/components/core/services/rendergraphfactory.js",
+    "/js/components/core/services/repositionService.js",
+    "/js/components/core/services/searchService.js",
+    "/js/components/core/services/selectService.js",
+    "/js/components/core/services/snapshotService.js",
+    "/js/components/core/services/subsetService.js",
+    "/js/components/core/services/tagService.js",
+    "/js/components/core/services/uiHelper.js",
+    "/js/components/core/services/uiService.js",
+    "/js/components/core/services/urlShortenService.js",
+    "/js/components/core/services/zoomService.js",
+    "/js/components/core/stats/distrCommon.js",
+    "/js/components/core/stats/rankDistr.js",
+    "/js/components/core/stats/sigtest.js",
+    "/js/components/core/stats/statUtils.js",
+    "/js/components/core/stats/tagDistr.js",
+    "/js/components/core/stats/valDistr.js",
+    "/js/components/core/utils/eventSystem.js",
+    "/js/components/project/ctrlLayout.js",
+    "/js/components/project/ctrlRenderGraph.js",
+    "/js/components/project/layouts/geo/dirGeoLayout.js",
+    "/js/components/project/layouts/grid/dirGridCard.js",
+    "/js/components/project/layouts/grid/dirGridLayout.js",
+    "/js/components/project/layouts/list/dirColResizer.js",
+    "/js/components/project/layouts/list/dirListLayout.js",
+    "/js/components/project/layouts/list/dirListRow.js",
+    "/js/components/project/layouts/scatterplot/dirAxes_new.js",
+    "/js/components/project/layouts/sigma/dirSigma.js",
+    "/js/components/project/distributions/filters/dirCheckboxFilter.js",
+    "/js/components/project/distributions/filters/dirRangeFilter.js",
+    "/js/components/project/distributions/filters/dirTagListSort.js",
+    "/js/components/project/distributions/filters/neighborsFilter.js",
+    "/js/components/project/distributions/renderers/dirAttrDistribution.js",
+    "/js/components/project/distributions/renderers/dirAttrRenderer.js",
+    "/js/components/project/distributions/renderers/dirAttrTooltip.js",
+    "/js/components/project/distributions/renderers/dirCategoryList.js",
+    "/js/components/project/distributions/renderers/dirDateTime.js",
+    "/js/components/project/distributions/renderers/dirEmail.js",
+    "/js/components/project/distributions/renderers/dirHistogram.js",
+    "/js/components/project/distributions/renderers/dirInstagramFeed.js",
+    "/js/components/project/distributions/renderers/dirLinkThumb.js",
+    "/js/components/project/distributions/renderers/dirLongText.js",
+    "/js/components/project/distributions/renderers/dirMapEmbed.js",
+    "/js/components/project/distributions/renderers/dirMediaEmbed.js",
+    "/js/components/project/distributions/renderers/dirMediaList.js",
+    "/js/components/project/distributions/renderers/dirNeighbors.js",
+    "/js/components/project/distributions/renderers/dirNeighborsDetail.js",
+    "/js/components/project/distributions/renderers/dirPicture.js",
+    "/js/components/project/distributions/renderers/dirPieChart.js",
+    "/js/components/project/distributions/renderers/dirRankBar.js",
+    "/js/components/project/distributions/renderers/dirRowTagCloud.js",
+    "/js/components/project/distributions/renderers/dirTagCloud.js",
+    "/js/components/project/distributions/renderers/dirTagList.js",
+    "/js/components/project/distributions/renderers/dirTagListSimple.js",
+    "/js/components/project/distributions/renderers/dirTextList.js",
+    "/js/components/project/distributions/renderers/dirTwitterFeed.js",
+    "/js/components/project/distributions/renderers/dirValueBar.js",
+    "/js/components/project/distributions/renderers/dirWideTagCloud.js",
+    "/js/components/project/overlays/dirFocusNode.js",
+    "/js/components/project/overlays/dirScrollOverlayAnchors.js",
+    "/js/components/project/overlays/ext_user_overlay/dirExtUserOverlay.js",
+    "/js/components/project/overlays/node_overlay/MetaAttrFactory.js",
+    "/js/components/project/overlays/node_overlay/ctrlNodeOverlay.js",
+    "/js/components/project/overlays/node_overlay/dirElemReady.js",
+    "/js/components/project/overlays/node_overlay/utils.js",
+    "/js/components/project/overlays/node_pop/ctrlNodePop.js",
+    "/js/components/project/sort_menu/dirSortMenu.js",
+    "/js/components/project/panels/search/ctrlSearchPanel.js",
+    "/js/components/project/panels/right_panel/ctrlRightPanel.js",
+    "/js/components/project/panels/right_panel/def_data_groups/ctrlDataPresentation.js",
+    "/js/components/project/panels/right_panel/distribution_panel/FilterPanelService.js",
+    "/js/components/project/panels/right_panel/distribution_panel/Steps.js",
+    "/js/components/project/panels/right_panel/distribution_panel/ctrlFilterPanel.js",
+    "/js/components/project/panels/right_panel/distribution_panel/ctrlFilterPanelParent.js",
+    "/js/components/project/panels/right_panel/distribution_panel/dirKillTooltipOnScroll.js",
+    "/js/components/project/panels/right_panel/distribution_panel/dirVirtualScroll.js",
+    "/js/components/project/panels/right_panel/info_panel/ctrlInfoPanel.js",
+    "/js/components/project/panels/right_panel/info_panel/dirClusterBrowser.js",
+    "/js/components/project/panels/right_panel/info_panel/dirNeighborClusters.js",
+    "/js/components/project/panels/right_panel/info_panel/dirNeighborNodes.js",
+    "/js/components/project/panels/right_panel/info_panel/dirNetworkInfo.js",
+    "/js/components/project/panels/right_panel/info_panel/dirNodeBrowser.js",
+    "/js/components/project/panels/right_panel/info_panel/dirNodeInfoAttrs.js",
+    "/js/components/project/panels/right_panel/info_panel/dirNodesList.js",
+    "/js/components/project/panels/right_panel/info_panel/dirSelectionInfo.js",
+    "/js/components/project/panels/right_panel/info_panel/infoPanelService.js",
+    "/js/products/player/ctrlApp.js",
+    "/js/products/player/ctrlBottomTimeline.js",
+    "/js/products/player/ctrlContextPanel.js",
+    "/js/products/player/ctrlLayoutDropdown.js",
+    "/js/products/player/ctrlRightPanelTabsPlayer.js",
+    "/js/products/player/ctrlSlidePanel.js",
+    "/js/products/player/ctrlSnapshotSidePanel.js",
+    "/js/products/player/ctrlTopMenu.js",
+    "/js/products/player/dirActivateSnapOnScroll.js",
+    "/js/products/player/dirImageOnLoad.js",
+    "/js/products/player/dirSocialShare.js",
+    "/js/products/player/auth/ctrlPlayerAuth.js",
+    "/js/products/player/auth/ctrlSurveyEmailAuth.js",
+    "/js/products/player/analytics/analytics.config.js",
+    "/js/products/player/analytics/analyticsService.js"];
+
+  const outputMinifiedFile = outputPath + '/js/player.min.js';
+  for (let file of files) {
+    const filePath = outputPath + file;
+    try {
+      const data = await minify(filePath, {
+        js: {
+          compress: true,
+          mangle: false,
+          ecma: 2015,
+        }
+      });
+
+      fs.appendFileSync(outputMinifiedFile, data);
+    }
+    catch (err) {
+    }
+  }
+}
 
 var playerSettings = null;
 var playerBuildPrefix = '';
@@ -116,7 +299,7 @@ async function buildResources() {
 
     publishDataPath = '/data/';
     compileScss(playerBuildPrefix);
-    runGrunt();
+    await runGrunt();
   }
 
   if (!staticFilesOnly || (!dataOnly && !staticFilesOnly)) {
@@ -249,7 +432,7 @@ if (indexOnly) {
     fs.writeFileSync('./mapping.json', JSON.stringify(jsonData), { flag: 'w' });
 
     compileScss(playerBuildPrefix);
-    runGrunt();
+    await runGrunt();
 
     if (!fs.existsSync(dataPath)) {
       fs.mkdirSync(dataPath, { recursive: true });
