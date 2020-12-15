@@ -220,6 +220,11 @@ angular.module('common')
 
             $scope.darken = window.mappr.utils.darkenColor;
 
+            $scope.parseLinks = function(text) {
+                text = text.replace(/(http|www)[^\s]+/g, function(match) { return '<a href="' + match + '" target="_blank">' + match + '</a>' });
+                return text;
+            }
+
             $scope.$watch(function() {
                 return $scope.showOverlay;
             }, function() {
