@@ -322,14 +322,6 @@ angular.module('common')
                         linkIds: currSelection.linkIds
                     };
                 }
-                projFactory.downloadNetworksData(currProject.org.ref, currProject._id, postObj)
-                    .then(function (result) {
-                        _export(result, currProject.projName);
-                    })
-                    .catch(function (err) {
-                        console.error(err);
-                        uiService.logError('Some error occured while downloading, try again later!');
-                    });
             }
 
             function exportSelectionFromPlayer(type) {

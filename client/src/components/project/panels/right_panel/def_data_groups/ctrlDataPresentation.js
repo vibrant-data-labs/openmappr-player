@@ -595,23 +595,7 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
         refreshDataGroups();
     }
 
-    function updateSnaps(snaps) {
-        var updatedSnaps = _.map(snaps, function(snapshot) {
-            return snapshotService.updateSnapshot(snapshot);
-        });
-
-        return $q.all(updatedSnaps)
-        .then(function() {
-            // _.each(snaps, function(snap) {
-            //  uiService.logSuccess('Snapshot ' + snap.snapName + ' updated');
-            // });
-        })
-        .catch(function(err) {
-            console.error("Error in updating snapshots:", err);
-            throw err;
-        });
-
-    }
+    function updateSnaps(snaps) {    }
 
     function sortByAlpha() {
         if($scope.mapprSettings.legendSortOption == 'alphabetic') {

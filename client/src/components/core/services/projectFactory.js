@@ -25,7 +25,6 @@ function($http, $q) {
         getOrgIdForProjId:      getOrgIdForProjId,
 
         //edit project
-        createProject:          addNewProject,
         updateProject:          updateProject,
         removeProject:          removeProject,
         cloneProject:           cloneProject,
@@ -188,7 +187,6 @@ function($http, $q) {
         projectSettings = _.isObject(project.settings) ? project.settings : _defProjSettings;
 
         currProjectDefer.resolve(currProject);
-        //console.log('[projFactory.changeProject] currProject: ' + JSON.stringify(currProject.projName));
     }
 
     //ADMIN ACCESS ONLY
@@ -261,27 +259,8 @@ function($http, $q) {
         return upload('/api/orgs/' + orgId + '/projects/' + projId + '/nwdownload', postObj, progressCallback || _.noop);
     }
 
-    //adds project to the organization
-    //logged-in-user.must-have(ORG.writeAccessProj)
-    function addNewProject(orgId, newProj) {
-        var postData = {
-            projName: newProj.projName,
-            descr: newProj.descr,
-            picture: newProj.picture,
-            tags: newProj.tags
-        };
-        console.log('[projFactory.addNew]  ..');
-        return $http.post('/api/orgs/' + orgId + '/projects', postData).then(function(response) {
-            console.log('[projFactory.addNew]  projName:[' + response.data.projName + '] added');
-            //expect new project document
-            changeProject(response.data);
-            return response.data;
-        });
-    }
-
     //logged-in-user.must-have(PROJ.writeAccess)
     function updateProject(orgId, projId, updateParams) {
-        //projName
         //descr
         //picture
         //tags
