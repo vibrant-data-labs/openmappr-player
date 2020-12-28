@@ -30,7 +30,7 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
     //var events = ['move'];//['zoomstart', 'drag', 'viewreset', 'resize'];
     //var events = ['zoomstart', 'drag','dragend', 'viewreset', 'resize'];
     var mouseEvents = ['click', 'mouseup','mousemove', 'mouseout', 'dblclick', 'viewreset', 'zoomstart', 'move', 'moveend'];
-    var leftPanelWidth = 412;
+    var leftPanelWidth = 432;
 
 
     /*************************************

@@ -11,7 +11,7 @@
   sigma.utils.pkg('sigma.renderers.common');
   sigma.utils.pkg('sigma.labels');
 
-  var leftPanelWidth = 412;
+  var leftPanelWidth = 432;
 
   //
   // Label Functions
@@ -205,6 +205,7 @@
     var gl, dom = webgl ? sigma.renderers.getGLCanvas() : document.createElement(tag);
 
     dom.style.position = 'absolute';
+    dom.style.overflow = 'hidden';
     dom.setAttribute('class', 'sigma-' + id);
 
     this.domElements[id] = dom;

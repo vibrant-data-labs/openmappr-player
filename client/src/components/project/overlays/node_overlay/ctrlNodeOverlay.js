@@ -404,7 +404,7 @@ angular.module('common')
                 console.log('finishNeighborNode', pos, window);
 
                 $scope.neighborNodeStartData = {
-                    x: pos.left - 412,
+                    x: pos.left - 432,
                     y: top,
                     size: 55
                 };
@@ -427,7 +427,7 @@ angular.module('common')
                 var pos = $nDiv.offset();
                 //use width because close to circle size
                 var top = pos.top+$nDiv.width()/2;
-                var left = pos.left+$nDiv.width()/2-412;
+                var left = pos.left+$nDiv.width()/2-432;
                 var top2 = window.innerHeight/2;
                 var left2 = window.innerWidth/2-415;
                 drawLink(left, top, left2, top2, node.colorStr, $scope.focusNode.colorStr, !similarity ? 3 : Math.ceil(similarity*4));
