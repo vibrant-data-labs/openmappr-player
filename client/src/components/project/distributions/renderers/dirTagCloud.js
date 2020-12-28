@@ -145,35 +145,41 @@ angular.module('common')
                 scope.$on(BROADCAST_MESSAGES.hss.subset.changed, function (ev, data) {
                     scope.showFilter = true;
                     scope.disappearAnimation = true;
+                    scope.transition = true;
                     $timeout(function () {
-                        scope.disappearAnimation = false;
                         scope.isLoading = true;
-                        $timeout(function () {
-                            scope.isLoading = false;
-                            filteringCatVals = _.uniq(_.map(data.nodes, function (node) {
-                                return node.attr[scope.attrToRender.id];
-                            }));
-                            scope.catListData = genTagListData(data.nodes,
-                                AttrInfoService.getNodeAttrInfoForRG().getForId(scope.attrToRender.id), filteringCatVals, FilterPanelService.getColorString(), genValColorMap(scope.attrToRender.id, data.nodes), sortType, sortOrder);
-                            filterTags(data.nodes, scope.catListData);
+                        filteringCatVals = _.uniq(_.map(data.nodes, function (node) {
+                            return node.attr[scope.attrToRender.id];
+                        }));
+                        scope.catListData = (new Array(ITEMS_TO_SHOW)).map((r, i) => ({ id: i}));
+                        var _catListData = genTagListData(data.nodes,
+                            AttrInfoService.getNodeAttrInfoForRG().getForId(scope.attrToRender.id), filteringCatVals, FilterPanelService.getColorString(), genValColorMap(scope.attrToRender.id, data.nodes), sortType, sortOrder);
+                        filterTags(data.nodes, _catListData);
 
-                            scope.catListData.data = scope.catListData.data.map(function mapData(cat) {
-                                cat.isSubsetted = cat.selPercentOfSel == 100;
-                                cat.isChecked = cat.isSubsetted;
+                        _catListData.data = _catListData.data.map(function mapData(cat) {
+                            cat.isSubsetted = cat.selPercentOfSel == 100;
+                            cat.isChecked = cat.isSubsetted;
 
-                                return cat;
-                            });
+                            return cat;
+                        });
 
-                            var sortOps = scope.attrToRender.sortConfig;
-                            scope.catListData.data = sortTagData(scope.catListData.data,
-                                sortOps && sortOps.sortType || 'frequency',
-                                sortOps && sortOps.sortOrder || 'desc', false);
-                            setupFilterClasses(scope.catListData, false);
-                            scope.selNodesCount = data.nodes.length;
+                        var sortOps = scope.attrToRender.sortConfig;
+                        _catListData.data = sortTagData(_catListData.data,
+                            sortOps && sortOps.sortType || 'frequency',
+                            sortOps && sortOps.sortOrder || 'desc', false);
+                        setupFilterClasses(_catListData, false);
+                        scope.selNodesCount = data.nodes.length;
 
-                            distrData.numShownCats = Math.min(distrData.numShowGroups * ITEMS_TO_SHOW + initVisItemCount, scope.catListData.data.length);
-                            scope.$apply();
-                        }, 500);
+                        distrData.numShownCats = Math.min(distrData.numShowGroups * ITEMS_TO_SHOW + initVisItemCount, _catListData.data.length);
+                        scope.$apply();
+
+                        scope.isLoading = false;
+                        scope.disappearAnimation = false;
+                        scope.catListData = _catListData;
+
+                        $timeout(() => {
+                            scope.transition = false;
+                        }, 1000);
                     }, 1000);
                 });
 

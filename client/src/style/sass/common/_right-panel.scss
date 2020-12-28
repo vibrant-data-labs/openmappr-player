@@ -96,9 +96,14 @@
       &:hover {
         border-color: darken(#E2E2E2, 16);
       }
+
       &.disappearing {
         opacity: 0;
-        transition: opacity 1s;
+        @include transition(opacity 1s ease-out);
+      }
+      
+      &.appeared {
+        animation: 1s ease-out 0s 1 fadeInAnim;
       }
       &.loading {
         opacity: 0;

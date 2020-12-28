@@ -5,9 +5,9 @@
 			style="cursor: pointer;"
 			ng-mouseenter="overCat(catData, $event)", 
 			ng-mouseleave="outCat(catData)",
-			ng-class="{'filter':showFilter, 'cat-item-subsetted': catData.isSubsetted, 'active': catData.isChecked, 'disappearing': disappearAnimation, 'loading': isLoading}", 
+			ng-class="{'filter':showFilter, 'cat-item-subsetted': catData.isSubsetted, 'active': catData.isChecked, 'disappearing': disappearAnimation, 'appeared': !disappearAnimation && transition, 'loading': isLoading}", 
 			ng-click="onCatClick(catData, $event)"
-			ng-repeat="catData in catListData.data | filter:{text: distrData.searchQuery} | limitTo: distrData.step:(distrData.numShowGroups * distrData.step) track by catData.id",
+			ng-repeat="catData in catListData.data | filter:{text: distrData.searchQuery} | limitTo: distrData.step:(distrData.numShowGroups * distrData.step)",
 			ng-if="(catListData.inSelectionMode && catData.selTagFreq.toFixed(0) || catData.globalTagFreq.toFixed(0)) > 0")
 		.cat-highlight(style="opacity: 0;")
 		//- .cat-highlight(style="opacity: {{catData.selPercentOfSel/100}}")
