@@ -33,7 +33,7 @@
   .graph-container,
   .angular-leaflet-map,
   .header.simple {
-    left: $side-menu-compressed + $right-panel-width;
+    left: $side-menu-compressed + $right-panel-width + 20px;
   }
 
   .publish-panel,

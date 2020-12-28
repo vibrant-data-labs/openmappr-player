@@ -125,7 +125,10 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
 
     function postLinkFn(scope) {
         console.log('[dirGeoLayout.postLink] called!');
-        $('.angular-leaflet-map').height(window.innerHeight).width(window.innerWidth - leftPanelWidth);
+        $('.angular-leaflet-map')
+            .height(window.innerHeight)
+            .width(window.innerWidth - leftPanelWidth - 20)
+            .css('left', (leftPanelWidth + 20) + 'px');
         var deregisters = [];
         var disableViewReset = false;
 
