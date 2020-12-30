@@ -7,7 +7,7 @@ function getLastCommit() {
     return new Promise((resolve, reject) => {
         const options = {
             hostname: 'api.github.com',
-            path: '/repos/ericberlow/openmappr-player-static/branches/master',
+            path: '/repos/ericberlow/openmappr-player/branches/master',
             method: 'GET'
         }
     
