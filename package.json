@@ -18,6 +18,7 @@
     "publish-player": "node server/build-resources.js --staticFilesOnly && node server/publish-resources.js --staticFilesOnly --online"
   },
   "dependencies": {
+    "12": "^1.0.2",
     "aws-sdk": "^2.754.0",
     "bluebird": "^3.7.2",
     "child_process": "^1.0.2",
