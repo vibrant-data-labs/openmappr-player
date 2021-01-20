@@ -1,5 +1,5 @@
 .tag-list(ng-if="selNodesCount === 0 || (selNodesCount > 0 && catListData.highlightedCats.length > 0)")
-	.tag-list__item(uib-tooltip="{{getTooltipInfo(catData)}}",
+	.tag-list__item.no-animate(uib-tooltip="{{getTooltipInfo(catData)}}",
 			tooltip-placement="right", 
 			tooltip-append-to-body="true",
 			style="cursor: pointer;"
