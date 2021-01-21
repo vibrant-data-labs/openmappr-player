@@ -21,9 +21,9 @@ module.exports = {
           borderRatio: 0.15, // number - part of node which would be taken as a border
           bigOnTop: true, // boolean - whether to place bigger nodes on top
           nodeImageShow: true, // boolean - whether to show images on nodes 
-          nodeImageAttr: 'Photo', // string - name of attribute to ready photo data for node
+          nodeImageAttr: 'Photo', // string (url) - name of attribute to render photo data for node
           nodeUnselectedOpacity: 0.25, // number - opacity of unselected nodes
-          nodeHighlightRatio: 1.2, // number - size of highlighted node
+          nodeHighlightRatio: 1.2, // number - size of highlighted node (relative to unselected state)
           nodeHighlightBorderOffset: 6, // number - offset of highlight border
           nodeHighlightBorderWidth: 1, // width of highlight border
           nodeSelectionRatio: 1.2, // same for the selection
@@ -38,31 +38,31 @@ module.exports = {
           nodePopRepositionNeighbors: true, // boolean - reposition neighborgs node or not
 
           drawEdges: true, // boolean - whether to draw edges between nodes or not
-          edgeDirectional: true,
-          edgeTaper: false,
-          edgeTaperScale: 0.5,
-          edgeSaturation: 1,
-          edgeUnselectedOpacity: 0.2,
-          edgeDirectionalRender: "outgoing", // incoming | outgoing
+          edgeDirectional: true, // boolean - is edge directional. if true, it will render as tapered
+          edgeTaper: false, //boolean - draw taper for directed edges
+          edgeTaperScale: 0.5, // number - thickness of tapered edge 
+          edgeSaturation: 1, // number (0-1) - color saturation of edge
+          edgeUnselectedOpacity: 0.2, //number (0-1) - opacity of unselected edges
+          edgeDirectionalRender: "outgoing", // incoming | outgoing | all
 
-          drawLabels: true,
-          drawGroupLabels: true,
-          labelColor: "#000000",
-          labelOutlineColor: "#ffffff",
-          labelSize: "proportional",
-          labelScale: 1,
-          labelSizeRatio: 0.5,
-          defaultLabelSize: 12,
-          minLabelSize: 12,
-          maxLabelSize: 16,
-          labelThreshold: 1,
-          labelMaxCount: 300,
-          labelDefaultShow: true,
-          labelAttr: "OriginalLabel",
+          drawLabels: true, // boolean - show node labels
+          drawGroupLabels: true, // boolean - show labels of colored groups (hides node labels unless zoomed in)
+          labelColor: "#000000", // label color (default black)
+          labelOutlineColor: "#ffffff", // label outline (default white)
+          labelSize: "proportional", // label size proportional to node size
+          labelScale: 1, // number - greater than 1 means the larger nodes have larger labels
+          labelSizeRatio: 0.5, // number - max vs min label size when scaled
+          defaultLabelSize: 12, // number - label size
+          minLabelSize: 12, // number - minumum label size
+          maxLabelSize: 16, // number - maxumum label size
+          labelThreshold: 1, // ? I'm not sure what this does ? 
+          labelMaxCount: 300, //  number - max labels to display
+          labelDefaultShow: true, // ? I'm not sure what this does ? 
+          labelAttr: "OriginalLabel", 
           labelHoverAttr: "OriginalLabel",
-          labelDegree: 0,
-          labelOpacity: 1,
-          labelUnselectedOpacity: 0,
+          labelDegree: 0, // ? I'm not sure what this does ? 
+          labelOpacity: 1, // number (0-1) label opacity
+          labelUnselectedOpacity: 0, // number (0-1) label unselected opacity
 
           zoomLock: true,
           panLock: true,
@@ -84,7 +84,7 @@ module.exports = {
           yAxTooltip: "",
           invertX: false,
           invertY: true,
-          scatterAspect: 0.5,
+          scatterAspect: 0.5, // number (0-1) - higher number is wider than tall. 0.5 is square.
 
           mapboxMapID: 'mapbox/light-v10', // mapbox map id for geo layout
           
@@ -123,8 +123,8 @@ module.exports = {
           edgeSizeMax: 10,
           edgeSizeMultiplier: 0.4,
 
-          edgeColorStrat: "gradient", // 'attr' | 'gradient'
-          edgeColorAttr: "OriginalColor",
+          edgeColorStrat: "gradient", // 'attr' | 'gradient' (gradient uses node colors as endpoints)
+          edgeColorAttr: "OriginalColor", // color by attribute name (if edgeColorStrat = 'attr')
           edgeColorScaleStrategy: "linear",
           edgeColorScaleInvert: false,
           edgeColorScaleExponent: 2.5,
