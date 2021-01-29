@@ -137,6 +137,13 @@ angular.module('common')
                 }
             }
 
+            $scope.onTitleLoad = function(number, $event) {
+                var elem = $event.target[0];
+                if (!number.popupText && $(elem).find('.label-text')[0].scrollWidth > elem.clientWidth) {
+                    number.popupText = number.key;
+                }
+            }
+
             $scope.onTabLoad = function(tab, $event) {
                 var elem = $($event.target[0]).find('span')[0];
                 if (elem.scrollWidth > elem.clientWidth) {
