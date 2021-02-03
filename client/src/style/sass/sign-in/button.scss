@@ -92,6 +92,11 @@
             background-image: deployedUrl('/img/play-toolbar/check.svg');
           }
 
+          &_info::before {
+            background-size: 20%;
+            background-image: url('/img/play-toolbar/info-solid.svg');
+          }
+
           &_chevron-left::before {
             background-image: deployedUrl('/img/play-toolbar/arrow-left.svg');
           }

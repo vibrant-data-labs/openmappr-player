@@ -169,6 +169,8 @@ angular.module('common')
                 }
             };
 
+            $scope.isSnapshotDescription = false;
+
             /**
     * Scope methods
     */
@@ -180,6 +182,14 @@ angular.module('common')
 
             $scope.selectedSearchValue = [];
             $scope.selectedSearchValueStr = null;
+
+            $scope.toggleSnapshotDescription = function () {
+                $scope.isSnapshotDescription = !$scope.isSnapshotDescription;
+            }
+
+            $scope.openInfoPage = function () {
+                $scope.panelUI.openPanel('modal');
+            }
 
             $scope.updatePlotType = function (plotType) {
                 $scope.plotType = plotType || 'original';

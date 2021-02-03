@@ -167,10 +167,13 @@
       //  button.button.button_type_play-toolbar.button_icon_help help
 
 
-.play-toolbar-bottom
-  .button-group.button-group_type_play-toolbar.button-group_vertical(
-    ng-if="layout.plotType != 'list' && layout.plotType != 'grid'"
-  )
+.play-toolbar-bottom(
+  ng-if="layout.plotType != 'list' && layout.plotType != 'grid'"
+)
+
+  //- LEFT AREA
+  .button-group.button-group_type_play-toolbar.button-group_vertical
+
     .button-group__item
       button.button.button_type_play-toolbar.button_icon_target(ng-click="zoomInfo.zoomExtents()") target
 
@@ -189,23 +192,29 @@
         tooltip-append-to-body="true"
         tooltip-placement="right"
       ) zoom -
-  //.flex-container.shadow-btn.shadow-btn--icon-btn.shadown-btn--no-hover()
-  //  button.vert-align(ng-click="subsetFilters()", ng-disabled="!(ui.subsetEnabled)" uib-tooltip="Subset" tooltip-append-to-body="true" tooltip-placement="left")
-  //    i.material-icons.m-r-5 send
-  //    span.shadow-btn--icon-btn__text Subset
-    //- button.no-margin.p-r-6.vert-align(ng-click="undoFilters()" uib-tooltip="Undo" tooltip-append-to-body="true" tooltip-placement="right" ng-disabled="!enableUndo")
-    //-   i.material-icons.m-r-5 undo
-    //-   span.shadow-btn--icon-btn__text Undo
-    //- button.right-btn.vert-align(ng-click="redoFilters()" uib-tooltip="Redo" tooltip-append-to-body="true" tooltip-placement="right" ng-disabled="!enableRedo")
-    //-   i.material-icons.m-r-5 redo
-    //-   span.shadow-btn--icon-btn__text Redo
-    button.right-btn.vert-align(ng-click="resetFilters()", ng-disabled="!(ui.activeFilterCount > 0)" uib-tooltip="Reset" tooltip-append-to-body="true" tooltip-placement="right")
-      i.material-icons.m-r-5 clear
-      span.shadow-btn--icon-btn__text Reset
-  //.flex-container.shadow-btn.shadow-btn--icon-btn.shadown-btn--no-hover(ng-if="layout.plotType != 'list' && layout.plotType != 'grid'")
-  //  button(ng-click="zoomInfo.zoomExtents();" uib-tooltip="Zoom to selection" tooltip-append-to-body="true" tooltip-placement="left")
-  //    i.material-icons my_location
-  //  button.no-margin.p-r-6(ng-click="zoomInfo.zoomIn()" uib-tooltip="Zoom in" tooltip-append-to-body="true" tooltip-placement="right")
-  //    i.material-icons add
-  //  button.right-btn(ng-click="zoomInfo.zoomOut()" uib-tooltip="Zoom out" tooltip-append-to-body="true" tooltip-placement="right")
-  //    i.material-icons remove
+
+  //- RIGHT AREA
+  .details-panel
+
+    .details-panel__row-data
+      .row-data__content project title
+      .button-group__item
+        button.button.button_type_play-toolbar.button_icon_info(
+          ng-click="openInfoPage()"
+          uib-tooltip="Info page"
+          tooltip-append-to-body="true"
+          tooltip-placement="right"
+        )
+
+    .details-panel__row-data
+      .row-data__content snapshot title
+      .button-group__item
+        button.button.button_type_play-toolbar.button_icon_info(
+          ng-click="toggleSnapshotDescription()"
+          uib-tooltip="Snapshot description"
+          tooltip-append-to-body="true"
+          tooltip-placement="right"
+        )
+
+    .details-panel__extra-container(ng-if="isSnapshotDescription")
+      .extra-container__content snapshot description
