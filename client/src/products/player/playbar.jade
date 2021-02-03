@@ -197,7 +197,7 @@
   .details-panel
 
     .details-panel__row-data
-      .row-data__content project title
+      .row-data__content {{getCurrentProjectTitle()}}
       .button-group__item
         button.button.button_type_play-toolbar.button_icon_info(
           ng-click="openInfoPage()"
@@ -207,7 +207,7 @@
         )
 
     .details-panel__row-data
-      .row-data__content snapshot title
+      .row-data__content {{getSelectedSnapshot().snapName || ''}}
       .button-group__item
         button.button.button_type_play-toolbar.button_icon_info(
           ng-click="toggleSnapshotDescription()"
@@ -217,4 +217,4 @@
         )
 
     .details-panel__extra-container(ng-if="isSnapshotDescription")
-      .extra-container__content snapshot description
+      .extra-container__content {{getSelectedSnapshot().descr || ''}}

@@ -169,8 +169,6 @@ angular.module('common')
                 }
             };
 
-            $scope.isSnapshotDescription = false;
-
             /**
     * Scope methods
     */
@@ -183,6 +181,15 @@ angular.module('common')
             $scope.selectedSearchValue = [];
             $scope.selectedSearchValueStr = null;
 
+            // #####
+            $scope.isSnapshotDescription = false;
+
+            $scope.getSelectedSnapshot = function () {
+                return snapshotService.getCurrentSnapshot() || {};
+            }
+            $scope.getCurrentProjectTitle = function () {
+                return _.get($scope, '$parent.player.settings.headerTitle') || ''
+            }
             $scope.toggleSnapshotDescription = function () {
                 $scope.isSnapshotDescription = !$scope.isSnapshotDescription;
             }
@@ -190,6 +197,7 @@ angular.module('common')
             $scope.openInfoPage = function () {
                 $scope.panelUI.openPanel('modal');
             }
+            // #####
 
             $scope.updatePlotType = function (plotType) {
                 $scope.plotType = plotType || 'original';
