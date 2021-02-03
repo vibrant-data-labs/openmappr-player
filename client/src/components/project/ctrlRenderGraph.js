@@ -188,7 +188,7 @@ angular.module('common')
                 return snapshotService.getCurrentSnapshot() || {};
             }
             $scope.getCurrentProjectTitle = function () {
-                return _.get($scope, '$parent.player.settings.headerTitle') || ''
+                return _.get($scope, '$parent.player.player.settings.headerTitle') || ''
             }
             $scope.toggleSnapshotDescription = function () {
                 $scope.isSnapshotDescription = !$scope.isSnapshotDescription;

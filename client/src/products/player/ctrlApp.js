@@ -261,7 +261,7 @@ angular.module('player')
                     //MODAL
                     //if($scope.player.settings.showModal){
                     $scope.hasModal = true;
-                    $scope.panelUI.openPanel($scope.player.settings.startPage || 'modal');
+                    $scope.panelUI.openPanel($scope.player.player.settings.startPage || 'modal');
                     if(!$window.localStorage.modal)
                         $timeout(function () {
                             ngIntroService.setOptions(
