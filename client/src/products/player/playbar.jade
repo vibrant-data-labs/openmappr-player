@@ -217,4 +217,4 @@
         )
 
     .details-panel__extra-container(ng-if="isSnapshotDescription")
-      .extra-container__content {{getSelectedSnapshot().descr || ''}}
+      .extra-container__content(ng-bind-html="getSelectedSnapshot().descr || ''")
