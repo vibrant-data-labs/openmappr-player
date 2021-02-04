@@ -25,15 +25,23 @@ const getDirectories = async function (src, ignore) {
 
 const bar1 = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
 
-async function readFilesAndUpload() {
+async function readFilesAndUpload(mode='NO_DATE') {
     const buckets = await s3.listBuckets().promise();
     const lastCommitInfo = await getLastCommit();
     const lastCommitDate = lastCommitInfo.toString().substring(0, 10);
 
     let res = null;
-    if (staticFilesOnly && online) {
+    let bucketName = '';
 
-        const bucketName = s3Config.bucketDefaultPrefix + lastCommitDate;
+    if (staticFilesOnly && online) {
+        if (mode === 'NO_DATE') {
+            bucketName = s3Config.bucketDefaultPrefix;
+        }
+
+        if (mode === 'ADD_DATE') {
+            bucketName = s3Config.bucketDefaultPrefix + '-' + lastCommitDate;
+        }
+
         let useNew = !buckets.Buckets.find(x => x.Name === bucketName);
 
         res = {
@@ -68,13 +76,12 @@ async function readFilesAndUpload() {
         ]);
     }
 
-    let bucketName = '';
     if (res.useExisting) {
         bucketName = res.bucket;
         await s3.putBucketAcl({ Bucket: bucketName, ACL: 'public-read' }).promise();
     } else {
-        await s3.createBucket({ Bucket: res.newBucket, ACL: 'public-read' }).promise();
         bucketName = res.newBucket;
+        await s3.createBucket({ Bucket: res.newBucket, ACL: 'public-read' }).promise();
     }
 
     await s3.putBucketWebsite({
@@ -150,10 +157,21 @@ async function readFilesAndUpload() {
     console.log('Site is served on ' + `http://${bucketName}.s3-website-${s3.config.region || 'us-east-1'}.amazonaws.com/`)
 };
 
-readFilesAndUpload().then(() => {
+(async function run() {
+    // normal deploy (no date)
+    try {
+        await readFilesAndUpload('NO_DATE');
+    } catch (error) {
+        process.exit(1);   
+    }
+
+    // special push (add date)
+    try {
+        await readFilesAndUpload('ADD_DATE');
+    } catch (error) {
+        process.exit(1);
+    }
+
     console.log('All files have been published');
     process.exit(0);
-}).catch(error => {
-    console.error(error);
-    process.exit(1);
-});
+})();
