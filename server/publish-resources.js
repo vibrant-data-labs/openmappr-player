@@ -39,7 +39,7 @@ async function readFilesAndUpload(mode='NO_DATE') {
         }
 
         if (mode === 'ADD_DATE') {
-            bucketName = s3Config.bucketDefaultPrefix + lastCommitDate;
+            bucketName = s3Config.bucketDefaultPrefix + '-' + lastCommitDate;
         }
 
         let useNew = !buckets.Buckets.find(x => x.Name === bucketName);
