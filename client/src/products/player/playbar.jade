@@ -201,7 +201,7 @@
       .button-group__item
         button.button.button_type_play-toolbar.button_icon_info(
           ng-click="openInfoPage()"
-          uib-tooltip="Info page"
+          uib-tooltip="Project information"
           tooltip-append-to-body="true"
           tooltip-placement="right"
         )
@@ -209,7 +209,8 @@
     .details-panel__row-data
       .row-data__content {{getSelectedSnapshot().snapName || ''}}
       .button-group__item
-        button.button.button_type_play-toolbar.button_icon_info(
+        button.button.button_type_play-toolbar(
+          ng-class="isSnapshotDescription ? 'button_icon_cancel' : 'button_icon_chevron-down'"
           ng-click="toggleSnapshotDescription()"
           uib-tooltip="Snapshot description"
           tooltip-append-to-body="true"

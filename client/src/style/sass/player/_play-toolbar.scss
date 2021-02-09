@@ -276,7 +276,12 @@
     .row-data__content {
       width: 100%;
       padding: 0 10px;
+      font: 500 15px/24px 'Poppins';
+      line-height: 23px;
     }
+
+    &:nth-child(1) { .row-data__content { color:  #000000; } }
+    &:nth-child(2) { .row-data__content { color:  #BC3364; } }
   }
 
   &__extra-container {

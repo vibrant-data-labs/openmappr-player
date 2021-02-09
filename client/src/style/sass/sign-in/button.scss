@@ -105,6 +105,10 @@
             background-image: deployedUrl('/img/play-toolbar/arrow-right.svg');
           }
 
+          &_chevron-down::before {
+            background: #fff url('/img/search/arrow-down.svg') 50% no-repeat;
+          }
+
           &_cancel::before {
             background-image: deployedUrl('/img/play-toolbar/cancel.svg');
           }

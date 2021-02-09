@@ -22,15 +22,6 @@
 
   .side-menu__footer
     ul.tabs-menu
-      li.tabs-menu__item(
-        ng-click="toggleInfo()"
-        ng-class="{'tabs-menu__item_active': panelUI.currentPanelOpen === 'modal'}"
-        )
-
-        span.tabs-menu__link.tabs-menu__link_info( 
-          data-toggle="tooltip" 
-          uib-tooltip="Info: See project information"
-          tooltip-placement="right")
 
       li.tabs-menu__item
         a(href="mailto:support@openmappr.org" target="_blank")
