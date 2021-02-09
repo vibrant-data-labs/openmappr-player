@@ -27,6 +27,8 @@ const dataOnly = argv.dataOnly;
 const staticFilesOnly = argv.staticFilesOnly;
 const indexOnly = argv.indexOnly;
 const noData = argv.noData;
+const withDate = argv.withDate;
+
 let projId;
 let publishDataPath;
 
@@ -94,6 +96,7 @@ async function runGrunt() {
 
 var playerSettings = null;
 var playerBuildPrefix = '';
+var bucketName = '';
 
 async function buildResources() {
   if (dataOnly || (!dataOnly && !staticFilesOnly)) {
@@ -134,7 +137,9 @@ async function buildResources() {
     } else {
       const lastCommitInfo = await getLastCommit();
       const lastCommitDate = lastCommitInfo.toString().substring(0, 10);
-      playerBuildPrefix = 'http://' + s3Config.bucketDefaultPrefix + lastCommitDate + '.s3.us-east-1.amazonaws.com';
+      bucketName = s3Config.bucketDefaultPrefix + (withDate ? `-${lastCommitDate}` : '');
+      playerBuildPrefix = 'http://' + bucketName + '.s3.us-east-1.amazonaws.com';
+
       const mappingData = fs.readFileSync('./mapping.json');
       const jsonData = JSON.parse(mappingData);
       jsonData.sourceUrl = playerBuildPrefix;
@@ -269,7 +274,9 @@ if (indexOnly) {
     publishDataPath = '/data/';
     const lastCommitInfo = await getLastCommit();
     const lastCommitDate = lastCommitInfo.toString().substring(0, 10);
-    playerBuildPrefix = 'http://' + s3Config.bucketDefaultPrefix + lastCommitDate + '.s3.us-east-1.amazonaws.com'
+    bucketName = s3Config.bucketDefaultPrefix + (withDate ? `-${lastCommitDate}` : '');
+    playerBuildPrefix = 'http://' + bucketName + '.s3.us-east-1.amazonaws.com'
+
     const mappingData = fs.readFileSync('./mapping.json');
     const jsonData = JSON.parse(mappingData);
     jsonData.sourceUrl = playerBuildPrefix;

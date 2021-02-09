@@ -13,6 +13,7 @@ const dataOnly = argv.dataOnly;
 const staticFilesOnly = argv.staticFilesOnly;
 const online = argv.online;
 const indexOnly = argv.indexOnly;
+const withDate = argv.withDate;
 
 const s3 = new AWS.S3({
     accessKeyId: s3Config.accessKeyId,
@@ -25,7 +26,7 @@ const getDirectories = async function (src, ignore) {
 
 const bar1 = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
 
-async function readFilesAndUpload(mode='NO_DATE') {
+async function readFilesAndUpload() {
     const buckets = await s3.listBuckets().promise();
     const lastCommitInfo = await getLastCommit();
     const lastCommitDate = lastCommitInfo.toString().substring(0, 10);
@@ -34,13 +35,7 @@ async function readFilesAndUpload(mode='NO_DATE') {
     let bucketName = '';
 
     if (staticFilesOnly && online) {
-        if (mode === 'NO_DATE') {
-            bucketName = s3Config.bucketDefaultPrefix;
-        }
-
-        if (mode === 'ADD_DATE') {
-            bucketName = s3Config.bucketDefaultPrefix + '-' + lastCommitDate;
-        }
+        bucketName = s3Config.bucketDefaultPrefix + (withDate ? `-${lastCommitDate}` : '');
 
         let useNew = !buckets.Buckets.find(x => x.Name === bucketName);
 
@@ -157,21 +152,11 @@ async function readFilesAndUpload(mode='NO_DATE') {
     console.log('Site is served on ' + `http://${bucketName}.s3-website-${s3.config.region || 'us-east-1'}.amazonaws.com/`)
 };
 
-(async function run() {
-    // normal deploy (no date)
-    try {
-        await readFilesAndUpload('NO_DATE');
-    } catch (error) {
+readFilesAndUpload()
+    .then(() => {
+        console.log('All files have been published');
+        process.exit(0);
+    })
+    .catch(() => {
         process.exit(1);   
-    }
-
-    // special push (add date)
-    try {
-        await readFilesAndUpload('ADD_DATE');
-    } catch (error) {
-        process.exit(1);
-    }
-
-    console.log('All files have been published');
-    process.exit(0);
-})();
+    });

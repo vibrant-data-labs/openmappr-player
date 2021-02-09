@@ -15,7 +15,10 @@
     "publish-resources:player": "node server/publish-resources.js --staticFilesOnly",
     "publish-project": "node server/build-resources.js --indexOnly && node server/publish-resources.js --indexOnly",
     "publish-project:offline": "npm run build",
-    "publish-player": "node server/build-resources.js --staticFilesOnly && node server/publish-resources.js --staticFilesOnly --online"
+
+    "build-and-publish:no-date": "node server/build-resources.js --staticFilesOnly && node server/publish-resources.js --staticFilesOnly --online",
+    "build-and-publish:with-date": "node server/build-resources.js --staticFilesOnly --withDate && node server/publish-resources.js --staticFilesOnly --online --withDate",
+    "publish-player": "npm run build-and-publish:no-date && npm run build-and-publish:with-date"
   },
   "dependencies": {
     "12": "^1.0.2",
