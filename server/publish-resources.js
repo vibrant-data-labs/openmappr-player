@@ -9,6 +9,7 @@ const fs = require('fs'),
     { argv } = require('yargs');
 const getLastCommit = require('./publish-player');
 
+const bucketPrefix = "mappr-player";
 const dataOnly = argv.dataOnly;
 const staticFilesOnly = argv.staticFilesOnly;
 const online = argv.online;
@@ -35,7 +36,7 @@ async function readFilesAndUpload() {
     let bucketName = '';
 
     if (staticFilesOnly && online) {
-        bucketName = s3Config.bucketDefaultPrefix + (withDate ? `-${lastCommitDate}` : '');
+        bucketName = bucketPrefix + (withDate ? `-${lastCommitDate}` : '');
 
         let useNew = !buckets.Buckets.find(x => x.Name === bucketName);
 

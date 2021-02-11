@@ -2,6 +2,5 @@
 // and change the values according to AWS credentials
 module.exports = {
   accessKeyId: '',
-  secretAccessKey: '',
-  bucketDefaultPrefix: 'mappr-player-version-'
+  secretAccessKey: ''
 };

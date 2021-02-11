@@ -20,7 +20,7 @@ const _ = require('lodash'),
   glob = require('glob');
 const getLastCommit = require('./publish-player');
 
-
+const bucketPrefix = "mappr-player";
 const player_model = require('./player/player_model');
 
 const dataOnly = argv.dataOnly;
@@ -133,17 +133,15 @@ async function buildResources() {
       const mappingData = fs.readFileSync('./mapping.json');
       const jsonData = JSON.parse(mappingData);
       jsonData.sourceUrl = '';
-      fs.writeFileSync('./mapping.json', JSON.stringify(jsonData), { flag: 'w' });
     } else {
       const lastCommitInfo = await getLastCommit();
       const lastCommitDate = lastCommitInfo.toString().substring(0, 10);
-      bucketName = s3Config.bucketDefaultPrefix + (withDate ? `-${lastCommitDate}` : '');
+      bucketName = bucketPrefix + (withDate ? `-${lastCommitDate}` : '');
       playerBuildPrefix = 'http://' + bucketName + '.s3.us-east-1.amazonaws.com';
 
       const mappingData = fs.readFileSync('./mapping.json');
       const jsonData = JSON.parse(mappingData);
       jsonData.sourceUrl = playerBuildPrefix;
-      fs.writeFileSync('./mapping.json', JSON.stringify(jsonData), { flag: 'w' });
     }
 
     publishDataPath = '/data/';
@@ -274,13 +272,12 @@ if (indexOnly) {
     publishDataPath = '/data/';
     const lastCommitInfo = await getLastCommit();
     const lastCommitDate = lastCommitInfo.toString().substring(0, 10);
-    bucketName = s3Config.bucketDefaultPrefix + (withDate ? `-${lastCommitDate}` : '');
+    bucketName = bucketPrefix + (withDate ? `-${lastCommitDate}` : '');
     playerBuildPrefix = 'http://' + bucketName + '.s3.us-east-1.amazonaws.com'
 
     const mappingData = fs.readFileSync('./mapping.json');
     const jsonData = JSON.parse(mappingData);
     jsonData.sourceUrl = playerBuildPrefix;
-    fs.writeFileSync('./mapping.json', JSON.stringify(jsonData), { flag: 'w' });
 
     compileScss(playerBuildPrefix);
     await runGrunt();
