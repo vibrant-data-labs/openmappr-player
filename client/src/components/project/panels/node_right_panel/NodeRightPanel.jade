@@ -85,7 +85,14 @@
           section.section.section_compact(ng-if="nodeRightInfo.sectionShortTags.length")
             .section__content.section__info.section__short-strings
               dl#information.section-info(ng-repeat="number in nodeRightInfo.sectionShortTags" ng-class="{'section-info-wide': number.isWide}")
-                dt.section-info__label {{number.key}}
+                dt.section-info__label(
+                  dir-elem-ready="onTitleLoad(number, $event)",
+                  uib-tooltip="{{number.popupText}}", 
+                  tooltip-placement="left" 
+                  tooltip-append-to-body="true"
+                )
+                  div.label-text.truncate {{number.key}}
+
                 dd.section-info__value(ng-repeat="val in number.values", ng-class="{'tag-list__item': val.isTag}")
                   .cat-list.tag-cloud(ng-if="val.isTag")
                     .cat-item(
@@ -108,7 +115,14 @@
                 ng-repeat="number in nodeRightInfo.section4"
                 style="width: {{Section4Largest}}px"
               )
-                dt.section-info__label {{number.key}}
+                dt.section-info__label(
+                  dir-elem-ready="onTitleLoad(number, $event)",
+                  uib-tooltip="{{number.popupText}}", 
+                  tooltip-placement="left" 
+                  tooltip-append-to-body="true"
+                )
+                  div.label-text.truncate {{number.key}}
+
                 dd.section-info__value {{number.value}}
 
           section.section.section_tabs(ng-if="(neighs.in && neighs.in.length) || (neighs.out && neighs.out.length)")

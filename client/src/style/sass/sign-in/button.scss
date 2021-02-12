@@ -92,12 +92,21 @@
             background-image: deployedUrl('/img/play-toolbar/check.svg');
           }
 
+          &_info::before {
+            background-size: 20%;
+            background-image: url('/img/play-toolbar/info-solid.svg');
+          }
+
           &_chevron-left::before {
             background-image: deployedUrl('/img/play-toolbar/arrow-left.svg');
           }
 
           &_chevron-right::before {
             background-image: deployedUrl('/img/play-toolbar/arrow-right.svg');
+          }
+
+          &_chevron-down::before {
+            background: #fff url('/img/search/arrow-down.svg') 50% no-repeat;
           }
 
           &_cancel::before {

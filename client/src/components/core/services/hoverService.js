@@ -2,8 +2,8 @@
 * Handles Graph Hover ops
 */
 angular.module('common')
-    .service('hoverService', ['$rootScope', '$timeout', '$q', 'renderGraphfactory', 'dataGraph', 'nodeRenderer', 'inputMgmtService', 'BROADCAST_MESSAGES', 'selectService', 'subsetService', 'SelectorService',
-        function ($rootScope, $timeout, $q, renderGraphfactory, dataGraph, nodeRenderer, inputMgmtService, BROADCAST_MESSAGES, selectService, subsetService, SelectorService) {
+    .service('hoverService', ['$rootScope', '$timeout', '$q', 'renderGraphfactory', 'dataGraph', 'nodeRenderer', 'inputMgmtService', 'BROADCAST_MESSAGES', 'selectService', 'subsetService', 'SelectorService', 'playerFactory',
+        function ($rootScope, $timeout, $q, renderGraphfactory, dataGraph, nodeRenderer, inputMgmtService, BROADCAST_MESSAGES, selectService, subsetService, SelectorService, playerFactory) {
 
             "use strict";
 
@@ -21,6 +21,7 @@ angular.module('common')
             var hoveredSingleNode = null;
             var findNodeWithId;
             var deferAction = null;
+            var defaultNeighborhoodDegree = 0;
 
             // reset to selected values only
             (function (service) {
@@ -41,12 +42,21 @@ angular.module('common')
              * @param {string} hoverData.min - the attribute min value
              * @param {string} hoverData.max - the attribute max value
              * @param {string} hoverData.fivePct - fivePct
-             * @param {string} hoverData.degree - degree
              * @param {array}  hoverData.ids - nodeIds
              * @param {boolean} hoverData.withNeighbors - whether highlight neighbors or not
              * @param {boolean} hoverData.force - whether hover the data, even if it not in subset
              */
             function hoverNodes(hoverData) {
+                //  * @param {string} hoverData.degree - degree
+
+                playerFactory.currPlayer(true)
+                .then((currPlayer) => {
+                    hoverData.degree = _.get(currPlayer, 'settings.neighborhoodDegree') || defaultNeighborhoodDegree;
+                    _runHoverNodes.call(this, hoverData);
+                });
+            }
+
+            function _runHoverNodes(hoverData) {
                 if (this.hoveredNodes && this.hoveredNodes.length > 1) {
                     this.unhover();
                 }
@@ -201,10 +211,10 @@ angular.module('common')
                 }
                 console.log("[hoverService] hoverHandler hovering over " + nodes.length + " nodes");
 
-                draw(nodes, event.data.withNeighbors);
+                draw(nodes, event.data.withNeighbors, degree);
             }
 
-            function draw(nodeIds, withNeighbors, forceRender) {
+            function draw(nodeIds, withNeighbors, degree) {
                 var selectedNodes = selectService.selectedNodes;
                 var subsetNodes = subsetService.subsetNodes;
                 var sigRender = renderGraphfactory.getRenderer();
@@ -252,19 +262,41 @@ angular.module('common')
                         selectService.singleNode && selectService.singleNode.id == nodeId) {
                         node.specialHighlight = true;
                         var neighNodes = [];
-                        _.forEach(graph[neighbourFn](node.id), function addTargetNode(edgeInfo, targetId) {
-                            //hoveredNodeNeighbors[targetId] = node;
-                            _.forEach(edgeInfo, function addConnEdge(edge, edgeId) {
-                                var neighs = [findNodeWithId(edge.source, sigRender.sig), findNodeWithId(edge.target, sigRender.sig)];
-                                _.map(neighs, function (n) {
-                                    n.inHover = true;
-                                    node.inHoverNeighbor = true;
-                                });
 
-                                neighNodes.push(...neighs);
-                                edges[edgeId] = edge;
+                        var drawNeighbors = function(neighbourNodes) {            
+                            _.forEach(neighbourNodes, function addTargetNode(edgeInfo, targetId) {
+                                //hoveredNodeNeighbors[targetId] = node;
+                                _.forEach(edgeInfo, function addConnEdge(edge, edgeId) {
+                                    var neighs = [findNodeWithId(edge.source, sigRender.sig), findNodeWithId(edge.target, sigRender.sig)];
+                                    _.map(neighs, function (n) {
+                                        n.inHover = true;
+                                        node.inHoverNeighbor = true;
+                                    });
+            
+                                    neighNodes.push(...neighs);
+                                    edges[edgeId] = edge;
+                                });
                             });
-                        });
+                        }
+
+                        if (degree > 0) {
+                            var neighborsFirstLevel = graph[neighbourFn](node.id);
+                            drawNeighbors(neighborsFirstLevel);
+
+                            if (degree > 1) {
+                                _.forEach(_.keys(neighborsFirstLevel), function (firstLevelNeighborId) {
+                                    var neighborsSecondLevel = graph[neighbourFn](firstLevelNeighborId);
+                                    drawNeighbors(neighborsSecondLevel);
+
+                                    if (degree > 2) {
+                                        _.forEach(_.keys(neighborsSecondLevel), function(secondLevelNeighborId) {
+                                            var neighborsThirdLevel = graph[neighbourFn](secondLevelNeighborId);
+                                            drawNeighbors(neighborsThirdLevel);
+                                        });
+                                    }
+                                });    
+                            }
+                        }
 
                         return [node].concat(neighNodes);
                     }

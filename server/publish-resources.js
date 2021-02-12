@@ -9,10 +9,12 @@ const fs = require('fs'),
     { argv } = require('yargs');
 const getLastCommit = require('./publish-player');
 
+const bucketPrefix = "mappr-player";
 const dataOnly = argv.dataOnly;
 const staticFilesOnly = argv.staticFilesOnly;
 const online = argv.online;
 const indexOnly = argv.indexOnly;
+const withDate = argv.withDate;
 
 const s3 = new AWS.S3({
     accessKeyId: s3Config.accessKeyId,
@@ -31,9 +33,11 @@ async function readFilesAndUpload() {
     const lastCommitDate = lastCommitInfo.toString().substring(0, 10);
 
     let res = null;
-    if (staticFilesOnly && online) {
+    let bucketName = '';
 
-        const bucketName = s3Config.bucketDefaultPrefix + lastCommitDate;
+    if (staticFilesOnly && online) {
+        bucketName = bucketPrefix + (withDate ? `-${lastCommitDate}` : '');
+
         let useNew = !buckets.Buckets.find(x => x.Name === bucketName);
 
         res = {
@@ -68,13 +72,12 @@ async function readFilesAndUpload() {
         ]);
     }
 
-    let bucketName = '';
     if (res.useExisting) {
         bucketName = res.bucket;
         await s3.putBucketAcl({ Bucket: bucketName, ACL: 'public-read' }).promise();
     } else {
-        await s3.createBucket({ Bucket: res.newBucket, ACL: 'public-read' }).promise();
         bucketName = res.newBucket;
+        await s3.createBucket({ Bucket: res.newBucket, ACL: 'public-read' }).promise();
     }
 
     await s3.putBucketWebsite({
@@ -150,10 +153,11 @@ async function readFilesAndUpload() {
     console.log('Site is served on ' + `http://${bucketName}.s3-website-${s3.config.region || 'us-east-1'}.amazonaws.com/`)
 };
 
-readFilesAndUpload().then(() => {
-    console.log('All files have been published');
-    process.exit(0);
-}).catch(error => {
-    console.error(error);
-    process.exit(1);
-});
+readFilesAndUpload()
+    .then(() => {
+        console.log('All files have been published');
+        process.exit(0);
+    })
+    .catch(() => {
+        process.exit(1);   
+    });

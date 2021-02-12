@@ -74,6 +74,7 @@
   left: $side-menu-width + $right-panel-width + 20px;
   bottom: 20px;
   padding-left: 20px;
+  display: flex;
 }
 
 .play-toolbar-list {
@@ -251,5 +252,50 @@
     &__divider {
       color: #939698;
     }
+  }
+}
+
+.details-panel {
+  display: flex;
+  flex-direction: column-reverse;
+  width: 300px;
+
+  &__row-data {
+    height: 27px;
+    display: flex;
+    align-items: center;
+    border: 1px solid #e6e6e6;
+    background: white;
+    border-radius: 2px;
+
+    .button-group__item {
+      height: 100%;
+      border-left: 1px solid #e6e6e6;
+    }
+
+    .row-data__content {
+      width: 100%;
+      padding: 0 10px;
+      font: 500 15px/24px 'Poppins';
+      line-height: 23px;
+    }
+
+    &:nth-child(1) { .row-data__content { color:  #000000; } }
+    &:nth-child(2) { .row-data__content { color:  #BC3364; } }
+  }
+
+  &__extra-container {
+    position: relative;
+
+    .extra-container__content {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 200px;
+      overflow-y: scroll;
+      padding: 5px 10px;
+      border: 1px solid #e6e6e6;
+      background: white;
+    } 
   }
 }

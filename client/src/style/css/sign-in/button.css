@@ -91,34 +91,43 @@
   background-image: deployedUrl("/img/play-toolbar/check.svg");
 }
 /* line 95, ../../sass/sign-in/button.scss */
+.button_type_play-toolbar.button_icon_info::before {
+  background-size: 20%;
+  background-image: url("/img/play-toolbar/info-solid.svg");
+}
+/* line 100, ../../sass/sign-in/button.scss */
 .button_type_play-toolbar.button_icon_chevron-left::before {
   background-image: deployedUrl("/img/play-toolbar/arrow-left.svg");
 }
-/* line 99, ../../sass/sign-in/button.scss */
+/* line 104, ../../sass/sign-in/button.scss */
 .button_type_play-toolbar.button_icon_chevron-right::before {
   background-image: deployedUrl("/img/play-toolbar/arrow-right.svg");
 }
-/* line 103, ../../sass/sign-in/button.scss */
+/* line 108, ../../sass/sign-in/button.scss */
+.button_type_play-toolbar.button_icon_chevron-down::before {
+  background: #fff url("/img/search/arrow-down.svg") 50% no-repeat;
+}
+/* line 112, ../../sass/sign-in/button.scss */
 .button_type_play-toolbar.button_icon_cancel::before {
   background-image: deployedUrl("/img/play-toolbar/cancel.svg");
 }
-/* line 107, ../../sass/sign-in/button.scss */
+/* line 116, ../../sass/sign-in/button.scss */
 .button_type_play-toolbar.button_icon_target::before {
   background-image: deployedUrl("/img/play-toolbar/target.svg");
 }
-/* line 111, ../../sass/sign-in/button.scss */
+/* line 120, ../../sass/sign-in/button.scss */
 .button_type_play-toolbar.button_icon_plus::before {
   background-image: deployedUrl("/img/play-toolbar/plus.svg");
 }
-/* line 115, ../../sass/sign-in/button.scss */
+/* line 124, ../../sass/sign-in/button.scss */
 .button_type_play-toolbar.button_icon_minus::before {
   background-image: deployedUrl("/img/play-toolbar/minus.svg");
 }
-/* line 119, ../../sass/sign-in/button.scss */
+/* line 128, ../../sass/sign-in/button.scss */
 .button_type_play-toolbar.button_icon_search::before {
   background-image: deployedUrl("/img/play-toolbar/search.svg");
 }
-/* line 123, ../../sass/sign-in/button.scss */
+/* line 132, ../../sass/sign-in/button.scss */
 .button_type_play-toolbar.button_icon_help::before {
   background-image: deployedUrl("/img/play-toolbar/help.svg");
 }

@@ -20,13 +20,15 @@ const _ = require('lodash'),
   glob = require('glob');
 const getLastCommit = require('./publish-player');
 
-
+const bucketPrefix = "mappr-player";
 const player_model = require('./player/player_model');
 
 const dataOnly = argv.dataOnly;
 const staticFilesOnly = argv.staticFilesOnly;
 const indexOnly = argv.indexOnly;
 const noData = argv.noData;
+const withDate = argv.withDate;
+
 let projId;
 let publishDataPath;
 
@@ -94,6 +96,7 @@ async function runGrunt() {
 
 var playerSettings = null;
 var playerBuildPrefix = '';
+var bucketName = '';
 
 async function buildResources() {
   if (dataOnly || (!dataOnly && !staticFilesOnly)) {
@@ -130,15 +133,15 @@ async function buildResources() {
       const mappingData = fs.readFileSync('./mapping.json');
       const jsonData = JSON.parse(mappingData);
       jsonData.sourceUrl = '';
-      fs.writeFileSync('./mapping.json', JSON.stringify(jsonData), { flag: 'w' });
     } else {
       const lastCommitInfo = await getLastCommit();
       const lastCommitDate = lastCommitInfo.toString().substring(0, 10);
-      playerBuildPrefix = 'http://' + s3Config.bucketDefaultPrefix + lastCommitDate + '.s3.us-east-1.amazonaws.com';
+      bucketName = bucketPrefix + (withDate ? `-${lastCommitDate}` : '');
+      playerBuildPrefix = 'http://' + bucketName + '.s3.us-east-1.amazonaws.com';
+
       const mappingData = fs.readFileSync('./mapping.json');
       const jsonData = JSON.parse(mappingData);
       jsonData.sourceUrl = playerBuildPrefix;
-      fs.writeFileSync('./mapping.json', JSON.stringify(jsonData), { flag: 'w' });
     }
 
     publishDataPath = '/data/';
@@ -269,11 +272,12 @@ if (indexOnly) {
     publishDataPath = '/data/';
     const lastCommitInfo = await getLastCommit();
     const lastCommitDate = lastCommitInfo.toString().substring(0, 10);
-    playerBuildPrefix = 'http://' + s3Config.bucketDefaultPrefix + lastCommitDate + '.s3.us-east-1.amazonaws.com'
+    bucketName = bucketPrefix + (withDate ? `-${lastCommitDate}` : '');
+    playerBuildPrefix = 'http://' + bucketName + '.s3.us-east-1.amazonaws.com'
+
     const mappingData = fs.readFileSync('./mapping.json');
     const jsonData = JSON.parse(mappingData);
     jsonData.sourceUrl = playerBuildPrefix;
-    fs.writeFileSync('./mapping.json', JSON.stringify(jsonData), { flag: 'w' });
 
     compileScss(playerBuildPrefix);
     await runGrunt();
