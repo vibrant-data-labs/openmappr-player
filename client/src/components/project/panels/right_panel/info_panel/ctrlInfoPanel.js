@@ -15,8 +15,8 @@
             -- NeighborClusters
 */
 angular.module('common')
-    .controller('InfoPanelCtrl', ['$scope', '$rootScope', 'graphSelectionService', 'dataGraph', 'networkService', 'FilterPanelService', 'AttrInfoService', 'projFactory', 'playerFactory', 'BROADCAST_MESSAGES', '$injector', '$uibModal', 'uiService', 'infoPanelService', 'selectService', 'subsetService',
-        function ($scope, $rootScope, graphSelectionService, dataGraph, networkService, FilterPanelService, AttrInfoService, projFactory, playerFactory, BROADCAST_MESSAGES, $injector, $uibModal, uiService, infoPanelService, selectService, subsetService) {
+    .controller('InfoPanelCtrl', ['$scope', '$rootScope', 'graphSelectionService', 'dataGraph', 'networkService', 'FilterPanelService', 'AttrInfoService', 'projFactory', 'playerFactory', 'BROADCAST_MESSAGES', '$injector', '$uibModal', 'uiService', 'infoPanelService', 'selectService', 'subsetService', 'renderGraphfactory', 'snapshotService',
+        function ($scope, $rootScope, graphSelectionService, dataGraph, networkService, FilterPanelService, AttrInfoService, projFactory, playerFactory, BROADCAST_MESSAGES, $injector, $uibModal, uiService, infoPanelService, selectService, subsetService, renderGraphfactory, snapshotService) {
             'use strict';
 
             /*************************************
@@ -325,43 +325,47 @@ angular.module('common')
             }
 
             function exportSelectionFromPlayer(type) {
-                var nodes = [];
-                var links = [];
-                if (type == 'all') {
-                    nodes = dataGraph.getAllNodes();
-                    links = dataGraph.getAllEdges();
-                } else if (type == 'select') {
-                    nodes = selectService.getSelectedNodes();
-                    links = dataGraph.getEdgesByNodes(nodes);
-                } else if (type == 'subset') {
-                    nodes = subsetService.subsetNodes;
-                    links = dataGraph.getEdgesByNodes(nodes);
-                }
+                var sigObj_1 = renderGraphfactory.sig();
+                var snapshot = snapshotService.getCurrentSnapshot();
+                sigObj_1.toSVG({download: true, filename: (snapshot ? snapshot.snapName : 'output') + '.svg', size: window.innerWidth});
 
-                var currentNetwork = networkService.getCurrentNetwork();
-                var fileName = (function () {
-                    var div = document.createElement("div");
-                    div.innerHTML = $scope.headerTitle; // In player's CtrlApp. Is html string
-                    return div.textContent || div.innerText || "Mappr";
-                }());
+                // var nodes = [];
+                // var links = [];
+                // if (type == 'all') {
+                //     nodes = dataGraph.getAllNodes();
+                //     links = dataGraph.getAllEdges();
+                // } else if (type == 'select') {
+                //     nodes = selectService.getSelectedNodes();
+                //     links = dataGraph.getEdgesByNodes(nodes);
+                // } else if (type == 'subset') {
+                //     nodes = subsetService.subsetNodes;
+                //     links = dataGraph.getEdgesByNodes(nodes);
+                // }
 
-                var postObj = {
-                    networkId: currentNetwork.id,
-                    downloadFormat: 'xlsx',
-                    fileNamePrefix: type
-                };
+                // var currentNetwork = networkService.getCurrentNetwork();
+                // var fileName = (function () {
+                //     var div = document.createElement("div");
+                //     div.innerHTML = $scope.headerTitle; // In player's CtrlApp. Is html string
+                //     return div.textContent || div.innerText || "Mappr";
+                // }());
 
-                postObj.selectionData = {
-                    nodeIds: _.pluck(nodes, 'id'),
-                    linkIds: _.pluck(links, 'id')
-                };
+                // var postObj = {
+                //     networkId: currentNetwork.id,
+                //     downloadFormat: 'xlsx',
+                //     fileNamePrefix: type
+                // };
 
-                playerFactory.currPlayer()
-                    .then(function (player) {
-                        playerFactory.downloadSelection(player._id, postObj, function (result) {
-                            _export(result, fileName);
-                        });
-                    });
+                // postObj.selectionData = {
+                //     nodeIds: _.pluck(nodes, 'id'),
+                //     linkIds: _.pluck(links, 'id')
+                // };
+
+                // playerFactory.currPlayer()
+                //     .then(function (player) {
+                //         playerFactory.downloadSelection(player._id, postObj, function (result) {
+                //             _export(result, fileName);
+                //         });
+                //     });
             }
 
             function _export(data, fileName) {

@@ -2,8 +2,8 @@
 * Handles Graph Hover ops
 */
 angular.module('common')
-    .service('hoverService', ['$rootScope', '$timeout', '$q', 'renderGraphfactory', 'dataGraph', 'nodeRenderer', 'inputMgmtService', 'BROADCAST_MESSAGES', 'selectService', 'subsetService', 'SelectorService', 'playerFactory',
-        function ($rootScope, $timeout, $q, renderGraphfactory, dataGraph, nodeRenderer, inputMgmtService, BROADCAST_MESSAGES, selectService, subsetService, SelectorService, playerFactory) {
+    .service('hoverService', ['$rootScope', '$timeout', '$q', 'renderGraphfactory', 'dataGraph', 'nodeRenderer', 'inputMgmtService', 'BROADCAST_MESSAGES', 'selectService', 'subsetService', 'SelectorService', 'playerFactory', 'snapshotService',
+        function ($rootScope, $timeout, $q, renderGraphfactory, dataGraph, nodeRenderer, inputMgmtService, BROADCAST_MESSAGES, selectService, subsetService, SelectorService, playerFactory, snapshotService) {
 
             "use strict";
 
@@ -49,11 +49,7 @@ angular.module('common')
             function hoverNodes(hoverData) {
                 //  * @param {string} hoverData.degree - degree
 
-                playerFactory.currPlayer(true)
-                .then((currPlayer) => {
-                    hoverData.degree = _.get(currPlayer, 'settings.neighborhoodDegree') || defaultNeighborhoodDegree;
-                    _runHoverNodes.call(this, hoverData);
-                });
+                _runHoverNodes.call(this, hoverData);
             }
 
             function _runHoverNodes(hoverData) {
@@ -83,7 +79,8 @@ angular.module('common')
                     });
                 }
 
-                _hoverHelper(this.hoveredNodes, hoverData.degree, hoverData.withNeighbors);
+                var snapshot = snapshotService.getCurrentSnapshot();
+                _hoverHelper(this.hoveredNodes, snapshot ? (snapshot.layout.settings.nodeSelectionDegree || 0) : 0, hoverData.withNeighbors);
             }
 
             function filter(data, subset) {
@@ -152,7 +149,8 @@ angular.module('common')
                     this.hoveredNodes = _.clone(selectService.selectedNodes || []);
                 }
 
-                _hoverHelper(this.hoveredNodes, 0, !!selectService.singleNode);
+                var snapshot = snapshotService.getCurrentSnapshot();
+                _hoverHelper(this.hoveredNodes, snapshot ? (snapshot.layout.settings.nodeSelectionDegree || 0) : 0, !!selectService.singleNode);
             }
 
             function _hoverHelper(ids, degree, withNeighbors) {

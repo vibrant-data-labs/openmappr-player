@@ -13,13 +13,14 @@
     z-index: 0;
     margin-left: 432px;
     right: 0;
+    overflow-x: hidden;
 
     .xaxis-bkgrnd {
         background: $axis-bkgrnd;
         border-top: 1px solid $panel-border;
-        bottom: 0;
+        bottom: 2em;
         height: 100px;
-        left: 0;
+        left: 20px;
         right: 0;
         position: absolute;
         width: 95%;
@@ -38,7 +39,7 @@
 
 
     .xaxis-container {
-        bottom: 0;
+        bottom: 2em;
         height: 100px;
         left: -190px;
         right: 0;
@@ -170,7 +171,7 @@
 
     .xaxis-tit {
 
-        bottom: 40px;
+        bottom: calc(40px + 2em);
         display: table;
         left: 50%;
         margin-left: -250px;
@@ -179,6 +180,19 @@
         width: 500px;
         z-index: 3;
         pointer-events: auto;
+
+        select {
+            width: 100%;            
+            text-align: center;
+            border: none;
+            border-bottom: 1px solid rgb(230, 230, 230);
+            font: 500 16px / 20px "Poppins";
+            -moz-appearance:none;
+            -webkit-appearance:none;
+            appearance:none;
+            background: deployedUrl('/img/search/arrow-down.svg') no-repeat right white;
+            text-overflow: ellipsis;
+        }
 
         h4 {
             color: $text-color;
@@ -207,6 +221,19 @@
         > div {
             display: table-cell;
             vertical-align: middle;
+        }
+
+        select {
+            width: 100%;
+            text-align: center;
+            border: none;
+            border-bottom: 1px solid rgb(230, 230, 230);
+            font: 500 16px / 20px "Poppins";
+            -moz-appearance:none;
+            -webkit-appearance:none;
+            appearance:none;
+            background: deployedUrl('/img/search/arrow-down.svg') no-repeat right white;
+            text-overflow: ellipsis;
         }
 
         h4 {

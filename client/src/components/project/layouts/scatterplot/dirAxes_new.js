@@ -1,6 +1,6 @@
 angular.module('common')
-.directive('drawaxis', ['$compile', '$timeout', 'renderGraphfactory', 'layoutService','leafletData','dataGraph', 'AttrInfoService', 'BROADCAST_MESSAGES',
-function ($compile, $timeout, renderGraphfactory, layoutService, leafletData, dataGraph, AttrInfoService, BROADCAST_MESSAGES) {
+.directive('drawaxis', ['$rootScope', '$q', '$compile', '$timeout', 'renderGraphfactory', 'layoutService','leafletData','dataGraph', 'AttrInfoService', 'BROADCAST_MESSAGES', 'zoomService',
+function ($rootScope, $q, $compile, $timeout, renderGraphfactory, layoutService, leafletData, dataGraph, AttrInfoService, BROADCAST_MESSAGES, zoomService) {
     'use strict';
 
     /*************************************
@@ -12,10 +12,18 @@ function ($compile, $timeout, renderGraphfactory, layoutService, leafletData, da
         // WARN: there is a hardcode of 50 offset for both top and left in the drawMarker to counter CSS margins.
         //
         '<div id="axes" class="axis-container">'+
-            '<div ng-show="yshow" class="yaxis-tit"><div><h4 class="truncate no-text-transform" uib-tooltip="{{mapprSettings.yAxTooltip}}" tooltip-placement="right"><span>{{mapprSettings.yAxLabel || yAxisTitle}}</span></h4></div></div>'+
+            '<div ng-show="yshow" class="yaxis-tit"><div><h4 class="truncate no-text-transform" uib-tooltip="{{mapprSettings.yAxTooltip}}" tooltip-placement="right">' + 
+            '<select class="resizeselect" ng-change="updateYLayout(attr.id)" ng-model="yaxisId">' + 
+            '<option ng-repeat="attr in attrs" value="{{attr.id}}" ng-selected="attr.id == yaxisId">{{attr.title}}</option>' +
+            '</select>' +
+            '</h4></div></div>'+
             '<div ng-show="yshow" class="yaxis-bkgrnd"></div>'+
             '<div ng-show="yshow && mapprSettings.yAxTickShow" class="yaxis"></div>'+
-            '<div ng-show="xshow" class="xaxis-tit"><div><h4 class="truncate no-text-transform" uib-tooltip="{{mapprSettings.xAxTooltip}}" tooltip-placement="top"><span>{{mapprSettings.xAxLabel || xAxisTitle}}</span></h4></div></div>'+
+            '<div ng-show="xshow" class="xaxis-tit"><div><h4 class="truncate no-text-transform" uib-tooltip="{{mapprSettings.xAxTooltip}}" tooltip-placement="top">' + 
+            '<select class="resizeselect" ng-change="updateXLayout(attr.id)" ng-model="xaxisId">' + 
+            '<option ng-repeat="attr in attrs" value="{{attr.id}}" ng-selected="attr.id == xaxisId">{{attr.title}}</option>' +
+            '</select>' +            
+            '</h4></div></div>'+
             '<div ng-show="xshow" class="xaxis-bkgrnd"></div>'+
             '<div ng-show="xshow" class="xaxis-container">'+
             '<div ng-show="xshow && mapprSettings.xAxTickShow" class="xaxis"></div>'+
@@ -61,6 +69,7 @@ function ($compile, $timeout, renderGraphfactory, layoutService, leafletData, da
     **************************************/
     function postLinkFn(scope, element) {
         console.log('Axis directive started');
+        var infoObj = AttrInfoService.getNodeAttrInfoForRG();
         var $xaxis = $('.xaxis', element),
             $yaxis = $('.yaxis', element),
             axisIds = ['x','y']; // helpful iterator :)
@@ -69,6 +78,37 @@ function ($compile, $timeout, renderGraphfactory, layoutService, leafletData, da
         scope.yshow = false;
         scope.xAxisTitle = '';
         scope.yAxisTitle = '';
+        scope.attrs = [];
+
+        function buildRenderGraph (graphData, layout) {
+            return $q(function(resolve, reject){
+                console.log('buildRenderGraph called');
+                var currRG =  dataGraph.getRenderableGraph();
+                var zoomLevel = currRG != null ? currRG.zoomLevel : layout.setting('savedZoomLevel');
+                if(graphData && !graphData.isEmpty()) {
+                    var g = dataGraph.buildRenderableGraph(graphData, layout, zoomLevel);
+                    AttrInfoService.loadInfosForRG(g, layout);
+                    resolve(g);
+                } else {
+                    console.warn('buildRenderGraph called with crappy graphData. Investigate this');
+                    reject(new Error('buildRenderGraph called with crappy graphData. Investigate this'));
+                }
+            });
+        }
+
+        function updateLayout(attrId, axis) {
+            scope.layout.attr[axis] = attrId;
+            rebuildAndRepositionMarkers();
+            $rootScope.$broadcast(BROADCAST_MESSAGES.sigma.resize);
+        }
+
+        scope.updateYLayout = function(attrId) {
+            updateLayout(scope.yaxisId, 'y');
+        }
+        
+        scope.updateXLayout = function(attrId) {
+            updateLayout(scope.xaxisId, 'x');
+        }
 
         scope.$on(BROADCAST_MESSAGES.sigma.rendered, processAxis);
 
@@ -166,6 +206,14 @@ function ($compile, $timeout, renderGraphfactory, layoutService, leafletData, da
         // Build an axis
         function buildAxis (axis) {
             // scatterplot always builds
+
+            scope[axis + 'axisId'] = scope.layout.attr[axis];
+            scope.attrs = [];
+            _.each(dataGraph.getNodeAttrs(), function(attr) {
+                if(AttrInfoService.isDistrAttr(attr, infoObj.getForId(attr.id)) && attr.isNumeric && attr.visible) {
+                    scope.attrs.push(attr);
+                }
+            });
 
             var
                 layout       = scope.layout,
@@ -286,6 +334,10 @@ function ($compile, $timeout, renderGraphfactory, layoutService, leafletData, da
             }
 
             showAxisMarkers(axis);
+
+            $timeout(() => {
+                $('.resizeselect').resizeselect();
+            });
         }
 
         /**

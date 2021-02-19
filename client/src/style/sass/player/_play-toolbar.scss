@@ -271,16 +271,20 @@
     .button-group__item {
       height: 100%;
       border-left: 1px solid #e6e6e6;
+      opacity: .8;
     }
 
     .row-data__content {
       width: 100%;
       padding: 0 10px;
-      font: 500 15px/24px 'Poppins';
+      font: 400 14px/26px 'Poppins';
       line-height: 23px;
+      overflow-x: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
 
-    &:nth-child(1) { .row-data__content { color:  #000000; } }
+    &:nth-child(1) { .row-data__content { color:  rgba(50, 60, 71, 0.8); } }
     &:nth-child(2) { .row-data__content { color:  #BC3364; } }
   }
 

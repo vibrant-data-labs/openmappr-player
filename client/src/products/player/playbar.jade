@@ -46,7 +46,7 @@
               | nodes
               =' '
               b(ng-if="operation.type == 'select'") selected
-              b(ng-if="operation.type == 'subset'") subsetted
+              b(ng-if="operation.type == 'subset'", ng-class="{ 'span-subset': ($last || ($index == operations.list.length - 2 && operations.last().type == 'select')) }") subsetted
 
               button(ng-if="$index == operations.list.length -1", ng-click="resetOperation()").button_icon_cancel
 
@@ -55,7 +55,7 @@
                   dl.filter-section
                     dt.filter-section__label
                       | Search Results  
-                      span(ng-if="operation.searchAttr && operation.searchAttr.title") &nbsp;({{operation.searchAttr.title}})
+                      span(ng-if="operation.searchAttr") &nbsp;({{operation.searchAttr.title}})
                       | :
 
                     dd.filter-section__content
@@ -158,9 +158,9 @@
         button.button.button_type_play-toolbar.button_icon_search(ng-click="searchToggle()") search
 
     .play-toolbar__search(
-      ng-if="player.player.settings.showSearch && showSearch"
+      ng-if="player.settings.showSearch && showSearch"
       ng-controller="SearchPanelCtrl"
-      ng-include=' "#{player_prefix_index}/components/project/panels/search/search.html" '
+      ng-include=' "#{server_prefix}#{view_path}/components/project/panels/search/search.html" '
     )
 
       //.button-group__item
@@ -197,7 +197,8 @@
   .details-panel
 
     .details-panel__row-data
-      .row-data__content {{getCurrentProjectTitle()}}
+      .row-data__content
+        b {{getCurrentProjectTitle()}}
       .button-group__item
         button.button.button_type_play-toolbar.button_icon_info(
           ng-click="openInfoPage()"

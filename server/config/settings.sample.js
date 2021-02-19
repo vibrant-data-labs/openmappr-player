@@ -29,6 +29,7 @@ module.exports = {
           nodeSelectionRatio: 1.2, // same for the selection
           nodeSelectionBorderOffset: 0,
           nodeSelectionBorderWidth: 3,
+          nodeSelectionDegree: 0, // number - degree of hover nodes
 
           nodePopSize: 10,
           nodePopImageShow: true,

@@ -232,6 +232,7 @@ function ($q) {
             middlewares: ['resize'],
             settings: settings
         });
+
         if(mapprSettings) {
             sig.settings(mapprSettings);
         }

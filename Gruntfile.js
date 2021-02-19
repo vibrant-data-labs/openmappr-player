@@ -814,6 +814,25 @@ module.exports = function(grunt) {
 		}]
 	});
 
+	addTask('copy', 'dev_js_app_local', {
+		options: {
+			process: function (content, srcpath) {
+		        return content.replace(/#{player_prefix_index_source}/g, '').replace(/#{player_prefix_index}/g, view_path_dev);
+		        			// .replace(/#{mapp_prefix}/g, mapp_prefix_dev)
+		        			// .replace(/#{production}/g, false);
+		    }
+		},
+		files: [{
+			expand: true,
+			cwd: 'client/src/',
+			src: [	'components/**/*.js',
+					'products/player/**/*.js',
+					'products/sources/**/*.js'
+				],
+			dest: dev_build_dir + '/js/'
+		}]
+	});
+
 	addTask('copy', 'dev_js_sig', {
 		files: [{
 			expand: true,
@@ -916,10 +935,54 @@ module.exports = function(grunt) {
 		}]
 	});
 
+	addTask('jade', 'dev_jade_local', {
+		options: {
+			client: false,
+			pretty: true,
+			data: {
+				player_prefix_index: view_path_dev,
+				player_prefix_index_source: ''
+			}
+		},
+		files: [{
+			cwd: dev_build_dir + '/views/tmp/components',
+			src: ['**/*.jade'],
+			dest: dev_build_dir + '/views/partials/components',
+			expand: true,
+			ext: '.html'
+		},
+		{
+			cwd: dev_build_dir + '/views/tmp/products/',
+			src: ['**/*.jade'],
+			dest: dev_build_dir + '/views/partials',
+			expand: true,
+			ext: '.html'
+		}]
+	});	
+
 	addTask('copy', 'dev_jade', {
 		options: {
 			process: function (content, srcpath) {
 		        return content.replace(/#{player_prefix_index_source}/g, mapping.sourceUrl).replace(/#{player_prefix_index}/g, server_prefix_dev);
+		    }
+		},
+		files: [
+			{src: dev_build_dir + '/views/tmp/products/player/index_player.jade', dest: dev_build_dir + '/views/index_player.jade'},
+			{src: dev_build_dir + '/views/tmp/products/sources/index_sources.jade', dest: dev_build_dir + '/views/index_sources.jade'},
+			{
+				cwd: dev_build_dir + '/views/tmp/common',
+				src: ['**/*.jade'],
+				dest: dev_build_dir + '/views',
+				expand: true,
+				flatten: true
+			}
+		]
+	});
+
+	addTask('copy', 'dev_jade_local', {
+		options: {
+			process: function (content, srcpath) {
+		        return content.replace(/#{player_prefix_index_source}/g, '').replace(/#{player_prefix_index}/g, view_path_dev);
 		    }
 		},
 		files: [
@@ -1066,4 +1129,29 @@ addTask('cacheBust', 'dev', {
 	];
 
 	grunt.registerTask('default', tasks);
+
+	var tasksLocal = [
+		'clean:dev',
+		'compass:dev',
+		'concat:dev_css_mappr',
+		'concat:dev_css_player',
+		'copy:dev_icons',
+		'copy:dev_css_icons',
+		'copy:dev_css_fonts',
+		'copy:dev_fonts',
+		'copy:dev_fontawesome',
+		'copy:dev_js_sig',
+		'copy:dev_js_app_local',
+		'imagemin:dev',
+		'jadeUsemin:dev_index',
+		// 'jadeUsemin:dev_survey',
+		'preprocess:dev_jade',
+		'jade:dev_jade_local',
+		'copy:dev_jade_local',
+		'svgmin:dev',
+		'includeSource:dev_jade',
+		'clean:dev_tmp',
+	];
+
+	grunt.registerTask('local', tasksLocal);
 };

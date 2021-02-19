@@ -68,9 +68,13 @@ const getDirectories = async function (src, ignore) {
 const outputPath = './client/build/dev/';
 const dataPath = outputPath + 'data/';
 
-async function runGrunt() {
+async function runGrunt(isLocal) {
   console.log('Running grunt...');
-  execSync('grunt --force');
+  if (isLocal) {
+    execSync('grunt local --force');
+  } else {
+    execSync('grunt default --force');
+  }
 
   console.log('Minifying files...');
   const files = require('./config/minifyConfig');
@@ -129,9 +133,10 @@ async function buildResources() {
   }
 
   if (staticFilesOnly || (!dataOnly && !staticFilesOnly)) {
+    let jsonData;
     if (!dataOnly && !staticFilesOnly) {
       const mappingData = fs.readFileSync('./mapping.json');
-      const jsonData = JSON.parse(mappingData);
+      jsonData = JSON.parse(mappingData);
       jsonData.sourceUrl = '';
     } else {
       const lastCommitInfo = await getLastCommit();
@@ -140,13 +145,13 @@ async function buildResources() {
       playerBuildPrefix = 'http://' + bucketName + '.s3.us-east-1.amazonaws.com';
 
       const mappingData = fs.readFileSync('./mapping.json');
-      const jsonData = JSON.parse(mappingData);
+      jsonData = JSON.parse(mappingData);
       jsonData.sourceUrl = playerBuildPrefix;
     }
 
     publishDataPath = '/data/';
-    compileScss(playerBuildPrefix);
-    await runGrunt();
+    compileScss(jsonData.sourceUrl);
+    await runGrunt(!jsonData.sourceUrl);
   }
 
   if (!staticFilesOnly || (!dataOnly && !staticFilesOnly)) {
@@ -217,7 +222,6 @@ async function buildResources() {
 function buildIndex() {
   const playerTemplate = outputPath + '/views/index_player.jade';
 
-  const contents = fs.readFileSync(playerTemplate);
   const options = {
     client: true,
     compileDebug: false,
@@ -234,7 +238,7 @@ function buildIndex() {
   };
 
   return new Promise((resolve) => {
-    resolve(jade.renderFile(outputPath + '/views/index_player.jade', options));
+    resolve(jade.renderFile(playerTemplate, options));
   });
 }
 
@@ -279,8 +283,8 @@ if (indexOnly) {
     const jsonData = JSON.parse(mappingData);
     jsonData.sourceUrl = playerBuildPrefix;
 
-    compileScss(playerBuildPrefix);
-    await runGrunt();
+    compileScss(jsonData.sourceUrl);
+    await runGrunt(!jsonData.sourceUrl);
 
     if (!fs.existsSync(dataPath)) {
       fs.mkdirSync(dataPath, { recursive: true });

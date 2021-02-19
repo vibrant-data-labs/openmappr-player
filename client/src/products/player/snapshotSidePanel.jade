@@ -12,8 +12,3 @@
                     .snap-info
                         .snap-info-title {{snap.snapName}}
                         .snap-info-subtitle {{snap.subtitle}}
-                .snap-desc(ng-if="snap.id === currentSnap.id" dir-elem-ready="onDescShow($event)")
-                    .snap-desc-text(ng-bind-html="snap.descr" ng-style="getDescHeight()")
-                    .text-height-toggle(ng-if="isLongDescr && snapshots.length !== 1" ng-click="toggleDescrHeight(); $event.stopPropagation();")
-                        .h6
-                            em {{isMoreEnabled ? 'Less' : 'More' }}
