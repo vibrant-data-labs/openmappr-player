@@ -108,6 +108,23 @@
             if (!$httpProvider.defaults.headers.get) {
                 $httpProvider.defaults.headers.get = {};
             }
+
+            //disable cache
+            $httpProvider.interceptors.push([function(){
+                function endsWith(str, suffix) {
+                   return str.indexOf(suffix, str.length - suffix.length) !== -1;
+                }
+            
+                return {
+                    request: function(config){
+                        if((config.url.indexOf('partials/') == -1) || !endsWith(config.url, '.html')) return config;
+            
+                        config.url = config.url + '?c=' +(new Date()).getTime();
+            
+                        return config;
+                    }
+                };
+            }]);
             //disable IE ajax request caching
             //$httpProvider.defaults.headers.get['If-Modified-Since'] = '0';
 
