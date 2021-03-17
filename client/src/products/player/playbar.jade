@@ -158,9 +158,9 @@
         button.button.button_type_play-toolbar.button_icon_search(ng-click="searchToggle()") search
 
     .play-toolbar__search(
-      ng-if="player.settings.showSearch && showSearch"
+      ng-if="player.player.settings.showSearch && showSearch"
       ng-controller="SearchPanelCtrl"
-      ng-include=' "#{server_prefix}#{view_path}/components/project/panels/search/search.html" '
+      ng-include=' "/partials/components/project/panels/search/search.html" '
     )
 
       //.button-group__item
