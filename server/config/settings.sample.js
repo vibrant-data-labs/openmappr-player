@@ -1,7 +1,8 @@
 module.exports = {
   projName: 'name of the project',
   settings: {
-    lastViewedSnap: 'snap-pgp3t7'
+    lastViewedSnap: 'snap-pgp3t7',
+    displayExportButton: true
   },
   snapshots: [
     {
