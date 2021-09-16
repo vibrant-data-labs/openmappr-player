@@ -1,7 +1,7 @@
 angular.module('common')
     .controller('RightPanelTabsPlayerCtrl', ['$rootScope', '$scope', '$http', 'graphSelectionService', 'BROADCAST_MESSAGES', 'ngIntroService', 'FilterPanelService',
-        '$timeout', '$window', 'selectService', 'subsetService',
-        function ($rootScope, $scope, $http, graphSelectionService, BROADCAST_MESSAGES, ngIntroService, FilterPanelService, $timeout, $window, selectService, subsetService) {
+        '$timeout', '$window', 'selectService', 'subsetService', 'playerFactory',
+        function ($rootScope, $scope, $http, graphSelectionService, BROADCAST_MESSAGES, ngIntroService, FilterPanelService, $timeout, $window, selectService, subsetService, playerFactory) {
             'use strict';
 
             /*************************************
@@ -110,6 +110,10 @@ angular.module('common')
                 },
             ];
 
+            playerFactory.getPlayerLocally().then(function(resp) {
+                $scope.displayExportButton = resp.settings.displayExportButton;
+            })
+            
             /**
              * Scope methods
              */

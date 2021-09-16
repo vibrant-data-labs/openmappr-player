@@ -30,8 +30,8 @@
             uib-tooltip="Submit Feedback"
             tooltip-placement="right")
 
-      li.tabs-menu__item(ng-click="exportCurrentData()")
-        span.tabs-menu__link.tabs-menu__link_export( 
-          data-toggle="tooltip" 
+      li.tabs-menu__item(ng-click="exportCurrentData()", ng-if="displayExportButton")
+        span.tabs-menu__link.tabs-menu__link_export(
+          data-toggle="tooltip"
           uib-tooltip="Export current selection"
           tooltip-placement="right")
