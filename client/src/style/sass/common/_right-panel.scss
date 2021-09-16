@@ -267,7 +267,6 @@
   }
 
 
-  .node-search,
   .neighbor-search {
     margin-right: auto;
     margin-left: -3px;
@@ -287,7 +286,6 @@
       margin-left: -22px;
     }
   }
-
 
   .info-panel {
     margin-top: 1px;
@@ -488,6 +486,11 @@
 
     .panel-list {
       padding: 0;
+
+      &--scrollable {
+        height: calc(100% - 91px);
+        overflow-y: auto;
+      }
 
       .panel-item {
         @include transition(all .3s ease-out);
@@ -926,6 +929,63 @@
           cursor: pointer;
         }
       }
+    }
+  }
+}
+
+.node-search {
+  display: flex;
+  align-items: center;
+  position: relative;
+  margin-right: 16px;
+
+  &__input {
+    display: none;
+    width: 100%;
+    border: 2px solid #EBEFF2;
+    transition: background-color 0.2s;
+    padding: 7px 30px 8px 8px;
+    font: 400 15px/1 "Poppins";
+    border-radius: 4px;
+
+    .node-search--opened & {
+      display: block;
+    }       
+  }
+
+  &__btn {
+    width: 24px;
+    height: 24px;
+    background: url(/img/filter-panel/search.svg) 50% no-repeat;
+    background-size: 16px;
+    font-size: 0;
+    padding: 0;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+
+    &--open {
+      .node-search--opened & {
+        display: none;
+      }
+    }
+    
+    &--close {
+      display: none;
+      width: 24px;
+      height: 24px;
+      position: absolute;
+      top: 50%;
+      padding: 0;
+      font-size: 0;
+      transform: translateY(-50%);
+      background: url(/img/play-toolbar/cancel.svg) 50% no-repeat;
+      background-size: 10px;
+      right: 5px;
+      opacity: 0.4;
+
+      .node-search--opened & {
+        display: block;
+      }                
     }
   }
 }

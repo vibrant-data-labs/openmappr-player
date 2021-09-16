@@ -52,4 +52,14 @@
     padding: 5px 6px 4px;
     cursor: pointer;
   }
+
+  &__total {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &--nodes {
+    display: flex;
+    align-items: center;
+  }
 }

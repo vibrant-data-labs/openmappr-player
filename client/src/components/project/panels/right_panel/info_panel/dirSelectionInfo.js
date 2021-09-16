@@ -70,7 +70,7 @@ angular.module('common')
                     initialise();
                 }
 
-
+                $scope.nodeSearchQuery = '';
                 $scope.$on(BROADCAST_MESSAGES.renderGraph.loaded, initialise);
                 $scope.$on(BROADCAST_MESSAGES.renderGraph.changed, initialise);
                 $scope.$watch('selectionSetVMs.length', initialise);

@@ -1,135 +1,140 @@
-.panel-container.flex-vert-container.width-100
-	//- .header(ng-class="{'active': panelUI.infoPanelOpen, 'hovered': panelUI.infoPanelHover}" ng-click="panelUI.togglePanel('info');" ng-mouseenter="panelUI.infoPanelOpen ? showInfoDrawer = true : showInfoDrawer = false; panelUI.infoPanelHover = true;" ng-mouseleave="showInfoDrawer = false; panelUI.infoPanelHover = false;")
-	//.header
-		//.row.vert-align.main
-			.col-xs-7
-				h6.title.text-uppercase.truncate
-					span
-						span &nbsp;&nbsp;
-						span.sel-info(ng-if="selInfo.selNodesCount == 1 || !MAPP_EDITOR_OPEN") {{ui.infoTitle}}
-						span(ng-click="$event.stopPropagation();")
-							span(ng-if="selInfo.selNodesCount > 1 && MAPP_EDITOR_OPEN" uib-dropdown dropdown-append-to-body)
-								span(uib-dropdown-toggle auto-close="outsideClick")
-									span.text-link {{ui.infoTitle}}
-										i.fa.fa-angle-down
-								.uib-dropdown-menu.uib-dropdown-menu-flexing(uib-dropdown-menu)
-									.uib-dropdown-click-close
-									//inline style to center dropdowns
-									.uib-dropdown-flex-content(style="margin-left: 25px;")
-										.uib-dropdown-triangle
-										.uib-dropdown-flex
-											ul.dd-list.list-unstyled(ng-controller="NetworkUtilsCtrl")
-												li.row.vert-align.no-hover
-													.col-xs-12.flex-container
-														button.h6.dropdown-btn.text-uppercase.flex-fill.nowrap.power-btn(type="button" ng-click="selectionAsNW();") New Network from Selection
-						span(ng-click="$event.stopPropagation();")
-							span(ng-if="!ui.graphInteracted && selInfo.selNodesCount == 0 && MAPP_EDITOR_OPEN" uib-dropdown dropdown-append-to-body)
-								span(uib-dropdown-toggle )
-									span.text-link {{ui.infoTitle}}
-										i.fa.fa-angle-down
-								.uib-dropdown-menu.uib-dropdown-menu-flexing(uib-dropdown-menu)
-									.uib-dropdown-click-close
-									//inline style to center dropdowns
-									.uib-dropdown-flex-content(style="margin-left: 33px;")
-										.uib-dropdown-triangle
-										.uib-dropdown-flex.center
-											ul.dd-list.list-unstyled(ng-controller="NetworkUtilsCtrl")
-												li.row.vert-align.no-hover
-													.col-xs-12.flex-container
-														button.h6.dropdown-btn.text-uppercase.flex-fill.power-btn(type="button" ng-click="startNetGen()") New Network
-												li.row.vert-align(ng-hide="allNodesSelected")
-													.col-xs-12.flex-container
-														button.h6.dropdown-btn.text-uppercase.flex-fill.power-btn(type="button" ng-click="selectionAsNW();") New Network from Selection
-												//- ng-repeat here
-												li.row.vert-align.pointable-cursor(ng-repeat="network in networkList | orderBy:'-dateCreated'" ng-click="switchNetwork(network.id)")
-													.col-xs-1
-														i.icon-network.fa-1-2x.active(ng-if="network.id == currentNetwork.id")
-													.col-xs-11(ng-if="network.id != currentNetwork.id")
-														h6.no-margin.truncate.text-muted {{network.name}}
-													.col-xs-6(ng-if="network.id == currentNetwork.id")
-														h6.no-margin.truncate(ng-if="!utilsUi.editMode") {{network.name}}
-														.input-cont(ng-if="utilsUi.editMode" ng-click="$event.stopPropagation();")
-															input.h6.form-control.no-margin(style="min-width: 120px" ng-model="networkTempObj.name", type="text")
-													.col-xs-5.nowrap(ng-if="network.id == currentNetwork.id" ng-click="$event.stopPropagation();" )
-														ul.list-inline.pull-right(ng-if="!utilsUi.editMode")
-															li
-																button(uib-tooltip="Edit Name" tooltip-append-to-body="true" ng-click="utilsUi.editMode = true;")
-																	i.fa.fa-pencil.toggle-icon
-															li
-																button(uib-tooltip="Regenerate" tooltip-append-to-body="true" ng-click="startNetGen(true); hideDropdowns();")
-																	i.fa.fa-refresh.toggle-icon
-															li
-																button(uib-tooltip="Delete" tooltip-append-to-body="true" ng-click="hideDropdowns();" dir-delete-confirm title="Delete {{currentNetwork.name || 'Network'+ Number($index+1)}}" obj-name="{{currentNetwork.name || 'Network'+ Number($index+1)}}" get-obj-info="getDeleteNetworkInfo()" obj-info="deleteNetworkInfo" action="deleteNetwork();")
-																	i.fa.fa-trash-o.toggle-icon
-															li
-																button(uib-tooltip="{{{true: 'Show', false: 'Hide'}[networkTempObj.networkInfo.hideArchsBridgers]}} Archetypes & Bridgers Info" tooltip-append-to-body="true" ng-click="toggleArchsBridgersInfo(); saveNetworkEdits();")
-																	i.fa.fa-1-3x(ng-class = "{true:'fa-bullseye text-muted-light', false:'fa-bullseye'}[networkTempObj.networkInfo.hideArchsBridgers]")
-														ul.list-inline.pull-right(ng-if="utilsUi.editMode")
-															li
-																button(uib-tooltip="Save" tooltip-append-to-body="true" ng-click="saveNetworkEdits();")
-																	i.fa.fa-check.toggle-icon
-															li
-																button(uib-tooltip="Cancel" tooltip-append-to-body="true" ng-click="cancelNetworkEdits();")
-																	i.fa.fa-times.toggle-icon
-						span.subtitle(ng-if="!panelUI.infoPanelOpen")
-							span.truncate(ng-show="selInfo.selNodesCount != 1")
-								span(ng-show="!ui.graphInteracted") &nbsp;&nbsp;{{generalInfo.totalNodesCount}}&nbsp;&nbsp;
-								span(ng-show="ui.graphInteracted") &nbsp;&nbsp;{{selInfo.selNodesCount}}&nbsp;&nbsp;
-								span(ng-show="!ui.graphInteracted || (ui.graphInteracted && !selInfo.clusterVal)")
-									span.truncate(ng-show="!ui.editNodesTitle || !MAPP_EDITOR_OPEN") {{vm.nodesTitle}}
-								span.truncate(ng-show="ui.graphInteracted && selInfo.clusterVal") ({{selInfo.selPerc}}%) {{selInfo.clusterVal}}
-							span.truncate(ng-show="selInfo.selNodesCount == 1")
-								span.truncate &nbsp;&nbsp;{{selInfo.singleNodeInfo.label}}
-			.col-xs-2.vert-align.right(ng-if="MAPP_EDITOR_OPEN")
-				button(ng-if="selInfo.selNodesCount == 1;" ng-click="toggleNodeOverlay(); $event.stopPropagation();" uib-tooltip="Toggle Node Overlay" tooltip-placement="bottom-left" tooltip-append-to-body="true")
-					i.fa.fa-1-2x.fa-expand.toggle-icon(ng-class="{'active':mapprSettings.nodeFocusShow}")
-		//div(
-			ng-click="$event.stopPropagation()"
-			ng-if="MAPP_EDITOR_OPEN || (!MAPP_EDITOR_OPEN && player.settings.showExportBtn)"
-		//)
-			//h6.text-uppercase
-				//spacer
-				.row.vert-align
-					.col-xs-7
-						span(uib-dropdown dropdown-append-to-body)
-							span &nbsp;&nbsp;
-							span.text-link.pointable-cursor(uib-dropdown-toggle auto-close="outsideClick" uib-tooltip="Save selected nodes as Excel" , tooltip-placement="right", tooltip-append-to-body="true" ng-click="keepDrawerOpen = true;")
-								i.fa.fa-download.left
-								span Export Selection
-								i.fa.fa-angle-down
-							.uib-dropdown-menu.uib-dropdown-menu-flexing(uib-dropdown-menu)
-								.uib-dropdown-click-close(ng-click="keepDrawerOpen = false;")
-								.uib-dropdown-flex-content()
-									.uib-dropdown-flex
-										ul.dd-list.list-unstyled
-											//- ng-repeat here
-											li.row.vert-align.pointable-cursor
-												a.vert-align(ng-click="exportSelection(true); keepDrawerOpen = false;")
-													.col-xs-12
-														.row
-															.col-xs-1
-																i.fa.fa-download
-															.col-xs-10.truncate
-																span.text-sm Selected Nodes
-											li.row.vert-align.pointable-cursor
-												a.vert-align(ng-click="exportSelection(true, true); keepDrawerOpen = false;")
-													.col-xs-12
-														.row
-															.col-xs-1
-																i.fa.fa-download
-															.col-xs-10.truncate
-																span.text-sm Selected &amp; Neighbors
-											li.row.vert-align.pointable-cursor
-												a.vert-align(ng-click="exportSelection(false); keepDrawerOpen = false;")
-													.col-xs-12
-														.row
-															.col-xs-1
-																i.fa.fa-download
-															.col-xs-10.truncate
-																span.text-sm Network
-					.col-xs-5
+.flex-transclude.width-100
+	.flex-vert-container.flex-transclude.panel-container.width-100
+		//- .header(ng-class="{'active': panelUI.infoPanelOpen, 'hovered': panelUI.infoPanelHover}" ng-click="panelUI.togglePanel('info');" ng-mouseenter="panelUI.infoPanelOpen ? showInfoDrawer = true : showInfoDrawer = false; panelUI.infoPanelHover = true;" ng-mouseleave="showInfoDrawer = false; panelUI.infoPanelHover = false;")
+		//.header
+			//.row.vert-align.main
+				.col-xs-7
+					h6.title.text-uppercase.truncate
 						span
-							button.square-btn.small-btn.panel-btn(type="button", ng-click="invertSelection();") Invert Selection
-	#info-panel-scroll.panel-scroll.flex-fill.flex-vert-container
-		div(ng-if="panelUI.infoPanelOpen")
-			dir-selection-info(ng-show="selInfo.genericSelNodes.length > 0")
+							span &nbsp;&nbsp;
+							span.sel-info(ng-if="selInfo.selNodesCount == 1 || !MAPP_EDITOR_OPEN") {{ui.infoTitle}}
+							span(ng-click="$event.stopPropagation();")
+								span(ng-if="selInfo.selNodesCount > 1 && MAPP_EDITOR_OPEN" uib-dropdown dropdown-append-to-body)
+									span(uib-dropdown-toggle auto-close="outsideClick")
+										span.text-link {{ui.infoTitle}}
+											i.fa.fa-angle-down
+									.uib-dropdown-menu.uib-dropdown-menu-flexing(uib-dropdown-menu)
+										.uib-dropdown-click-close
+										//inline style to center dropdowns
+										.uib-dropdown-flex-content(style="margin-left: 25px;")
+											.uib-dropdown-triangle
+											.uib-dropdown-flex
+												ul.dd-list.list-unstyled(ng-controller="NetworkUtilsCtrl")
+													li.row.vert-align.no-hover
+														.col-xs-12.flex-container
+															button.h6.dropdown-btn.text-uppercase.flex-fill.nowrap.power-btn(type="button" ng-click="selectionAsNW();") New Network from Selection
+							span(ng-click="$event.stopPropagation();")
+								span(ng-if="!ui.graphInteracted && selInfo.selNodesCount == 0 && MAPP_EDITOR_OPEN" uib-dropdown dropdown-append-to-body)
+									span(uib-dropdown-toggle )
+										span.text-link {{ui.infoTitle}}
+											i.fa.fa-angle-down
+									.uib-dropdown-menu.uib-dropdown-menu-flexing(uib-dropdown-menu)
+										.uib-dropdown-click-close
+										//inline style to center dropdowns
+										.uib-dropdown-flex-content(style="margin-left: 33px;")
+											.uib-dropdown-triangle
+											.uib-dropdown-flex.center
+												ul.dd-list.list-unstyled(ng-controller="NetworkUtilsCtrl")
+													li.row.vert-align.no-hover
+														.col-xs-12.flex-container
+															button.h6.dropdown-btn.text-uppercase.flex-fill.power-btn(type="button" ng-click="startNetGen()") New Network
+													li.row.vert-align(ng-hide="allNodesSelected")
+														.col-xs-12.flex-container
+															button.h6.dropdown-btn.text-uppercase.flex-fill.power-btn(type="button" ng-click="selectionAsNW();") New Network from Selection
+													//- ng-repeat here
+													li.row.vert-align.pointable-cursor(ng-repeat="network in networkList | orderBy:'-dateCreated'" ng-click="switchNetwork(network.id)")
+														.col-xs-1
+															i.icon-network.fa-1-2x.active(ng-if="network.id == currentNetwork.id")
+														.col-xs-11(ng-if="network.id != currentNetwork.id")
+															h6.no-margin.truncate.text-muted {{network.name}}
+														.col-xs-6(ng-if="network.id == currentNetwork.id")
+															h6.no-margin.truncate(ng-if="!utilsUi.editMode") {{network.name}}
+															.input-cont(ng-if="utilsUi.editMode" ng-click="$event.stopPropagation();")
+																input.h6.form-control.no-margin(style="min-width: 120px" ng-model="networkTempObj.name", type="text")
+														.col-xs-5.nowrap(ng-if="network.id == currentNetwork.id" ng-click="$event.stopPropagation();" )
+															ul.list-inline.pull-right(ng-if="!utilsUi.editMode")
+																li
+																	button(uib-tooltip="Edit Name" tooltip-append-to-body="true" ng-click="utilsUi.editMode = true;")
+																		i.fa.fa-pencil.toggle-icon
+																li
+																	button(uib-tooltip="Regenerate" tooltip-append-to-body="true" ng-click="startNetGen(true); hideDropdowns();")
+																		i.fa.fa-refresh.toggle-icon
+																li
+																	button(uib-tooltip="Delete" tooltip-append-to-body="true" ng-click="hideDropdowns();" dir-delete-confirm title="Delete {{currentNetwork.name || 'Network'+ Number($index+1)}}" obj-name="{{currentNetwork.name || 'Network'+ Number($index+1)}}" get-obj-info="getDeleteNetworkInfo()" obj-info="deleteNetworkInfo" action="deleteNetwork();")
+																		i.fa.fa-trash-o.toggle-icon
+																li
+																	button(uib-tooltip="{{{true: 'Show', false: 'Hide'}[networkTempObj.networkInfo.hideArchsBridgers]}} Archetypes & Bridgers Info" tooltip-append-to-body="true" ng-click="toggleArchsBridgersInfo(); saveNetworkEdits();")
+																		i.fa.fa-1-3x(ng-class = "{true:'fa-bullseye text-muted-light', false:'fa-bullseye'}[networkTempObj.networkInfo.hideArchsBridgers]")
+															ul.list-inline.pull-right(ng-if="utilsUi.editMode")
+																li
+																	button(uib-tooltip="Save" tooltip-append-to-body="true" ng-click="saveNetworkEdits();")
+																		i.fa.fa-check.toggle-icon
+																li
+																	button(uib-tooltip="Cancel" tooltip-append-to-body="true" ng-click="cancelNetworkEdits();")
+																		i.fa.fa-times.toggle-icon
+							span.subtitle(ng-if="!panelUI.infoPanelOpen")
+								span.truncate(ng-show="selInfo.selNodesCount != 1")
+									span(ng-show="!ui.graphInteracted") &nbsp;&nbsp;{{generalInfo.totalNodesCount}}&nbsp;&nbsp;
+									span(ng-show="ui.graphInteracted") &nbsp;&nbsp;{{selInfo.selNodesCount}}&nbsp;&nbsp;
+									span(ng-show="!ui.graphInteracted || (ui.graphInteracted && !selInfo.clusterVal)")
+										span.truncate(ng-show="!ui.editNodesTitle || !MAPP_EDITOR_OPEN") {{vm.nodesTitle}}
+									span.truncate(ng-show="ui.graphInteracted && selInfo.clusterVal") ({{selInfo.selPerc}}%) {{selInfo.clusterVal}}
+								span.truncate(ng-show="selInfo.selNodesCount == 1")
+									span.truncate &nbsp;&nbsp;{{selInfo.singleNodeInfo.label}}
+				.col-xs-2.vert-align.right(ng-if="MAPP_EDITOR_OPEN")
+					button(ng-if="selInfo.selNodesCount == 1;" ng-click="toggleNodeOverlay(); $event.stopPropagation();" uib-tooltip="Toggle Node Overlay" tooltip-placement="bottom-left" tooltip-append-to-body="true")
+						i.fa.fa-1-2x.fa-expand.toggle-icon(ng-class="{'active':mapprSettings.nodeFocusShow}")
+			//div(
+				ng-click="$event.stopPropagation()"
+				ng-if="MAPP_EDITOR_OPEN || (!MAPP_EDITOR_OPEN && player.settings.showExportBtn)"
+			//)
+				//h6.text-uppercase
+					//spacer
+					.row.vert-align
+						.col-xs-7
+							span(uib-dropdown dropdown-append-to-body)
+								span &nbsp;&nbsp;
+								span.text-link.pointable-cursor(uib-dropdown-toggle auto-close="outsideClick" uib-tooltip="Save selected nodes as Excel" , tooltip-placement="right", tooltip-append-to-body="true" ng-click="keepDrawerOpen = true;")
+									i.fa.fa-download.left
+									span Export Selection
+									i.fa.fa-angle-down
+								.uib-dropdown-menu.uib-dropdown-menu-flexing(uib-dropdown-menu)
+									.uib-dropdown-click-close(ng-click="keepDrawerOpen = false;")
+									.uib-dropdown-flex-content()
+										.uib-dropdown-flex
+											ul.dd-list.list-unstyled
+												//- ng-repeat here
+												li.row.vert-align.pointable-cursor
+													a.vert-align(ng-click="exportSelection(true); keepDrawerOpen = false;")
+														.col-xs-12
+															.row
+																.col-xs-1
+																	i.fa.fa-download
+																.col-xs-10.truncate
+																	span.text-sm Selected Nodes
+												li.row.vert-align.pointable-cursor
+													a.vert-align(ng-click="exportSelection(true, true); keepDrawerOpen = false;")
+														.col-xs-12
+															.row
+																.col-xs-1
+																	i.fa.fa-download
+																.col-xs-10.truncate
+																	span.text-sm Selected &amp; Neighbors
+												li.row.vert-align.pointable-cursor
+													a.vert-align(ng-click="exportSelection(false); keepDrawerOpen = false;")
+														.col-xs-12
+															.row
+																.col-xs-1
+																	i.fa.fa-download
+																.col-xs-10.truncate
+																	span.text-sm Network
+						.col-xs-5
+							span
+								button.square-btn.small-btn.panel-btn(type="button", ng-click="invertSelection();") Invert Selection
+		// TODO: New directive with totals and tabs(Summary, Legend, List)
+		.filter-header
+			.filter-header__total
+				span.dark-grey-font.truncate 2461 Total nodes
+				span.dark-grey-font.truncate 12398 Total links
+			.filter-header__tabs TODO: totals above and tabs here
+		dir-selection-info.flex-vert-container.flex-transclude.panel-container.width-100(ng-show="selInfo.genericSelNodes.length > 0")
