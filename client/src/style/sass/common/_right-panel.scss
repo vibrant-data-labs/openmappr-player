@@ -10,13 +10,15 @@
   overflow: hidden;
   position: absolute;
   left: $side-menu-width + 20px;
-  top: 20px;
+  top: 0;
+  left: 0;
   width: $right-panel-width;
   z-index: 999;
   transition: left .1s;
   box-shadow: 0 2px 10px rgba(#000, .08);
   border-radius: 4px;
-
+  padding-top: 60px;
+  
   .tab-content {
     @include flex-vert-container;
     overflow: auto;

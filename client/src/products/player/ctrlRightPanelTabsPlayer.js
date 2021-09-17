@@ -67,10 +67,8 @@ angular.module('common')
 
             $scope.rightPanelTabs = [
                 {
-                    iconClass: 'filter',
-                    title: 'Filters',
+                    title: 'Summary',
                     panel: 'filter',
-                    tooltipTitle: 'Filter data by one or more attributes',
                     cmd: function () {
                         $scope.panelUI.openPanel('filter');
                         if (!$window.localStorage.filter)
@@ -81,26 +79,6 @@ angular.module('common')
                     }
                 },
                 {
-                    iconClass: 'list',
-                    title: 'List',
-                    showSelCount: true,
-                    tooltipTitle: 'See the list view of selected nodes - or all nodes if none are selected',
-                    panel: 'info',
-                    cmd: function () {
-                        $scope.panelUI.openPanel('info');
-                    }
-                },
-                {
-                    iconClass: 'snapshots',
-                    title: 'Snapshots',
-                    panel: 'snapshots',
-                    tooltipTitle: 'See snapshot information and change views if there are more than one',
-                    cmd: function () {
-                        $scope.panelUI.openPanel('snapshots');
-                    }
-                },
-                {
-                    iconClass: 'legend',
                     title: 'Legend',
                     panel: 'summary',
                     tooltipTitle: 'See color and sizing information',
@@ -108,6 +86,24 @@ angular.module('common')
                         $scope.panelUI.openPanel('summary');
                     }
                 },
+                {
+                    title: 'List',
+                    showSelCount: true,
+                    panel: 'info',
+                    cmd: function () {
+                        $scope.panelUI.openPanel('info');
+                    }
+                },
+                // {
+                //     iconClass: 'snapshots',
+                //     title: 'Snapshots',
+                //     panel: 'snapshots',
+                //     tooltipTitle: 'See snapshot information and change views if there are more than one',
+                //     cmd: function () {
+                //         $scope.panelUI.openPanel('snapshots');
+                //     }
+                // },
+                
             ];
 
             playerFactory.getPlayerLocally().then(function(resp) {

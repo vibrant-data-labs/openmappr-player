@@ -83,13 +83,12 @@ angular.module('common')
 
             $scope.onScroll = function() {
                 var chartItem = $('.chart-first-item').position().top;
-
                 if (chartItem < window.innerHeight / 2) {
-                    document.querySelector('.filter-header__item.tag').classList.remove('filter-header__item_current');
-                    document.querySelector('.filter-header__item.chart').classList.add('filter-header__item_current');
+                    document.querySelector('.filter-header__item.tag') && document.querySelector('.filter-header__item.tag').classList.remove('filter-header__item_current');
+                    document.querySelector('.filter-header__item.chart') && document.querySelector('.filter-header__item.chart').classList.add('filter-header__item_current');
                 } else {
-                    document.querySelector('.filter-header__item.tag').classList.add('filter-header__item_current');
-                    document.querySelector('.filter-header__item.chart').classList.remove('filter-header__item_current');
+                    document.querySelector('.filter-header__item.tag') && document.querySelector('.filter-header__item.tag').classList.add('filter-header__item_current');
+                    document.querySelector('.filter-header__item.chart') && document.querySelector('.filter-header__item.chart').classList.remove('filter-header__item_current');
                 }
             }
 
@@ -194,8 +193,7 @@ angular.module('common')
                     .flatten()
                     .value();
 
-                $scope.nodeDistrAttrs = [...tagAttrs, ...chartAttrs];
-
+                $scope.nodeDistrAttrs = [...chartAttrs];
                 updateNodeColorStr();
                 // Set 'sortType' for tag attrs
                 setSortForTags($scope.nodeDistrAttrs, !_.isEmpty(newSelection));

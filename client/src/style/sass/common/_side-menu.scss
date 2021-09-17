@@ -19,7 +19,7 @@
 
 .side-menu-compressed {
   .side-menu {
-    width: $side-menu-compressed;
+    // width: $side-menu-compressed;
   }
 
   .intro-overlay {
@@ -27,7 +27,7 @@
   }
 
   .right-panel {
-    left: $side-menu-compressed + 20px;
+    // left: $side-menu-compressed + 20px;
   }
 
   .graph-container,
@@ -72,9 +72,6 @@
       left: 50%;
       transform: translate(-50%, -50%);
     }
-  }
-  .tabs-menu__badge {
-    left: 35px;
   }
 
   .tabs-menu__link.toggle {

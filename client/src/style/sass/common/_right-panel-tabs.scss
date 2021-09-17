@@ -1,27 +1,28 @@
 .right-panel__tabs {
   font-weight: 500;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  width: 192px;
-  background: #296571;
-  z-index: 1002;
-  box-shadow: 0 0 18px rgba(#000, .06);
+  width: $right-panel-width;
+  z-index: 1000;
+  position: relative;
 }
 
 .tabs-menu {
-  margin: 0;
-  padding: 0 10px 0 0;
+  list-style: none;
+  display: flex;
+  background: #F0F2F5;
+  border-radius: 6px;
+  border: 1px solid #E0DFE6;
+  margin: 10px;
+  padding: 3px;
   list-style: none;
 
   &__item {
     cursor: pointer;
     transition: background-color .2s;
-
-    &:not(:last-child) {
-      margin-bottom: 4px;
-    }
+    flex: 1 0 auto;
+    font: 400 14px/21px "Poppins";
+    text-align: center;
+    border-radius: 6px;
+    position: relative;
 
     &:hover {
       .tabs-menu__link {
@@ -34,7 +35,10 @@
       border-radius: 0 4px 4px 0;
 
       .tabs-menu__link {
-        opacity: 1;
+        color: #323C47;
+        background: #fff;
+        border-radius: 5px;
+        border: 1px solid #cecece;
       }
 
       .tabs-menu__badge {
@@ -68,7 +72,7 @@
 
   &__badge {
     position: absolute;
-    left: 30px;
+    right: 7px;
     padding: 0 5px;
     min-width: 15px;
     background: #ba3665;
@@ -76,19 +80,18 @@
     line-height: 15px;
     font-size: 10px;
     border-radius: 20px;
-    top: 5px;
+    top: 8px;
   }
 
   &__link {
-    height: 40px;
-    display: block;
     position: relative;
-    font: 500 13px/20px 'Poppins';
-    padding: 10px 10px 10px 55px;
-    color: #fff;
-    opacity: .8;
-    transition: opacity .3s;
-
+    z-index: 10;
+    display: block;
+    height: 100%;
+    padding: 5px 6px 4px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    
     &::before {
       content: '';
       position: absolute;
