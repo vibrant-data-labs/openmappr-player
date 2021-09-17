@@ -71,6 +71,8 @@ angular.module('common')
                 }
 
                 $scope.nodeSearchQuery = '';
+                $scope.currentExport = 'all';
+
                 $scope.$on(BROADCAST_MESSAGES.renderGraph.loaded, initialise);
                 $scope.$on(BROADCAST_MESSAGES.renderGraph.changed, initialise);
                 $scope.$watch('selectionSetVMs.length', initialise);
@@ -341,6 +343,19 @@ angular.module('common')
                     }
                     return sortTypes;
                 }
+
+                $rootScope.$on(BROADCAST_MESSAGES.hss.select, function (ev, data) {
+                    if (data.selectionCount == 0 && data.isSubsetted) {
+                        $scope.currentExport = 'subset';
+                    } else {
+                        $scope.currentExport = data.filtersCount > 0 ? 'select': 'all';
+                    }
+                });
+
+                $scope.exportCurrentData = function() {
+                    var currentExport = $scope.currentExport;
+                    $rootScope.exportSelection(currentExport);
+                }                
             }
 
 

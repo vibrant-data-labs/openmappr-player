@@ -61,5 +61,19 @@
   &--nodes {
     display: flex;
     align-items: center;
+    justify-content: space-between;
   }
+
+  &__left-part {
+    display: flex;
+    align-items: center;
+    min-height: 34px;
+  }
+  &__right-part {
+    flex-grow: 0;
+
+    .fa-download {
+      font-size: 16px;
+    }
+  }  
 }

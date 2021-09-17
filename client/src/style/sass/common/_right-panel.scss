@@ -944,9 +944,14 @@
     width: 100%;
     border: 2px solid #EBEFF2;
     transition: background-color 0.2s;
-    padding: 7px 30px 8px 8px;
+    padding: 3px 30px 4px 8px;
     font: 400 15px/1 "Poppins";
     border-radius: 4px;
+    transition: border-color 0.2s;
+
+    &:hover {
+      border-color: #ccd6de;
+    }    
 
     .node-search--opened & {
       display: block;

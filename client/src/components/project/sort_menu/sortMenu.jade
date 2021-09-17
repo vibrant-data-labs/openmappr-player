@@ -1,4 +1,4 @@
-.attr-visibility.truncate.card_type_filter
+.attr-visibility.truncate.card_type_filter(ng-class="{'card_type_filter--short': shortView}")
 	button.card__action-sort(
 		ng-class="{ 'up': sortConfig && sortConfig.sortOrder === 'asc', 'desc': sortConfig && sortConfig.sortOrder === 'desc', 'card__action-sort-alphabet': isAbc }", 
 		ng-click="setSortOrder(sortConfig.sortOrder, $event)"
@@ -6,7 +6,7 @@
 		tooltip-placement="bottom-left", 
 		tooltip-append-to-body="true"
 	)
-	span Sorted By:
+	span {{ getStatictext() }}:
 
 	span.sort-options(uib-dropdown dropdown-append-to-body)
 		span(uib-dropdown-toggle auto-close="outsideClick" ng-click="keepDrawerOpen = true;" uib-tooltip="Sort Options", tooltip-placement="right" tooltip-append-to-body="true")

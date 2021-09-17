@@ -16,6 +16,7 @@ angular.module('common')
         scope: {
             sortTypes: '=', // List of Sort types objects eg. {id: 'alphabetical', title: 'Alphabetical'}
             sortConfig: '=', // Model for sort => {sortType: 'alphabetical', sortOrder: 'desc'}
+            shortView: '=', // View type, Boolean. True - for short view, just arrow and short text
             alignToRight: '<'
         },
         templateUrl: '#{player_prefix_index}/components/project/sort_menu/sortMenu.html',
@@ -37,6 +38,11 @@ angular.module('common')
         }
     ];
 
+    var staticText = {
+        standart: 'Sorted By',
+        short: 'Sort By'
+    };
+
 
     /*************************************
     ******** Controller Function *********
@@ -53,6 +59,7 @@ angular.module('common')
         };
 
         scope.sortOrders = sortOrders;
+        scope.staticText = staticText;
 
         scope.$watch('sortConfig.sortType', function() {
             if (!scope.sortConfig) return;
@@ -93,6 +100,10 @@ angular.module('common')
             var sortConfig = _.find(scope.sortTypes, { id: sortType })
             return sortConfig && sortConfig.title;
         }
+
+        scope.getStatictext = function getStatictext() {
+            return scope.shortView ? scope.staticText.short : scope.staticText.standart;
+        }        
     }
 
 

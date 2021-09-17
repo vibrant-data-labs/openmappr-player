@@ -227,6 +227,45 @@
         }
 
       }
+
+      &--short {
+        .sort-options {
+          margin-left: 4px;
+
+          .text-link {
+            text-decoration: none;
+            border-radius: 4px;
+            padding: 5px;
+            border: 2px solid #EBEFF2;
+            display: block;
+            transition: border-color 0.2s, color 0.2s;            
+
+            &:hover {
+              border-color: #ccd6de;
+              color: #444;
+            }            
+          }
+        }
+
+        .card__action-sort {
+          margin-right: 2px;
+          
+          background-image: deployedUrl('/img/filter-panel/sort-desc.png');
+  
+          &:not(.card__action-sort-alphabet).up {
+            background-image: deployedUrl('/img/filter-panel/sort-asc.png');
+          }
+  
+          &-alphabet {
+            background-image: deployedUrl('/img/filter-panel/sort-asc.png');
+  
+            &.desc {
+              background-image: deployedUrl('/img/filter-panel/sort-desc.png')
+            }
+          }
+        }        
+      }
+
     }
   }
 }
