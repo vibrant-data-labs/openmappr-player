@@ -1,6 +1,6 @@
 angular.module('common')
-.directive('dirNodesList', ['BROADCAST_MESSAGES', 'hoverService', 'selectService', 'subsetService', 'FilterPanelService', 'layoutService',
-function(BROADCAST_MESSAGES, hoverService, selectService, subsetService, FilterPanelService, layoutService) {
+.directive('dirNodesList', ['BROADCAST_MESSAGES', 'hoverService', 'selectService', 'subsetService', 'FilterPanelService', 'layoutService', '$timeout',
+function(BROADCAST_MESSAGES, hoverService, selectService, subsetService, FilterPanelService, layoutService, $timeout) {
     'use strict';
 
     /*************************************
@@ -46,6 +46,22 @@ function(BROADCAST_MESSAGES, hoverService, selectService, subsetService, FilterP
 
         var hasSelection = selectService.getSelectedNodes() && selectService.getSelectedNodes().length;
         var hasSubset = subsetService.currentSubset() && subsetService.currentSubset().length;
+
+
+        scope.$watch('sortInfo.sortType', function() {
+            if (scope.singleNode) {
+                $timeout(function() {
+                    scrollTo(scope.singleNode.id);
+                }, 400);
+            }
+        });
+        scope.$watch('sortInfo.sortOrder', function() {
+            if (scope.singleNode) {
+                $timeout(function() {
+                    scrollTo(scope.singleNode.id);
+                }, 400);
+            }            
+        });
 
         if (hasSubset && hasSelection) {
             scope.nodesStatus = 'Nodes selected';
@@ -136,6 +152,7 @@ function(BROADCAST_MESSAGES, hoverService, selectService, subsetService, FilterP
 
             if (data.nodes.length == 1) {
                 scope.singleNode = data.nodes[0];
+                scrollTo(scope.singleNode.id);
             } else {
                 scope.singleNode = null;
             }
@@ -153,6 +170,12 @@ function(BROADCAST_MESSAGES, hoverService, selectService, subsetService, FilterP
         function unHoverNodes(nodeIds) {
             hoverService.unhover();
             if (scope.selectedGroup != undefined) hoverNodes(scope.selectedGroup);
+        }
+
+        function scrollTo(id) {
+            var $scrollTo = angular.element('#item-' + id);
+            var $container = angular.element('#info-panel-scroll');
+            $container.animate({scrollTop: $scrollTo.offset().top - $container.offset().top + $container.scrollTop()}, "slow");
         }
     }
 

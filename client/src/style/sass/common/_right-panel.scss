@@ -492,6 +492,7 @@
       &--scrollable {
         height: calc(100% - 91px);
         overflow-y: auto;
+        margin: 0px -20px;
       }
 
       .panel-item {
@@ -524,7 +525,8 @@
         }
 
         &.list-item {
-          margin: 0 -20px;
+          //margin: 0 -20px;
+          margin: 0;
           padding: 0 20px;
         }
 
