@@ -1,8 +1,4 @@
 .right-panel__tabs.side-menu
-  .side-menu__logo
-    .logo
-      img.logo__image(src="/img/logo-light_horizontal.svg" alt="Vibrant Logo")/
-
   .side-menu__body
     ul.tabs-menu
       li.tabs-menu__item(
@@ -11,27 +7,27 @@
         )
 
         span.tabs-menu__link(
-          data-toggle="tooltip" 
-          uib-tooltip="{{tab.title}}: {{tab.tooltipTitle}}" 
-          tooltip-placement="right" 
-          class='tabs-menu__link_{{tab.iconClass}}')
+          class='tabs-menu__link_{{tab.iconClass}}') {{tab.title}}
           span.tabs-menu__badge(ng-if="tab.showSelCount && selNodesCount !== 0") {{selNodesCount}}
 
     .right-panel__divider
 
 
   .side-menu__footer
-    ul.tabs-menu
+    ul.right-corner
 
-      li.tabs-menu__item
+      li.right-corner__item
         a(href="mailto:support@openmappr.org" target="_blank")
-          span.tabs-menu__link.tabs-menu__link_feedback( 
+          span.right-corner__link.right-corner__link_feedback( 
             data-toggle="tooltip" 
             uib-tooltip="Submit Feedback"
-            tooltip-placement="right")
+            tooltip-placement="left"
+            tooltip-append-to-body="true")
 
-      li.tabs-menu__item(ng-click="exportCurrentData()", ng-if="displayExportButton")
-        span.tabs-menu__link.tabs-menu__link_export(
+      li.right-corner_item(ng-click="exportCurrentData()", ng-if="displayExportButton")
+        span.right-corner__link.right-corner__link_export(
           data-toggle="tooltip"
           uib-tooltip="Export current selection"
-          tooltip-placement="right")
+          tooltip-placement="left"
+          tooltip-append-to-body="true")
+

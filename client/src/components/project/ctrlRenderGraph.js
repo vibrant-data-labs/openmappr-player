@@ -192,6 +192,7 @@ angular.module('common')
             }
             $scope.toggleSnapshotDescription = function () {
                 $scope.isSnapshotDescription = !$scope.isSnapshotDescription;
+                $scope.panelUI.openPanel('snapshots');
             }
 
             $scope.openInfoPage = function () {
