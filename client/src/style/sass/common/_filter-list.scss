@@ -29,7 +29,7 @@
   }
   &_type {
     &_filter {
-      padding: 0 20px;
+      padding: 0 10px;
 
       &.card_expanded {
         .card__title,
@@ -63,7 +63,7 @@
       }
 
       .card__title {
-        margin: 0;
+        margin: 0 0 0 9px;
         color: #BC3364;
         font: 500 15px/24px 'Poppins';
         max-width: 100%;
@@ -101,7 +101,6 @@
         font-size: 0;
         background-image: deployedUrl('/img/filter-panel/numeric-sort-desc.png');
         background-size: 16px;
-        margin-right: 9px;
         padding: 0;
         opacity: .8;
         transition: opacity .2s;
@@ -266,6 +265,42 @@
         }        
       }
 
+    }
+  }
+
+  &_collapsed {
+    .card__body {
+      display: none;
+    }
+
+    .card__action-collapse {
+      &:before {
+        transform: rotate(180deg);
+      }
+    }
+  }
+
+  &__action-collapse {
+    width: 20px;
+    height: 20px;
+    border-radius: 3px;
+    border: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    background: #F5F6F8;
+
+    &:before {
+      content: '';
+      background: url('../../../img/arrow.svg');
+      display: block;
+      width: 10px;
+      height: 10px;
+      background-size: 100%;
+      background-repeat: no-repeat;
+      transform: rotate(90deg);
+      padding: 0;
     }
   }
 }

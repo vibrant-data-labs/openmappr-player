@@ -69,7 +69,8 @@
   .tag-list {
     display: flex;
     flex-wrap: wrap;
-
+    margin: 0 -2px;
+    
     &__item {
       padding: 0 5px;
       font-weight: 500;
@@ -77,8 +78,8 @@
       line-height: 20px;
       border: 1px solid #E2E2E2;
       color: #616161;
-      margin: 0 4px 4px 0;
-      width: 31%;
+      margin: 0 2px 4px;
+      width: calc(25% - 4px);
 
       &-wide {
         width: 100%;

@@ -1,11 +1,11 @@
 .flex-transclude.width-100(ng-mouseleave="rightPanelExited();", ng-controller="FilterPanelParentCtrl")
 	.flex-vert-container.flex-transclude.panel-container.width-100
-		.filter-header
-			ul.filter-header__list
-				li.filter-header__item.tag.filter-header__item_current(ng-click="navigateTo('.tags-first-item')", ng-if="canShowTagsBtn()")
-					span.filter-header__link Tags
-				li.filter-header__item.chart(ng-click="navigateTo('.chart-first-item')", ng-if="canShowChartsBtn()")
-					span.filter-header__link Charts
+		//- .filter-header
+			//- ul.filter-header__list
+			//- 	li.filter-header__item.tag.filter-header__item_current(ng-click="navigateTo('.tags-first-item')", ng-if="canShowTagsBtn()")
+			//- 		span.filter-header__link Tags
+			//- 	li.filter-header__item.chart(ng-click="navigateTo('.chart-first-item')", ng-if="canShowChartsBtn()")
+			//- 		span.filter-header__link Charts
 
 		.panel-scroll.flex-fill.flex-vert-container(ng-controller="FilterPanelCtrl")
 			//- span {{filteredDistrAttrs.length}} of {{nodeDistrAttrs.length}}
@@ -46,7 +46,8 @@
 							.card__search-box
 								input(type='text', ng-model="attr.searchQuery", ng-change="search(attr, $event)")/
 								button.close(ng-click="clearSearch(attr); searchToggle(attr);") close
-
+							button.card__action-collapse(ng-click="collapseCard(attr)")
+								
 						.card__body
 							.card__content
 								dir-attr-renderer(attr-to-render="attr", noe-color-str="nodeColorStr", is-node="true", show-filter="ui.enableFilters", disable-filter="attr.disableFilter" theme="appUi.theme" pinned-media="pinnedMedia")

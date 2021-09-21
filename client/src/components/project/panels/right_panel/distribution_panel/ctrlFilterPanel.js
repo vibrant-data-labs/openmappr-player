@@ -64,6 +64,11 @@ angular.module('common')
                 //searchBoxInput.focus();
             }
 
+            $scope.collapseCard = function(attr) {
+                const card = document.querySelector('.card_type_filter[data-attr="' + attr.id + '"]');
+                card.classList.toggle('card_collapsed');
+            }
+
             $scope.clearSearch = function search(attr) {
                 attr.searchQuery = null;
             }
@@ -193,7 +198,7 @@ angular.module('common')
                     .flatten()
                     .value();
 
-                $scope.nodeDistrAttrs = [...chartAttrs];
+                $scope.nodeDistrAttrs = [...tagAttrs, ...chartAttrs];
                 updateNodeColorStr();
                 // Set 'sortType' for tag attrs
                 setSortForTags($scope.nodeDistrAttrs, !_.isEmpty(newSelection));
