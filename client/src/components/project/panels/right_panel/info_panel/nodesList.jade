@@ -40,12 +40,7 @@
 
 	div.panel-list.panel-list--scrollable
 		ul.list-unstyled
-			li.panel-item.list-item.pointable-cursor.no-animate.no-hover(ng-if="singleNode")
-				.row.vert-align
-					.col-xs-6
-						h6.groups-title &nbsp;
-					.col-xs-4.pointable-cursor		
-			li.panel-item.list-item.pointable-cursor.no-animate(ng-repeat="node in nodes | filter: filterNode track by node.id" ng-click="selectNode(node.id, $event)" ng-mouseenter="hoverNode(node.id, $event)" ng-mouseleave="unHoverNode(node.id, $event)")
+			li.panel-item.list-item.pointable-cursor(id="item-{{node.id}}" ng-class="{'highlighted':node.id == singleNode.id}" ng-repeat="node in nodes | filter: filterNode track by node.id" ng-click="selectNode(node.id, $event)" ng-mouseenter="hoverNode(node.id, $event)" ng-mouseleave="unHoverNode(node.id, $event)")
 				.row.vert-align.truncate(uib-tooltip-html="getNodeTooltipHtml(node)" tooltip-placement="right" tooltip-append-to-body="true")
 					.col-xs-2
 						.big-circle(style="background: {{::getNodeColor(node)}};")
