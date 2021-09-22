@@ -193,7 +193,7 @@ angular.module('common')
                     .flatten()
                     .value();
 
-                $scope.nodeDistrAttrs = [...chartAttrs];
+                $scope.nodeDistrAttrs = [...tagAttrs, ...chartAttrs];
                 updateNodeColorStr();
                 // Set 'sortType' for tag attrs
                 setSortForTags($scope.nodeDistrAttrs, !_.isEmpty(newSelection));
