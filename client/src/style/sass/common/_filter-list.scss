@@ -19,6 +19,50 @@
   }
 }
 
+.filter-list-additional {
+  
+
+  &__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 10px;
+  }
+
+  &__title {
+    color: #BC3364;
+  }
+
+  &__btn {
+    width: 20px;
+    height: 20px;
+    border-radius: 3px;
+    border: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    background: #F5F6F8;
+
+    &:before {
+      content: "";
+      background: url(../../../img/arrow.svg);
+      display: block;
+      width: 10px;
+      height: 10px;
+      background-size: 100%;
+      background-repeat: no-repeat;
+      transform: rotate(90deg);
+      padding: 0;
+    }
+
+    &_active {
+      &:before {
+        transform: rotate(180deg);
+      }
+    }
+  }
+}
 .sort-options {
   margin-left: 10px;
 }
@@ -275,7 +319,7 @@
 
     .card__action-collapse {
       &:before {
-        transform: rotate(180deg);
+        transform: rotate(90deg);
       }
     }
   }
@@ -299,7 +343,7 @@
       height: 10px;
       background-size: 100%;
       background-repeat: no-repeat;
-      transform: rotate(90deg);
+      transform: rotate(180deg);
       padding: 0;
     }
   }

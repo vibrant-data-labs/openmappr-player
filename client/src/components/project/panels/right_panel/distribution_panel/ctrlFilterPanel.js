@@ -20,9 +20,11 @@ angular.module('common')
     *  Scope data
     */
             $scope.nodeDistrAttrs = [];
+            $scope.nodeDistrAttrsHigh = [];
+            $scope.nodeDistrAttrsLow = [];
             $scope.currentSelection = [];
             $scope.MAPP_EDITOR_OPEN = $rootScope.MAPP_EDITOR_OPEN;
-
+            $scope.isShowAdditionalCategory = false;
             /**
     * Scope methods
     */
@@ -197,8 +199,20 @@ angular.module('common')
                     .partition(function (attr) { return networkAttrs.indexOf(attr.id) > -1; })
                     .flatten()
                     .value();
+                
+                $scope.nodeDistrAttrs = [...tagAttrs, ...chartAttrs]
+                $scope.nodeDistrAttrs.forEach(i => {
+                    if (i.priority == "high") {
+                        $scope.nodeDistrAttrsHigh = [...$scope.nodeDistrAttrsHigh, i];
+                    } else {
+                        $scope.nodeDistrAttrsLow = [...$scope.nodeDistrAttrsLow, i];
+                    }
+                })
 
-                $scope.nodeDistrAttrs = [...tagAttrs, ...chartAttrs];
+                $scope.showAdditionCat = function() {
+                    $scope.isShowAdditionalCategory = !$scope.isShowAdditionalCategory;
+                }
+
                 updateNodeColorStr();
                 // Set 'sortType' for tag attrs
                 setSortForTags($scope.nodeDistrAttrs, !_.isEmpty(newSelection));

@@ -2,20 +2,24 @@
   position: absolute;
   right: 20px;
   left: $side-menu-width + $right-panel-width + 20px;
-  top: 20px;
+  top: 10px;
   padding-left: 20px;
 
   &__buttons {
-    display: inline-flex;
+    display: block;
     position: relative;
     border-radius: 3px;
     background: #fff;
-    min-width: 360px;
+    max-width: 328px;
   }
 
   &__search {
-    display: none;
-    visibility: hidden;
+    // display: none;
+    // visibility: hidden;
+  }
+
+  &__reset-wrap {
+    position: relative;
   }
 
   &_opened {
@@ -31,8 +35,7 @@
       visibility: visible;
       order: -1;
     }
-    .button-group_type_play-toolbar.search,
-    .button-group {
+    .button-group_type_play-toolbar.search{
       visibility: hidden;
       display: none;
     }
@@ -42,7 +45,7 @@
     position: absolute;
     left: 0;
     right: 0;
-    top: 30px;
+    top: 50px;
   }
 
   .selected,

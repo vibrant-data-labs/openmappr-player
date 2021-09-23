@@ -1,40 +1,42 @@
 .playbar.play-toolbar(ng-class="{'play-toolbar_opened': showSearch}")
   .play-toolbar__buttons
-    .button-group.button-group_type_play-toolbar
-      .button-group__item(
-        ng-class="{ 'subset-enabled': ui.subsetEnabled }"
-        uib-tooltip="Apply your selection to summarize its characteristics in the Tags and Charts and to enable searching or filtering within it"
-        tooltip-placement="bottom"
-        tooltip-append-to-body="true"
-        )
-        button.button.button_type_play-toolbar.button_icon_check.button_with-text(
-          ng-click="subsetFilters()",
-          ng-disabled="!(ui.subsetEnabled)"
-        ) Apply
+    .button-group_type_play-toolbar
+      //- .button-group__item(
+      //-   ng-class="{ 'subset-enabled': ui.subsetEnabled }"
+      //-   uib-tooltip="Apply your selection to summarize its characteristics in the Tags and Charts and to enable searching or filtering within it"
+      //-   tooltip-placement="bottom"
+      //-   tooltip-append-to-body="true"
+      //-   )
+        
 
-      .button-group__item
-        button.button.button_type_play-toolbar.button_icon_cancel.button_with-text(
-          ng-click="resetFilters()",
-          ng-disabled="!(ui.activeFilterCount > 0)"
-        ) Reset
+      
 
-      .button-group__item.button-group__select(ng-class="{ 'opened': operations.list.length > 1 && operations.opened, 'closed': operations.list.length > 1 && !operations.opened }", ng-click="operations.togglePanel()")
-        span(ng-if="operations.last().type == 'init'")
-          b {{operations.last().totalNodes}}
-          = ' '
-          | total nodes
-        span(ng-if="operations.last().type == 'select' || operations.last().type == 'subset'")
-          b {{operations.last().nodesCount}}
-          = ' '
-          | nodes
-          = ' '
-          span(ng-if="operations.last().type == 'select'") selected
-          span(ng-if="operations.last().type == 'subset'") subsetted
+      //- .button-group__item.button-group__select(ng-class="{ 'opened': operations.list.length > 1 && operations.opened, 'closed': operations.list.length > 1 && !operations.opened }", ng-click="operations.togglePanel()")
+      //-   span(ng-if="operations.last().type == 'init'")
+      //-     b {{operations.last().totalNodes}}
+      //-     = ' '
+      //-     | total nodes
+      //-   span(ng-if="operations.last().type == 'select' || operations.last().type == 'subset'")
+      //-     b {{operations.last().nodesCount}}
+      //-     = ' '
+      //-     | nodes
+      //-     = ' '
+      //-     span(ng-if="operations.last().type == 'select'") selected
+      //-     span(ng-if="operations.last().type == 'subset'") subsetted
 
       .play-toolbar__content(ng-if="operations.list.length > 1 && operations.opened")
+        .play-toolbar__reset-wrap
+          button.button_reset(
+            ng-click="resetFilters()",
+            ng-disabled="!(ui.activeFilterCount > 0)"
+          ) Clear Selection
+          button.button_collapse(
+            ng-click="collapseBreadcrumbs()",
+            ng-class="{'button_collapse_hide': !isShowBreadcrumbs}"
+          )
         .play-toolbar-list
           section.play-toolbar-list__item(ng-repeat="operation in operations.list",
-            ng-if="operation.type != 'init'"
+            ng-if="operation.type != 'init' && isShowBreadcrumbs"
             ng-class="{'play-toolbar-list__item_subsetted' : operation.type == 'subset', 'play-toolbar-list__item_selected': operation.type == 'select', 'play-toolbar-list__item_opened': operation.isOpened }")
             header.play-toolbar-list__header(ng-if="operation.type == 'select' || operation.type == 'subset'", ng-click="operations.toggleOperation(operation)")
               span(ng-class="{'selected' : $last, 'total': !$last}") {{operation.nodesCount}}
@@ -152,13 +154,19 @@
                           span {{val.values[0] | number:2}}
 
                         span(ng-if="val.description == 'eq'") {{val.values[0]}}
+        button.button_summarize(
+          ng-click="subsetFilters()",
+          ng-disabled="!(ui.subsetEnabled)"
+          uib-tooltip="Click to summarize the selected nodes in the ‘Summary’ tab"
+          tooltip-append-to-body="true"
+          tooltip-placement="right"
+        ) Summarize Selection
 
-    .button-group.button-group_type_play-toolbar.search
-      .button-group__item
-        button.button.button_type_play-toolbar.button_icon_search(ng-click="searchToggle()") search
+    //- .button-group_type_play-toolbar.search
+    //-   .button-group__item
+    //-     button.button.button_type_play-toolbar.button_icon_search(ng-click="searchToggle()") search
 
     .play-toolbar__search(
-      ng-if="player.player.settings.showSearch && showSearch"
       ng-controller="SearchPanelCtrl"
       ng-include=' "#{player_prefix_index_source}/partials/components/project/panels/search/search.html" '
     )
