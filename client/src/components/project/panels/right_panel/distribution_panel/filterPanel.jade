@@ -12,7 +12,7 @@
 			div()
 				ul.filter-list(data-dir-virtual-scroll="", variable-height="", container-item-count="nodeDistrAttrs.length" dir-kill-tooltip-on-scroll, ng-if="ui.renderDistr", on-scroll="onScroll")
 					li.filter-list__item(
-						ng-repeat="attr in ui.filteredAttrs = (nodeDistrAttrsHigh | filter: {title : ui.statsSearchKey}) track by attr.id",
+						ng-repeat="attr in ui.filteredAttrs = ((hasPriority ? nodeDistrAttrsHigh : nodeDistrAttrs) | filter: {title : ui.statsSearchKey}) track by attr.id",
 						ng-if="attr.visible", ng-class="{'attr-hidden':!attr.visible, 'first': ($index == 1), 'chart-first-item': attr.isFirstChart, 'tags-first-item': attr.isFirstTag}",
 						ng-click='selectNodesByAttrib(attr.title, attr.value, $event)'
 					)
@@ -61,10 +61,10 @@
 						)
 							span {{::attr.title}}
 							span(ng-show="attr.principalVal") :&nbsp;{{attr.principalVal}}
-			.filter-list-additional
-				div.filter-list-additional__head(ng-class="{'filter-list-additional_open' : isShowAdditionalCategory}")
+			.filter-list-additional(ng-if="hasPriority")
+				div.filter-list-additional__head(ng-class="{'filter-list-additional_open' : isShowAdditionalCategory}", ng-click='showAdditionCat()')
 					h5.filter-list-additional__title Additional Attributes
-					button.filter-list-additional__btn(ng-click='showAdditionCat()', ng-class='{"filter-list-additional__btn_active": isShowAdditionalCategory}')
+					button.filter-list-additional__btn(ng-class='{"filter-list-additional__btn_active": isShowAdditionalCategory}')
 				ul.filter-list(data-dir-virtual-scroll="", variable-height="", container-item-count="nodeDistrAttrs.length" dir-kill-tooltip-on-scroll, ng-if="ui.renderDistr && isShowAdditionalCategory", on-scroll="onScroll")
 					li.filter-list__item(
 						ng-repeat="attr in ui.filteredAttrs = (nodeDistrAttrsLow | filter: {title : ui.statsSearchKey}) track by attr.id",

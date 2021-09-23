@@ -200,7 +200,13 @@ angular.module('common')
                     .flatten()
                     .value();
                 
-                $scope.nodeDistrAttrs = [...tagAttrs, ...chartAttrs]
+                $scope.nodeDistrAttrs = [...tagAttrs, ...chartAttrs];
+
+                var nodePriorities = _($scope.nodeDistrAttrs)
+                    .filter(x => x.visible)
+                    .countBy(x => x.priority || 'low')
+                    .value();
+                $scope.hasPriority = nodePriorities.high > 0 && nodePriorities.low > 0;
                 $scope.nodeDistrAttrs.forEach(i => {
                     if (i.priority == "high") {
                         $scope.nodeDistrAttrsHigh = [...$scope.nodeDistrAttrsHigh, i];

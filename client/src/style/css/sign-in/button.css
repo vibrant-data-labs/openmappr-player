@@ -13,25 +13,91 @@
   opacity: .7;
 }
 /* line 14, ../../sass/sign-in/button.scss */
+.button_summarize {
+  width: 100%;
+  border: 1px solid #E8E8E8;
+  border-top: none;
+  padding: 7px;
+  text-align: center;
+  margin: -2px 0 0 0;
+  border-radius: 0 0 6px 6px;
+  background: #fff;
+  transition: all 350ms ease;
+}
+/* line 25, ../../sass/sign-in/button.scss */
+.button_summarize:hover {
+  background: #BC3364;
+  color: #fff;
+  box-shadow: 0 8px 5px -8px rgba(0, 0, 0, 0.2);
+}
+/* line 31, ../../sass/sign-in/button.scss */
+.button_summarize:disabled {
+  background: #f4f4f4;
+  box-shadow: none;
+  color: initial;
+}
+/* line 38, ../../sass/sign-in/button.scss */
+.button_reset {
+  width: 100%;
+  border: 1px solid #E8E8E8;
+  border-bottom: none;
+  padding: 7px;
+  text-align: center;
+  margin: 0 0 -2px 0;
+  border-radius: 6px 6px 0 0;
+  background: #fff;
+  transition: all 350ms ease;
+  position: relative;
+}
+/* line 50, ../../sass/sign-in/button.scss */
+.button_reset:hover {
+  background: #BC3364;
+  color: #fff;
+  box-shadow: 0 -8px 5px -8px rgba(0, 0, 0, 0.2);
+}
+/* line 56, ../../sass/sign-in/button.scss */
+.button_reset:disabled {
+  background: #f4f4f4;
+  box-shadow: none;
+  color: initial;
+}
+/* line 63, ../../sass/sign-in/button.scss */
+.button_collapse {
+  position: absolute;
+  content: "";
+  border-radius: 2px;
+  border: 1px solid #E2E2E2;
+  background: #fff url("/img/search/arrow-down.svg") 50% no-repeat;
+  background-size: 8px 5px;
+  top: 8px;
+  right: 10px;
+  width: 20px;
+  height: 20px;
+}
+/* line 75, ../../sass/sign-in/button.scss */
+.button_collapse_hide {
+  transform: scaleY(-1);
+}
+/* line 80, ../../sass/sign-in/button.scss */
 .button_wide {
   display: block;
   width: 100%;
 }
-/* line 20, ../../sass/sign-in/button.scss */
+/* line 86, ../../sass/sign-in/button.scss */
 .button_type_primary {
   background: #BA3665;
   color: #fff;
 }
-/* line 24, ../../sass/sign-in/button.scss */
+/* line 90, ../../sass/sign-in/button.scss */
 .button_type_primary:hover {
   background: #9a2d54;
 }
-/* line 28, ../../sass/sign-in/button.scss */
+/* line 94, ../../sass/sign-in/button.scss */
 .button_type_primary:focus, .button_type_primary:active {
   background: #9a2d54;
   box-shadow: inset 0 0 8px rgba(91, 26, 49, 0.6);
 }
-/* line 35, ../../sass/sign-in/button.scss */
+/* line 101, ../../sass/sign-in/button.scss */
 .button_type_ghost {
   background: none;
   color: #BA3665;
@@ -39,11 +105,11 @@
   font-weight: 500;
   font-size: 13px;
 }
-/* line 42, ../../sass/sign-in/button.scss */
+/* line 108, ../../sass/sign-in/button.scss */
 .button_type_ghost:hover {
   color: #9a2d54;
 }
-/* line 47, ../../sass/sign-in/button.scss */
+/* line 113, ../../sass/sign-in/button.scss */
 .button_type_play-toolbar {
   display: block;
   width: 26px;
@@ -55,11 +121,11 @@
   border-radius: 2px;
   text-transform: none;
 }
-/* line 58, ../../sass/sign-in/button.scss */
+/* line 124, ../../sass/sign-in/button.scss */
 .button_type_play-toolbar:disabled {
   opacity: .3;
 }
-/* line 62, ../../sass/sign-in/button.scss */
+/* line 128, ../../sass/sign-in/button.scss */
 .button_type_play-toolbar.button_with-text {
   width: auto;
   font-weight: 400;
@@ -67,15 +133,15 @@
   line-height: 26px;
   padding: 0 10px 0 20px;
 }
-/* line 69, ../../sass/sign-in/button.scss */
+/* line 135, ../../sass/sign-in/button.scss */
 .button_type_play-toolbar.button_with-text::before {
   width: 20px;
 }
-/* line 74, ../../sass/sign-in/button.scss */
+/* line 140, ../../sass/sign-in/button.scss */
 .button_type_play-toolbar:hover {
   background-color: #fafafa;
 }
-/* line 78, ../../sass/sign-in/button.scss */
+/* line 144, ../../sass/sign-in/button.scss */
 .button_type_play-toolbar::before {
   content: '';
   position: absolute;
@@ -86,48 +152,48 @@
   background-repeat: no-repeat;
   background-position: 50%;
 }
-/* line 91, ../../sass/sign-in/button.scss */
+/* line 157, ../../sass/sign-in/button.scss */
 .button_type_play-toolbar.button_icon_check::before {
   background-image: deployedUrl("/img/play-toolbar/check.svg");
 }
-/* line 95, ../../sass/sign-in/button.scss */
+/* line 161, ../../sass/sign-in/button.scss */
 .button_type_play-toolbar.button_icon_info::before {
   background-size: 20%;
   background-image: url("/img/play-toolbar/info-solid.svg");
 }
-/* line 100, ../../sass/sign-in/button.scss */
+/* line 166, ../../sass/sign-in/button.scss */
 .button_type_play-toolbar.button_icon_chevron-left::before {
   background-image: deployedUrl("/img/play-toolbar/arrow-left.svg");
 }
-/* line 104, ../../sass/sign-in/button.scss */
+/* line 170, ../../sass/sign-in/button.scss */
 .button_type_play-toolbar.button_icon_chevron-right::before {
   background-image: deployedUrl("/img/play-toolbar/arrow-right.svg");
 }
-/* line 108, ../../sass/sign-in/button.scss */
+/* line 174, ../../sass/sign-in/button.scss */
 .button_type_play-toolbar.button_icon_chevron-down::before {
   background: #fff url("/img/search/arrow-down.svg") 50% no-repeat;
 }
-/* line 112, ../../sass/sign-in/button.scss */
+/* line 178, ../../sass/sign-in/button.scss */
 .button_type_play-toolbar.button_icon_cancel::before {
   background-image: deployedUrl("/img/play-toolbar/cancel.svg");
 }
-/* line 116, ../../sass/sign-in/button.scss */
+/* line 182, ../../sass/sign-in/button.scss */
 .button_type_play-toolbar.button_icon_target::before {
   background-image: deployedUrl("/img/play-toolbar/target.svg");
 }
-/* line 120, ../../sass/sign-in/button.scss */
+/* line 186, ../../sass/sign-in/button.scss */
 .button_type_play-toolbar.button_icon_plus::before {
   background-image: deployedUrl("/img/play-toolbar/plus.svg");
 }
-/* line 124, ../../sass/sign-in/button.scss */
+/* line 190, ../../sass/sign-in/button.scss */
 .button_type_play-toolbar.button_icon_minus::before {
   background-image: deployedUrl("/img/play-toolbar/minus.svg");
 }
-/* line 128, ../../sass/sign-in/button.scss */
+/* line 194, ../../sass/sign-in/button.scss */
 .button_type_play-toolbar.button_icon_search::before {
   background-image: deployedUrl("/img/play-toolbar/search.svg");
 }
-/* line 132, ../../sass/sign-in/button.scss */
+/* line 198, ../../sass/sign-in/button.scss */
 .button_type_play-toolbar.button_icon_help::before {
   background-image: deployedUrl("/img/play-toolbar/help.svg");
 }
