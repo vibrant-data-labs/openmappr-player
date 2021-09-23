@@ -1,6 +1,6 @@
 angular.module('common')
-.directive('dirNodesList', ['BROADCAST_MESSAGES', 'hoverService', 'selectService', 'subsetService', 'FilterPanelService', 'layoutService',
-function(BROADCAST_MESSAGES, hoverService, selectService, subsetService, FilterPanelService, layoutService) {
+.directive('dirNodesList', ['BROADCAST_MESSAGES', 'hoverService', 'selectService', 'subsetService', 'FilterPanelService', 'layoutService', '$timeout',
+function(BROADCAST_MESSAGES, hoverService, selectService, subsetService, FilterPanelService, layoutService, $timeout) {
     'use strict';
 
     /*************************************
@@ -19,6 +19,7 @@ function(BROADCAST_MESSAGES, hoverService, selectService, subsetService, FilterP
             selectedGroups: '=',
             sortTypes: '=',
             sortInfo: '=',
+            searchQuery: '='
         },
         templateUrl: '#{player_prefix_index}/components/project/panels/right_panel/info_panel/nodesList.html',
         link: postLinkFn
@@ -28,8 +29,6 @@ function(BROADCAST_MESSAGES, hoverService, selectService, subsetService, FilterP
     ************ Local Data **************
     **************************************/
     // var logPrefix = 'dirNodesList: ';
-    var ITEMS_TO_SHOW = 100;
-    var ITEMS_TO_SHOW_INITIALLY = 20;
 
 
     /*************************************
@@ -43,14 +42,26 @@ function(BROADCAST_MESSAGES, hoverService, selectService, subsetService, FilterP
 
         var memoizedGetFunctionColor = _.memoize(getFunctionColor);
 
-        scope.nodeSearchQuery = '';
-        scope.numShowGroups = 0;
-        scope.viewLimit = Math.min(ITEMS_TO_SHOW_INITIALLY, scope.nodes.length);
-
         scope.singleNode = selectService.singleNode;
 
         var hasSelection = selectService.getSelectedNodes() && selectService.getSelectedNodes().length;
         var hasSubset = subsetService.currentSubset() && subsetService.currentSubset().length;
+
+
+        scope.$watch('sortInfo.sortType', function() {
+            if (scope.singleNode) {
+                $timeout(function() {
+                    scrollTo(scope.singleNode.id);
+                }, 400);
+            }
+        });
+        scope.$watch('sortInfo.sortOrder', function() {
+            if (scope.singleNode) {
+                $timeout(function() {
+                    scrollTo(scope.singleNode.id);
+                }, 400);
+            }            
+        });
 
         if (hasSubset && hasSelection) {
             scope.nodesStatus = 'Nodes selected';
@@ -69,23 +80,6 @@ function(BROADCAST_MESSAGES, hoverService, selectService, subsetService, FilterP
         layoutService.getCurrent().then(function (layout) {
             scope.layout = layout;
         });
-
-        scope.$watch('nodes', function() {
-            scope.viewLimit = Math.min(ITEMS_TO_SHOW_INITIALLY, scope.nodes.length);
-        });
-
-        scope.viewMore = function() {
-            if(scope.viewLimit < scope.nodes.length) {
-                // scope.viewLimit += Math.min(minViewCount, scope.nodes.length - scope.viewLimit);
-                scope.numShowGroups++;
-                scope.viewLimit = Math.min(scope.nodes.length, scope.numShowGroups * ITEMS_TO_SHOW + ITEMS_TO_SHOW_INITIALLY);
-            }
-        };
-
-        scope.viewLess = function() {
-            scope.numShowGroups = 0;
-            scope.viewLimit = Math.min(ITEMS_TO_SHOW_INITIALLY, scope.nodes.length);
-        };
 
         scope.selectNode = function(nodeId, $event) {
             hoverService.unhover();
@@ -113,8 +107,8 @@ function(BROADCAST_MESSAGES, hoverService, selectService, subsetService, FilterP
         };
 
         scope.filterNode = function(node) {
-            if (!scope.nodeSearchQuery) { return true; }
-            var regex = new RegExp(scope.nodeSearchQuery, 'gi');
+            if (!scope.searchQuery) { return true; }
+            var regex = new RegExp(scope.searchQuery, 'gi');
             return node.attr[scope.labelAttr].match(regex);
         };
 
@@ -158,6 +152,7 @@ function(BROADCAST_MESSAGES, hoverService, selectService, subsetService, FilterP
 
             if (data.nodes.length == 1) {
                 scope.singleNode = data.nodes[0];
+                scrollTo(scope.singleNode.id);
             } else {
                 scope.singleNode = null;
             }
@@ -175,6 +170,12 @@ function(BROADCAST_MESSAGES, hoverService, selectService, subsetService, FilterP
         function unHoverNodes(nodeIds) {
             hoverService.unhover();
             if (scope.selectedGroup != undefined) hoverNodes(scope.selectedGroup);
+        }
+
+        function scrollTo(id) {
+            var $scrollTo = angular.element('#item-' + id);
+            var $container = angular.element('#info-panel-scroll');
+            $container.animate({scrollTop: $scrollTo.offset().top - $container.offset().top + $container.scrollTop()}, "slow");
         }
     }
 

@@ -19,8 +19,8 @@ angular.module('common')
     ************ Local Data **************
     **************************************/
             var dirPrefix = '[dirTagCloud] ';
-            var ITEMS_TO_SHOW = 21;
-            var ITEMS_TO_SHOW_INITIALLY = 21;
+            var ITEMS_TO_SHOW = 20;
+            var ITEMS_TO_SHOW_INITIALLY = 20;
             var totalNodes = 0;
 
 
@@ -36,7 +36,7 @@ angular.module('common')
                 var attrId = scope.attrToRender.id;
                 var filteringCatVals = [];
                 var isCompareView = renderCtrl.isCompareView();
-                var initVisItemCount = isCompareView ? 21 : ITEMS_TO_SHOW_INITIALLY;
+                var initVisItemCount = isCompareView ? 20 : ITEMS_TO_SHOW_INITIALLY;
                 var sortOrder = scope.attrToRender.sortOps.sortOrder;
                 var sortType = scope.attrToRender.sortOps.sortType;
 

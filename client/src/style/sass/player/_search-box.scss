@@ -2,10 +2,8 @@
   background: #fff;
   height: auto;
   box-sizing: border-box;
-  border: 1px solid $gray-light;
   border-radius: 3px;
-  box-shadow: 0 1px 0 $gray-light;
-  max-width: 359px;
+  max-width: 328px;
 
   &__input-wrap {
     position: relative;
@@ -22,11 +20,12 @@
     border: 0;
     font-weight: 400;
     font-size: 14px;
-    line-height: 26px;
+    line-height: 36px;
     color: #000;
     border-radius: 3px;
     background: deployedUrl('/img/play-toolbar/search-purple.svg') 6px 50% no-repeat;
     background-size: 12px;
+    border: 1px solid $gray-light;
 
     &::placeholder {
       color: #AEAEAE;
@@ -77,43 +76,29 @@
   }
 
   &__button {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     height: 100%;
-    padding: 0 20px;
-    font-weight: 400;
-    font-size: 14px;
-    line-height: 26px;
-    color: #323C47;
+    padding: 0;
+    background: #296591;
     cursor: pointer;
     position: relative;
     white-space: nowrap;
     z-index: 30;
-    max-width: 140px;
-    min-width: 80px;
     text-overflow: ellipsis;
     overflow: hidden;
-
-    &::before,
-    &::after {
-      position: absolute;
-      content: '';
-      top: 50%;
-      transform: translateY(-50%);
-    }
+    width: 36px;
+    border-radius: 0 3px 3px 0;
 
     &::before {
-      width: 12px;
-      height: 9px;
-      background: deployedUrl('/img/search/check.svg') 50% no-repeat;
-      left: 4px;
-    }
-
-    &::after {
-      width: 8px;
-      height: 5px;
-      background: deployedUrl('/img/search/arrow-down.svg') 50% no-repeat;
-      right: 4px;
-      transition: transform .15s;
+      content: '';
+      width: 20px;
+      height: 20px;
+      background: deployedUrl('/img/search/filter.svg');
+      background-repeat: no-repeat;
+      background-size: cover;
+      display: block;
     }
   }
 

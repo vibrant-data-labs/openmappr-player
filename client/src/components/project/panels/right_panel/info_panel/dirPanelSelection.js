@@ -6,8 +6,8 @@
 */
 
 angular.module('common')
-    .directive('dirSelectionInfo', ['dataGraph', '$rootScope', 'graphSelectionService', 'infoPanelService', 'AttrInfoService', 'linkService', 'graphHoverService', 'BROADCAST_MESSAGES', 'selectService', 'subsetService',
-        function(dataGraph, $rootScope, graphSelectionService, infoPanelService, AttrInfoService, linkService, graphHoverService, BROADCAST_MESSAGES, selectService, subsetService) {
+    .directive('dirPanelSelection', ['dataGraph', '$rootScope', '$filter', 'graphSelectionService', 'infoPanelService', 'AttrInfoService', 'linkService', 'graphHoverService', 'BROADCAST_MESSAGES', 'selectService', 'subsetService', 
+        function(dataGraph, $rootScope, $filter, graphSelectionService, infoPanelService, AttrInfoService, linkService, graphHoverService, BROADCAST_MESSAGES, selectService, subsetService) {
             'use strict';
 
             /*************************************
@@ -16,14 +16,14 @@ angular.module('common')
             var dirDefn = {
                 restrict: 'AE',
                 scope: true,
-                templateUrl: '#{player_prefix_index}/components/project/panels/right_panel/info_panel/selectionInfo.html',
+                templateUrl: '#{player_prefix_index}/components/project/panels/right_panel/info_panel/panelSelection.html',
                 controller: ['$scope', ControllerFn]
             };
 
             /*************************************
     ************ Local Data **************
     **************************************/
-            var logPrefix = '[dirSelectionInfo: ] ';
+            var logPrefix = '[dirPanelSelection: ] ';
 
 
             /*************************************
@@ -44,6 +44,23 @@ angular.module('common')
                 this.openNodeBrowserInSelMode = function() {
                     $scope.selInfo.selectionBrowsing = true;
                 };
+                
+                var hasSelection = selectService.getSelectedNodes() && selectService.getSelectedNodes().length;
+                var hasSubset = subsetService.currentSubset() && subsetService.currentSubset().length;
+
+                if (hasSubset && hasSelection) {
+                    $scope.nodesStatus = `of ${$scope.selInfo.nodesTotal} nodes`;
+                    $scope.linksStatus = `of ${$scope.selInfo.linksTotal} links`;
+                } else if (hasSubset) {
+                    $scope.nodesStatus = 'nodes subset';
+                    $scope.linksStatus = 'links subset';
+                } else if(hasSelection) {
+                    $scope.nodesStatus = `of ${$scope.selInfo.nodesTotal} nodes`;
+                    $scope.linksStatus = `of ${$scope.selInfo.linksTotal} links`;
+                } else {
+                    $scope.nodesStatus = 'nodes';
+                    $scope.linksStatus = 'links';
+                }
 
                 $scope.selInfo = {
                     principalNode: null, //Node shown for node browser
@@ -51,7 +68,9 @@ angular.module('common')
                     labelAttr: labelAttr,
                     panelMode: null, //4 modes - node, cluster, selection, network
                     genericSelNodes: [], //Selection.length > 2 and not a defined group,
+                    nodesTotal: 0,
                     genericSelLinks: [],
+                    linksTotal: 0,
                     nodeNeighbors: [], // Neighbor nodes of selected nodes
                     interactionType: null, //select or hover
                     refreshSelInfo: _.size(graphSelectionService.getSelectedNodes()) > 0 ? false : true, //If there was a previous selection in place, don't refresh selection info(on hover mostly) unless another selection made
@@ -79,40 +98,6 @@ angular.module('common')
 
                 $scope.$watch('selInfo.sortInfo', sortNodesInSelection, true);
 
-                // $scope.$on(BROADCAST_MESSAGES.overNodes, function(e, data) {
-                //     if(!$scope.selInfo.refreshSelInfo) {
-                //         return console.warn(logPrefix + 'Selection in place, not refreshing info');
-                //     }
-                //     $scope.selInfo.interactionType = 'hover';
-                //     refresh(_.get(data, 'nodes', []));
-                // });
-
-                // $scope.$on(BROADCAST_MESSAGES.outNodes, function() {
-                //     if(!$scope.selInfo.refreshSelInfo) {
-                //         console.warn(logPrefix + 'Selection in place, not refreshing info');
-                //         return;
-                //     }
-                //     // Fix for removing selection on hover out
-                //     refresh(dataGraph.getAllNodes());
-                // });
-
-                // $scope.$on(BROADCAST_MESSAGES.selectNodes, function(e, data) {
-                //     if( data.nodes.length > 0 ) {
-                //         $scope.selInfo.refreshSelInfo = false;
-                //     }
-                //     $scope.selInfo.interactionType = 'select';
-                //     if($scope.selInfo.selectionBrowsing) {
-                //         $scope.selInfo.panelMode = 'node';
-                //         var principalNodeIdx = _.findIndex($scope.selInfo.genericSelNodes, 'id', _.get(data, 'nodes[0].id'));
-                //         if(principalNodeIdx < 0) { throw new Error('principal Node not found in selected nodes list'); }
-                //         $scope.selInfo.principalNode = $scope.selInfo.genericSelNodes[principalNodeIdx];
-                //         $scope.selInfo.nodeNeighbors = getNodeNeighbors([$scope.selInfo.principalNode]);
-                //         initialise();
-                //         return;
-                //     }
-                //     refresh(_.get(data, 'nodes', []));
-                // });
-
                 $scope.$on(BROADCAST_MESSAGES.hss.select, function(e, data) {
                     if (data.selectionCount > 0) {
                         refresh(selectService.getSelectedNodes());
@@ -130,35 +115,45 @@ angular.module('common')
                         return;
                     }
 
+                    if (data.filtersCount > 0) {
+                        $scope.nodesStatus = `of ${$filter('number')($scope.selInfo.nodesTotal)} nodes`;
+                        $scope.linksStatus = `of ${$filter('number')($scope.selInfo.linksTotal)} links`;
+                    } else if (data.isSubsetted) {
+                        $scope.nodesStatus = 'nodes subset';
+                        $scope.linksStatus = 'links subset';
+                    } else {
+                        $scope.nodesStatus = 'nodes';
+                        $scope.linksStatus = 'links';
+                    }
+
                     if (!data.selectionCount) {
                         initialise();
                     }
-                });
 
-                // $scope.$on(BROADCAST_MESSAGES.selectStage, function() {
-                //     $scope.selInfo.refreshSelInfo = true;
-                //     $scope.selInfo.selectionBrowsing = false;
-                //     // CHECKPOINT
-                //     var selNodes = dataGraph.getAllNodes();
-                //     refresh(selNodes);
-                // });
+                    
+                });
 
                 $rootScope.$on(BROADCAST_MESSAGES.fp.filter.reset, function () {
                     initialise();
                 });
 
                 function initialise() {
+
                     var selNodes = selectService.getSelectedNodes();
                     // CHECKPOINT
                     if (!selNodes.length) selNodes = subsetService.subsetNodes && subsetService.subsetNodes.length ? subsetService.subsetNodes: dataGraph.getAllNodes();
                     $scope.groupsAndClusters = infoPanelService.getAllNodeGroups($scope.mapprSettings.nodeColorAttr);
                     if (selNodes.length == dataGraph.getAllNodes().length) {
+                        
+                        $scope.selInfo.nodesTotal = selNodes.length;
+                        $scope.selInfo.linksTotal = dataGraph.getAllEdges().length;
+
                         refresh(selNodes, dataGraph.getAllEdges());
                     } else {
                         refresh(selNodes);  
                     }
 
-                    console.log('All node groups -> ', $scope.groupsAndClusters);
+                    // console.log('All node groups -> ', $scope.groupsAndClusters);
                 }
 
                 function refresh(selNodes, selLinks) {
@@ -270,7 +265,7 @@ angular.module('common')
 
                     $scope.selInfo.linkInfoAttrs = linkInfoAttrs.slice();
 
-                    console.log('All neighbors of selected nodes : ', nodeNeighbors);
+                    // console.log('All neighbors of selected nodes : ', nodeNeighbors);
 
                     function addLinkInfo(neighbor) {
                         //get link for neighbor
@@ -370,7 +365,7 @@ angular.module('common')
     **************************************/
             function getNodesLinks(nodes, labelAttr, imageAttr) {
                 var links = [];
-                console.log('building link info for: ', nodes);
+                // console.log('building link info for: ', nodes);
 
                 var graphData = dataGraph.getRawDataUnsafe();
 

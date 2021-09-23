@@ -1,5 +1,6 @@
 .right-panel__tabs.side-menu(style="position:absolute; top: 0;")
   .side-menu__body
+    dir-panel-selection
     ul.tabs-menu
       li.tabs-menu__item(
         ng-repeat="tab in rightPanelTabs" ng-click="tab.cmd()"
@@ -11,6 +12,16 @@
           span.tabs-menu__badge(ng-if="tab.showSelCount && selNodesCount !== 0") {{selNodesCount}}
 
     .right-panel__divider
+    //- dir-nodes-list(nodes="selInfo.genericSelNodes", links="selInfo.genericSelLinks" selected-groups="selInfo.selectedGroups", label-attr="selInfo.labelAttr" node-color-attr="selInfo.nodeColorAttr" node-color-attr-title="selInfo.nodeColorAttrTitle" panel-mode="selInfo.panelMode" sort-types="selInfo.sortTypes" sort-info="selInfo.sortInfo"  search-query="nodeSearchQuery")
+
+    //- ul.list-unstyled.panel-list
+    //-   li.panel-item.list-item.no-hover.nodes-list__selected-info(ng-if="nodes.length > 1")
+    //-     .vert-align.list-panel-header.truncate
+    //-       span.dark-grey-font.list-panel-header__nodes.truncate {{nodes.length}} {{nodesStatus}}
+
+    //-       span.dark-grey-font.list-panel-header__links.truncate(ng-if="links") {{links.length}} {{linksStatus}}
+    //-       span.dark-drey-font(ng-if="!links") ...
+        
 
 
   .side-menu__footer

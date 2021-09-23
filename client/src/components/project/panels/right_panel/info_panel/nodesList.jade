@@ -1,4 +1,4 @@
-.info-item
+.info-item.flex-fill-column
 	ul.list-unstyled.panel-list
 		li.panel-item.list-item.no-hover.nodes-list__selected-info(ng-if="nodes.length > 1")
 			.vert-align.list-panel-header.truncate
@@ -10,10 +10,10 @@
 				dir-sort-menu.list-panel-header__select.truncate(sort-types="sortTypes" sort-config="sortInfo")
 
 				//- dir-export()
-		li.panel-item.list-item(ng-if="viewLimit < nodes.length || numShowGroups !== 0")
+		li.panel-item.list-item
 			.row.vert-align
 				.col-xs-7
-					.node-search.flex-container.vert-align(ng-show="viewLimit < nodes.length")
+					.node-search.flex-container.vert-align
 						input.animate-open-right.h6.no-margin(ng-show="showSearch" type="text" ng-model="nodeSearchQuery" ng-model-options="{debounce: 300}" placeholder="search nodes...")
 						button(ng-show="!showSearch" ng-click="showSearch = true" uib-tooltip="Search nodes" tooltip-append-to-body="true")
 							i.fa.fa-search
@@ -38,18 +38,14 @@
 					h6.less-gutter	{{singleNode.attr[labelAttr]}}
 				.col-xs-2
 
-	ul.list-unstyled.panel-list
-		li.panel-item.list-item.pointable-cursor.no-animate.no-hover(ng-if="singleNode")
-			.row.vert-align
-				.col-xs-6
-					h6.groups-title &nbsp;
-				.col-xs-4.pointable-cursor		
-		li.panel-item.list-item.pointable-cursor.no-animate(ng-repeat="node in nodes | filter: filterNode | limitTo: viewLimit track by node.id" ng-click="selectNode(node.id, $event)" ng-mouseenter="hoverNode(node.id, $event)" ng-mouseleave="unHoverNode(node.id, $event)")
-			.row.vert-align.truncate(uib-tooltip-html="getNodeTooltipHtml(node)" tooltip-placement="right" tooltip-append-to-body="true")
-				.col-xs-2
-					.big-circle(style="background: {{::getNodeColor(node)}};")
-				.col-xs-10
-					h6.less-gutter.list-item__title.truncate	{{node.attr[labelAttr]}}
+	div.panel-list.panel-list--scrollable
+		ul.list-unstyled
+			li.panel-item.list-item.pointable-cursor(id="item-{{node.id}}" ng-class="{'highlighted':node.id == singleNode.id}" ng-repeat="node in nodes | filter: filterNode track by node.id" ng-click="selectNode(node.id, $event)" ng-mouseenter="hoverNode(node.id, $event)" ng-mouseleave="unHoverNode(node.id, $event)")
+				.row.vert-align.truncate(uib-tooltip-html="getNodeTooltipHtml(node)" tooltip-placement="right" tooltip-append-to-body="true")
+					.col-xs-2
+						.big-circle(style="background: {{::getNodeColor(node)}};")
+					.col-xs-10
+						h6.less-gutter.list-item__title.truncate	{{node.attr[labelAttr]}}
 
 
 	ul.list-unstyled.panel-list.m-t-10
