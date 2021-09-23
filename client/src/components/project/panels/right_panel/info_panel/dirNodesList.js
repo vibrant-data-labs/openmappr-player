@@ -43,10 +43,17 @@ function(BROADCAST_MESSAGES, hoverService, selectService, subsetService, FilterP
         var memoizedGetFunctionColor = _.memoize(getFunctionColor);
 
         scope.singleNode = selectService.singleNode;
+        scope.isShowInfo = false;
 
         var hasSelection = selectService.getSelectedNodes() && selectService.getSelectedNodes().length;
         var hasSubset = subsetService.currentSubset() && subsetService.currentSubset().length;
 
+        scope.PanelListInfo = {
+            name: '',
+            photo: '',
+            description: '',
+            tags: []
+        }
 
         scope.$watch('sortInfo.sortType', function() {
             if (scope.singleNode) {
@@ -162,16 +169,28 @@ function(BROADCAST_MESSAGES, hoverService, selectService, subsetService, FilterP
             return d3.rgb(scope.layout.scalers.color(cluster)).toString();
         }
 
-        function hoverNodes(nodeIds) {
+        function hoverNodes(node) {
+            scope.isShowInfo = true;
+            setPanelInfo(node[0]);
+
             parCtrl.persistSelection();
-            hoverService.hoverNodes({ ids: nodeIds });
+            hoverService.hoverNodes({ ids: node[0].id });
         }
 
         function unHoverNodes(nodeIds) {
+            scope.isShowInfo = false;
             hoverService.unhover();
             if (scope.selectedGroup != undefined) hoverNodes(scope.selectedGroup);
         }
 
+        function setPanelInfo (node) {
+            scope.PanelListInfo = {
+                name: node.attr['Speaker(s)'][0],
+                photo: node.attr.Photo,
+                description: node.attr.Description,
+                tags: node.attr.Keywords
+            }
+        }
         function scrollTo(id) {
             var $scrollTo = angular.element('#item-' + id);
             var $container = angular.element('#info-panel-scroll');
