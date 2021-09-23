@@ -1,12 +1,5 @@
 .flex-transclude.width-100(ng-mouseleave="rightPanelExited();", ng-controller="FilterPanelParentCtrl")
 	.flex-vert-container.flex-transclude.panel-container.width-100
-		.filter-header
-			ul.filter-header__list
-				li.filter-header__item.tag.filter-header__item_current(ng-click="navigateTo('.tags-first-item')", ng-if="canShowTagsBtn()")
-					span.filter-header__link Tags
-				li.filter-header__item.chart(ng-click="navigateTo('.chart-first-item')", ng-if="canShowChartsBtn()")
-					span.filter-header__link Charts
-
 		.panel-scroll.flex-fill.flex-vert-container(ng-controller="FilterPanelCtrl")
 			//- span {{filteredDistrAttrs.length}} of {{nodeDistrAttrs.length}}
 			ul.filter-list(data-dir-virtual-scroll="", variable-height="", container-item-count="nodeDistrAttrs.length" dir-kill-tooltip-on-scroll, ng-if="ui.renderDistr", on-scroll="onScroll")
