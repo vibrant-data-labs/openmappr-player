@@ -19,6 +19,50 @@
   }
 }
 
+.filter-list-additional {
+  
+
+  &__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 10px;
+  }
+
+  &__title {
+    color: #BC3364;
+  }
+
+  &__btn {
+    width: 20px;
+    height: 20px;
+    border-radius: 3px;
+    border: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    background: #F5F6F8;
+
+    &:before {
+      content: "";
+      background: url(../../../img/arrow.svg);
+      display: block;
+      width: 10px;
+      height: 10px;
+      background-size: 100%;
+      background-repeat: no-repeat;
+      transform: rotate(90deg);
+      padding: 0;
+    }
+
+    &_active {
+      &:before {
+        transform: rotate(180deg);
+      }
+    }
+  }
+}
 .sort-options {
   margin-left: 10px;
 }
@@ -29,7 +73,7 @@
   }
   &_type {
     &_filter {
-      padding: 0 20px;
+      padding: 0 10px;
 
       &.card_expanded {
         .card__title,
@@ -63,7 +107,7 @@
       }
 
       .card__title {
-        margin: 0;
+        margin: 0 0 0 9px;
         color: #BC3364;
         font: 500 15px/24px 'Poppins';
         max-width: 100%;
@@ -101,7 +145,6 @@
         font-size: 0;
         background-image: deployedUrl('/img/filter-panel/numeric-sort-desc.png');
         background-size: 16px;
-        margin-right: 9px;
         padding: 0;
         opacity: .8;
         transition: opacity .2s;
@@ -227,6 +270,81 @@
         }
 
       }
+
+      &--short {
+        .sort-options {
+          margin-left: 4px;
+
+          .text-link {
+            text-decoration: none;
+            border-radius: 4px;
+            padding: 5px;
+            border: 2px solid #EBEFF2;
+            display: block;
+            transition: border-color 0.2s, color 0.2s;            
+
+            &:hover {
+              border-color: #ccd6de;
+              color: #444;
+            }            
+          }
+        }
+
+        .card__action-sort {
+          margin-right: 2px;
+          
+          background-image: deployedUrl('/img/filter-panel/sort-desc.png');
+  
+          &:not(.card__action-sort-alphabet).up {
+            background-image: deployedUrl('/img/filter-panel/sort-asc.png');
+          }
+  
+          &-alphabet {
+            background-image: deployedUrl('/img/filter-panel/sort-asc.png');
+  
+            &.desc {
+              background-image: deployedUrl('/img/filter-panel/sort-desc.png')
+            }
+          }
+        }        
+      }
+
+    }
+  }
+
+  &_collapsed {
+    .card__body {
+      display: none;
+    }
+
+    .card__action-collapse {
+      &:before {
+        transform: rotate(90deg);
+      }
+    }
+  }
+
+  &__action-collapse {
+    width: 20px;
+    height: 20px;
+    border-radius: 3px;
+    border: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    background: #F5F6F8;
+
+    &:before {
+      content: '';
+      background: url('../../../img/arrow.svg');
+      display: block;
+      width: 10px;
+      height: 10px;
+      background-size: 100%;
+      background-repeat: no-repeat;
+      transform: rotate(180deg);
+      padding: 0;
     }
   }
 }

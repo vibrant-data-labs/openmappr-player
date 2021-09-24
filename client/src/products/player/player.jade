@@ -13,7 +13,7 @@
 						//- 	.img(style="background-image: url({{extUserInfo.userPicUrl}});")
 						//- h5 {{extUserInfo.userName}}
 						.dots-loader(ng-if="!snapInfo || !snapInfo.snapsLoaded" ng-include=' "#{player_prefix_index}/player/dotsLoader.html" ')
-						geolayout(ng-if="plotType == 'geo'" ng-click="triggerInteraction();")
+						geolayout.map(ng-if="plotType == 'geo'" ng-click="triggerInteraction();")
 						scatterlayout(ng-if="plotType == 'scatterplot'" ng-click="triggerInteraction();")
 						sig(ng-click="triggerInteraction();" ng-show="plotType != 'grid'")
 						dir-grid-layout.animate-fade(ng-if="plotType == 'grid'")

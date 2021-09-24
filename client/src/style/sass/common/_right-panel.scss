@@ -17,8 +17,14 @@
   transition: left .1s;
   box-shadow: 0 2px 10px rgba(#000, .08);
   border-radius: 4px;
-  padding-top: 60px;
+  padding-top: 90px;
   
+  &__selection {
+    margin: 10px;
+    display: flex;
+    justify-content: space-between;
+  }
+
   .tab-content {
     @include flex-vert-container;
     overflow: auto;
@@ -69,7 +75,8 @@
   .tag-list {
     display: flex;
     flex-wrap: wrap;
-
+    margin: 0 -2px;
+    
     &__item {
       padding: 0 5px;
       font-weight: 500;
@@ -77,8 +84,8 @@
       line-height: 20px;
       border: 1px solid #E2E2E2;
       color: #616161;
-      margin: 0 4px 4px 0;
-      width: 31%;
+      margin: 0 2px 4px;
+      width: calc(25% - 4px);
 
       &-wide {
         width: 100%;
@@ -269,7 +276,6 @@
   }
 
 
-  .node-search,
   .neighbor-search {
     margin-right: auto;
     margin-left: -3px;
@@ -289,7 +295,6 @@
       margin-left: -22px;
     }
   }
-
 
   .info-panel {
     margin-top: 1px;
@@ -491,6 +496,12 @@
     .panel-list {
       padding: 0;
 
+      &--scrollable {
+        height: calc(100% - 91px);
+        overflow-y: auto;
+        margin: 0px -20px;
+      }
+
       .panel-item {
         @include transition(all .3s ease-out);
         @include user-select(none);
@@ -521,7 +532,8 @@
         }
 
         &.list-item {
-          margin: 0 -20px;
+          //margin: 0 -20px;
+          margin: 0;
           padding: 0 20px;
         }
 
@@ -928,6 +940,68 @@
           cursor: pointer;
         }
       }
+    }
+  }
+}
+
+.node-search {
+  display: flex;
+  align-items: center;
+  position: relative;
+  margin-right: 16px;
+
+  &__input {
+    display: none;
+    width: 100%;
+    border: 2px solid #EBEFF2;
+    transition: background-color 0.2s;
+    padding: 3px 30px 4px 8px;
+    font: 400 15px/1 "Poppins";
+    border-radius: 4px;
+    transition: border-color 0.2s;
+
+    &:hover {
+      border-color: #ccd6de;
+    }    
+
+    .node-search--opened & {
+      display: block;
+    }       
+  }
+
+  &__btn {
+    width: 24px;
+    height: 24px;
+    background: url(/img/filter-panel/search.svg) 50% no-repeat;
+    background-size: 16px;
+    font-size: 0;
+    padding: 0;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+
+    &--open {
+      .node-search--opened & {
+        display: none;
+      }
+    }
+    
+    &--close {
+      display: none;
+      width: 24px;
+      height: 24px;
+      position: absolute;
+      top: 50%;
+      padding: 0;
+      font-size: 0;
+      transform: translateY(-50%);
+      background: url(/img/play-toolbar/cancel.svg) 50% no-repeat;
+      background-size: 10px;
+      right: 5px;
+      opacity: 0.4;
+
+      .node-search--opened & {
+        display: block;
+      }                
     }
   }
 }

@@ -43,7 +43,7 @@
 
   .play-toolbar,
   .play-toolbar-bottom {
-    left: $side-menu-compressed + $right-panel-width + 20px;
+    left: $side-menu-compressed + $right-panel-width - 5px;
   }
 
   .side-menu__logo {
