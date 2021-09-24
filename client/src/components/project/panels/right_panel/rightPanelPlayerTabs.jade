@@ -24,10 +24,16 @@
             tooltip-placement="left"
             tooltip-append-to-body="true")
 
-      li.right-corner_item(ng-click="exportCurrentData()", ng-if="displayExportButton")
-        span.right-corner__link.right-corner__link_export(
+      li.right-corner__item.right-corner__item_exports(ng-if="displayExportButton")
+        span.right-corner__link.right-corner__link_export
+        ul.right-corner__sub-link-box
+          li.right-corner__sub-link(ng-click="exportCurrentImage()"
           data-toggle="tooltip"
-          uib-tooltip="Export current selection"
-          tooltip-placement="left"
-          tooltip-append-to-body="true")
-
+          uib-tooltip="Export as SVG"
+          tooltip-placement="top"
+          tooltip-append-to-body="true") Export Image
+          li.right-corner__sub-link(ng-click="exportCurrentData()"
+          data-toggle="tooltip"
+          uib-tooltip="Export Nodes as CSV"
+          tooltip-placement="top"
+          tooltip-append-to-body="true") Export Data

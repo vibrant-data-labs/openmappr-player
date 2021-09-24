@@ -39,9 +39,13 @@ angular.module('common')
 
             $scope.currentExport = 'all';
 
-            $scope.exportCurrentData = function() {
+            $scope.exportCurrentImage = function() {
                 var currentExport = $scope.currentExport;
                 $rootScope.exportSelection(currentExport);
+            }
+
+            $scope.exportCurrentData = function() {
+                $rootScope.exportData($scope.currentExport);
             }
 
             // send support email

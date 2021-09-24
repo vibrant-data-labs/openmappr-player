@@ -75,6 +75,7 @@ angular.module('common')
 
             $scope.exportSelection = $rootScope.MAPP_EDITOR_OPEN ? exportSelectionFromApp : exportSelectionFromPlayer;
             $rootScope.exportSelection = $scope.exportSelection;
+            $rootScope.exportData = exportCsvDataFromPlayer;
 
             $scope.hideDropdowns = function () {
                 //hack to close dropdown
@@ -328,44 +329,118 @@ angular.module('common')
                 var sigObj_1 = renderGraphfactory.sig();
                 var snapshot = snapshotService.getCurrentSnapshot();
                 sigObj_1.toSVG({download: true, filename: (snapshot ? snapshot.snapName : 'output') + '.svg', size: window.innerWidth});
+            }
 
-                // var nodes = [];
+            function exportCsvDataFromPlayer(type) {
+                var nodes = [];
                 // var links = [];
-                // if (type == 'all') {
-                //     nodes = dataGraph.getAllNodes();
-                //     links = dataGraph.getAllEdges();
-                // } else if (type == 'select') {
-                //     nodes = selectService.getSelectedNodes();
-                //     links = dataGraph.getEdgesByNodes(nodes);
-                // } else if (type == 'subset') {
-                //     nodes = subsetService.subsetNodes;
-                //     links = dataGraph.getEdgesByNodes(nodes);
-                // }
+                if (type == 'all') {
+                    nodes = dataGraph.getAllNodes();
+                    // links = dataGraph.getAllEdges();
+                } else if (type == 'select') {
+                    nodes = selectService.getSelectedNodes();
+                    // links = dataGraph.getEdgesByNodes(nodes);
+                } else if (type == 'subset') {
+                    nodes = subsetService.subsetNodes;
+                    // links = dataGraph.getEdgesByNodes(nodes);
+                }
 
-                // var currentNetwork = networkService.getCurrentNetwork();
-                // var fileName = (function () {
-                //     var div = document.createElement("div");
-                //     div.innerHTML = $scope.headerTitle; // In player's CtrlApp. Is html string
-                //     return div.textContent || div.innerText || "Mappr";
-                // }());
+                var fileName = 'mappr-nodes';
+                var separator = getLocalListSeparator();
+                var decimalSeparator = getLocalDecimalSeparator();
+                
+                try {
+                    var csvContent = "";
+                    var rowHeader = '';
+                    var allProperties = {};
+                    
+                    _.forEach(nodes, function(item) { // construct a map of all possible parameters
+                        if (item.id) {
+                            allProperties.id = '';
+                        }
+                        for (var key in item.attr) {
+                            allProperties[key] = '';
+                        }
+                    });
 
-                // var postObj = {
-                //     networkId: currentNetwork.id,
-                //     downloadFormat: 'xlsx',
-                //     fileNamePrefix: type
-                // };
+                    for (var headerKey in allProperties) { // create first line "header" of CSV file
+                        rowHeader += headerKey + separator;
+                    }
 
-                // postObj.selectionData = {
-                //     nodeIds: _.pluck(nodes, 'id'),
-                //     linkIds: _.pluck(links, 'id')
-                // };
+                    csvContent += rowHeader + "\r\n";
+                    csvContent += _.map(nodes, function (item) {
+                        var resultMap = {};
+                        var result = '';
+                        var hasSeparatorInValue = false;
+                        var hasDoubleQuoteInValue = false;
+                        var shouldBeWrapped = false;
+                        var rowText = '';
+                        var nodeAttrKey, key;
 
-                // playerFactory.currPlayer()
-                //     .then(function (player) {
-                //         playerFactory.downloadSelection(player._id, postObj, function (result) {
-                //             _export(result, fileName);
-                //         });
-                //     });
+                        if (!item.id) {
+                            throw new Error("Node has a missed identifier that required for csv generation");
+                        }
+
+                        if (!item.attr) {
+                            throw new Error("Node has a missed attributes that required for csv generation");
+                        }
+
+                        resultMap.id = item.id;
+
+                        for (nodeAttrKey in item.attr) { // get parameters from item attribute
+                            if (Array.isArray(item.attr[nodeAttrKey])) {
+                                resultMap[nodeAttrKey] = ('"' + item.attr[nodeAttrKey].join(', ') + '"').replaceAll(/(\r\n|\n|\r)/gm, "");
+                                continue;
+                            }
+                            hasSeparatorInValue = item.attr[nodeAttrKey].toString().indexOf(separator) !== -1;
+                            hasDoubleQuoteInValue = item.attr[nodeAttrKey].toString().indexOf('"') !== -1;
+                            shouldBeWrapped = hasSeparatorInValue || hasDoubleQuoteInValue;
+                            rowText = item.attr[nodeAttrKey].toString().trim().replaceAll(/(\r\n|\n|\r)/gm, "");
+
+                            if (decimalSeparator !== '.' && isNumeric(rowText) && rowText % 1 !== 0) {
+                                rowText = rowText.replace('.', decimalSeparator);
+                            }
+
+                            if (hasDoubleQuoteInValue) {
+                                rowText = rowText.replaceAll('"', '""');
+                            }
+
+                            if (shouldBeWrapped) {
+                                rowText = '"' + rowText + '"';
+                            }
+
+                            resultMap[nodeAttrKey] = rowText;
+                        }
+                        
+                        for (key in allProperties) { // prepare result but use all possible parameters instead of item parameters
+                            result += (resultMap[key] ? resultMap[key] : '') + separator;
+                        }
+
+                        return result;
+                    }).join("\r\n");
+                    window.saveAs(new Blob([csvContent], { type: "text/plain;charset=utf-8" }), fileName + ".csv");
+                } catch (e) {
+                    console.warn(e);
+                    throw e;
+                }
+            }
+
+            function getLocalDecimalSeparator() {
+                var n = 1.1;
+                return n.toLocaleString().substring(1, 2);
+            }
+
+            function getLocalListSeparator() {
+                if (getLocalDecimalSeparator() == ',') {
+                    return ';';
+                }
+                return ',';
+            }
+
+            function isNumeric(str) {
+                if (typeof str != "string") return false // we only process strings!  
+                return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
+                    !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
             }
 
             function _export(data, fileName) {
