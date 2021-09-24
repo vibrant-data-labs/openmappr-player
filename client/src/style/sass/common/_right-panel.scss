@@ -125,13 +125,13 @@
   }
 
   .panel-number {
-    float: right;
-    margin-right: 10px;
+    margin: 0 10px 0 auto;
     min-width: 35px;
     padding-left: 5px;
   }
 
   .panel-text {
+    padding: 0 0 0 10px;
     max-width: 230px;
     max-height: 30px;
     display: -webkit-box;
@@ -658,7 +658,6 @@
       .main {
         @include transition(all .3s ease-out);
         background: $panel-background;
-        height: 39px;
         position: relative;
         z-index: 2;
         margin-top: -2px;
@@ -1003,6 +1002,26 @@
         display: block;
       }                
     }
+  }
+}
+
+.color-box {
+  position: relative;
+
+  &__line {
+    position: absolute;
+    height: 100%;
+    display: block;
+    z-index: -1;
+  }
+
+  &__btn-box {
+    text-align: right;
+    padding: 10px 0;
+  }
+
+  &__description-wrap {
+    margin: 10px;
   }
 }
 

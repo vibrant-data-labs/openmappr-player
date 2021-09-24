@@ -6,12 +6,41 @@
 				.col-xs-12
 					h6.title.text-uppercase.pointable-cursor.vert-align
 							.title-space.width-100
-								span.inline.nowrap Sized By:&nbsp;&nbsp;
-								span.inline.nowrap.width-80
-									span.text-uppercase.truncate {{vm.nodeSizeAttr.title}}
-									span.subtitle(ng-if="vm.nodeSizeAttr.metadata.descr" uib-tooltip="{{vm.nodeSizeAttr.metadata.descr}}" tooltip-append-to-body="true" tooltip-placement="bottom-left")
-										| &nbsp;&nbsp;&nbsp;
-										i.fa.fa-info-circle
+								h6.title.text-uppercase.truncate.vert-align
+									.title-space
+										span.inline.nowrap
+											span Sized by:&nbsp;&nbsp;
+											span(uib-dropdown dropdown-append-to-body)
+												span(uib-dropdown-toggle auto-close="outsideClick" ng-click="keepDrawerOpen = true;")
+													span.text-link {{mapprSettings.legendSortOption}}
+														i.fa.fa-angle-down
+												.uib-dropdown-menu.uib-dropdown-menu-flexing(uib-dropdown-menu)
+													.uib-dropdown-click-close(ng-click="keepDrawerOpen = false;")
+													.uib-dropdown-flex-content(style="margin-left: 25px;")
+														.uib-dropdown-triangle
+														.uib-dropdown-flex.center
+															ul.dd-list.list-unstyled
+																li.row.vert-align.pointable-cursor(ng-repeat="item in [1,2,3]", ng-click="console.log(); keepDrawerOpen = false;")
+																	.col-xs-12
+																		h6.no-margin {{item}}
+
+					.filter-list__item(
+						ng-class="{'attr-hidden':!attr.visible, 'first': ($index == 1), 'chart-first-item': attr.isFirstChart, 'tags-first-item': attr.isFirstTag}",
+						ng-click='selectNodesByAttrib(attr.title, attr.value, $event)'
+					)
+						section.card.card_type_filter(data-attr="{{attr.id}}", ng-class="{'card__chart' : attr.attrType == 'integer' || attr.attrType == 'float' || attr.attrType == 'boolean' || attr.attrType == 'year' || attr.attrType == 'timestamp' }")
+							.card__body
+								.card__content
+									dir-attr-renderer(attr-to-render="attr", noe-color-str="nodeColorStr", is-node="true", show-filter="ui.enableFilters", disable-filter="attr.disableFilter" theme="appUi.theme" pinned-media="pinnedMedia")
+
+						h6.no-margin.text-center.title(
+							ng-if="attr.attrType == 'integer' || attr.attrType == 'float' || attr.attrType == 'boolean' || attr.attrType == 'year' || attr.attrType == 'timestamp'"
+							uib-tooltip="{{attr.metadata.descr || attr.title}}"
+							tooltip-placement='right'
+							tooltip-append-to-body="true"
+						)
+							span {{::attr.title}}
+							span(ng-show="attr.principalVal") :&nbsp;{{attr.principalVal}}
 				//- .col-xs-4
 				//- 	span
 				//- 		button.square-btn.small-btn.panel-btn(type="button", ng-click="clearSelections();") Reset
@@ -19,12 +48,23 @@
 				.col-xs-12
 					h6.title.text-uppercase.pointable-cursor.vert-align
 							.title-space.width-100
-								span.inline.nowrap Colored By:&nbsp;&nbsp;
-								span.inline.nowrap.width-80
-									span.text-uppercase.truncate {{dataGroupsInfo.colorNodesBy.title}}
-									span.subtitle(ng-if="dataGroupsInfo.colorNodesBy.metadata.descr" uib-tooltip="{{dataGroupsInfo.colorNodesBy.metadata.descr}}" tooltip-append-to-body="true" tooltip-placement="bottom-left")
-										| &nbsp;&nbsp;&nbsp;
-										i.fa.fa-info-circle
+								h6.title.text-uppercase.truncate.vert-align
+									.title-space
+										span.inline.nowrap
+											span Colored by:&nbsp;&nbsp;
+											span(uib-dropdown dropdown-append-to-body)
+												span(uib-dropdown-toggle auto-close="outsideClick" ng-click="keepDrawerOpen = true;")
+													span.text-link {{mapprSettings.legendSortOption}}
+														i.fa.fa-angle-down
+												.uib-dropdown-menu.uib-dropdown-menu-flexing(uib-dropdown-menu)
+													.uib-dropdown-click-close(ng-click="keepDrawerOpen = false;")
+													.uib-dropdown-flex-content(style="margin-left: 25px;")
+														.uib-dropdown-triangle
+														.uib-dropdown-flex.center
+															ul.dd-list.list-unstyled
+																li.row.vert-align.pointable-cursor(ng-repeat="item in ['red', 'green', 'blue']", ng-click="console.log(); keepDrawerOpen = false;")
+																	.col-xs-12
+																		h6.no-margin {{item}}
 
 					.btns(ng-if="mapprSettings.edgeColorStrat == 'select' || mapprSettings.edgeColorStrat == 'attr'")
 						.square-btn.small-btn(ng-if="!ui.showingLinks" uib-tooltip="View Links Summary" tooltip-placement="right" tooltip-append-to-body="true" ng-click="ui.showingLinks = true;")
@@ -52,12 +92,13 @@
 			.panel-scroll(ng-if="!ui.showingLinks && mapprSettings.nodeColorStrat != 'select' && mapprSettings.nodeColorStrat != 'fixed'", dir-kill-tooltip-on-scroll)
 				.panel-list(ng-if="!isNodeColorNumeric" ng-class="{'highlighted': ui.highlightingNodes}")
 					.panel-item.pointable-cursor(ng-repeat="l in dataGroupVMs | filter:searchText:false | limitTo: ui.dataGroupsViewCount", ng-class="{'highlighted' : l.highlightOnNodeHover}", uib-tooltip="{{::l.name}}", tooltip-placement="right", tooltip-append-to-body="true")
-						.flex-container(ng-click='selectNodesByAttrib(l.originalTitle, $event)', ng-mouseenter='hoverNodesByAttrib(l.originalTitle, $event, 0)', ng-mouseleave='unhoverNodes($event)')
+						.flex-container.color-box(ng-click='selectNodesByAttrib(l.originalTitle, $event)', ng-mouseenter='hoverNodesByAttrib(l.originalTitle, $event, 0)', ng-mouseleave='unhoverNodes($event)')
 							.legend-icon(ng-style='l.color')
+							span.color-box__line(style="background-color: {{l.colorval + 50}}; width: {{calcLineWidth(l.num)}}%")
 							div(ng-if="ui.summaryToggleOpen && (l.archetypes.length > 0 || l.bridgers.length > 0)")
 								.legend-line-down.animate-fade(style="border-color: {{l.colorval}}" ng-class="{'only-one':(l.bridgers.length == 0 || l.archetypes.length == 0)}")
-							h6.panel-number ({{l.num}})
 							h6.less-gutter.panel-text {{l.name}}
+							h6.panel-number ({{l.num}})
 						div.animate-fade(ng-if="ui.summaryToggleOpen")
 							.row.vert-align(ng-show="l.archetypes.length > 0")
 								.col-xs-3
@@ -79,7 +120,42 @@
 											.h6.less-gutter {{l.bridgers.length}} Bridgers
 										.colz-xs-1
 											//- i.fa.fa-plus(ng-click='selectNodeNeighborByIds(l.bridgers, $event); $event.stopPropagation();', ng-mouseenter='hoverNodeNeighborByIds(l.bridgers, $event); $event.stopPropagation();', ng-mouseleave='hoverNodesByIds([], $event); $event.stopPropagation();')
-					div
+					.color-box__btn-box(style="display: {{isShowFullDataGroupVMs ? 'none' : 'block' }} ")
+						button.color-box__btn(ng-click="isShowFullDataGroupVMs = !isShowFullDataGroupVMs") Show more
+					div(ng-if="isShowFullDataGroupVMs")
+						.panel-item.pointable-cursor(ng-repeat="l in dataGroupVMsTail | filter:searchText:false | limitTo: ui.dataGroupsViewCount", ng-class="{'highlighted' : l.highlightOnNodeHover}", uib-tooltip="{{::l.name}}", tooltip-placement="right", tooltip-append-to-body="true")
+							.flex-container.color-box(ng-click='selectNodesByAttrib(l.originalTitle, $event)', ng-mouseenter='hoverNodesByAttrib(l.originalTitle, $event, 0)', ng-mouseleave='unhoverNodes($event)')
+								.legend-icon(ng-style='l.color')
+								span.color-box__line(style="background-color: {{l.colorval + 50}}; width: {{calcLineWidth(l.num)}}%")
+								div(ng-if="ui.summaryToggleOpen && (l.archetypes.length > 0 || l.bridgers.length > 0)")
+									.legend-line-down.animate-fade(style="border-color: {{l.colorval}}" ng-class="{'only-one':(l.bridgers.length == 0 || l.archetypes.length == 0)}")
+								h6.less-gutter.panel-text {{l.name}}
+								h6.panel-number ({{l.num}})
+							div.animate-fade(ng-if="ui.summaryToggleOpen")
+								.row.vert-align(ng-show="l.archetypes.length > 0")
+									.col-xs-3
+										.legend-line-across(style="border-color: {{l.colorval}}")
+									.col-xs-9
+										.row.vert-align.less-gutter(ng-click='selectNodesByIds(l.archetypes, $event); $event.stopPropagation();', ng-mouseenter='hoverNodesByIds(l.archetypes, $event); $event.stopPropagation();', ng-mouseleave='hoverNodesByIds([], $event); $event.stopPropagation();')
+											.col-xs-3.less-gutter.text-center
+												i.fa.fa-1-3x.fa-bullseye(ng-style='l.color')
+											.col-xs-9
+												.h6.less-gutter {{l.archetypes.length}} Archetypes
+								.row.vert-align(ng-show="l.bridgers.length > 0")
+									.col-xs-3
+										.legend-line-across(style="border-color: {{l.colorval}}")
+									.col-xs-9
+										.row.vert-align.less-gutter(ng-href="", ng-click='selectNodesByIds(l.bridgers, $event); $event.stopPropagation();', ng-mouseenter='hoverNodesByIds(l.bridgers, $event); $event.stopPropagation();', ng-mouseleave='hoverNodesByIds([], $event); $event.stopPropagation();')
+											.col-xs-3.less-gutter.text-center
+												i.icon-bridger(ng-style='l.color')
+											.col-xs-4
+												.h6.less-gutter {{l.bridgers.length}} Bridgers
+											.colz-xs-1
+												//- i.fa.fa-plus(ng-click='selectNodeNeighborByIds(l.bridgers, $event); $event.stopPropagation();', ng-mouseenter='hoverNodeNeighborByIds(l.bridgers, $event); $event.stopPropagation();', ng-mouseleave='hoverNodesByIds([], $event); $event.stopPropagation();')
+					.color-box__description-wrap
+						h5 Description
+						.color-box__description(ng-bind-html="getSelectedSnapshot().descr || ''")
+						div
 						.pointable-cursor(ng-show="dataGroupVMs.length > ui.dataGroupsViewCount", ng-click='loadMoreDataGroups(); $event.stopPropagation();')
 							.h6
 								a.col-xs-12.text-right.pointable-cursor.text-link.no-underline

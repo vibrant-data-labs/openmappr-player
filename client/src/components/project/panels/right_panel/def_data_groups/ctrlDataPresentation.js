@@ -79,6 +79,8 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
 
     $scope.vm.nodeSizeAttr = _.find($scope.nodeSizeAttrs, 'id', $scope.mapprSettings.nodeSizeAttr);
     $scope.selectedNodes = [];
+    $scope.totalValue = 0;
+    $scope.isShowFullDataGroupVMs = false;
 
     $scope.colorByAttrUpdate = function colorByAttrUpdate(colorAttr){
         console.log(logPrefix + 'colorBy: ', $scope.dataGroupsInfo.colorNodesBy.id);
@@ -103,7 +105,13 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
         $scope.ui.linkGroupsViewCount += numShowLinkGroups * ITEMS_TO_SHOW + ITEMS_TO_SHOW_INITIALLY;
     };
 
+    $scope.calcLineWidth = function(num) {
+        return num / $scope.totalValue * 100;
+    }
 
+    $scope.getSelectedSnapshot = function () {
+        return snapshotService.getCurrentSnapshot() || {};
+    }
 
     /*************************************
     ****** Initialisation Logic **********
@@ -177,6 +185,7 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
             $scope.edgeColorAttrs = layoutService.getEdgeColorAttrs();
             refreshDataGroups();
         }
+        $scope.attr = dataGraph.getNodeAttrs()[5];
     }
 
     function refreshDataGroups() {
@@ -380,13 +389,19 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
             for (key in attrInfo.valuesCount) {
                 name = key;
                 count = attrInfo.valuesCount[key];
+                
+                if (count > $scope.totalValue) {
+                    $scope.totalValue = count;
+                }
+
                 col = d3.rgb(layout.scalers.color(key)).toString();
                 var descr = projFactory.getClusterDescr(networkId, attrInfo.attr.id, key);
                 var suggestion = projFactory.getClusterSuggestion(networkId, attrInfo.attr.id, key);
                 temp.push(new ColorObject(name, count, col, key, descr, suggestion));
             }
-            $scope.dataGroupVMs = temp.sort(sortFunc);
-            console.log('dataGroupVMs: ', $scope.dataGroupVMs);
+            var sort = temp.sort(sortFunc);
+            $scope.dataGroupVMs = sort.slice(0, 10);
+            $scope.dataGroupVMsTail = sort.slice(10);
         }
     }
 
