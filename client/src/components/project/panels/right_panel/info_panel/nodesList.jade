@@ -42,7 +42,7 @@
 		.panel-list-info(ng-if="isShowInfo")
 			.panel-list-info__head
 				.panel-list-info__photo
-					img(ng-src="{{PanelListInfo.photo}}")
+					img(ng-src="{{PanelListInfo.photo}}", ng-if="PanelListInfo.photo")
 				h4.panel-list-info__name {{PanelListInfo.name}}
 			.panel-list-info__body
 				.panel-list-info__text {{PanelListInfo.description}}

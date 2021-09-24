@@ -185,9 +185,9 @@ function(BROADCAST_MESSAGES, hoverService, selectService, subsetService, FilterP
 
         function setPanelInfo (node) {
             scope.PanelListInfo = {
-                name: node.attr['Speaker(s)'][0],
+                name:  node.attr[scope.labelAttr],
                 photo: node.attr.Photo,
-                description: node.attr.Description,
+                description: node.attr.Description || node.attr.Education,
                 tags: node.attr.Keywords
             }
         }
