@@ -64,12 +64,14 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
     $scope.sortByFreq = sortByFreq;
     $scope.sortByAlpha = sortByAlpha;
     $scope.nodeSizeAttrs = layoutService.getNodeSizeAttrs();
+    $scope.nodeColorAttrs = layoutService.getNodeColorAttrs();
     $scope.MAPP_EDITOR_OPEN = $rootScope.MAPP_EDITOR_OPEN;
 
     $scope.sizeByAttrUpdate = sizeByAttrUpdate;
-    function sizeByAttrUpdate(){
-        console.log(logPrefix + 'sizeBy: ', $scope.vm.nodeSizeAttr.id);
-        $scope.mapprSettings.nodeSizeAttr =  $scope.vm.nodeSizeAttr.id;
+    function sizeByAttrUpdate(attr){
+        console.log(logPrefix + 'sizeBy: ', attr.id);
+        $scope.mapprSettings.nodeSizeAttr = attr.id;
+        $scope.vm.nodeSizeAttr = _.find($scope.nodeSizeAttrs, 'id', $scope.mapprSettings.nodeSizeAttr);
     }
 
     $scope.vm = {

@@ -12,35 +12,35 @@
 											span Sized by:&nbsp;&nbsp;
 											span(uib-dropdown dropdown-append-to-body)
 												span(uib-dropdown-toggle auto-close="outsideClick" ng-click="keepDrawerOpen = true;")
-													span.text-link {{mapprSettings.legendSortOption}}
+													span.text-link {{vm.nodeSizeAttr.title}}
 														i.fa.fa-angle-down
 												.uib-dropdown-menu.uib-dropdown-menu-flexing(uib-dropdown-menu)
 													.uib-dropdown-click-close(ng-click="keepDrawerOpen = false;")
 													.uib-dropdown-flex-content(style="margin-left: 25px;")
 														.uib-dropdown-triangle
 														.uib-dropdown-flex.center
-															ul.dd-list.list-unstyled
-																li.row.vert-align.pointable-cursor(ng-repeat="item in [1,2,3]", ng-click="console.log(); keepDrawerOpen = false;")
+															ul.dd-list.list-unstyled(style="max-height:50vh;overflow-y:auto;")
+																li.row.vert-align.pointable-cursor(ng-repeat="item in nodeSizeAttrs", ng-click="sizeByAttrUpdate(item)", style="width: auto")
 																	.col-xs-12
-																		h6.no-margin {{item}}
+																		h6.no-margin {{item.title}}
 
 					.filter-list__item(
-						ng-class="{'attr-hidden':!attr.visible, 'first': ($index == 1), 'chart-first-item': attr.isFirstChart, 'tags-first-item': attr.isFirstTag}",
-						ng-click='selectNodesByAttrib(attr.title, attr.value, $event)'
+						ng-class="{'attr-hidden':!vm.nodeSizeAttr.visible, 'first': ($index == 1), 'chart-first-item': vm.nodeSizeAttr.isFirstChart, 'tags-first-item': vm.nodeSizeAttr.isFirstTag}",
+						ng-click='selectNodesByAttrib(vm.nodeSizeAttr.title, vm.nodeSizeAttr.value, $event)'
 					)
-						section.card.card_type_filter(data-attr="{{attr.id}}", ng-class="{'card__chart' : attr.attrType == 'integer' || attr.attrType == 'float' || attr.attrType == 'boolean' || attr.attrType == 'year' || attr.attrType == 'timestamp' }")
+						section.card.card_type_filter(data-attr="{{vm.nodeSizeAttr.id}}", ng-class="{'card__chart' : vm.nodeSizeAttr.attrType == 'integer' || vm.nodeSizeAttr.attrType == 'float' || vm.nodeSizeAttr.attrType == 'boolean' || vm.nodeSizeAttr.attrType == 'year' || vm.nodeSizeAttr.attrType == 'timestamp' }")
 							.card__body
-								.card__content
-									dir-attr-renderer(attr-to-render="attr", noe-color-str="nodeColorStr", is-node="true", show-filter="ui.enableFilters", disable-filter="attr.disableFilter" theme="appUi.theme" pinned-media="pinnedMedia")
+								.card__content(ng-repeat="attrItem in [vm.nodeSizeAttr]")
+									dir-attr-renderer(attr-to-render="attrItem", noe-color-str="nodeColorStr", is-node="true", show-filter="true", disable-filter="false" theme="appUi.theme" pinned-media="pinnedMedia")
 
 						h6.no-margin.text-center.title(
-							ng-if="attr.attrType == 'integer' || attr.attrType == 'float' || attr.attrType == 'boolean' || attr.attrType == 'year' || attr.attrType == 'timestamp'"
-							uib-tooltip="{{attr.metadata.descr || attr.title}}"
+							ng-if="vm.nodeSizeAttr.attrType == 'integer' || vm.nodeSizeAttr.attrType == 'float' || vm.nodeSizeAttr.attrType == 'boolean' || vm.nodeSizeAttr.attrType == 'year' || vm.nodeSizeAttr.attrType == 'timestamp'"
+							uib-tooltip="{{vm.nodeSizeAttr.metadata.descr || vm.nodeSizeAttr.title}}"
 							tooltip-placement='right'
 							tooltip-append-to-body="true"
 						)
-							span {{::attr.title}}
-							span(ng-show="attr.principalVal") :&nbsp;{{attr.principalVal}}
+							span {{vm.nodeSizeAttr.title}}
+							span(ng-show="vm.nodeSizeAttr.principalVal") :&nbsp;{{vm.nodeSizeAttr.principalVal}}
 				//- .col-xs-4
 				//- 	span
 				//- 		button.square-btn.small-btn.panel-btn(type="button", ng-click="clearSelections();") Reset
@@ -54,17 +54,17 @@
 											span Colored by:&nbsp;&nbsp;
 											span(uib-dropdown dropdown-append-to-body)
 												span(uib-dropdown-toggle auto-close="outsideClick" ng-click="keepDrawerOpen = true;")
-													span.text-link {{mapprSettings.legendSortOption}}
+													span.text-link {{dataGroupsInfo.colorNodesBy.title}}
 														i.fa.fa-angle-down
 												.uib-dropdown-menu.uib-dropdown-menu-flexing(uib-dropdown-menu)
 													.uib-dropdown-click-close(ng-click="keepDrawerOpen = false;")
 													.uib-dropdown-flex-content(style="margin-left: 25px;")
 														.uib-dropdown-triangle
 														.uib-dropdown-flex.center
-															ul.dd-list.list-unstyled
-																li.row.vert-align.pointable-cursor(ng-repeat="item in ['red', 'green', 'blue']", ng-click="console.log(); keepDrawerOpen = false;")
+															ul.dd-list.list-unstyled(style="max-height:50vh;overflow-y:auto;")
+																li.row.vert-align.pointable-cursor(ng-repeat="item in nodeColorAttrs", ng-click="colorByAttrUpdate(item)", style="width: auto")
 																	.col-xs-12
-																		h6.no-margin {{item}}
+																		h6.no-margin {{item.title}}
 
 					.btns(ng-if="mapprSettings.edgeColorStrat == 'select' || mapprSettings.edgeColorStrat == 'attr'")
 						.square-btn.small-btn(ng-if="!ui.showingLinks" uib-tooltip="View Links Summary" tooltip-placement="right" tooltip-append-to-body="true" ng-click="ui.showingLinks = true;")
