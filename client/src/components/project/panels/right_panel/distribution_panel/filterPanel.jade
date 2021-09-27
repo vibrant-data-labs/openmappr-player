@@ -17,36 +17,37 @@
 						ng-click='selectNodesByAttrib(attr.title, attr.value, $event)'
 					)
 						section.card.card_type_filter(data-attr="{{attr.id}}", ng-class="{'card__chart' : attr.attrType == 'integer' || attr.attrType == 'float' || attr.attrType == 'boolean' || attr.attrType == 'year' || attr.attrType == 'timestamp' }")
-							header.card__header(ng-if="attr.attrType != 'integer' && attr.attrType != 'float' && attr.attrType != 'boolean' && attr.attrType != 'year' && attr.attrType != 'timestamp'", uib-tooltip="{{::attr.metadata.descr}}" tooltip-placement='right' tooltip-append-to-body="true")
-								h2.card__title(dir-elem-ready="onAttrHeaderLoad(attr, $event)"
-									uib-tooltip="{{attr.headerPopupText}}", 
-														tooltip-placement="right", 
-														tooltip-append-to-body="true"
-									) {{::attr.title}}
+							header.card__header(uib-tooltip="{{::attr.metadata.descr}}" tooltip-placement='right' tooltip-append-to-body="true")
+								.card__head-wrap(ng-if="attr.attrType != 'integer' && attr.attrType != 'float' && attr.attrType != 'boolean' && attr.attrType != 'year' && attr.attrType != 'timestamp'")
+									h2.card__title(dir-elem-ready="onAttrHeaderLoad(attr, $event)"
+										uib-tooltip="{{attr.headerPopupText}}", 
+															tooltip-placement="right", 
+															tooltip-append-to-body="true"
+										) {{::attr.title}}
 
-								button.card__action-sort(
-									ng-if="attr.renderType == 'tags' || attr.renderType == 'categorylist' || attr.renderType == 'tag-cloud' || attr.renderType == 'wide-tag-cloud'",
-									ng-class="{ 'up': attr.sortConfig && attr.sortConfig.sortType === 'frequency' && attr.sortConfig.sortOrder === 'asc', 'disabled': attr.sortConfig && attr.sortConfig.sortType !== 'frequency' }",
-									ng-click="setSortOrder(attr, 'frequency')"
-									uib-tooltip="Sort by frequency of occurrence",
-									tooltip-placement="right", 
-									tooltip-append-to-body="true"
-									)
-								button.card__action-sort.card__action-sort-alphabet(
-									ng-if="attr.renderType == 'tags' || attr.renderType == 'categorylist' || attr.renderType == 'tag-cloud' || attr.renderType == 'wide-tag-cloud'",
-									ng-class="{ 'desc': attr.sortConfig && attr.sortConfig.sortType === 'alphabetical' && attr.sortConfig.sortOrder === 'desc', 'disabled': !attr.sortConfig || (attr.sortConfig && attr.sortConfig.sortType !== 'alphabetical') }", 
-									ng-click="setSortOrder(attr, 'alphabetical')"
-									uib-tooltip="Sorted alphabetically",
-									tooltip-placement="right", 
-									tooltip-append-to-body="true"
-									)
+									button.card__action-sort(
+										ng-if="attr.renderType == 'tags' || attr.renderType == 'categorylist' || attr.renderType == 'tag-cloud' || attr.renderType == 'wide-tag-cloud'",
+										ng-class="{ 'up': attr.sortConfig && attr.sortConfig.sortType === 'frequency' && attr.sortConfig.sortOrder === 'asc', 'disabled': attr.sortConfig && attr.sortConfig.sortType !== 'frequency' }",
+										ng-click="setSortOrder(attr, 'frequency')"
+										uib-tooltip="Sort by frequency of occurrence",
+										tooltip-placement="right", 
+										tooltip-append-to-body="true"
+										)
+									button.card__action-sort.card__action-sort-alphabet(
+										ng-if="attr.renderType == 'tags' || attr.renderType == 'categorylist' || attr.renderType == 'tag-cloud' || attr.renderType == 'wide-tag-cloud'",
+										ng-class="{ 'desc': attr.sortConfig && attr.sortConfig.sortType === 'alphabetical' && attr.sortConfig.sortOrder === 'desc', 'disabled': !attr.sortConfig || (attr.sortConfig && attr.sortConfig.sortType !== 'alphabetical') }", 
+										ng-click="setSortOrder(attr, 'alphabetical')"
+										uib-tooltip="Sorted alphabetically",
+										tooltip-placement="right", 
+										tooltip-append-to-body="true"
+										)
 
-								.card__action-search
-									button(ng-click="searchToggle(attr)") search
+									.card__action-search
+										button(ng-click="searchToggle(attr)") search
 
-								.card__search-box
-									input(type='text', ng-model="attr.searchQuery", ng-change="search(attr, $event)")/
-									button.close(ng-click="clearSearch(attr); searchToggle(attr);") close
+									.card__search-box
+										input(type='text', ng-model="attr.searchQuery", ng-change="search(attr, $event)")/
+										button.close(ng-click="clearSearch(attr); searchToggle(attr);") close
 								button.card__action-collapse(ng-click="collapseCard(attr)")
 									
 							.card__body
@@ -72,36 +73,37 @@
 						ng-click='selectNodesByAttrib(attr.title, attr.value, $event)'
 					)
 						section.card.card_type_filter(data-attr="{{attr.id}}", ng-class="{'card__chart' : attr.attrType == 'integer' || attr.attrType == 'float' || attr.attrType == 'boolean' || attr.attrType == 'year' || attr.attrType == 'timestamp' }")
-							header.card__header(ng-if="attr.attrType != 'integer' && attr.attrType != 'float' && attr.attrType != 'boolean' && attr.attrType != 'year' && attr.attrType != 'timestamp'", uib-tooltip="{{::attr.metadata.descr}}" tooltip-placement='right' tooltip-append-to-body="true")
-								h2.card__title(dir-elem-ready="onAttrHeaderLoad(attr, $event)"
-									uib-tooltip="{{attr.headerPopupText}}", 
-														tooltip-placement="right", 
-														tooltip-append-to-body="true"
-									) {{::attr.title}}
+							header.card__header(uib-tooltip="{{::attr.metadata.descr}}" tooltip-placement='right' tooltip-append-to-body="true")
+								.card__head-wrap(ng-if="attr.attrType != 'integer' && attr.attrType != 'float' && attr.attrType != 'boolean' && attr.attrType != 'year' && attr.attrType != 'timestamp'")
+									h2.card__title(dir-elem-ready="onAttrHeaderLoad(attr, $event)"
+										uib-tooltip="{{attr.headerPopupText}}", 
+															tooltip-placement="right", 
+															tooltip-append-to-body="true"
+										) {{::attr.title}}
 
-								button.card__action-sort(
-									ng-if="attr.renderType == 'tags' || attr.renderType == 'categorylist' || attr.renderType == 'tag-cloud' || attr.renderType == 'wide-tag-cloud'",
-									ng-class="{ 'up': attr.sortConfig && attr.sortConfig.sortType === 'frequency' && attr.sortConfig.sortOrder === 'asc', 'disabled': attr.sortConfig && attr.sortConfig.sortType !== 'frequency' }",
-									ng-click="setSortOrder(attr, 'frequency')"
-									uib-tooltip="Sort by frequency of occurrence",
-									tooltip-placement="right", 
-									tooltip-append-to-body="true"
-									)
-								button.card__action-sort.card__action-sort-alphabet(
-									ng-if="attr.renderType == 'tags' || attr.renderType == 'categorylist' || attr.renderType == 'tag-cloud' || attr.renderType == 'wide-tag-cloud'",
-									ng-class="{ 'desc': attr.sortConfig && attr.sortConfig.sortType === 'alphabetical' && attr.sortConfig.sortOrder === 'desc', 'disabled': !attr.sortConfig || (attr.sortConfig && attr.sortConfig.sortType !== 'alphabetical') }", 
-									ng-click="setSortOrder(attr, 'alphabetical')"
-									uib-tooltip="Sorted alphabetically",
-									tooltip-placement="right", 
-									tooltip-append-to-body="true"
-									)
+									button.card__action-sort(
+										ng-if="attr.renderType == 'tags' || attr.renderType == 'categorylist' || attr.renderType == 'tag-cloud' || attr.renderType == 'wide-tag-cloud'",
+										ng-class="{ 'up': attr.sortConfig && attr.sortConfig.sortType === 'frequency' && attr.sortConfig.sortOrder === 'asc', 'disabled': attr.sortConfig && attr.sortConfig.sortType !== 'frequency' }",
+										ng-click="setSortOrder(attr, 'frequency')"
+										uib-tooltip="Sort by frequency of occurrence",
+										tooltip-placement="right", 
+										tooltip-append-to-body="true"
+										)
+									button.card__action-sort.card__action-sort-alphabet(
+										ng-if="attr.renderType == 'tags' || attr.renderType == 'categorylist' || attr.renderType == 'tag-cloud' || attr.renderType == 'wide-tag-cloud'",
+										ng-class="{ 'desc': attr.sortConfig && attr.sortConfig.sortType === 'alphabetical' && attr.sortConfig.sortOrder === 'desc', 'disabled': !attr.sortConfig || (attr.sortConfig && attr.sortConfig.sortType !== 'alphabetical') }", 
+										ng-click="setSortOrder(attr, 'alphabetical')"
+										uib-tooltip="Sorted alphabetically",
+										tooltip-placement="right", 
+										tooltip-append-to-body="true"
+										)
 
-								.card__action-search
-									button(ng-click="searchToggle(attr)") search
+									.card__action-search
+										button(ng-click="searchToggle(attr)") search
 
-								.card__search-box
-									input(type='text', ng-model="attr.searchQuery", ng-change="search(attr, $event)")/
-									button.close(ng-click="clearSearch(attr); searchToggle(attr);") close
+									.card__search-box
+										input(type='text', ng-model="attr.searchQuery", ng-change="search(attr, $event)")/
+										button.close(ng-click="clearSearch(attr); searchToggle(attr);") close
 								button.card__action-collapse(ng-click="collapseCard(attr)")
 									
 							.card__body
