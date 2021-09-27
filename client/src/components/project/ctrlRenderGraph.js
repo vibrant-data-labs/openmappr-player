@@ -180,6 +180,7 @@ angular.module('common')
 
             $scope.selectedSearchValue = [];
             $scope.selectedSearchValueStr = null;
+            $scope.isShowBreadcrumbs = true;
 
             // #####
             $scope.isSnapshotDescription = false;
@@ -244,7 +245,15 @@ angular.module('common')
             }
 
             $scope.subsetFilters = function subsetFilters() {
-                subsetService.subset();
+                if ($scope.panelUI.currentPanelOpen === 'filter') {
+                    subsetService.subset();
+                } else {
+                    $scope.panelUI.openPanel('filter');
+
+                    setTimeout(() => {
+                        subsetService.subset();
+                    }, 500)
+                }
             };
 
             $scope.undoFilters = function undoFilters() {
@@ -280,6 +289,10 @@ angular.module('common')
                     $scope.searchDropdownVisible = false;
                 }
                 $scope.selectedSearchValueStr = _.map($scope.selectedSearchValue, 'title').join(', ');
+            }
+
+            $scope.collapseBreadcrumbs = function() {
+                $scope.isShowBreadcrumbs = !$scope.isShowBreadcrumbs;
             }
 
             $scope.$on(BROADCAST_MESSAGES.hss.select, function (e, data) {

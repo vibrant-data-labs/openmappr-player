@@ -4,7 +4,7 @@
   border-bottom: 1px solid #EBEFF2;
   background-color: white;
 }
-/* line 5, ../../sass/common/filter-header.scss */
+/* line 6, ../../sass/common/filter-header.scss */
 .filter-header__list {
   display: flex;
   background: #F0F2F5;
@@ -14,7 +14,7 @@
   padding: 0;
   list-style: none;
 }
-/* line 15, ../../sass/common/filter-header.scss */
+/* line 16, ../../sass/common/filter-header.scss */
 .filter-header__item {
   flex: 1 0 auto;
   font: 400 14px/21px 'Poppins';
@@ -23,7 +23,7 @@
   border-radius: 6px;
   position: relative;
 }
-/* line 25, ../../sass/common/filter-header.scss */
+/* line 26, ../../sass/common/filter-header.scss */
 .filter-header__item_current::after {
   content: '';
   position: absolute;
@@ -36,13 +36,13 @@
   border-radius: 6px;
   pointer-events: none;
 }
-/* line 38, ../../sass/common/filter-header.scss */
+/* line 39, ../../sass/common/filter-header.scss */
 .filter-header__item_current .filter-header__link {
   color: #323C47;
   background: #fff;
   border-radius: 5px;
 }
-/* line 46, ../../sass/common/filter-header.scss */
+/* line 47, ../../sass/common/filter-header.scss */
 .filter-header__link {
   position: relative;
   z-index: 10;
@@ -50,4 +50,29 @@
   height: 100%;
   padding: 5px 6px 4px;
   cursor: pointer;
+}
+/* line 56, ../../sass/common/filter-header.scss */
+.filter-header__total {
+  display: flex;
+  justify-content: space-between;
+}
+/* line 61, ../../sass/common/filter-header.scss */
+.filter-header--nodes {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+/* line 67, ../../sass/common/filter-header.scss */
+.filter-header__left-part {
+  display: flex;
+  align-items: center;
+  min-height: 34px;
+}
+/* line 72, ../../sass/common/filter-header.scss */
+.filter-header__right-part {
+  flex-grow: 0;
+}
+/* line 75, ../../sass/common/filter-header.scss */
+.filter-header__right-part .fa-download {
+  font-size: 16px;
 }

@@ -20,9 +20,11 @@ angular.module('common')
     *  Scope data
     */
             $scope.nodeDistrAttrs = [];
+            $scope.nodeDistrAttrsHigh = [];
+            $scope.nodeDistrAttrsLow = [];
             $scope.currentSelection = [];
             $scope.MAPP_EDITOR_OPEN = $rootScope.MAPP_EDITOR_OPEN;
-
+            $scope.isShowAdditionalCategory = false;
             /**
     * Scope methods
     */
@@ -62,6 +64,11 @@ angular.module('common')
 
                 card.classList.toggle('card_expanded');
                 //searchBoxInput.focus();
+            }
+
+            $scope.collapseCard = function(attr) {
+                const card = document.querySelector('.card_type_filter[data-attr="' + attr.id + '"]');
+                card.classList.toggle('card_collapsed');
             }
 
             $scope.clearSearch = function search(attr) {
@@ -192,8 +199,26 @@ angular.module('common')
                     .partition(function (attr) { return networkAttrs.indexOf(attr.id) > -1; })
                     .flatten()
                     .value();
-
+                
                 $scope.nodeDistrAttrs = [...tagAttrs, ...chartAttrs];
+
+                var nodePriorities = _($scope.nodeDistrAttrs)
+                    .filter(x => x.visible)
+                    .countBy(x => x.priority || 'low')
+                    .value();
+                $scope.hasPriority = nodePriorities.high > 0 && nodePriorities.low > 0;
+                $scope.nodeDistrAttrs.forEach(i => {
+                    if (i.priority == "high") {
+                        $scope.nodeDistrAttrsHigh = [...$scope.nodeDistrAttrsHigh, i];
+                    } else {
+                        $scope.nodeDistrAttrsLow = [...$scope.nodeDistrAttrsLow, i];
+                    }
+                })
+
+                $scope.showAdditionCat = function() {
+                    $scope.isShowAdditionalCategory = !$scope.isShowAdditionalCategory;
+                }
+
                 updateNodeColorStr();
                 // Set 'sortType' for tag attrs
                 setSortForTags($scope.nodeDistrAttrs, !_.isEmpty(newSelection));

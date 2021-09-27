@@ -269,6 +269,7 @@ module.exports = function(grunt) {
 				"client/src/components/project/panels/right_panel/info_panel/dirNodeInfoAttrs.js",
 				"client/src/components/project/panels/right_panel/info_panel/dirNodesList.js",
 				"client/src/components/project/panels/right_panel/info_panel/dirSelectionInfo.js",
+				"client/src/components/project/panels/right_panel/info_panel/dirPanelSelection.js",
 				"client/src/components/project/panels/right_panel/info_panel/infoPanelService.js",
 				"client/src/products/player/ctrlApp.js",
 				"client/src/products/player/ctrlBottomTimeline.js",

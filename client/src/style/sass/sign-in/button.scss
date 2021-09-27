@@ -11,6 +11,72 @@
     opacity: .7;
   }
 
+  &_summarize {
+    width: 100%;
+    border: 1px solid #E8E8E8;
+    border-top: none;
+    padding: 7px;
+    text-align: center;
+    margin: -2px 0 0 0;
+    border-radius: 0 0 6px 6px;
+    background: #fff;
+    transition: all 350ms ease;
+
+    &:hover {
+      background: #BC3364;
+      color: #fff;
+      box-shadow: 0 8px 5px -8px rgba(#000, .2);
+    }
+
+    &:disabled {
+      background: #f4f4f4;
+      box-shadow: none;
+      color: initial;
+    }
+  }
+
+  &_reset {
+    width: 100%;
+    border: 1px solid #E8E8E8;
+    border-bottom: none;
+    padding: 7px;
+    text-align: center;
+    margin: 0 0 -2px 0;
+    border-radius: 6px 6px 0 0;
+    background: #fff;
+    transition: all 350ms ease;
+    position: relative;
+
+    &:hover {
+      background: #BC3364;
+      color: #fff;
+      box-shadow: 0 -8px 5px -8px rgba(#000, .2);
+    }
+
+    &:disabled {
+      background: #f4f4f4;
+      box-shadow: none;
+      color: initial;
+    }
+  }
+
+  &_collapse {
+    position: absolute;
+    content: "";
+    border-radius: 2px;
+    border: 1px solid #E2E2E2;
+    background: #fff url("/img/search/arrow-down.svg") 50% no-repeat;
+    background-size: 8px 5px;
+    top: 8px;
+    right: 10px;
+    width: 20px;
+    height: 20px;
+    
+    &_hide {
+      transform: scaleY(-1);
+    }
+  }
+
   &_wide {
     display: block;
     width: 100%;
