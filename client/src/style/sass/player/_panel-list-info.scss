@@ -8,6 +8,11 @@
   transform: translateY(-50%);
   width: 380px;
   padding: 15px;
+  display: none;
+
+  .info-item:hover & {
+    display: block;
+  }
 
   &__head {
     display: flex;

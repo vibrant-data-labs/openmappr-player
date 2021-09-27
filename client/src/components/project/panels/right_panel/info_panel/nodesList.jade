@@ -1,43 +1,4 @@
 .info-item.flex-fill-column
-	ul.list-unstyled.panel-list
-		li.panel-item.list-item.no-hover.nodes-list__selected-info(ng-if="nodes.length > 1")
-			.vert-align.list-panel-header.truncate
-				span.dark-grey-font.list-panel-header__nodes.truncate {{nodes.length}} {{nodesStatus}}
-
-				span.dark-grey-font.list-panel-header__links.truncate(ng-if="links") {{links.length}} {{linksStatus}}
-				span.dark-drey-font(ng-if="!links") ...
-			.vert-align
-				dir-sort-menu.list-panel-header__select.truncate(sort-types="sortTypes" sort-config="sortInfo")
-
-				//- dir-export()
-		li.panel-item.list-item
-			.row.vert-align
-				.col-xs-7
-					.node-search.flex-container.vert-align
-						input.animate-open-right.h6.no-margin(ng-show="showSearch" type="text" ng-model="nodeSearchQuery" ng-model-options="{debounce: 300}" placeholder="search nodes...")
-						button(ng-show="!showSearch" ng-click="showSearch = true" uib-tooltip="Search nodes" tooltip-append-to-body="true")
-							i.fa.fa-search
-						button.close-btn(ng-show="showSearch" ng-click="showSearch = false; nodeSearchQuery = '';")
-							i.fa.fa-times
-				.col-xs-5(ng-show="viewLimit < nodes.length || numShowGroups !== 0")
-					a.more-text.h6(ng-show="viewLimit < nodes.length" ng-click='viewMore(); $event.stopPropagation();')
-						em
-							u more
-					a.more-text.h6.pull-right(ng-show="numShowGroups !== 0" ng-click='viewLess(); $event.stopPropagation();')
-						em
-							u less
-	ul.list-unstyled.panel-list(ng-if="singleNode")
-		li.panel-item.list-item.pointable-cursor.no-animate.no-hover(ng-click="selectNode(singleNode.id, $event)" ng-mouseenter="hoverNode(singleNode.id, $event)" ng-mouseleave="unHoverNode(singleNode.id, $event)")
-			.row.vert-align
-				.col-xs-12
-					h6.groups-title Selected node:
-			.row.vert-align.truncate(uib-tooltip-html="getNodeTooltipHtml(singleNode)" tooltip-placement="right" tooltip-append-to-body="true")
-				.col-xs-2
-					.big-circle(style="background: {{getNodeColor(singleNode)}};")
-				.col-xs-8
-					h6.less-gutter	{{singleNode.attr[labelAttr]}}
-				.col-xs-2
-
 	div.panel-list.panel-list--scrollable
 		.panel-list-info(ng-if="isShowInfo")
 			.panel-list-info__head
@@ -52,34 +13,9 @@
 						span.panel-list-info__tag(ng-repeat="tag in PanelListInfo.tags") {{tag}}
 
 		ul.list-unstyled
-			li.panel-item.list-item.pointable-cursor(id="item-{{node.id}}" ng-class="{'highlighted':node.id == singleNode.id}" ng-repeat="node in nodes | filter: filterNode track by node.id" ng-click="selectNode(node.id, $event)" ng-mouseenter="hoverNode(node)" ng-mouseleave="unHoverNode(node.id, $event)")
+			li.panel-item.list-item.pointable-cursor(id="item-{{node.id}}" ng-style="{'background': (node.id == singleNode.id ? getHighlightColor(node): '#fff') }" ng-class="{'highlighted':node.id == singleNode.id}" ng-repeat="node in nodes | filter: filterNode track by node.id" ng-click="selectNode(node, $event)" ng-mouseenter="debounceHoverNode(node)" ng-mouseleave="unHoverNode(node.id, $event)")
 				.row.vert-align.truncate
 					.col-xs-2
 						.big-circle(style="background: {{::getNodeColor(node)}};")
 					.col-xs-10
 						h6.less-gutter.list-item__title.truncate	{{node.attr[labelAttr]}}
-
-
-	ul.list-unstyled.panel-list.m-t-10
-		li.panel-item.list-item.no-hover
-			.row.vert-align
-				.col-xs-12
-					h6.groups-title {{nodeColorAttrTitle}}:
-		li.panel-item.list-item.pointable-cursor.no-animate(ng-repeat="group in selectedGroups" ng-click="selectGroup(group, $event)" ng-mouseenter="hoverGroup(group, $event)" ng-mouseleave="unHoverGroup(group, $event)")
-			.row.vert-align
-				.col-xs-2
-					//.big-circle(style="background: {{getGroupColor(group.name)}};")
-					svg(
-						width="18px" height="18px" viewBox="0 0 18 18"
-						version="1.1" xmlns="http://www.w3.org/2000/svg"
-						xmlns:xlink="http://www.w3.org/1999/xlink"
-					)
-						g(stroke="none" stroke-width="1" fill="none" fill-rule="evenodd")
-							g(fill="{{getGroupColor(group.name)}}" fill-rule="nonzero")
-								path(d="M16.875,10.125 L11.25,10.125 C10.6287891,10.125 10.125,10.6287891 10.125,11.25 L10.125,16.875" +
-								" C10.125,17.4962109 10.6287891,18 11.25,18 L16.875,18 C17.4962109,18 18,17.4962109 18,16.875 L18,11" +
-								".25 C18,10.6287891 17.4962109,10.125 16.875,10.125 Z M16.3125,16.3125 L11.8125,16.3125 L11.8125,11.8125 L16.3125,11.8125 L16.3125,16.3125 Z M4.5,9 C2.01480469,9 0,11.0148047 0,13.5 C0,15.9851953 2.01480469,18 4.5,18 C6.98519531,18 9,15.9851953 9,13.5 C9,11.0148047 6.98519531,9 4.5,9 Z M4.5,16.3125 C2.94925781,16.3125 1.6875,15.0507422 1.6875,13.5 C1.6875,11.9492578 2.94925781,10.6875 4.5,10.6875 C6.05074219,10.6875 7.3125,11.9492578 7.3125,13.5 C7.3125,15.0507422 6.05074219,16.3125 4.5,16.3125 Z M17.8235156,7.07132812 L14.0649609,0.643007812 C13.8146484,0.214453125 13.3758984,0 12.9375,0 C12.4991016,0 12.0603516,0.214453125 11.8100391,0.643007812 L8.05148438,7.07132812 C7.55015625,7.9284375 8.17664063,9 9.17894531,9 L16.6960547,9 C17.6983594,9 18.3248437,7.9284375 17.8235156,7.07132812 Z M9.86519531,7.3125 L12.9375,2.05769531 L16.0098047,7.3125 L9.86519531,7.3125 Z")
-				.col-xs-8
-					h6.less-gutter.truncate(uib-tooltip="{{group.name}}" tooltip-placement="right" tooltip-append-to-body="true") {{group.name}}
-				.col-xs-2
-					h6.less-gutter {{group.nodesCount}}

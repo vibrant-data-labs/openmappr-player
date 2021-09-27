@@ -88,9 +88,9 @@ function(BROADCAST_MESSAGES, hoverService, selectService, subsetService, FilterP
             scope.layout = layout;
         });
 
-        scope.selectNode = function(nodeId, $event) {
+        scope.selectNode = function(node, $event) {
             hoverService.unhover();
-            selectService.selectSingleNode(nodeId);
+            selectService.selectSingleNode(node.id);
         };
 
         scope.hoverNode = function(nodeId) {
@@ -139,6 +139,13 @@ function(BROADCAST_MESSAGES, hoverService, selectService, subsetService, FilterP
             }
         }
 
+        scope.getHighlightColor = function(node) {
+            if (scope.layout && node && node.attr && node.attr[scope.nodeColorAttr]) {
+                var color = memoizedGetFunctionColor(node.attr[scope.nodeColorAttr]) + 60;
+                return color;
+            }
+        }
+
         scope.getGroupColor = function(groupName) {
             if (scope.layout) {
                 return memoizedGetFunctionColor(groupName);
@@ -169,12 +176,14 @@ function(BROADCAST_MESSAGES, hoverService, selectService, subsetService, FilterP
             return d3.rgb(scope.layout.scalers.color(cluster)).toString();
         }
 
+        scope.debounceHoverNode = _.debounce(hoverNodes, 300);
+
         function hoverNodes(node) {
             scope.isShowInfo = true;
-            setPanelInfo(node[0]);
+            setPanelInfo(node);
 
             parCtrl.persistSelection();
-            hoverService.hoverNodes({ ids: node[0].id });
+            hoverService.hoverNodes({ ids: node.id });
         }
 
         function unHoverNodes(nodeIds) {
