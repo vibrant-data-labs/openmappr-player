@@ -125,13 +125,13 @@
 
                 dd.section-info__value {{number.value}}
 
-          section.section.section_tabs(ng-if="(neighs.in && neighs.in.length) || (neighs.out && neighs.out.length)")
+          section.section.section_tabs(ng-if="degree && ((neighs.in && neighs.in.length) || (neighs.out && neighs.out.length))")
             .tabContainer
               .tabVisible
                 .tab(ng-if="neighs.out && neighs.out.length")
-                  button(ng-class="{active: sectionNeigh=='out'}", ng-click="activeNeigh('out')") Outgoing Neighbors
+                  button(ng-class="{active: sectionNeigh=='out'}", ng-click="activeNeigh('out')") Neighbors
                 .tab(ng-if="neighs.in && neighs.in.length")
-                  button(ng-class="{active: sectionNeigh=='in'}", ng-click="activeNeigh('in')") Incoming Neighbors
+                  button(ng-class="{active: sectionNeigh=='in'}", ng-click="activeNeigh('in')") Neighbors
 
             .section__content
               #neighborsOut.tabcontent(ng-if="sectionNeigh=='out'")

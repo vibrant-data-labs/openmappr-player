@@ -1,6 +1,6 @@
 angular.module('common')
-    .controller('NodeOverlayCtrl', ['$scope', '$rootScope', '$timeout', 'BROADCAST_MESSAGES', 'zoomService', 'nodeSelectionService', 'renderGraphfactory', 'dataGraph', 'graphSelectionService', 'partitionService', 'FilterPanelService', 'AttrInfoService', 'linkService', 'hoverService', 'selectService',
-        function ($scope, $rootScope, $timeout, BROADCAST_MESSAGES, zoomService, nodeSelectionService, renderGraphfactory, dataGraph, graphSelectionService, partitionService, FilterPanelService, AttrInfoService, linkService, hoverService, selectService) {
+    .controller('NodeOverlayCtrl', ['$scope', '$rootScope', '$timeout', 'BROADCAST_MESSAGES', 'zoomService', 'nodeSelectionService', 'renderGraphfactory', 'dataGraph', 'graphSelectionService', 'partitionService', 'FilterPanelService', 'AttrInfoService', 'linkService', 'hoverService', 'selectService', 'snapshotService',
+        function ($scope, $rootScope, $timeout, BROADCAST_MESSAGES, zoomService, nodeSelectionService, renderGraphfactory, dataGraph, graphSelectionService, partitionService, FilterPanelService, AttrInfoService, linkService, hoverService, selectService, snapshotService) {
             'use strict';
 
             /*************************************
@@ -18,6 +18,13 @@ angular.module('common')
                 node: null,
                 pos: { x: 0, y: 0 }
             };
+
+            var sigRender = renderGraphfactory.getRenderer();
+            var settings = sigRender.settings.embedObjects({
+                prefix: sigRender.options.prefix,
+                inSelMode: false,
+                inHoverMode: true
+            });
 
             /*************************************
             ********* Scope Bindings *************
@@ -624,11 +631,15 @@ angular.module('common')
 
 
                 $scope.nodeRightInfo = result;
-                console.log(result, 7778);
+                
+                console.log($scope.nodeRightInfo);
+                console.log('ZZZZZ', settings('edgeDirectionalRender'));
+                // console.log(result, 7778);
 
             }
 
             function buildNeighbours(node) {
+                console.log('buildNeighbours', node, $scope.mapprSettings.edgeDirectionalRender);
                 var graph = renderGraphfactory.sig().graph;
                 var incoming = [];
                 var outgoing = [];
@@ -643,6 +654,7 @@ angular.module('common')
                         break;
                     case 'outgoing':
                         outgoing = getOutgoingNeighbours(node, graph);
+                        console.log('outgoing' , outgoing);
                         break;
                 }
 
@@ -652,6 +664,10 @@ angular.module('common')
                 };
 
                 $scope.sectionNeigh = outgoing.length > 0 ? 'out' : 'in';
+
+                var snapshot = snapshotService.getCurrentSnapshot()
+                $scope.degree = snapshot.layout.settings.nodeSelectionDegree;
+                console.log('degree', $scope.degree);
             }
 
             function getIncomingNeighbours(node, graph) {

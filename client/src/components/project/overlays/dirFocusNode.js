@@ -78,7 +78,7 @@ function ($timeout) {
                 borderColor:strokeColorAttr,
                 backgroundColor: fillColorAttr
             };
-            console.log('imgAttr: ', scope.imgAttr);
+            // console.log('imgAttr: ', scope.imgAttr);
             var img = scope.node.attr[scope.imgAttr];
             if(img) {
                 obj.backgroundImage = 'url('+img+')';

@@ -158,7 +158,7 @@ angular.module('common')
                         refresh(selNodes);  
                     }
 
-                    console.log('All node groups -> ', $scope.groupsAndClusters);
+                    // console.log('All node groups -> ', $scope.groupsAndClusters);
                 }
 
                 function refresh(selNodes, selLinks) {
