@@ -1,5 +1,5 @@
 .legend-container.flex-transclude.width-100(ng-mouseleave="rightPanelExited();")
-	.flex-vert-container.width-100
+	.flex-vert-container.width-100.panel-scroll
 		//- .header(ng-mouseenter="panelUI.summaryPanelOpen ? showLegendBtns = true : showLegendBtns = false; panelUI.summaryPanelHover = true;" ng-mouseleave="showLegendBtns = false; panelUI.summaryPanelHover = false;" ng-class="{'active': panelUI.summaryPanelOpen}")
 		.header(ng-mouseenter="panelUI.summaryPanelOpen ? showLegendBtns = true : showLegendBtns = false;" ng-mouseleave="showLegendBtns = false;")
 			.row.vert-align.main
@@ -85,7 +85,7 @@
 								span(ng-if="ui.summaryToggleOpen" ng-click="ui.summaryToggleOpen = false;")
 									i.fa.fa-caret-down.fa-fw
 									span Compact View
-		.list-content.panel-scroll.flex-fill(ng-if="panelUI.summaryPanelOpen")
+		.list-content.flex-fill(ng-if="panelUI.summaryPanelOpen")
 			///
 			/// Node Color Panel
 			///
@@ -154,7 +154,11 @@
 												//- i.fa.fa-plus(ng-click='selectNodeNeighborByIds(l.bridgers, $event); $event.stopPropagation();', ng-mouseenter='hoverNodeNeighborByIds(l.bridgers, $event); $event.stopPropagation();', ng-mouseleave='hoverNodesByIds([], $event); $event.stopPropagation();')
 					.color-box__description-wrap
 						h5 Description
-						.color-box__description(ng-bind-html="getSelectedSnapshot().descr || ''")
+						.color-box__description(ng-if="getSelectedSnapshot().length")
+							div(ng-bind-html="getSelectedSnapshot()[0]")
+							.color-box__description-btn-wrap
+								button.color-box__description-btn(ng-click="isShowMoreDesc = !isShowMoreDesc", ng-style="{ 'display': isShowMoreDesc ? 'none' : ''}") More
+							.color-box__description-hidden(ng-bind-html="getSelectedSnapshot()[1]", ng-if="isShowMoreDesc")
 						div
 						.pointable-cursor(ng-show="dataGroupVMs.length > ui.dataGroupsViewCount", ng-click='loadMoreDataGroups(); $event.stopPropagation();')
 							.h6
