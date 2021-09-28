@@ -124,46 +124,73 @@
                   div.label-text.truncate {{number.key}}
 
                 dd.section-info__value {{number.value}}
+          .wrap(ng-if="isShowNeighbours && ((neighs.in && neighs.in.length) || (neighs.out && neighs.out.length))")
+            section.section.section_tabs(ng-if="directLink")
+              .tabContainer
+                .tabVisible
+                  .tab(ng-if="neighs.out && neighs.out.length")
+                    button(ng-class="{active: sectionNeigh=='out'}", ng-click="activeNeigh('out')") 
+                      span(ng-if="neighs.in && neighs.in.length") {{ongoingTitle}} 
+                      span {{commonTitle}}
+                  .tab(ng-if="neighs.in && neighs.in.length")
+                    button(ng-class="{active: sectionNeigh=='in'}", ng-click="activeNeigh('in')") 
+                      span(ng-if="neighs.out && neighs.out.length") {{incomingTitle}} 
+                      span {{commonTitle}}
 
-          section.section.section_tabs(ng-if="(neighs.in && neighs.in.length) || (neighs.out && neighs.out.length)")
-            .tabContainer
-              .tabVisible
-                .tab(ng-if="neighs.out && neighs.out.length")
-                  button(ng-class="{active: sectionNeigh=='out'}", ng-click="activeNeigh('out')") Outgoing Neighbors
-                .tab(ng-if="neighs.in && neighs.in.length")
-                  button(ng-class="{active: sectionNeigh=='in'}", ng-click="activeNeigh('in')") Incoming Neighbors
-
-            .section__content
-              #neighborsOut.tabcontent(ng-if="sectionNeigh=='out'")
-                .user(ng-repeat="link in neighs.out", style="cursor:pointer;", ng-mouseover="onHover(link)", ng-mouseleave="onHoverOut()", ng-click="onNeighborClick(link)")
-                    .img-user
-                        div.img(
-                          ng-if="!link.imageShow || !link.image"
-                          style="background: {{link.colorStr}}; border-color: {{darken(link.color)}}"
-                        )
-                        div.img(
-                          ng-if="link.imageShow && link.image"
-                          style="background-image: url({{link.image}}); border-color: {{darken(link.color)}}"
-                        )
-                    .info-user
-                        p(uib-tooltip="{{link.name}}" tooltip-placement="top")
-                            h6 {{link.name}}
-                        p {{link.description}}            
-              #neighborsIn.tabcontent(ng-if="sectionNeigh=='in'")
-                .user(ng-repeat="link in neighs.in", style="cursor:pointer;", ng-mouseover="onHover(link)", ng-mouseleave="onHoverOut()", ng-click="onNeighborClick(link)")
-                    .img-user
-                        div.img(
-                          ng-if="!link.imageShow || !link.image"
-                          style="background: {{link.colorStr}}; border-color: {{darken(link.color)}}"
-                        )
-                        div.img(
-                          ng-if="link.imageShow && link.image"
-                          style="background-image: url({{link.image}}); border-color: {{darken(link.color)}}"
-                        )
-                    .info-user
-                        p(uib-tooltip="{{link.name}}" tooltip-placement="top")
-                            h6 {{link.name}}
-                        p {{link.description}}
-
+              .section__content
+                #neighborsOut.tabcontent(ng-if="sectionNeigh=='out'")
+                  .user(ng-repeat="link in neighs.out", style="cursor:pointer;", ng-mouseover="onHover(link)", ng-mouseleave="onHoverOut()", ng-click="onNeighborClick(link)")
+                      .img-user
+                          div.img(
+                            ng-if="!link.imageShow || !link.image"
+                            style="background: {{link.colorStr}}; border-color: {{darken(link.color)}}"
+                          )
+                          div.img(
+                            ng-if="link.imageShow && link.image"
+                            style="background-image: url({{link.image}}); border-color: {{darken(link.color)}}"
+                          )
+                      .info-user
+                          p(uib-tooltip="{{link.name}}" tooltip-placement="top")
+                              h6 {{link.name}}
+                          p {{link.description}}            
+                #neighborsIn.tabcontent(ng-if="sectionNeigh=='in'")
+                  .user(ng-repeat="link in neighs.in", style="cursor:pointer;", ng-mouseover="onHover(link)", ng-mouseleave="onHoverOut()", ng-click="onNeighborClick(link)")
+                      .img-user
+                          div.img(
+                            ng-if="!link.imageShow || !link.image"
+                            style="background: {{link.colorStr}}; border-color: {{darken(link.color)}}"
+                          )
+                          div.img(
+                            ng-if="link.imageShow && link.image"
+                            style="background-image: url({{link.image}}); border-color: {{darken(link.color)}}"
+                          )
+                      .info-user
+                          p(uib-tooltip="{{link.name}}" tooltip-placement="top")
+                              h6 {{link.name}}
+                          p {{link.description}}
+            
+            section.section.section_tabs(ng-if="!directLink")
+              .tabContainer
+                .tabVisible
+                  .tab
+                    button.active
+                      span {{commonTitle}}
+              .section__content
+                .tabcontent
+                  .user(ng-repeat="link in allNeighs", style="cursor:pointer;", ng-mouseover="onHover(link)", ng-mouseleave="onHoverOut()", ng-click="onNeighborClick(link)")
+                      .img-user
+                          div.img(
+                            ng-if="!link.imageShow || !link.image"
+                            style="background: {{link.colorStr}}; border-color: {{darken(link.color)}}"
+                          )
+                          div.img(
+                            ng-if="link.imageShow && link.image"
+                            style="background-image: url({{link.image}}); border-color: {{darken(link.color)}}"
+                          )
+                      .info-user
+                          p(uib-tooltip="{{link.name}}" tooltip-placement="top")
+                              h6 {{link.name}}
+                          p {{link.description}}            
+              
   dir-focus-node(ng-show="false" ng-if="showFocusNode && mapprSettings.nodeFocusRenderTemplate != 'content'" node="focusNode" img-attr="nodeImageAttr" start="nodeStartData" end="nodeEndData" duration="175" ease="" finish="finishAnimation()")
   dir-focus-node(ng-show="false" ng-if="showNeighborNode" node="neighborNode" img-attr="nodeImageAttr" start="neighborNodeStartData" end="neighborNodeEndData" duration="175" ease="" finish="finishNeighborAnimation()")

@@ -207,7 +207,7 @@ angular.module('common')
                 } else {
                     nodes = event.data.nodes;
                 }
-                console.log("[hoverService] hoverHandler hovering over " + nodes.length + " nodes");
+                // console.log("[hoverService] hoverHandler hovering over " + nodes.length + " nodes");
 
                 draw(nodes, event.data.withNeighbors, degree);
             }

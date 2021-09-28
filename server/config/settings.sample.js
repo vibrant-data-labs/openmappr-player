@@ -18,6 +18,10 @@ module.exports = {
         yaxis: "Clustered_1_Y",
         xaxis: "Clustered_1_X",
         settings: {
+          isShowSelectedNodeTab: true, // boolean - option to hide/show neighbor list in right panel
+          selectedNodeCommonTitle: 'Neighbors',
+          selectedNodeIncomingTitle: 'Incoming',
+          selectedNodeOutgoingTitle: 'Outgoing',
           drawNodes: true, // boolean - whether to draw or not nodes
           borderRatio: 0.15, // number - part of node which would be taken as a border
           bigOnTop: true, // boolean - whether to place bigger nodes on top
