@@ -68,9 +68,6 @@
 }
 
 .card {
-  &__chart {
-    padding: 0 !important;
-  }
   &_type {
     &_filter {
       padding: 0 10px;
@@ -312,6 +309,12 @@
     }
   }
 
+  &__head-wrap {
+    display: flex;
+    flex: 1;
+    align-items: center;
+  }
+
   &_collapsed {
     .card__body {
       display: none;
@@ -321,6 +324,13 @@
       &:before {
         transform: rotate(90deg);
       }
+    }
+
+    + h6 {
+      margin-top: -20px !important;
+      text-align: left;
+      padding: 0 0 0 10px;
+      font: 500 15px/20px "Poppins" !important;
     }
   }
 
@@ -334,6 +344,7 @@
     justify-content: center;
     padding: 0;
     background: #F5F6F8;
+    margin-left: auto;
 
     &:before {
       content: '';

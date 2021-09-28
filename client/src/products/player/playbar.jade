@@ -156,7 +156,7 @@
                         span(ng-if="val.description == 'eq'") {{val.values[0]}}
         button.button_summarize(
           ng-click="subsetFilters()",
-          ng-disabled="!(ui.subsetEnabled)"
+          ng-if="ui.subsetEnabled"
           uib-tooltip="Click to summarize the selected nodes in the ‘Summary’ tab"
           tooltip-append-to-body="true"
           tooltip-placement="right"

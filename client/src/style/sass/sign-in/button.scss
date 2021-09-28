@@ -13,14 +13,15 @@
 
   &_summarize {
     width: 100%;
-    border: 1px solid #E8E8E8;
-    border-top: none;
-    padding: 7px;
+    border: 1px solid #BC3364;
+    padding: 6px;
     text-align: center;
     margin: -2px 0 0 0;
     border-radius: 0 0 6px 6px;
     background: #fff;
     transition: all 350ms ease;
+    font-weight: 700;
+    color: #BC3364;
 
     &:hover {
       background: #BC3364;
@@ -37,9 +38,10 @@
 
   &_reset {
     width: 100%;
-    border: 1px solid #E8E8E8;
-    border-bottom: none;
-    padding: 7px;
+    border: 1px solid rgba(85, 85, 85, 0.3);
+    color: rgba(85, 85, 85, 0.8);
+    font-weight: 700;
+    padding: 6px;
     text-align: center;
     margin: 0 0 -2px 0;
     border-radius: 6px 6px 0 0;
