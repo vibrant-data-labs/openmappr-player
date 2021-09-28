@@ -631,15 +631,11 @@ angular.module('common')
 
 
                 $scope.nodeRightInfo = result;
-                
-                console.log($scope.nodeRightInfo);
-                console.log('ZZZZZ', settings('edgeDirectionalRender'));
                 // console.log(result, 7778);
 
             }
 
             function buildNeighbours(node) {
-                console.log('buildNeighbours', node, $scope.mapprSettings.edgeDirectionalRender);
                 var graph = renderGraphfactory.sig().graph;
                 var incoming = [];
                 var outgoing = [];
@@ -665,9 +661,12 @@ angular.module('common')
 
                 $scope.sectionNeigh = outgoing.length > 0 ? 'out' : 'in';
 
-                var snapshot = snapshotService.getCurrentSnapshot()
-                $scope.degree = snapshot.layout.settings.nodeSelectionDegree;
-                console.log('degree', $scope.degree);
+                $scope.commonTitle = settings('selectedNodeCommonTitle');
+                $scope.incomingTitle = settings('selectedNodeIncomingTitle');
+                $scope.ongoingTitle = settings('selectedNodeOutgoingTitle');
+                $scope.isShowNeighbours = settings('isShowSelectedNodeTab');
+                $scope.directLink = settings('edgeDirectional');
+                $scope.allNeighs = _.sortBy(outgoing.concat(incoming), [{'weight': 'desc' }]);
             }
 
             function getIncomingNeighbours(node, graph) {
