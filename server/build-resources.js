@@ -142,7 +142,7 @@ async function buildResources() {
       const lastCommitInfo = await getLastCommit();
       const lastCommitDate = lastCommitInfo.toString().substring(0, 10);
       bucketName = bucketPrefix + (withDate ? `-${lastCommitDate}` : '');
-      playerBuildPrefix = 'http://' + bucketName + '.s3.us-east-1.amazonaws.com';
+      // playerBuildPrefix = 'http://' + bucketName + '.s3.us-east-1.amazonaws.com';
 
       const mappingData = fs.readFileSync('./mapping.json');
       jsonData = JSON.parse(mappingData);
@@ -277,7 +277,7 @@ if (indexOnly) {
     const lastCommitInfo = await getLastCommit();
     const lastCommitDate = lastCommitInfo.toString().substring(0, 10);
     bucketName = bucketPrefix + (withDate ? `-${lastCommitDate}` : '');
-    playerBuildPrefix = 'http://' + bucketName + '.s3.us-east-1.amazonaws.com'
+    playerBuildPrefix = 'https://' + bucketName + '.s3.us-east-1.amazonaws.com'
 
     const mappingData = fs.readFileSync('./mapping.json');
     const jsonData = JSON.parse(mappingData);

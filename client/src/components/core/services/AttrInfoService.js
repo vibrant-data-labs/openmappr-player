@@ -48,16 +48,16 @@ angular.module('common')
     //   1) Change on server side(datasys/datasys_model.js) and athena(entities.py) as well on updation
     //   2) Each attr type gets first render type as default
     var attrRenderTypesMap = {
-        'string': ['tag-cloud', 'wide-tag-cloud','categorylist' ,'categorybar', 'text', 'textlist', 'piechart', 'barchart', 'media', 'link', 'date', 'date-time', 'time', 'email', 'lat,lng', 'longtext'],
+        'string': ['tag-cloud', 'wide-tag-cloud','categorylist' ,'categorybar', 'text', 'textlist', 'piechart', 'barchart', 'media', 'link', 'date', 'date-time', 'time', 'email', 'lat,lng', 'longtext', 'horizontal-bars'],
         'json': ['medialist'],
         'twitter': ['twitterfeed'],
         'instagram': ['instagramfeed'],
-        'liststring': ['tag-cloud', 'wide-tag-cloud','tags'],
+        'liststring': ['tag-cloud', 'wide-tag-cloud','tags', 'horizontal-bars'],
         'boolean': ['categorybar', 'piechart', 'histogram'],
         'color': ['categorybar', 'piechart', 'histogram'],
-        'integer': ['histogram', 'densitybar'],
-        'float': ['histogram', 'densitybar'],
-        'year': ['histogram', 'densitybar'],
+        'integer': ['histogram', 'densitybar', 'horizontal-bars'],
+        'float': ['histogram', 'densitybar', 'horizontal-bars'],
+        'year': ['histogram', 'densitybar', 'horizontal-bars'],
         'picture': ['default'],
         'profile': ['default'],
         'audio_stream': ['default'],
