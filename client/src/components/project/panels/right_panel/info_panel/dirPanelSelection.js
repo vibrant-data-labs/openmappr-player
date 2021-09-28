@@ -6,8 +6,8 @@
 */
 
 angular.module('common')
-    .directive('dirPanelSelection', ['dataGraph', '$rootScope', '$filter', 'graphSelectionService', 'infoPanelService', 'AttrInfoService', 'linkService', 'graphHoverService', 'BROADCAST_MESSAGES', 'selectService', 'subsetService', 
-        function(dataGraph, $rootScope, $filter, graphSelectionService, infoPanelService, AttrInfoService, linkService, graphHoverService, BROADCAST_MESSAGES, selectService, subsetService) {
+    .directive('dirPanelSelection', ['dataGraph', '$rootScope', '$filter', 'graphSelectionService', 'infoPanelService', 'AttrInfoService', 'linkService', 'graphHoverService', 'BROADCAST_MESSAGES', 'selectService', 'subsetService', 'renderGraphfactory',
+        function(dataGraph, $rootScope, $filter, graphSelectionService, infoPanelService, AttrInfoService, linkService, graphHoverService, BROADCAST_MESSAGES, selectService, subsetService, renderGraphfactory) {
             'use strict';
 
             /*************************************
@@ -206,6 +206,26 @@ angular.module('common')
                             .value();
                         $scope.selInfo.sortTypes = getSortTypesForSelectedNodes($scope.selInfo.labelAttr, $scope.selInfo.nodeColorAttr, $scope.selInfo.selectedGroups);
                         sortNodesInSelection();
+
+                        var selectedNode = selectService.singleNode;
+
+                        if (selectedNode) {
+                            var graph = renderGraphfactory.sig().graph;
+                            var settings = renderGraphfactory.sig().settings;
+                            var neighbourFn;
+
+                            if (settings('edgeDirectionalRender') === 'all')
+                                neighbourFn = 'getNodeNeighbours';
+                            else if (settings('edgeDirectionalRender') === 'incoming')
+                                neighbourFn = 'getInNodeNeighbours';
+                            else if (settings('edgeDirectionalRender') === 'outgoing')
+                                neighbourFn = 'getOutNodeNeighbours';
+
+                            var neighbors = graph[neighbourFn](selectedNode.id);
+                            var countNeighbors = Object.keys(neighbors);
+                            $scope.selInfo.genericSelLinks = countNeighbors;
+                            $scope.selInfo.genericSelNodes = [selectedNode];
+                        }
                     }
                     else if(panelMode == 'network') {
                         if(!$scope.selInfo.group) {

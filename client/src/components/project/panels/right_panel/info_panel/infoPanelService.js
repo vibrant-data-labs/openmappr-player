@@ -218,7 +218,6 @@ function(networkService, AttrInfoService, SelectionSetService, dataGraph) {
                                 .uniq()
                                 .value();
 
-        console.log('Neighbor groups for group ' + groupVal + ' : ', neighborGroups);
         return neighborGroups;
     }
 

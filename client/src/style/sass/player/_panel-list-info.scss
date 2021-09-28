@@ -8,20 +8,27 @@
   transform: translateY(-50%);
   width: 380px;
   padding: 15px;
+  display: none;
+
+  .info-item:hover & {
+    display: block;
+  }
 
   &__head {
     display: flex;
+    align-items: flex-start;
     margin-bottom: 20px;
     border-bottom: 1px solid #eee;
     padding: 0 0 10px;
   }
 
   &__photo {
-    width: 45px;
+    flex: 0 0 45px;
     height: 45px;
     overflow: hidden;
     border-radius: 50%;
     margin: 0 20px 0 0;
+    background: #eee;
 
     img {
       object-fit: cover;
@@ -33,6 +40,7 @@
 
   &__name {
     color: #BC3364;
+    margin-top: 0;
   }
 
   &__tags-title {
