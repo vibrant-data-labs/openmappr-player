@@ -64,12 +64,14 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
     $scope.sortByFreq = sortByFreq;
     $scope.sortByAlpha = sortByAlpha;
     $scope.nodeSizeAttrs = layoutService.getNodeSizeAttrs();
+    $scope.nodeColorAttrs = layoutService.getNodeColorAttrs();
     $scope.MAPP_EDITOR_OPEN = $rootScope.MAPP_EDITOR_OPEN;
 
     $scope.sizeByAttrUpdate = sizeByAttrUpdate;
-    function sizeByAttrUpdate(){
-        console.log(logPrefix + 'sizeBy: ', $scope.vm.nodeSizeAttr.id);
-        $scope.mapprSettings.nodeSizeAttr =  $scope.vm.nodeSizeAttr.id;
+    function sizeByAttrUpdate(attr){
+        console.log(logPrefix + 'sizeBy: ', attr.id);
+        $scope.mapprSettings.nodeSizeAttr = attr.id;
+        $scope.vm.nodeSizeAttr = _.find($scope.nodeSizeAttrs, 'id', $scope.mapprSettings.nodeSizeAttr);
     }
 
     $scope.vm = {
@@ -79,6 +81,9 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
 
     $scope.vm.nodeSizeAttr = _.find($scope.nodeSizeAttrs, 'id', $scope.mapprSettings.nodeSizeAttr);
     $scope.selectedNodes = [];
+    $scope.totalValue = 0;
+    $scope.isShowFullDataGroupVMs = false;
+    $scope.isShowMoreDesc = false;
 
     $scope.colorByAttrUpdate = function colorByAttrUpdate(colorAttr){
         console.log(logPrefix + 'colorBy: ', $scope.dataGroupsInfo.colorNodesBy.id);
@@ -103,7 +108,17 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
         $scope.ui.linkGroupsViewCount += numShowLinkGroups * ITEMS_TO_SHOW + ITEMS_TO_SHOW_INITIALLY;
     };
 
+    $scope.calcLineWidth = function(num) {
+        return num / $scope.totalValue * 100;
+    }
 
+    $scope.getSelectedSnapshot = function () {
+        var content = snapshotService.getCurrentSnapshot().descr;
+        var index = content.indexOf('</p>') + 4;
+        var first = content.slice(0, index); 
+        var tail = content.slice(index);
+        return [first, tail];
+    }
 
     /*************************************
     ****** Initialisation Logic **********
@@ -177,6 +192,7 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
             $scope.edgeColorAttrs = layoutService.getEdgeColorAttrs();
             refreshDataGroups();
         }
+        $scope.attr = dataGraph.getNodeAttrs()[5];
     }
 
     function refreshDataGroups() {
@@ -380,13 +396,19 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
             for (key in attrInfo.valuesCount) {
                 name = key;
                 count = attrInfo.valuesCount[key];
+                
+                if (count > $scope.totalValue) {
+                    $scope.totalValue = count;
+                }
+
                 col = d3.rgb(layout.scalers.color(key)).toString();
                 var descr = projFactory.getClusterDescr(networkId, attrInfo.attr.id, key);
                 var suggestion = projFactory.getClusterSuggestion(networkId, attrInfo.attr.id, key);
                 temp.push(new ColorObject(name, count, col, key, descr, suggestion));
             }
-            $scope.dataGroupVMs = temp.sort(sortFunc);
-            console.log('dataGroupVMs: ', $scope.dataGroupVMs);
+            var sort = temp.sort(sortFunc);
+            $scope.dataGroupVMs = sort.slice(0, 10);
+            $scope.dataGroupVMsTail = sort.slice(10);
         }
     }
 
