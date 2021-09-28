@@ -15,33 +15,35 @@
 /* line 14, ../../sass/sign-in/button.scss */
 .button_summarize {
   width: 100%;
-  border: 1px solid #E8E8E8;
-  border-top: none;
-  padding: 7px;
+  border: 1px solid #BC3364;
+  padding: 6px;
   text-align: center;
   margin: -2px 0 0 0;
   border-radius: 0 0 6px 6px;
   background: #fff;
   transition: all 350ms ease;
+  font-weight: 700;
+  color: #BC3364;
 }
-/* line 25, ../../sass/sign-in/button.scss */
+/* line 26, ../../sass/sign-in/button.scss */
 .button_summarize:hover {
   background: #BC3364;
   color: #fff;
   box-shadow: 0 8px 5px -8px rgba(0, 0, 0, 0.2);
 }
-/* line 31, ../../sass/sign-in/button.scss */
+/* line 32, ../../sass/sign-in/button.scss */
 .button_summarize:disabled {
   background: #f4f4f4;
   box-shadow: none;
   color: initial;
 }
-/* line 38, ../../sass/sign-in/button.scss */
+/* line 39, ../../sass/sign-in/button.scss */
 .button_reset {
   width: 100%;
-  border: 1px solid #E8E8E8;
-  border-bottom: none;
-  padding: 7px;
+  border: 1px solid rgba(85, 85, 85, 0.3);
+  color: rgba(85, 85, 85, 0.8);
+  font-weight: 700;
+  padding: 6px;
   text-align: center;
   margin: 0 0 -2px 0;
   border-radius: 6px 6px 0 0;
@@ -49,19 +51,19 @@
   transition: all 350ms ease;
   position: relative;
 }
-/* line 50, ../../sass/sign-in/button.scss */
+/* line 52, ../../sass/sign-in/button.scss */
 .button_reset:hover {
   background: #BC3364;
   color: #fff;
   box-shadow: 0 -8px 5px -8px rgba(0, 0, 0, 0.2);
 }
-/* line 56, ../../sass/sign-in/button.scss */
+/* line 58, ../../sass/sign-in/button.scss */
 .button_reset:disabled {
   background: #f4f4f4;
   box-shadow: none;
   color: initial;
 }
-/* line 63, ../../sass/sign-in/button.scss */
+/* line 65, ../../sass/sign-in/button.scss */
 .button_collapse {
   position: absolute;
   content: "";
@@ -74,30 +76,30 @@
   width: 20px;
   height: 20px;
 }
-/* line 75, ../../sass/sign-in/button.scss */
+/* line 77, ../../sass/sign-in/button.scss */
 .button_collapse_hide {
   transform: scaleY(-1);
 }
-/* line 80, ../../sass/sign-in/button.scss */
+/* line 82, ../../sass/sign-in/button.scss */
 .button_wide {
   display: block;
   width: 100%;
 }
-/* line 86, ../../sass/sign-in/button.scss */
+/* line 88, ../../sass/sign-in/button.scss */
 .button_type_primary {
   background: #BA3665;
   color: #fff;
 }
-/* line 90, ../../sass/sign-in/button.scss */
+/* line 92, ../../sass/sign-in/button.scss */
 .button_type_primary:hover {
   background: #9a2d54;
 }
-/* line 94, ../../sass/sign-in/button.scss */
+/* line 96, ../../sass/sign-in/button.scss */
 .button_type_primary:focus, .button_type_primary:active {
   background: #9a2d54;
   box-shadow: inset 0 0 8px rgba(91, 26, 49, 0.6);
 }
-/* line 101, ../../sass/sign-in/button.scss */
+/* line 103, ../../sass/sign-in/button.scss */
 .button_type_ghost {
   background: none;
   color: #BA3665;
@@ -105,11 +107,11 @@
   font-weight: 500;
   font-size: 13px;
 }
-/* line 108, ../../sass/sign-in/button.scss */
+/* line 110, ../../sass/sign-in/button.scss */
 .button_type_ghost:hover {
   color: #9a2d54;
 }
-/* line 113, ../../sass/sign-in/button.scss */
+/* line 115, ../../sass/sign-in/button.scss */
 .button_type_play-toolbar {
   display: block;
   width: 26px;
@@ -121,11 +123,11 @@
   border-radius: 2px;
   text-transform: none;
 }
-/* line 124, ../../sass/sign-in/button.scss */
+/* line 126, ../../sass/sign-in/button.scss */
 .button_type_play-toolbar:disabled {
   opacity: .3;
 }
-/* line 128, ../../sass/sign-in/button.scss */
+/* line 130, ../../sass/sign-in/button.scss */
 .button_type_play-toolbar.button_with-text {
   width: auto;
   font-weight: 400;
@@ -133,15 +135,15 @@
   line-height: 26px;
   padding: 0 10px 0 20px;
 }
-/* line 135, ../../sass/sign-in/button.scss */
+/* line 137, ../../sass/sign-in/button.scss */
 .button_type_play-toolbar.button_with-text::before {
   width: 20px;
 }
-/* line 140, ../../sass/sign-in/button.scss */
+/* line 142, ../../sass/sign-in/button.scss */
 .button_type_play-toolbar:hover {
   background-color: #fafafa;
 }
-/* line 144, ../../sass/sign-in/button.scss */
+/* line 146, ../../sass/sign-in/button.scss */
 .button_type_play-toolbar::before {
   content: '';
   position: absolute;
@@ -152,48 +154,48 @@
   background-repeat: no-repeat;
   background-position: 50%;
 }
-/* line 157, ../../sass/sign-in/button.scss */
+/* line 159, ../../sass/sign-in/button.scss */
 .button_type_play-toolbar.button_icon_check::before {
   background-image: deployedUrl("/img/play-toolbar/check.svg");
 }
-/* line 161, ../../sass/sign-in/button.scss */
+/* line 163, ../../sass/sign-in/button.scss */
 .button_type_play-toolbar.button_icon_info::before {
   background-size: 20%;
   background-image: url("/img/play-toolbar/info-solid.svg");
 }
-/* line 166, ../../sass/sign-in/button.scss */
+/* line 168, ../../sass/sign-in/button.scss */
 .button_type_play-toolbar.button_icon_chevron-left::before {
   background-image: deployedUrl("/img/play-toolbar/arrow-left.svg");
 }
-/* line 170, ../../sass/sign-in/button.scss */
+/* line 172, ../../sass/sign-in/button.scss */
 .button_type_play-toolbar.button_icon_chevron-right::before {
   background-image: deployedUrl("/img/play-toolbar/arrow-right.svg");
 }
-/* line 174, ../../sass/sign-in/button.scss */
+/* line 176, ../../sass/sign-in/button.scss */
 .button_type_play-toolbar.button_icon_chevron-down::before {
   background: #fff url("/img/search/arrow-down.svg") 50% no-repeat;
 }
-/* line 178, ../../sass/sign-in/button.scss */
+/* line 180, ../../sass/sign-in/button.scss */
 .button_type_play-toolbar.button_icon_cancel::before {
   background-image: deployedUrl("/img/play-toolbar/cancel.svg");
 }
-/* line 182, ../../sass/sign-in/button.scss */
+/* line 184, ../../sass/sign-in/button.scss */
 .button_type_play-toolbar.button_icon_target::before {
   background-image: deployedUrl("/img/play-toolbar/target.svg");
 }
-/* line 186, ../../sass/sign-in/button.scss */
+/* line 188, ../../sass/sign-in/button.scss */
 .button_type_play-toolbar.button_icon_plus::before {
   background-image: deployedUrl("/img/play-toolbar/plus.svg");
 }
-/* line 190, ../../sass/sign-in/button.scss */
+/* line 192, ../../sass/sign-in/button.scss */
 .button_type_play-toolbar.button_icon_minus::before {
   background-image: deployedUrl("/img/play-toolbar/minus.svg");
 }
-/* line 194, ../../sass/sign-in/button.scss */
+/* line 196, ../../sass/sign-in/button.scss */
 .button_type_play-toolbar.button_icon_search::before {
   background-image: deployedUrl("/img/play-toolbar/search.svg");
 }
-/* line 198, ../../sass/sign-in/button.scss */
+/* line 200, ../../sass/sign-in/button.scss */
 .button_type_play-toolbar.button_icon_help::before {
   background-image: deployedUrl("/img/play-toolbar/help.svg");
 }
