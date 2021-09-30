@@ -93,7 +93,7 @@
                 )
                   div.label-text.truncate {{number.key}}
 
-                dd.section-info__value(ng-repeat="val in number.values", ng-class="{'tag-list__item': val.isTag}")
+                dd.section-info__value.section-info__value-wrap(ng-repeat="val in number.values", ng-class="{'tag-list__item': val.isTag}")
                   .cat-list.tag-cloud(ng-if="val.isTag")
                     .cat-item(
                       dir-elem-ready="onTagLoad(val, $event)"
