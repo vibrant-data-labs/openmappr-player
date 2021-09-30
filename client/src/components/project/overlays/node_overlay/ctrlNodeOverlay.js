@@ -42,9 +42,9 @@ angular.module('common')
             $scope.nodeAttrs = [];
             $scope.sectionActive2 = 0;
             $scope.sectionActive3 = 0;
-            $scope.nodeRightInfo = {};
+            $scope.nodeRightInfo = null;
             $scope.totalCount = 0;
-
+            $scope.showFocusNode = false;
             /**
             * Scope methods
             */
@@ -89,6 +89,15 @@ angular.module('common')
                 $scope.showFocusNode = false;
             };
 
+            $scope.toggleRightPanel = function() {
+                $scope.projectInfoName = $scope.player.player.settings.modalTitle;
+                $scope.projectInfoTitle = $scope.player.player.settings.modalSubtitle;
+                $scope.projectInfoDesc = $scope.player.player.settings.modalDescription;
+
+                $scope.beginOverlayRightPanel = !$scope.beginOverlayRightPanel;
+                $scope.showOverlay = !$scope.showOverlay;
+                $scope.showFocusNode = !$scope.showFocusNode;
+            }
             /*************************************
             ****** Event Listeners/Watches *******
             **************************************/
@@ -104,6 +113,9 @@ angular.module('common')
                 snapData = data;
                 if (snapData.snapshot) {
                     showNodeDetailOnLoad = snapData.snapshot.layout.settings.showNodeDetailOnLoad && $scope.mapprSettings.nodeFocusShow;
+                }
+                if ($scope.player.player.settings.showStartInfo) {
+                    $scope.toggleRightPanel();
                 }
             });
             $scope.$on(BROADCAST_MESSAGES.snapshot.changed, function onSnapChange(e, data) {
@@ -134,6 +146,14 @@ angular.module('common')
                 _buildNodeAttrsList();
                 if ($scope.focusNode) {
                     _buildAttrsPrincipalVal();
+                }
+            });
+
+            $scope.$on(BROADCAST_MESSAGES.ip.nodeBrowser.show, function(ev) {
+                selectService.unselect();
+
+                if (!$scope.beginOverlayRightPanel) {
+                    $scope.toggleRightPanel();
                 }
             });
 
@@ -242,6 +262,9 @@ angular.module('common')
             $scope.$watch(function() {
                 return $scope.showOverlay;
             }, function() {
+                if (!selectService.singleNode) {
+                    $scope.nodeRightInfo = null;
+                }
                 if ($scope.showOverlay) {
                     document.body.classList.add('node-right-panel_opened');
                 } else {
@@ -399,6 +422,8 @@ angular.module('common')
                 else {
                     $rootScope.$broadcast(BROADCAST_MESSAGES.nodeOverlay.removing, { clearSelections: false });
                 }
+
+                $scope.nodeRightInfo = null;
             }
 
             function switchToNeighbor(node, $event) {
@@ -513,7 +538,7 @@ angular.module('common')
                         y: 25
                     };
 
-                    if ($scope.showOverlay) {
+                    if ($scope.showOverlay && $scope.nodeRightInfo) {
                         initOverlayNodeData.pos.x = $scope.focusNode['read_camcam1:x'] - initOverlayNodeData.node['read_camcam1:x'];
                         initOverlayNodeData.pos.y = $scope.focusNode['read_camcam1:y'] - initOverlayNodeData.node['read_camcam1:y'];
                     }
@@ -631,8 +656,6 @@ angular.module('common')
 
 
                 $scope.nodeRightInfo = result;
-                // console.log(result, 7778);
-
             }
 
             function buildNeighbours(node) {

@@ -244,7 +244,8 @@
             // Info Panel
             ip: {
                 nodeBrowser: {
-                    refresh: 'nodeBrowser:refresh'
+                    refresh: 'nodeBrowser:refresh',
+                    show: 'ip:show'
                 }
             },
 

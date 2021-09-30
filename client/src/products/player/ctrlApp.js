@@ -203,6 +203,7 @@ angular.module('player')
 
             $scope.$on(BROADCAST_MESSAGES.snapshot.loaded, function(e, data) {
                 $scope.snapInfo.activeSnap = data.snapshot;
+                $scope.panelUI.openPanel('filter');
             });
 
             $scope.$on(BROADCAST_MESSAGES.sigma.rendered, function(e, data) {
