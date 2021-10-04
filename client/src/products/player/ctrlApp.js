@@ -1,6 +1,6 @@
 angular.module('player')
-    .controller('AppCtrl', ['$q','$sce', '$scope', '$rootScope', '$uibModal', '$routeParams', '$timeout', '$location', '$http', '$cookies', 'playerFactory', 'projFactory', 'dataService', 'networkService', 'dataGraph', 'snapshotService', 'graphSelectionService', 'layoutService', 'searchService', 'browserDetectService', 'BROADCAST_MESSAGES', 'renderGraphfactory', 'ngIntroService', '$window',
-        function($q, $sce, $scope, $rootScope, $uibModal, $routeParams, $timeout, $location, $http, $cookies, playerFactory, projFactory, dataService, networkService, dataGraph, snapshotService,graphSelectionService, layoutService, searchService, browserDetectService, BROADCAST_MESSAGES, renderGraphfactory, ngIntroService, $window) {
+    .controller('AppCtrl', ['$q','$sce', '$scope', '$rootScope', '$uibModal', '$routeParams', '$timeout', '$location', '$http', '$cookies', 'playerFactory', 'projFactory', 'dataService', 'networkService', 'clusterService', 'dataGraph', 'snapshotService', 'graphSelectionService', 'layoutService', 'searchService', 'browserDetectService', 'BROADCAST_MESSAGES', 'renderGraphfactory', 'ngIntroService', '$window',
+        function($q, $sce, $scope, $rootScope, $uibModal, $routeParams, $timeout, $location, $http, $cookies, playerFactory, projFactory, dataService, networkService, clusterService, dataGraph, snapshotService,graphSelectionService, layoutService, searchService, browserDetectService, BROADCAST_MESSAGES, renderGraphfactory, ngIntroService, $window) {
             'use strict';
 
             /*************************************
@@ -222,6 +222,16 @@ angular.module('player')
                 //for sorting in list and (eventually) grid
                 $scope.appUi.nodeAttrs = dataGraph.getNodeAttrs();
 
+                
+                var sigRender = renderGraphfactory.getRenderer();
+                console.log('dataGraph', clusterService.getCoordinatesForCluster('technology, business, science'));
+                var x = sigRender.d3Sel.clusters();
+                console.log('THIS', x.selectAll('div'));
+                clusterService.d3ClusterCreate(x);
+                // clusterService.d3ClusterRender();
+
+                // console.log('dataGraph 2', points);
+                // console.log('dataGraph 3', res);
                 $scope.panelUI.showRightPanel = true;
             });
 
