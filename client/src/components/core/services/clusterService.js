@@ -60,28 +60,50 @@ function ($rootScope, dataGraph) {
 
         var clipId = _.uniqueId('clip_');
 
+        sel = sel.append('g');
+        // node base
+        sel.append('circle').classed('node-main', true);
+        sel.append('g').classed('node-aggr-donut', true); // path group
+        sel.append('text');
+        //border
+        sel.append('circle')
+        .classed('node-border', true);
         
-        sel = 
-            // node base
-            sel.append('circle').classed('node-main', true);
-            sel.append('g').classed('node-aggr-donut', true); // path group
-            sel.append('text');
-            //border
-            sel.append('circle')
-            .classed('node-border', true)
-            
-                .attr('width', 2 * 100)
-                .attr('height', 2 * 100)
-                .style('float', 'left')
-
-                .select('.node-main')
-                .attr("cx", 100)
-                .attr("cy", 100)
-                .attr("r", 50)
+        var svg = canvas.select('svg');
+        const sz = 200;
+        svg.
+        attr('width', 2 * sz)
+        .attr('height', 2 * sz)
+        .style('float', 'left');
+        svg.select('.node-main')
+                .attr("cx", sz)
+                .attr("cy", sz)
+                .attr("r", sz/2)
                 .style('stroke-width',  2 + 'px')
                 //.style('stroke-width', '1px')
-                .style("fill", 'red');
+                .style("fill", "red");
+        // sel = 
+        //     // node base
+        //     sel.append('circle').classed('node-main', true);
+        //     sel.append('g').classed('node-aggr-donut', true); // path group
+        //     sel.append('text');
+        //     //border
+        //     sel.append('circle')
+        //     .classed('node-border', true)
+            
+        //         .attr('width', 2 * 100)
+        //         .attr('height', 2 * 100)
+        //         .style('float', 'left')
 
+        //         .select('.node-main')
+        //         .attr("cx", 100)
+        //         .attr("cy", 100)
+        //         .attr("r", 50)
+        //         .style('stroke-width',  2 + 'px')
+        //         //.style('stroke-width', '1px')
+        //         .style("fill", 'red')
+        //         .style('top', function(n) { return window.mappr.utils.toPx(50); })
+        //         .style('left', function(n){ return window.mappr.utils.toPx(50); });
             console.log('CLUSTER', sel);
         // if(enablePieRendering && n.isAggregation) {
             
