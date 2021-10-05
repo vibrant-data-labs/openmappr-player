@@ -109,11 +109,33 @@ button.right-panel-btn(ng-click="toggleRightPanel()", ng-class="{'right-panel-bt
                             {{val.value}}
                     span.section-info__value(ng-if="!val.isTag") {{val.value}}
 
-            section.section.section_compact(ng-if="nodeRightInfo.section4.length")
-              .section__content.section__info
-                dl#numberAndDates.section-info(
-                  ng-repeat="number in nodeRightInfo.section4"
-                  style="width: {{Section4Largest}}px"
+                dd.section-info__value.section-info__value-wrap(ng-repeat="val in number.values", ng-class="{'tag-list__item': val.isTag}")
+                  .cat-list.tag-cloud(ng-if="val.isTag")
+                    .cat-item(
+                      dir-elem-ready="onTagLoad(val, $event)"
+                      style="cursor:pointer", 
+                      ng-mouseover="onSectionHover(number, val.value, $event)", 
+                      ng-mouseleave="onSectionLeave()", 
+                      ng-click="onSectionSelect(number, val.value)",
+                      uib-tooltip="{{val.popupText}}", 
+                      tooltip-placement="left", 
+                      tooltip-append-to-body="true")
+                      .vert-align.cat-text-container
+                        div.cat-text.no-margin.truncate
+                          {{val.value}}
+                  span.section-info__value(ng-if="!val.isTag") {{val.value}}
+
+          section.section.section_compact(ng-if="nodeRightInfo.section4.length")
+            .section__content.section__info
+              dl#numberAndDates.section-info(
+                ng-repeat="number in nodeRightInfo.section4"
+                style="width: {{Section4Largest}}px"
+              )
+                dt.section-info__label(
+                  dir-elem-ready="onTitleLoad(number, $event)",
+                  uib-tooltip="{{number.popupText}}", 
+                  tooltip-placement="left" 
+                  tooltip-append-to-body="true"
                 )
                   dt.section-info__label(
                     dir-elem-ready="onTitleLoad(number, $event)",
