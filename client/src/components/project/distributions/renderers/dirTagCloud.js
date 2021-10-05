@@ -1,7 +1,7 @@
 /*globals d3,$  */
 angular.module('common')
-    .directive('dirTagCloud', ['$timeout', '$q', 'FilterPanelService', 'dataGraph', 'AttrInfoService', 'SelectorService', 'BROADCAST_MESSAGES', 'hoverService', 'selectService', 'subsetService',
-        function ($timeout, $q, FilterPanelService, dataGraph, AttrInfoService, SelectorService, BROADCAST_MESSAGES, hoverService, selectService, subsetService) {
+    .directive('dirTagCloud', ['$timeout', '$q', '$filter', 'FilterPanelService', 'dataGraph', 'AttrInfoService', 'SelectorService', 'BROADCAST_MESSAGES', 'hoverService', 'selectService', 'subsetService',
+        function ($timeout, $q, $filter, FilterPanelService, dataGraph, AttrInfoService, SelectorService, BROADCAST_MESSAGES, hoverService, selectService, subsetService) {
             'use strict';
 
             /*************************************
@@ -48,7 +48,7 @@ angular.module('common')
                     searchQuery: '',
                     initialItemCount: initVisItemCount,
                     startItem: function() {
-                        if (distrData.numShownCats == scope.catListData.data.length) {
+                        if (distrData.numShownCats == scope.filteredListData.length) {
                             return distrData.numShowGroups * distrData.step + 1;
                         }
 
@@ -204,12 +204,15 @@ angular.module('common')
 
                 scope.$watch('attrToRender.searchQuery', function onSearchQueryChanged(newVal, oldVal) {
                     distrData.searchQuery = newVal || '';
-                });
 
-                // scope.$on(BROADCAST_MESSAGES.fp.filter.reset, function() {
-                //     filteringCatVals = [];
-                //     draw(); // Reset scope data
-                // });
+                    if (newVal) {
+                        scope.filteredListData = $filter('filter')(scope.catListData.data, {text: newVal});
+                        distrData.numShowGroups = 0;
+                        distrData.numShownCats = Math.min(distrData.numShowGroups * ITEMS_TO_SHOW + initVisItemCount, scope.filteredListData.length);
+                    } else {
+                        scope.filteredListData = scope.catListData.data;
+                    }
+                });
 
                 scope.getTooltipInfo = function(catData) {
                     var subsetLength = subsetService.currentSubset().length;
@@ -228,23 +231,23 @@ angular.module('common')
 
 
                 scope.showLastPage = function() {
-                    distrData.numShowGroups = Math.floor(scope.catListData.data.length / distrData.step);
-                    distrData.numShownCats = Math.min(distrData.numShowGroups * ITEMS_TO_SHOW + initVisItemCount, scope.catListData.data.length);
+                    distrData.numShowGroups = Math.floor(scope.filteredListData.length / distrData.step);
+                    distrData.numShownCats = Math.min(distrData.numShowGroups * ITEMS_TO_SHOW + initVisItemCount, scope.filteredListData.length);
                 };
 
                 scope.showMore = function () {
                     distrData.numShowGroups++;
-                    distrData.numShownCats = Math.min(distrData.numShowGroups * ITEMS_TO_SHOW + initVisItemCount, scope.catListData.data.length);
+                    distrData.numShownCats = Math.min(distrData.numShowGroups * ITEMS_TO_SHOW + initVisItemCount, scope.filteredListData.length);
                 };
                 scope.showLess = function () {
                     distrData.numShowGroups--;
                     distrData.numShowGroups = distrData.numShowGroups < 0 ? 0 : distrData.numShowGroups;
-                    distrData.numShownCats = Math.min(distrData.numShowGroups * ITEMS_TO_SHOW + initVisItemCount, scope.catListData.data.length);
+                    distrData.numShownCats = Math.min(distrData.numShowGroups * ITEMS_TO_SHOW + initVisItemCount, scope.filteredListData.length);
                 };
 
                 scope.showFirstPage = function() {
                     distrData.numShowGroups = 0;
-                    distrData.numShownCats = Math.min(distrData.numShowGroups * ITEMS_TO_SHOW + initVisItemCount, scope.catListData.data.length);
+                    distrData.numShownCats = Math.min(distrData.numShowGroups * ITEMS_TO_SHOW + initVisItemCount, scope.filteredListData.length);
                 };
 
                 // mousr stuff

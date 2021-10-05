@@ -7,7 +7,7 @@
 			ng-mouseleave="outCat(catData)",
 			ng-class="{'filter':showFilter, 'cat-item-subsetted': catData.isSubsetted, 'active': catData.isChecked, 'disappearing': disappearAnimation, 'appeared': !disappearAnimation && transition, 'loading': isLoading}", 
 			ng-click="onCatClick(catData, $event)"
-			ng-repeat="catData in catListData.data | filter:{text: distrData.searchQuery} | limitTo: distrData.step:(distrData.numShowGroups * distrData.step)",
+			ng-repeat="catData in filteredListData | limitTo: distrData.step : (distrData.numShowGroups * distrData.step)",
 			ng-if="(catListData.inSelectionMode && catData.selTagFreq.toFixed(0) || catData.globalTagFreq.toFixed(0)) > 0")
 		.cat-highlight(style="opacity: 0;")
 		//- .cat-highlight(style="opacity: {{catData.selPercentOfSel/100}}")
@@ -26,17 +26,17 @@
 		//	div
 		//		.cat-text.h6.no-margin.truncate {{::catData.text}}
 		//- .cat-percent.text-right.h6.no-margin {{::catData.globalpercent.toFixed(0)}}%
-footer.card__footer(ng-if="catListData.data.length > distrData.initialItemCount")
+footer.card__footer(ng-if="filteredListData.length > distrData.initialItemCount")
 	.card-pagination
 		span.card-pagination__button(ng-click='showFirstPage()' ng-disabled="!(distrData.numShowGroups !== 0)" ng-class="{'disabled': !(distrData.numShowGroups !== 0)}") |&larr;
 		span.card-pagination__button(ng-click='showLess()' ng-disabled="!(distrData.numShowGroups !== 0)" ng-class="{'disabled': !(distrData.numShowGroups !== 0)}") &larr; Less
-		span.card-pagination__total {{distrData.startItem()}} - {{distrData.numShownCats}} of {{catListData.data.length}}
+		span.card-pagination__total {{distrData.startItem()}} - {{distrData.numShownCats}} of {{filteredListData.length}}
 		span.card-pagination__button(ng-click='showMore()' 
-			ng-disabled="!(distrData.numShownCats < catListData.data.length && (selNodesCount === 0 || (selNodesCount > 0 && catListData.highlightedCats.length > 0)))"
-			ng-class="{ 'disabled': !(distrData.numShownCats < catListData.data.length && (selNodesCount === 0 || (selNodesCount > 0 && catListData.highlightedCats.length > 0)))}"
+			ng-disabled="!(distrData.numShownCats < filteredListData.length && (selNodesCount === 0 || (selNodesCount > 0 && catListData.highlightedCats.length > 0)))"
+			ng-class="{ 'disabled': !(distrData.numShownCats < filteredListData.length && (selNodesCount === 0 || (selNodesCount > 0 && catListData.highlightedCats.length > 0)))}"
 			) More &rarr;
 		span.card-pagination__button(ng-click='showLastPage()'  
-			ng-disabled="!(distrData.numShownCats < catListData.data.length && (selNodesCount === 0 || (selNodesCount > 0 && catListData.highlightedCats.length > 0)))"
-			ng-class="{ 'disabled': !(distrData.numShownCats < catListData.data.length && (selNodesCount === 0 || (selNodesCount > 0 && catListData.highlightedCats.length > 0)))}") &rarr;|
+			ng-disabled="!(distrData.numShownCats < filteredListData.length && (selNodesCount === 0 || (selNodesCount > 0 && catListData.highlightedCats.length > 0)))"
+			ng-class="{ 'disabled': !(distrData.numShownCats < filteredListData.length && (selNodesCount === 0 || (selNodesCount > 0 && catListData.highlightedCats.length > 0)))}") &rarr;|
 .cat-list.h6.tag-cloud(ng-if="selNodesCount > 0 && catListData.highlightedCats.length === 0")
 	h6 No tags in group
