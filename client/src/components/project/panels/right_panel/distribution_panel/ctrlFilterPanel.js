@@ -66,8 +66,8 @@ angular.module('common')
                 //searchBoxInput.focus();
             }
 
-            $scope.collapseCard = function(attr) {
-                const card = document.querySelector('.card_type_filter[data-attr="' + attr.id + '"]');
+            $scope.collapseCard = function(e) {
+                const card = e.target.closest('.card_type_filter');
                 card.classList.toggle('card_collapsed');
             }
 
