@@ -224,14 +224,21 @@ angular.module('player')
 
                 
                 var sigRender = renderGraphfactory.getRenderer();
-                console.log('dataGraph', clusterService.getCoordinatesForCluster('technology, business, science'));
-                var x = sigRender.d3Sel.clusters();
-                console.log('THIS', x.selectAll('div'));
-                clusterService.d3ClusterCreate(x);
-                // clusterService.d3ClusterRender();
+                var node = sigRender.d3Sel.clusters();
+                var snapshotId = snapshotService.getCurrentSnapshot().id;
+                const { xaxis, yaxis } = $scope.player.snapshots.find(i => i.id === snapshotId).layout;
+                
+                const clusters = clusterService.getAllClusters();
+                
+                Object.keys(clusters).forEach(key => {
+                    clusterService.getCoordinatesForCluster(clusters[key], {xaxis, yaxis}, node, key);
+                })
 
-                // console.log('dataGraph 2', points);
-                // console.log('dataGraph 3', res);
+                // const resp = clusterService.getCoordinatesForCluster('technology, business, science', {xaxis, yaxis}, node)
+                // console.log('poinst', resp);
+
+                // clusterService.d3ClusterCreate(node);
+
                 $scope.panelUI.showRightPanel = true;
             });
 

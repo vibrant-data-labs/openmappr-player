@@ -2,8 +2,8 @@
 * Info for Node Links in graph
 */
 angular.module('common')
-.service('clusterService', ['$rootScope', 'dataGraph',
-function ($rootScope, dataGraph) {
+.service('clusterService', ['$rootScope', 'dataGraph', 'renderGraphfactory',
+function ($rootScope, dataGraph, renderGraphfactory) {
     'use strict';
 
     /*************************************
@@ -12,7 +12,7 @@ function ($rootScope, dataGraph) {
     this.getAllClusters = getAllClusters;
     this.getCoordinatesForCluster = getCoordinatesForCluster;
     this.d3ClusterCreate = d3ClusterCreate;
-    // this.d3ClusterRender = d3ClusterRender;
+    this.getCircleCoordinates = getCircleCoordinates;
 
     function getAllClusters () {
         const nodes = dataGraph.getAllNodes();
@@ -22,113 +22,98 @@ function ($rootScope, dataGraph) {
 
             return {...acc, [key]: acc[key] ? [...acc[key], node] : [node]}
         }, {})
-
+        console.log('RESULt', res);
         return res;
     }
 
-    function getCoordinatesForCluster (clusterName) {
-        const clusters = getAllClusters();
-        const cluster = clusters[clusterName];
-
+    function getCoordinatesForCluster (cluster, obj, node, key) {
+        const {xaxis, yaxis} = obj;
+        
         const points = cluster.reduce((acc, i) => {
-            if (acc.point1) {
-                if (i.attr.OriginalY > acc.point1.attr.OriginalY) {
-                    acc.point1 = i;
+            if (acc.xPointMin) {
+                const {xPointMin, xPointMax, yPointMin, yPointMax} = acc;
+
+                if (i.attr[xaxis] > xPointMax.attr[xaxis]) {
+                    acc.xPointMax = i;
                 }
 
-                if (i.attr.OriginalY < acc.point2.attr.OriginalY) {
-                    acc.point2 = i;
+                if (i.attr[xaxis] < xPointMin.attr[xaxis]) {
+                    acc.xPointMin = i;
                 }
+
+                if (i.attr[yaxis] > yPointMax.attr[yaxis]) {
+                    acc.yPointMax = i;
+                }
+
+                if (i.attr[yaxis] < yPointMin.attr[yaxis]) {
+                    acc.yPointMin = i;
+                }
+
             } else {
-                acc.point1 = i;
-                acc.point2 = i;
+                acc.xPointMin = i;
+                acc.xPointMax = i;
+                acc.yPointMin = i;
+                acc.yPointMax = i;
             }
 
             return acc;
-        }, { point1: null, point2: null });
+        }, { xPointMin: null, xPointMax: null, yPointMin: null, yPointMax: null });
+        const { xPointMin, xPointMax,  yPointMin, yPointMax} = points;
+        
+        const sig = renderGraphfactory.sig();
 
-        return {name: clusterName, ...points};
+        const xpMin = sig.graph.nodes(xPointMin.id);
+        const xpMax = sig.graph.nodes(xPointMax.id);
+        const ypMin = sig.graph.nodes(yPointMin.id);
+        const ypMax = sig.graph.nodes(yPointMax.id);
+        const firstLine = Math.sqrt(Math.pow(xpMax['camcam1:x'] - xpMin['camcam1:x'], 2) + Math.pow(xpMax['camcam1:y'] - xpMin['camcam1:y'], 2));
+        const secondLine = Math.sqrt(Math.pow(ypMax['camcam1:x'] - ypMin['camcam1:x'], 2) + Math.pow(ypMax['camcam1:y'] - ypMin['camcam1:y'], 2));
+        
+        if (firstLine > secondLine) {
+            const coordinates = this.getCircleCoordinates(xpMin, xpMax);
+            this.d3ClusterCreate(node, coordinates.x, coordinates.y, firstLine / 2, xpMin.colorStr, key);
+        } else {
+            const coordinates = this.getCircleCoordinates(ypMin, ypMax);
+            this.d3ClusterCreate(node, coordinates.x, coordinates.y, secondLine / 2, ypMin.colorStr, key);
+        }
     }
     
-    function d3ClusterCreate (canvas) {
-        var sel = canvas.append('svg');
-        // var n = node;
-        // var prefix = settings('prefix'),
-        //     showImage = settings("nodeImageShow"),
-        //     imageAttr = settings("nodeImageAttr");
-        // console.assert(prefix.length > 6, 'prefix must be correct');
+    function getCircleCoordinates (min, max) {
+        
+        const minX = min['camcam1:x'];
+        const minY = min['camcam1:y'];
+        const maxX = max['camcam1:x'];
+        const maxY = max['camcam1:y'];
 
+        const middleX = (minX + maxX) / 2;
+        const middleY = (minY + maxY) / 2;
+
+        return {x: middleX, y: middleY};
+    }
+
+    function d3ClusterCreate (canvas, x, y, r, color = '#eee', key) {
         var clipId = _.uniqueId('clip_');
+        var sel = canvas.append('svg');
 
+        sel.attr('id', clipId);
         sel = sel.append('g');
         // node base
         sel.append('circle').classed('node-main', true);
-        sel.append('g').classed('node-aggr-donut', true); // path group
-        sel.append('text');
-        //border
-        sel.append('circle')
-        .classed('node-border', true);
-        
-        var svg = canvas.select('svg');
-        const sz = 200;
+
+        var svg = canvas.select('svg#' + clipId);
+        // console.log('SVG', svg);
         svg.
-        attr('width', 2 * sz)
-        .attr('height', 2 * sz)
-        .style('float', 'left');
+            attr('width', '100%')
+            .attr('height', '100%')
+            .style('position', 'absolute')
+            .style('fill', 'none');
+
         svg.select('.node-main')
-                .attr("cx", sz)
-                .attr("cy", sz)
-                .attr("r", sz/2)
-                .style('stroke-width',  2 + 'px')
-                //.style('stroke-width', '1px')
-                .style("fill", "red");
-        // sel = 
-        //     // node base
-        //     sel.append('circle').classed('node-main', true);
-        //     sel.append('g').classed('node-aggr-donut', true); // path group
-        //     sel.append('text');
-        //     //border
-        //     sel.append('circle')
-        //     .classed('node-border', true)
-            
-        //         .attr('width', 2 * 100)
-        //         .attr('height', 2 * 100)
-        //         .style('float', 'left')
-
-        //         .select('.node-main')
-        //         .attr("cx", 100)
-        //         .attr("cy", 100)
-        //         .attr("r", 50)
-        //         .style('stroke-width',  2 + 'px')
-        //         //.style('stroke-width', '1px')
-        //         .style("fill", 'red')
-        //         .style('top', function(n) { return window.mappr.utils.toPx(50); })
-        //         .style('left', function(n){ return window.mappr.utils.toPx(50); });
-            console.log('CLUSTER', sel);
-        // if(enablePieRendering && n.isAggregation) {
-            
-
-        // } else {
-        //     // main circle
-        //     sel.append('circle').classed('node-main', true);
-
-        //     if (node.inHover || node.isSelected) {
-        //         // node image filter
-        //         if (showImage && node.attr[imageAttr] && node.attr[imageAttr].length > 5) {
-        //             sel.append("svg:clipPath")
-        //                 .attr('id', clipId)
-        //                 .append('circle');
-        //             // image
-        //             sel.append('svg:image').classed('node-img', true)
-        //                 .attr('clip-path', 'url(#' + clipId + ')');
-        //         }
-        //         // hover border
-        //         sel.append('circle').classed('node-hover-border', true);
-        //     }
-
-        //     //border
-        //     sel.append('circle').classed('node-border', true);
-        // }
+            .attr("cx", x)
+            .attr("cy", y)
+            .attr("r", r)
+            .style('stroke-width',  2 + 'px')
+            .style("stroke", color);
     }
 
     
