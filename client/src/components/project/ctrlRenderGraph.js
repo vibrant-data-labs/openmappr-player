@@ -197,7 +197,7 @@ angular.module('common')
             }
 
             $scope.openInfoPage = function () {
-                $scope.panelUI.openPanel('modal');
+                $scope.$broadcast(BROADCAST_MESSAGES.ip.nodeBrowser.show);
             }
             // #####
 

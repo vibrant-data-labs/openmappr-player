@@ -19,7 +19,7 @@
 						dir-grid-layout.animate-fade(ng-if="plotType == 'grid'")
 						dir-list-layout.animate-fade(ng-if="plotType == 'list'")
 						drawaxis(ng-if="plotType == 'scatterplot'") 
-						div(ng-controller="NodeOverlayCtrl", ng-include=' "#{player_prefix_index}/components/project/overlays/node_overlay/nodeOverlay.html" ')
+						//- div(ng-controller="NodeOverlayCtrl", ng-include=' "#{player_prefix_index}/components/project/overlays/node_overlay/nodeOverlay.html" ')
 						div(ng-controller="NodeOverlayCtrl" ng-include=' "#{player_prefix_index}/components/project/panels/node_right_panel/NodeRightPanel.html" ')
 						div(ng-controller="NodePopCtrl", ng-include=' "#{player_prefix_index}/components/project/overlays/node_pop/nodePop.html" ')
 						dir-ext-user-overlay(ng-if="appUi.openExtUserOverlay && mapprSettings", load-info="extUserInfo" mappr-settings="mapprSettings" share-title="{{player.settings.shareTitleCompare}}" facebook-share="player.settings.facebookShare" twitter-share="player.settings.twitterShare")

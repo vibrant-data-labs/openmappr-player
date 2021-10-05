@@ -1029,6 +1029,40 @@
   }
 }
 
+.right-panel-btn {
+  position: fixed;
+  z-index: 1001;
+  top: 20px;
+  right: 0;
+  width: 25px;
+  height: 30px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px 0 0 3px;
+  box-shadow: -14px 2px 14px rgb(0 0 0 / 20%);
+  transition: all 225ms linear;
+
+  &:before {
+    content: '';
+    display: block;
+    background: url('../../../img/arrow.svg');
+    background-size: cover;
+    width: 12px;
+    height: 12px;
+    transform: rotate(-90deg);
+  }
+
+  &_active {
+    right: 346px;
+
+    &:before {
+      transform: rotate(90deg);
+    }
+  }
+}
+
 @keyframes fadeInAnim {
   0% {
     opacity: 0;
