@@ -83,6 +83,7 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
     $scope.selectedNodes = [];
     $scope.totalValue = 0;
     $scope.isShowFullDataGroupVMs = false;
+    $scope.isShowMoreDesc = false;
 
     $scope.colorByAttrUpdate = function colorByAttrUpdate(colorAttr){
         console.log(logPrefix + 'colorBy: ', $scope.dataGroupsInfo.colorNodesBy.id);
@@ -112,7 +113,11 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
     }
 
     $scope.getSelectedSnapshot = function () {
-        return snapshotService.getCurrentSnapshot() || {};
+        var content = snapshotService.getCurrentSnapshot().descr;
+        var index = content.indexOf('</p>') + 4;
+        var first = content.slice(0, index); 
+        var tail = content.slice(index);
+        return [first, tail];
     }
 
     /*************************************
