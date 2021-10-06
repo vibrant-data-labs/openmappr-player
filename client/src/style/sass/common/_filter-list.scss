@@ -3,7 +3,12 @@
   padding: 10px 0 0;
   list-style: none;
   background: #fff;
+  display: none;
 
+  &_shown {
+    display: block;
+  }
+  
   &__item {
     display: block;
     height: auto;

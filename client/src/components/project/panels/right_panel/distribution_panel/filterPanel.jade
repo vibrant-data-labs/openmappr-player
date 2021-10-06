@@ -66,7 +66,7 @@
 				div.filter-list-additional__head(ng-class="{'filter-list-additional_open' : isShowAdditionalCategory}", ng-click='showAdditionCat()')
 					h5.filter-list-additional__title Additional Attributes
 					button.filter-list-additional__btn(ng-class='{"filter-list-additional__btn_active": isShowAdditionalCategory}')
-				ul.filter-list(data-dir-virtual-scroll="", variable-height="", container-item-count="nodeDistrAttrs.length" dir-kill-tooltip-on-scroll, ng-if="ui.renderDistr && isShowAdditionalCategory", on-scroll="onScroll")
+				ul.filter-list(container-item-count="nodeDistrAttrs.length" dir-kill-tooltip-on-scroll, ng-class="{'filter-list_shown' : ui.renderDistr && isShowAdditionalCategory}", on-scroll="onScroll")
 					li.filter-list__item(
 						ng-repeat="attr in ui.filteredAttrs = (nodeDistrAttrsLow | filter: {title : ui.statsSearchKey}) track by attr.id",
 						ng-if="attr.visible", ng-class="{'attr-hidden':!attr.visible, 'first': ($index == 1), 'chart-first-item': attr.isFirstChart, 'tags-first-item': attr.isFirstTag}",
