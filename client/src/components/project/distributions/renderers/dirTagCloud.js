@@ -154,7 +154,7 @@ angular.module('common')
                         scope.catListData = (new Array(ITEMS_TO_SHOW)).map((r, i) => ({ id: i}));
                         var _catListData = genTagListData(data.nodes,
                             AttrInfoService.getNodeAttrInfoForRG().getForId(scope.attrToRender.id), filteringCatVals, FilterPanelService.getColorString(), genValColorMap(scope.attrToRender.id, data.nodes), sortType, sortOrder);
-                        filterTags(data.nodes, _catListData);
+                        scope.filteredListData = filterTags(data.nodes, _catListData);
 
                         _catListData.data = _catListData.data.map(function mapData(cat) {
                             cat.isSubsetted = cat.selPercentOfSel == 100;
@@ -430,7 +430,7 @@ angular.module('common')
 
             function filterTags(cs, catListData) {
                 if (cs.length === 0 || catListData.highlightedCats.length === 0) { return; }
-                catListData.data = _.filter(catListData.data, 'isCurrent');
+                return _.filter(catListData.data, 'isCurrent');
             }
 
             function sortTagData(catData, sortType, sortOrder, inSelection) {
