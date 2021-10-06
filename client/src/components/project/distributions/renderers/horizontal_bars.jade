@@ -1,0 +1,41 @@
+li.panel-item.pointable-cursor.animate-repeat(ng-if="!isNodeColorNumeric", ng-class="{'highlighted' : l.highlightOnNodeHover}", ng-repeat="l in dataGroupVMs | limitTo: ui.dataGroupsViewCount track by l.originalTitle", uib-tooltip="{{::l.name}}", tooltip-append-to-body="true" tooltip-placement="right")
+  .flex-container.pointable-cursor(ng-click='selectNodesByAttrib(l.originalTitle, $event)', ng-mouseenter='hoverNodesByAttrib(l.originalTitle, $event, 0); !ui.editEnabled && (l.showClusterEdit = true);', ng-mouseleave='unhoverNodes($event); !l.editClusterName && (l.showClusterEdit = false);', uib-tooltip="{{l.descr}}", tooltip-placement='left', tooltip-append-to-body="true")
+    .legend-icon(ng-if="!l.editClusterName", ng-style='l.color')
+    div.animate-fade(ng-if="(l.archetypes.length > 0 || l.bridgers.length > 0) && ui.summaryToggleOpen")
+      .legend-line-down(style="border-color: {{l.colorval}}" ng-class="{'only-one':(l.bridgers.length == 0 || l.archetypes.length == 0)}")
+    input(type="color", ng-model='l.colorval', ng-click="$event.stopPropagation();", ng-change="changeColor(l, l.colorval)", ng-if="l.editClusterName")
+    h6.panel-number(ng-if='!l.editClusterName') ({{l.num}})
+    h6.less-gutter.panel-text(ng-if='!l.editClusterName') {{l.name}}
+    form-inline.panel-edit-form(ng-if="l.editClusterName", ng-click="$event.stopPropagation()")
+      textarea.form-control.small-control.h6.no-margin.width-100(type='text', ng-model='l.name', placeholder="Name" ng-change="updateLabelForAttrValue(l)", ng-model-options="{ debounce: 1000 }")
+      textarea.form-control.small-control.h6.width-100(type='text',ng-model='l.descr', placeholder="Description" ng-change="updateDescrForAttrValue(l)", ng-model-options="{ debounce: 1000 }")
+      //- input.form-control.small-control.h6(type='text',ng-model='l.suggestion', placeholder="Suggestion" ng-model-options="{ debounce: 1000 }" dir-select-all)
+      .less-gutter(ng-show="l.showClusterEdit && l.editClusterName")
+      button.square-btn.small-btn.panel-btn.pull-left(type="button", ng-click="$event.stopPropagation(); updateClusterInfo(l); l.showClusterEdit = false; l.editClusterName = false;")
+        i.fa.fa-fw.fa-check
+      button.square-btn.small-btn.panel-btn.pull-left(type="button", ng-click="$event.stopPropagation(); l.showClusterEdit = false; l.editClusterName = false; discardClusterInfoUpdates(l)")
+        i.fa.fa-fw.fa-times
+    .panel-edit-icon(ng-show="!l.editClusterName")
+      div(ng-show="l.showClusterEdit && !l.editClusterName")
+        a.visible-btn.vcenter(type="button", ng-click="$event.stopPropagation(); l.editClusterName = true;")
+          i.color-black.fa.fa-pencil
+  div.animate-fade(ng-if="ui.summaryToggleOpen")
+    .row.vert-align(ng-show="l.archetypes.length > 0")
+      .col-xs-3
+        .legend-line-across(style="border-color: {{l.colorval}}")
+      .col-xs-9
+        .row.vert-align.less-gutter(ng-click='selectNodesByIds(l.archetypes, $event); $event.stopPropagation();', ng-mouseenter='hoverNodesByIds(l.archetypes, $event); $event.stopPropagation();', ng-mouseleave='hoverNodesByIds([], $event); $event.stopPropagation();')
+          .col-xs-3.less-gutter.text-center
+            i.fa.fa-1-3x.fa-bullseye(ng-style='l.color')
+          .col-xs-9
+            .h6.less-gutter.pointable-cursor {{l.archetypes.length}} Archetypes
+    .row.vert-align(ng-show="l.bridgers.length > 0")
+      .col-xs-3
+        .legend-line-across(style="border-color: {{l.colorval}}")
+      .col-xs-9
+        .row.vert-align.less-gutter(ng-href="", ng-click='selectNodesByIds(l.bridgers, $event); $event.stopPropagation();', ng-mouseenter='hoverNodesByIds(l.bridgers, $event); $event.stopPropagation();', ng-mouseleave='hoverNodesByIds([], $event); $event.stopPropagation();')
+          .col-xs-3.less-gutter.text-center
+            i.icon-bridger(ng-style='l.color')
+          .col-xs-4
+            .h6.less-gutter.pointable-cursor {{l.bridgers.length}} Bridgers
+          .col-xs-1
