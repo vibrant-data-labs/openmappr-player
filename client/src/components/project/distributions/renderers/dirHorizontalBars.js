@@ -1,7 +1,7 @@
 /*globals d3,$  */
 angular.module('common')
-    .directive('dirHorizontalBars', ['$timeout', '$q', 'FilterPanelService', 'dataGraph', 'AttrInfoService', 'SelectorService', 'BROADCAST_MESSAGES', 'hoverService', 'selectService', 'subsetService',
-        function ($timeout, $q, FilterPanelService, dataGraph, AttrInfoService, SelectorService, BROADCAST_MESSAGES, hoverService, selectService, subsetService) {
+    .directive('dirHorizontalBars', ['$timeout', '$q', 'FilterPanelService', 'dataGraph', 'AttrInfoService', 'SelectorService', 'BROADCAST_MESSAGES', 'hoverService', 'selectService', 'subsetService', 'layoutService',
+        function ($timeout, $q, FilterPanelService, dataGraph, AttrInfoService, SelectorService, BROADCAST_MESSAGES, hoverService, selectService, subsetService, layoutService) {
             'use strict';
 
             /*************************************
@@ -79,6 +79,15 @@ angular.module('common')
                     }
 
                     var catListData = genTagListData(cs, attrInfo, filteringCatVals, defColorStr, valColorMap, sortType, sortOrder);
+                    
+                    layoutService.getCurrent().then(function(layout) {
+
+                        for (const key in attrInfo.valuesCount) {
+                            const col = d3.rgb(layout.scalers.color(key)).toString();
+                            console.log('COLOR', key, col);
+                        }
+                    })
+                    
 
                     setupFilterClasses(catListData, !scope.showFilter);
                     filterTags(cs, catListData);
