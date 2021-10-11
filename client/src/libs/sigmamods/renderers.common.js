@@ -122,12 +122,14 @@
     this.initDOM('canvas', 'selections'); // For edges between neighbors of selections
     this.initDOM('canvas', 'hovers'); // For edges between neighbors when hovering
     this.initDOM('canvas', 'subset');
+    this.initDOM('canvas', 'clusters', true);
+
     //d3 stuff
     this.initDOM('div', 'd3-annotations');
     this.initDOM('div', 'd3-selections');
     this.initDOM('div', 'd3-subset');
     this.initDOM('div', 'd3-hovers');
-
+    this.initDOM('div', 'd3-clusters');
     this.initDOM('canvas', 'mouse');
     this.contexts.hover = this.contexts.mouse;
     // initialize after mouse layer so labels get mouse events first
@@ -144,6 +146,9 @@
     });    
     this.d3Sel.hovers = _.once(function() {
       return d3.select(self.domElements['d3-hovers']);
+    });
+    this.d3Sel.clusters = _.once(function() {
+      return d3.select(self.domElements['d3-clusters']);
     });
     this.d3Sel.annotations = _.once(function() {
       return d3.select(self.domElements['d3-annotations']);
@@ -211,6 +216,7 @@
     this.domElements[id] = dom;
     this.container.appendChild(dom);
 
+    console.log('initDOM', tag, id);
     if (tag.toLowerCase() === 'canvas')
       this.contexts[id] = dom.getContext(webgl ? 'experimental-webgl' : '2d', {
         preserveDrawingBuffer: false

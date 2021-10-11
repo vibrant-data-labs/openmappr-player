@@ -5512,11 +5512,13 @@
       this.contexts.edges = this.contexts.scene;
       this.contexts.nodes = this.contexts.scene;
       this.contexts.labels = this.contexts.scene;
+      this.contexts.clusters = this.contexts.scene;
     } else {
       this.initDOM('canvas', 'edges');
       this.initDOM('canvas', 'scene');
       this.contexts.nodes = this.contexts.scene;
       this.contexts.labels = this.contexts.scene;
+      this.contexts.clusters = this.contexts.scene;
     }
 
     this.initDOM('canvas', 'mouse');

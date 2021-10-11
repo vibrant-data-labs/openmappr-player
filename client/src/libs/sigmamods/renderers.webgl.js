@@ -64,10 +64,16 @@
     Object.defineProperty(this, 'edgePrograms', {
       value: {}
     });
+    Object.defineProperty(this, 'clusterPrograms', {
+      value: {}
+    });
     Object.defineProperty(this, 'nodeFloatArrays', {
       value: {}
     });
     Object.defineProperty(this, 'edgeFloatArrays', {
+      value: {}
+    });
+    Object.defineProperty(this, 'clusterFloatArrays', {
       value: {}
     });
 
@@ -76,6 +82,7 @@
       this.initDOM('canvas', 'scene', true);
       this.contexts.edges = this.contexts.scene;
       this.contexts.nodes = this.contexts.scene;
+      this.contexts.clusters = this.contexts.scene;
 //    } else {
 //      this.initDOM('canvas', 'edges', true);
 //      this.initDOM('canvas', 'scene', true);
@@ -136,6 +143,22 @@
     _.each(nodesOnScreen, function(n) {
         nodesOnScreenIndex[n.id] = n;
     });
+
+    // calculate cluster circles depending on the nodes on screen
+    var colorAttr = this.settings(options, 'nodeColorAttr');
+    var clustersOnScreen = graph.nodes().reduce((acc, node) => {
+      const key = node.attr[colorAttr];
+      let item = acc.find(x => x.key === key);
+      if (!item) {
+        item = { key: key, nodes: [node] };
+        acc.push(item);
+      } else {
+        item.nodes.push(node);
+      }
+
+      return acc;
+    }, []);
+
     // only draw edge if one end is on the screen
     for (a = graph.edges(), i = 0, l = a.length; i < l; i++) {
       var e = a[i];
@@ -148,6 +171,9 @@
 
     for (k in this.edgeFloatArrays)
       delete this.edgeFloatArrays[k];
+
+    for (k in this.clusterFloatArrays)
+      delete this.clusterFloatArrays[k];
 
     // Sort edges and nodes per types:
     for (a = graph.edges(), i = 0, n = 0, l = a.length; i < l && n < MAXEDGES; i++) {
@@ -173,6 +199,39 @@
         };
 
       this.nodeFloatArrays[k].nodes.push(a[i]);
+    }
+
+    for (a = clustersOnScreen, i = 0, l = a.length; i < l; i++) {
+      k = sigma.webgl.clusters.def;
+
+      if (!this.clusterFloatArrays[k])
+        this.clusterFloatArrays[k] = {
+          clusters: []
+        };
+
+      this.clusterFloatArrays[k].clusters.push(a[i]);
+    }
+
+    if (this.settings('drawClustersCircle')) {
+      // push clusters
+      for(k in this.clusterFloatArrays) {
+        renderer = sigma.webgl.clusters.def;
+
+        for (a = this.clusterFloatArrays[k].clusters, i = 0, l = a.length; i < l; i++) {
+          if (!this.clusterFloatArrays[k].array)
+            this.clusterFloatArrays[k].array = new Float32Array(
+              a.length * renderer.POINTS * renderer.ATTRIBUTES
+            );
+  
+            renderer.addCluster(
+              a[i],
+              this.clusterFloatArrays[k].array,
+              i * renderer.POINTS * renderer.ATTRIBUTES,
+              options.readPrefix,
+              this.settings
+            );
+        }
+      }
     }
 
     // Push edges:
@@ -255,11 +314,13 @@
         nodes = this.graph.nodes,
         nodesGl = this.contexts.nodes,
         edgesGl = this.contexts.edges,
+        clustersGl = this.contexts.clusters,
         matrix = this.camera.getMatrix(),
         options = sigma.utils.extend(params, this.options),
         drawLabels = this.settings(options, 'drawLabels'),
         drawEdges = this.settings(options, 'drawEdges'),
         drawNodes = this.settings(options, 'drawNodes'),
+        drawClusters = this.settings(options, 'drawClustersCircle'),
         drawGrid = this.settings(options, 'drawGrid'),
         drawBorder = this.settings('drawBorder'),
         tweening = this.settings(options, 'tweening'),
@@ -346,8 +407,40 @@
             }
           );
         }
-      } 
+      }
     };
+
+    if (drawClusters) {
+      // Enable blending:
+      clustersGl.blendFunc(clustersGl.SRC_ALPHA, clustersGl.ONE_MINUS_SRC_ALPHA);
+      clustersGl.enable(clustersGl.BLEND);
+      for (k in this.clusterFloatArrays) {
+        renderer = sigma.webgl.clusters.def;
+
+        // Check program:
+        if (!this.clusterPrograms[k])
+          this.clusterPrograms[k] = renderer.initProgram(clustersGl);
+        // Render
+        if (this.clusterFloatArrays[k]) {
+          clustersGl.useProgram(this.clusterPrograms[k]);
+          renderer.render(
+            clustersGl,
+            this.clusterPrograms[k],
+            this.clusterFloatArrays[k].array,
+            {
+              settings: this.settings,
+              matrix: matrix,
+              width: this.width,
+              height: this.height,
+              ratio: this.camera.ratio,
+              scalingRatio: scalingRatio,
+              drawBorder: drawBorder,
+              displayScale: this.displayScale
+            }
+          );
+        }
+      }
+    }
 
     if (drawEdges) {
       // Enable blending:
@@ -418,6 +511,7 @@
 
   sigma.utils.pkg('sigma.webgl.nodes');
   sigma.utils.pkg('sigma.webgl.edges');
+  sigma.utils.pkg('sigma.webgl.clusters');
 
   // If WebGL is enabled, set new default renderer
   if (!!window.WebGLRenderingContext) {

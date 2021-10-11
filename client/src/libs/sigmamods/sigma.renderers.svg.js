@@ -44,7 +44,8 @@
         nodes: {},
         edges: {},
         labels: {},
-        hovers: {}
+        hovers: {},
+        clusters: {}
       };
       this.measurementCanvas = null;
       this.options = options;
@@ -65,6 +66,7 @@
       // Indexes:
       this.nodesOnScreen = [];
       this.edgesOnScreen = [];
+      this.clustersOnScreen = [];
   
       // Find the prefix:
       this.options.prefix = 'renderer' + sigma.utils.id() + ':';
@@ -124,10 +126,12 @@
           index = {},
           graph = this.graph,
           nodes = this.graph.nodes,
+          clusters = [],
           prefix = this.options.prefix || '',
           drawEdges = this.settings(options, 'drawEdges'),
           drawNodes = this.settings(options, 'drawNodes'),
           drawLabels = this.settings(options, 'drawLabels'),
+          drawClusters = this.settings(options, 'drawClustersCircle'),
           embedSettings = this.settings.embedObjects(options, {
             prefix: this.options.prefix,
             forceLabels: this.options.forceLabels
@@ -159,6 +163,20 @@
       this.nodesOnScreen = this.camera.quadtree.area(
         this.camera.getRectangle(this.width, this.height)
       );
+
+      var colorAttr = this.settings(options, 'nodeColorAttr');
+      this.clustersOnScreen = graph.nodes().reduce((acc, node) => {
+        const key = node.attr[colorAttr];
+        let item = acc.find(x => x.key === key);
+        if (!item) {
+          item = { key: key, nodes: [node] };
+          acc.push(item);
+        } else {
+          item.nodes.push(node);
+        }
+  
+        return acc;
+      }, []);
   
       // Node index
       for (a = this.nodesOnScreen, i = 0, l = a.length; i < l; i++)
@@ -173,7 +191,6 @@
       else if (embedSettings('edgeDirectionalRender') === 'outgoing')
         neighbourFn = 'getOutNodeNeighbours';
   
-        console.log('neighbourFn!', neighbourFn);
       var _edgesCache = {};
       for (a = this.nodesOnScreen, i = 0, l = a.length; i < l; i++) {
         o = a[i];
@@ -192,6 +209,40 @@
         }
       }
       _edgesCache = null;
+
+      // Display clusters
+      renderers = sigma.svg.clusters;
+      if (drawClusters) {
+        for (a = this.clustersOnScreen, i = 0, l = a.length; i < l; i++) {
+          if (!a[i].hidden && !this.domElements.clusters[a[i].key]) {
+  
+            // Cluster
+            e = renderers.def.create(
+              a[i],
+              embedSettings
+            );
+  
+            this.domElements.clusters[a[i].key] = e;
+            this.domElements.groups.clusters.appendChild(e);
+
+          }
+        }
+      }
+
+      //-- Second we update the clusters
+      if (drawClusters)
+      for (a = this.clustersOnScreen, i = 0, l = a.length; i < l; i++) {
+
+        if (a[i].hidden)
+          continue;
+
+        // Node
+        renderers.def.update(
+          a[i],
+          this.domElements.clusters[a[i].key],
+          embedSettings
+        );
+      }
 
       // Display nodes
       //---------------
@@ -323,7 +374,7 @@
       this.domElements.graph = this.container.appendChild(dom);
   
       // Creating groups
-      var groups = ['edges', 'nodes', 'labels', 'hovers'];
+      var groups = ['edges', 'nodes', 'labels', 'hovers', 'clusters'];
       for (i = 0, l = groups.length; i < l; i++) {
         g = document.createElementNS(this.settings('xmlns'), 'g');
   
@@ -501,5 +552,6 @@
     sigma.utils.pkg('sigma.svg.nodes');
     sigma.utils.pkg('sigma.svg.edges');
     sigma.utils.pkg('sigma.svg.labels');
+    sigma.utils.pkg('sigma.svg.clusters');
   }).call(this);
   

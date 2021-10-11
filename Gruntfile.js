@@ -286,6 +286,7 @@ module.exports = function(grunt) {
 				"client/src/products/player/auth/ctrlSurveyEmailAuth.js",
 				"client/src/products/player/analytics/analytics.config.js",
 				"client/src/products/player/analytics/analyticsService.js",
+				"client/src/components/core/services/clusterService.js",
 			];
 			return obj;
 		}())
