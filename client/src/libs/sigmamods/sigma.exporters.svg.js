@@ -201,6 +201,11 @@
     var hoverGroup = svg.querySelector('[id="' + prefix + '-group-hovers"]');
     svg.removeChild(hoverGroup);
 
+    var clusterGroup = svg.querySelector('[id="undefined-group-clusters"]');
+    var newClusterGroup = clusterGroup.cloneNode(true);
+    svg.removeChild(clusterGroup);
+    svg.insertBefore(newClusterGroup, svg.querySelector('[id="undefined-group-edges"]'));
+
     // Optims?
     params.classes = (params.classes !== false);
     if (!params.data || params.classes)

@@ -122,7 +122,7 @@
     this.initDOM('canvas', 'selections'); // For edges between neighbors of selections
     this.initDOM('canvas', 'hovers'); // For edges between neighbors when hovering
     this.initDOM('canvas', 'subset');
-    this.initDOM('canvas', 'clusters');
+    this.initDOM('canvas', 'clusters', true);
 
     //d3 stuff
     this.initDOM('div', 'd3-annotations');
@@ -216,6 +216,7 @@
     this.domElements[id] = dom;
     this.container.appendChild(dom);
 
+    console.log('initDOM', tag, id);
     if (tag.toLowerCase() === 'canvas')
       this.contexts[id] = dom.getContext(webgl ? 'experimental-webgl' : '2d', {
         preserveDrawingBuffer: false

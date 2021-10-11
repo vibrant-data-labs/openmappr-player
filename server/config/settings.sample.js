@@ -22,6 +22,7 @@ module.exports = {
           selectedNodeCommonTitle: 'Neighbors',
           selectedNodeIncomingTitle: 'Incoming',
           selectedNodeOutgoingTitle: 'Outgoing',
+          drawClustersCircle: true,
           drawNodes: true, // boolean - whether to draw or not nodes
           borderRatio: 0.15, // number - part of node which would be taken as a border
           bigOnTop: true, // boolean - whether to place bigger nodes on top

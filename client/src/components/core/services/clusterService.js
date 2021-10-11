@@ -92,28 +92,28 @@ function ($rootScope, dataGraph, renderGraphfactory) {
     }
 
     function d3ClusterCreate (canvas, x, y, r, color = '#eee', key) {
-        var clipId = _.uniqueId('clip_');
-        var sel = canvas.append('svg');
+        // var clipId = _.uniqueId('clip_');
+        // var sel = canvas.append('svg');
 
-        sel.attr('id', clipId);
-        sel = sel.append('g');
-        // node base
-        sel.append('circle').classed('node-main', true);
+        // sel.attr('id', clipId);
+        // sel = sel.append('g');
+        // // node base
+        // sel.append('circle').classed('node-main', true);
 
-        var svg = canvas.select('svg#' + clipId);
-        // console.log('SVG', svg);
-        svg.
-            attr('width', '100%')
-            .attr('height', '100%')
-            .style('position', 'absolute')
-            .style('fill', 'none');
+        // var svg = canvas.select('svg#' + clipId);
+        // // console.log('SVG', svg);
+        // svg.
+        //     attr('width', '100%')
+        //     .attr('height', '100%')
+        //     .style('position', 'absolute')
+        //     .style('fill', 'none');
 
-        svg.select('.node-main')
-            .attr("cx", x)
-            .attr("cy", y)
-            .attr("r", r)
-            .style('stroke-width',  2 + 'px')
-            .style("stroke", color);
+        // svg.select('.node-main')
+        //     .attr("cx", x)
+        //     .attr("cy", y)
+        //     .attr("r", r)
+        //     .style('stroke-width',  2 + 'px')
+        //     .style("stroke", color);
     }
 
     
