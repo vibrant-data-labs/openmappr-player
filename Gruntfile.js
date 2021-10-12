@@ -242,6 +242,7 @@ module.exports = function(grunt) {
 				"client/src/components/project/distributions/renderers/dirTwitterFeed.js",
 				"client/src/components/project/distributions/renderers/dirValueBar.js",
 				"client/src/components/project/distributions/renderers/dirWideTagCloud.js",
+				"client/src/components/project/distributions/renderers/dirHorizontalBars.js",
 				"client/src/components/project/overlays/dirFocusNode.js",
 				"client/src/components/project/overlays/dirScrollOverlayAnchors.js",
 				"client/src/components/project/overlays/ext_user_overlay/dirExtUserOverlay.js",

@@ -89,6 +89,8 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
         console.log(logPrefix + 'colorBy: ', $scope.dataGroupsInfo.colorNodesBy.id);
         $scope.dataGroupsInfo.colorNodesBy = colorAttr;
         $scope.mapprSettings.nodeColorAttr =  $scope.dataGroupsInfo.colorNodesBy.id;
+
+        $rootScope.$broadcast(BROADCAST_MESSAGES.cb.changed, colorAttr);
     };
 
     $scope.colorByEdgeAttrUpdate = function colorByEdgeAttrUpdate(colorAttr) {

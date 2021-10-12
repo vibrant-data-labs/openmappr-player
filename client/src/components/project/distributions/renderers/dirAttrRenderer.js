@@ -401,6 +401,8 @@ angular.module('common')
                     case 'longtext':
                         renderTemplate = 'longtext.html';
                         break;
+                    case 'horizontal-bars':
+                        renderTemplate = 'horizontal_bars.html';
                     default:
 
                     }

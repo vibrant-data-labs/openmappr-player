@@ -10,7 +10,8 @@ angular.module('common')
             var groups = {
                 tag: ['tag-cloud'],
                 widetag: ['wide-tag-cloud'],
-                charts: ['histogram']
+                charts: ['histogram'],
+                bars: ['horizontal-bars']
             };
 
             /*************************************
@@ -186,6 +187,16 @@ angular.module('common')
                     visibleChartAttrs[0].isFirstChart = true;
                 }
 
+                var barsAttrs = $scope.nodeDistrAttrs.filter(function(x) { return groups.bars.includes(x.renderType);});
+
+                var visibleBarsAttrs = barsAttrs.filter(function(x) {
+                    return x.visible;
+                });
+
+                if (visibleBarsAttrs.length) {
+                    visibleBarsAttrs[0].isFirstChart = true;
+                }
+
                 $scope.ui.totalAttrsCount = $scope.nodeDistrAttrs.length;
 
                 // move network attrs to top, both for tags and charts
@@ -200,8 +211,12 @@ angular.module('common')
                     .flatten()
                     .value();
                 
-                $scope.nodeDistrAttrs = [...tagAttrs, ...chartAttrs];
+                barsAttrs = _(barsAttrs)
+                    .partition(function (attr) { return networkAttrs.indexOf(attr.id) > -1; })
+                    .flatten()
+                    .value();
 
+                $scope.nodeDistrAttrs = [...tagAttrs, ...chartAttrs, ...barsAttrs];
                 var nodePriorities = _($scope.nodeDistrAttrs)
                     .filter(x => x.visible)
                     .countBy(x => x.priority || 'low')

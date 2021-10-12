@@ -248,6 +248,11 @@
                     show: 'ip:show'
                 }
             },
+            
+            // Colored By
+            cb: {
+                changed: 'changed'
+            },
 
             appStatus: {
                 online: 'appStatus:online'
