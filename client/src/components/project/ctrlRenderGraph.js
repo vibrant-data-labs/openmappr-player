@@ -185,8 +185,17 @@ angular.module('common')
             // #####
             $scope.isSnapshotDescription = false;
 
+            $scope.getSelectedSnapshotTitle = function () {
+                return snapshotService.getCurrentSnapshot().snapName;
+            }
+
             $scope.getSelectedSnapshot = function () {
-                return snapshotService.getCurrentSnapshot() || {};
+                var currentSnapshot = snapshotService.getCurrentSnapshot();
+                var title = currentSnapshot.snapName;
+                var subtitle = currentSnapshot.subtitle;
+                var desc = currentSnapshot.descr;
+
+                return `<h3>${title}</h3>${subtitle ? '<h6>' + subtitle + '</h6>' : ''}${desc}`;
             }
             $scope.getCurrentProjectTitle = function () {
                 return _.get($scope, '$parent.player.player.settings.headerTitle') || ''

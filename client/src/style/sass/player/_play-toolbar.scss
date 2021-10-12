@@ -261,7 +261,7 @@
 .details-panel {
   display: flex;
   flex-direction: column-reverse;
-  width: 300px;
+  width: 328px;
 
   &__row-data {
     height: 27px;
@@ -280,7 +280,7 @@
     .row-data__content {
       width: 100%;
       padding: 0 10px;
-      font: 400 14px/26px 'Poppins';
+      font: 400 16px/26px 'Poppins';
       line-height: 23px;
       overflow-x: hidden;
       white-space: nowrap;
@@ -303,6 +303,16 @@
       padding: 5px 10px;
       border: 1px solid #e6e6e6;
       background: white;
+
+      h3 {
+        color: #BC3364;
+        font-size: 18px;
+        font-weight: 400;
+      }
+
+      h6 {
+        font-size: 16px;
+      }
     } 
   }
 }

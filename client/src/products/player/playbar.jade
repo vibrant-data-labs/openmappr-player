@@ -180,7 +180,7 @@
 )
 
   //- LEFT AREA
-  .button-group.button-group_type_play-toolbar.button-group_vertical
+  .button-group.button-group_type_play-toolbar.button-group_vertical.button-group_zoom
 
     .button-group__item
       button.button.button_type_play-toolbar.button_icon_target(ng-click="zoomInfo.zoomExtents()") target
@@ -216,7 +216,7 @@
         )
 
     .details-panel__row-data
-      .row-data__content {{getSelectedSnapshot().snapName || ''}}
+      .row-data__content {{getSelectedSnapshotTitle() || ''}}
       .button-group__item
         button.button.button_type_play-toolbar(
           ng-class="isSnapshotDescription ? 'button_icon_cancel' : 'button_icon_chevron-down'"
@@ -227,4 +227,4 @@
         )
 
     .details-panel__extra-container(ng-if="isSnapshotDescription")
-      .extra-container__content(ng-bind-html="getSelectedSnapshot().descr || ''")
+      .extra-container__content(ng-bind-html="getSelectedSnapshot() || ''")
