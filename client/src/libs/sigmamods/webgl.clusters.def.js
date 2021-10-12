@@ -249,12 +249,12 @@
                // darken color to make the border color
                // antialias darkening on inner edge of border
               'float aa = pxScale;',        // relative antialiasing width
-              'float darken = max(0.0, 0.3 * ((diff/aa > 5.0-aa) ? (-u_border)/aa : 1.0));',
+              'float darken = max(0.0, 0.3 * ((diff/aa > 3.0-aa) ? (-u_border)/aa : 1.0));',
               // 'float darken = max(0.0, 0.3 * ((diff > u_border - aa) ? (u_border - diff)/aa : 1.0));',
               'color1.b = max(0.0, color.b);',
               'color1.g = max(0.0, color.g);',
               'color1.r = max(0.0, color.r);',
-              'color1.a = darken > 0.0? 1.0 : 0.0;',  // linear blend antialiasing on outer edge of disk
+              'color1.a = darken > 0.0? 0.7 : 0.0;',  // linear blend antialiasing on outer edge of disk
               //'color1.a = (diff < aa) ? 1.0 : 0.0;',  // linear blend antialiasing on outer edge of disk
               'gl_FragColor = color1;',
             '} else',
