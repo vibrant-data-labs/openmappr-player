@@ -91,6 +91,10 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
         $scope.mapprSettings.nodeColorAttr =  $scope.dataGroupsInfo.colorNodesBy.id;
 
         $rootScope.$broadcast(BROADCAST_MESSAGES.cb.changed, colorAttr);
+
+        var attrInfo = AttrInfoService.getNodeAttrInfoForRG().getForId($scope.mapprSettings.nodeColorAttr);
+        $scope.totalValue = _(attrInfo.valuesCount).keys().map(x => attrInfo.valuesCount[x]).max();
+        console.log('totalValue!', $scope.totalValue);
     };
 
     $scope.colorByEdgeAttrUpdate = function colorByEdgeAttrUpdate(colorAttr) {

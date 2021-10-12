@@ -135,6 +135,8 @@ angular.module('common')
                 // });
 
                 scope.$on(BROADCAST_MESSAGES.hss.select, function (ev, data) {
+                    if (!scope.catListData.data) return;
+                    
                     scope.catListData.data = scope.catListData.data.map(function mapData(cat) {
                         cat.isChecked = cat.isSubsetted || !cat.isSubsetted && selectService.hasAttrId(scope.attrToRender.id, cat.id);
 

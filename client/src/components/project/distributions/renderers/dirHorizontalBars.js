@@ -174,6 +174,8 @@ angular.module('common')
                 }
 
                 scope.$on(BROADCAST_MESSAGES.hss.select, function (ev, data) {
+                    if (!scope.catListData.data) return;
+
                     scope.catListData.data = scope.catListData.data.map(function mapData(cat) {
                         cat.isChecked = cat.isSubsetted || !cat.isSubsetted && selectService.hasAttrId(scope.attrToRender.id, cat.id);
 
@@ -192,7 +194,7 @@ angular.module('common')
                 scope.$watch('attrToRender.sortConfig', function (sortOps) {
                     sortType = sortOps && sortOps.sortType || 'frequency';
                     sortOrder = sortOps && sortOps.sortOrder || 'desc';
-                    scope.catListData.data = sortTagData(scope.catListData.data, sortType, sortOrder, scope.catListData.highlightedCats.length > 0);
+                    scope.catListData.data = sortTagData(scope.catListData.data, sortType, sortOrder, (scope.catListData.highlightedCats || []).length > 0);
                 }, true);
 
                 scope.$watch('attrToRender.searchQuery', function onSearchQueryChanged(newVal, oldVal) {

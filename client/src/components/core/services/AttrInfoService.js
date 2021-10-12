@@ -268,7 +268,8 @@ angular.module('common')
             function getNodeAttrInfoForRG () {
                 var nw = networkService.getCurrentNetwork();
                 if(!nw) {
-                    return console.error("[getNodeAttrInfoForRG] Called for empty network!");
+                    console.error("[getNodeAttrInfoForRG] Called for empty network!");
+                    return undefined;
                 }
                 var nsId = nw.id;
                 return nodeInfoObjForRenderGraph != null ? nodeInfoObjForRenderGraph : getNodeAttrInfoForNetwork(nsId);
