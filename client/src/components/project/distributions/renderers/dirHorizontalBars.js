@@ -1,7 +1,7 @@
 /*globals d3,$  */
 angular.module('common')
-    .directive('dirHorizontalBars', ['$timeout', '$q', 'FilterPanelService', 'dataGraph', 'AttrInfoService', 'SelectorService', 'BROADCAST_MESSAGES', 'hoverService', 'selectService', 'subsetService', 'layoutService',
-        function ($timeout, $q, FilterPanelService, dataGraph, AttrInfoService, SelectorService, BROADCAST_MESSAGES, hoverService, selectService, subsetService, layoutService) {
+    .directive('dirHorizontalBars', ['$timeout', '$q', 'FilterPanelService', 'dataGraph', 'AttrInfoService', 'SelectorService', 'BROADCAST_MESSAGES', 'hoverService', 'selectService', 'subsetService', 'layoutService', 'renderGraphfactory',
+        function ($timeout, $q, FilterPanelService, dataGraph, AttrInfoService, SelectorService, BROADCAST_MESSAGES, hoverService, selectService, subsetService, layoutService, renderGraphfactory) {
             'use strict';
 
             /*************************************
@@ -61,7 +61,10 @@ angular.module('common')
                 scope.catListData = [];
                 scope.colorStr = FilterPanelService.getColorString();
                 scope.selNodesCount = 0;
+                scope.totalValue = 0;
+                scope.isShowMore = false;
 
+                
                 // prepares the data which is put into scope
                 function draw() {
                     var nodes = dataGraph.getRenderableGraph().graph.nodes,
@@ -77,23 +80,21 @@ angular.module('common')
                     if (isCompareView) {
                         cs = FilterPanelService.getNodesForClusters(cs[0].attr.extUserClusters);
                     }
-
-                    var catListData = genTagListData(cs, attrInfo, filteringCatVals, defColorStr, valColorMap, sortType, sortOrder);
                     
                     layoutService.getCurrent().then(function(layout) {
+                        $timeout(function() {
+                            var catListData = genTagListData(cs, attrInfo, filteringCatVals, defColorStr, valColorMap, sortType, sortOrder, layout);
+                            setupFilterClasses(catListData, !scope.showFilter);
+                            filterTags(cs, catListData);
+                            scope.totalValue = catListData.maxValue;
 
-                        for (const key in attrInfo.valuesCount) {
-                            const col = d3.rgb(layout.scalers.color(key)).toString();
-                            console.log('COLOR', key, col);
-                        }
+                            scope.catListData = catListData.data.slice(0, 10);
+                            scope.catListDataTail = catListData.data.slice(10);
+
+                            distrData.numShownCats = Math.min(distrData.numShowGroups * ITEMS_TO_SHOW + initVisItemCount, catListData.data.length);
+                        }, 1000)
+                        
                     })
-                    
-
-                    setupFilterClasses(catListData, !scope.showFilter);
-                    filterTags(cs, catListData);
-                    // moveSelectedItemsToTop(cs, catListData, distrData.numShowGroups * initVisItemCount);
-                    scope.catListData = catListData;
-                    distrData.numShownCats = Math.min(distrData.numShowGroups * ITEMS_TO_SHOW + initVisItemCount, catListData.data.length);
                 }
 
                 try {
@@ -103,75 +104,27 @@ angular.module('common')
                     console.error(dirPrefix + "draw() throws error for attrId:" + scope.attrToRender.id + ',', e.stack, e);
                 }
 
-                // reset filters as well
-                // scope.$on(BROADCAST_MESSAGES.fp.initialSelection.changed, function() {
-                //     try {
-                //         filteringCatVals = [];
-                //         draw();
-                //     } catch(e) {
-                //         console.error(dirPrefix + "draw() throws error for attrId:" + scope.attrToRender.id + ',', e.stack,e);
-                //     }
-                // });
-                // on current selection change, update highlights
-                // scope.$on(BROADCAST_MESSAGES.fp.currentSelection.changed, function() {
-                //     try {
-                //         update();
-                //     } catch(e) {
-                //         console.error(dirPrefix + "draw() throws error for attrId:" + scope.attrToRender.id + ',', e.stack,e);
-                //     }
-                // });
+                function drawSubsetNodes(data) {
+                    $timeout(async function () {
+                        
+                        const layout = await layoutService.getCurrent();
 
-                // scope.$on(BROADCAST_MESSAGES.fp.filter.changFilterFromService, function() {
-                //     try {
-                //         var filterConfig = FilterPanelService.getFilterForId(attrId);
-                //         filteringCatVals = (filterConfig && filterConfig.state && filterConfig.state.selectedVals) || [];
-                //         draw();
-                //         hoverSelectedNodes();
-                //     } catch(e) {
-                //         console.error(dirPrefix + "draw() throws error for attrId:" + scope.attrToRender.id + ',', e.stack,e);
-                //     }
-                // });
-
-                // scope.$on(BROADCAST_MESSAGES.fp.filter.changed, function applyBgToSelectedFilters() {
-                //     draw();
-                //     scope.catListData.data = scope.catListData.data.map(function mapData(cat) {
-                //         if (cat.isChecked) {
-                //             cat.isSubsetted = cat.isChecked;
-                //         }
-
-                //         return cat;
-                //     });
-                // });
-
-                scope.$on(BROADCAST_MESSAGES.hss.select, function (ev, data) {
-                    scope.catListData.data = scope.catListData.data.map(function mapData(cat) {
-                        cat.isChecked = cat.isSubsetted || !cat.isSubsetted && selectService.hasAttrId(scope.attrToRender.id, cat.id);
-
-                        return cat;
-                    });
-                });
-
-                scope.$on(BROADCAST_MESSAGES.hss.subset.changed, function (ev, data) {
-                    scope.showFilter = true;
-                    scope.disappearAnimation = true;
-                    scope.transition = true;
-                    $timeout(function () {
                         scope.isLoading = true;
                         filteringCatVals = _.uniq(_.map(data.nodes, function (node) {
                             return node.attr[scope.attrToRender.id];
                         }));
                         scope.catListData = (new Array(ITEMS_TO_SHOW)).map((r, i) => ({ id: i}));
                         var _catListData = genTagListData(data.nodes,
-                            AttrInfoService.getNodeAttrInfoForRG().getForId(scope.attrToRender.id), filteringCatVals, FilterPanelService.getColorString(), genValColorMap(scope.attrToRender.id, data.nodes), sortType, sortOrder);
+                            AttrInfoService.getNodeAttrInfoForRG().getForId(scope.attrToRender.id), filteringCatVals, FilterPanelService.getColorString(), genValColorMap(scope.attrToRender.id, data.nodes), sortType, sortOrder, layout);
                         filterTags(data.nodes, _catListData);
-
+                        
                         _catListData.data = _catListData.data.map(function mapData(cat) {
                             cat.isSubsetted = cat.selPercentOfSel == 100;
                             cat.isChecked = cat.isSubsetted;
-
+                            
                             return cat;
                         });
-
+                        
                         var sortOps = scope.attrToRender.sortConfig;
                         _catListData.data = sortTagData(_catListData.data,
                             sortOps && sortOps.sortType || 'frequency',
@@ -184,16 +137,48 @@ angular.module('common')
 
                         scope.isLoading = false;
                         scope.disappearAnimation = false;
-                        scope.catListData = _catListData;
-
+                        scope.catListData = _catListData.data.slice(0, 10);
+                        scope.catListDataTail = _catListData.data.slice(10);
+                        
+                        scope.totalValue = _catListData.maxValue;
+                        scope.isShowMore = !scope.catListDataTail.length;
                         $timeout(() => {
                             scope.transition = false;
                         }, 1000);
                     }, 1000);
+                }
+
+                scope.$on(BROADCAST_MESSAGES.hss.subset.changed, function (ev, data) {
+                    scope.showFilter = true;
+                    scope.disappearAnimation = true;
+                    scope.transition = true;
+
+                    drawSubsetNodes(data)
                 });
 
-                scope.$on(BROADCAST_MESSAGES.hss.subset.init, function (ev) {
-                    scope.showFirstPage();
+                scope.$on(BROADCAST_MESSAGES.cb.changed, function (ev, data) {
+                    // var subset = subsetService.currentSubset();
+                    var nodes = subsetService.subsetNodes;
+                   
+                    if (!nodes.length) {
+                        draw();
+                    } else {
+                        drawSubsetNodes({nodes, subsetCount: nodes.length})
+                    }
+                    
+                });
+
+                scope.calcLineWidth = function(item) {
+                    var num = item.selTagFreq || item.globalTagFreq;
+                    return num / scope.totalValue * 100;
+                }
+
+                scope.$on(BROADCAST_MESSAGES.hss.select, function (ev, data) {
+                    scope.catListData.data = scope.catListData.data.map(function mapData(cat) {
+                        cat.isChecked = cat.isSubsetted || !cat.isSubsetted && selectService.hasAttrId(scope.attrToRender.id, cat.id);
+
+                        return cat;
+                    });
                 });
                 /**
          * watch filters being enabled disabled
@@ -205,7 +190,6 @@ angular.module('common')
                 });
 
                 scope.$watch('attrToRender.sortConfig', function (sortOps) {
-                    console.log('dirHorizontalBars: sortConfig', sortOps);
                     sortType = sortOps && sortOps.sortType || 'frequency';
                     sortOrder = sortOps && sortOps.sortOrder || 'desc';
                     scope.catListData.data = sortTagData(scope.catListData.data, sortType, sortOrder, scope.catListData.highlightedCats.length > 0);
@@ -215,16 +199,15 @@ angular.module('common')
                     distrData.searchQuery = newVal || '';
                 });
 
-                // scope.$on(BROADCAST_MESSAGES.fp.filter.reset, function() {
-                //     filteringCatVals = [];
-                //     draw(); // Reset scope data
-                // });
-
                 scope.getTooltipInfo = function(catData) {
                     var subsetLength = subsetService.currentSubset().length;
-                    var totalNodes = subsetLength > 0 ? subsetLength : catData.totalNodes;
-                    var currentFreq = subsetLength > 0 ? catData.selTagFreq : catData.globalTagFreq;
-                    return currentFreq + " of " + totalNodes + " tagged as " + catData.text;
+                    
+                    if (subsetLength) {
+                        var currentFreq = subsetLength > 0 ? catData.selTagFreq : catData.globalTagFreq;
+                        return currentFreq;
+                    } else {
+                        return catData.globalTagFreq;
+                    }
                 }
 
                 scope.overCat = function (catData, event) {
@@ -235,47 +218,12 @@ angular.module('common')
                     hoverService.unhover();
                 };
 
-
-                scope.showLastPage = function() {
-                    distrData.numShowGroups = Math.floor(scope.catListData.data.length / distrData.step);
-                    distrData.numShownCats = Math.min(distrData.numShowGroups * ITEMS_TO_SHOW + initVisItemCount, scope.catListData.data.length);
-                };
-
-                scope.showMore = function () {
-                    distrData.numShowGroups++;
-                    distrData.numShownCats = Math.min(distrData.numShowGroups * ITEMS_TO_SHOW + initVisItemCount, scope.catListData.data.length);
-                };
-                scope.showLess = function () {
-                    distrData.numShowGroups--;
-                    distrData.numShowGroups = distrData.numShowGroups < 0 ? 0 : distrData.numShowGroups;
-                    distrData.numShownCats = Math.min(distrData.numShowGroups * ITEMS_TO_SHOW + initVisItemCount, scope.catListData.data.length);
-                };
-
-                scope.showFirstPage = function() {
-                    distrData.numShowGroups = 0;
-                    distrData.numShownCats = Math.min(distrData.numShowGroups * ITEMS_TO_SHOW + initVisItemCount, scope.catListData.data.length);
-                };
-
                 // mousr stuff
                 scope.onCatClick = function (catData, event) {
                     if (catData.isSubsetted) return;
-
-                    //catData.isChecked = !catData.isChecked;
+                    
                     selectFilter(catData);
-
-                    hoverService.unhover();
                 };
-
-                function getSelectedValues() {
-                    var filterConfig = FilterPanelService.getFilterForId(attrId);
-                    return filterConfig.state.selectedVals;
-                }
-
-                function hoverSelectedNodes(event) {
-                    var selectedValues = getSelectedValues() || [];
-                    console.log('dirHorizontalBars hoverSelectedNodes', selectedValues);
-                    renderCtrl.hoverNodesByAttributes(attrId, selectedValues, event);
-                }
 
                 /// filter stuff
                 function setupFilterClasses(catListData, isfilterDisabled) {
@@ -311,18 +259,25 @@ angular.module('common')
      * @param  {Object} valColorMap      A mapping from Value to it's corresponding color
      * @return {Object}                  An object used to render cat listing
      */
-            function genTagListData(currentSel, globalAttrInfo, filteringCatVals, defColorStr, valColorMap, sortType, sortOrder) {
+            function genTagListData(currentSel, globalAttrInfo, filteringCatVals, defColorStr, valColorMap, sortType, sortOrder, layout) {
                 var attrInfo = globalAttrInfo;
                 var currSelFreqs = getCurrSelFreqsObj(currentSel, attrInfo.attr);
-
+                var maxValue = 0;
                 var maxFreq = attrInfo.nValues;
 
                 var inFilteringMode = filteringCatVals.length > 0;
                 var highlightedCats = [];
+                var subset = subsetService.currentSubset()
+                var settings = renderGraphfactory.getRenderer().settings;
 
                 var catData = _.map(attrInfo.values, function genCatData(catVal) {
                     var globalFreq = attrInfo.valuesCount[catVal],
                         selTagFreq = currSelFreqs[catVal] || 0;
+                    var val = subset.length ? selTagFreq : globalFreq;
+
+                    if (val > maxValue) {
+                        maxValue = val;
+                    }
 
                     var isChecked = _.contains(filteringCatVals, catVal);
 
@@ -336,8 +291,13 @@ angular.module('common')
                         //no selection - ie global
                         importance = globalFreq;
                     }
+                    
+                    const color = attrInfo.attr.id === settings('nodeColorAttr') ? 
+                            d3.rgb(layout.scalers.color(catVal)).toString() : 
+                            '#cccccc';
 
                     return {
+                        colorVal: color,
                         colorStr: valColorMap[catVal] && _.isArray(valColorMap[catVal]) ? valColorMap[catVal][0] : defColorStr,
                         text: catVal, // the text in the bar
                         id: catVal, // the Id of cat
@@ -367,31 +327,12 @@ angular.module('common')
                     data: catData,
                     highlightedCats: highlightedCats,
                     currSelFreqs: currSelFreqs,
-                    inFilteringMode: inFilteringMode
+                    inFilteringMode: inFilteringMode,
+                    maxValue
                 };
             }
 
-            function updateTagListData(currentSel, globalAttrInfo, filteringCatVals, defColorStr, valColorMap, catListData) {
-                var attrInfo = globalAttrInfo;
-                var currSelFreqs = getCurrSelFreqsObj(currentSel, attrInfo.attr);
-
-                var inFilteringMode = filteringCatVals.length > 0;
-                var inSelectionMode = !_.isEmpty(currentSel);
-
-                _.each(catListData.data, function (catData) {
-                    var selTagFreq = currSelFreqs[catData.id] || 0;
-
-                    catData.colorStr = valColorMap[catData.id] && _.isArray(valColorMap[catData.id]) ? valColorMap[catData.id][0] : defColorStr;
-                    catData.selPercent = selTagFreq > 0 ? Math.max(0.1, selTagFreq / totalNodes * 100) : 0;
-                    catData.isCurrent = selTagFreq > 0;
-                    catData.selTagFreq = selTagFreq;
-                });
-
-                catListData.highlightedCats = _.map(_.filter(catListData.data, function (c) { return c.selPercent > 0; }), 'id');
-                catListData.currSelFreqs = currSelFreqs;
-                catListData.inFilteringMode = inFilteringMode;
-                catListData.inSelectionMode = inSelectionMode;
-            }
+            
 
             // tag importance as a function of tag frequency in local selection and global tag frequency
             function computeImportance(localFreq, globalFreq) {

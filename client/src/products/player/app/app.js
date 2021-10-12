@@ -166,14 +166,14 @@
 
                     Scope.prototype.$broadcast = function(eventName, data) {
                         if(eventName && eventName.lastIndexOf && eventName.lastIndexOf('cfpLoadingBar:', 0) !== 0) {
-                            console.log('[EventLogger][' + eventName + '] event $broadcasted with data: ', data);
+                            // console.log('[EventLogger][' + eventName + '] event $broadcasted with data: ', data);
                         }
                         return origBroadcast.apply(this, arguments);
                     };
 
                     Scope.prototype.$emit = function(eventName, data) {
                         if(eventName && eventName.lastIndexOf && eventName.lastIndexOf('cfpLoadingBar:', 0) !== 0) {
-                            console.log('[EventLogger][' + eventName + '] event $emitted with data: ', data);
+                            // console.log('[EventLogger][' + eventName + '] event $emitted with data: ', data);
                         }
                         return origEmit.apply(this, arguments);
                     };
@@ -246,6 +246,11 @@
                 nodeBrowser: {
                     refresh: 'nodeBrowser:refresh'
                 }
+            },
+            
+            // Colored By
+            cb: {
+                changed: 'changed'
             },
 
             appStatus: {

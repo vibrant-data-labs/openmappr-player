@@ -1037,3 +1037,20 @@
     opacity: 1;
   }
 }
+.horizontal-bar {
+  .panel-item {
+    border-bottom: 1px solid #ccc;
+  }
+}
+.panel-item-more {
+  display: none;
+
+  &_open {
+    display: block;
+  }
+}
+
+.panel-item-btn {
+  padding: 10px 0;
+  text-align: right !important;
+}
