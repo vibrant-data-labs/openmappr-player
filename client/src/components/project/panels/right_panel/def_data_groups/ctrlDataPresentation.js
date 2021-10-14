@@ -84,6 +84,8 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
     
     $scope.selectedNodes = [];
     $scope.totalValue = 0;
+    $scope.totalSelectedValue = 0;
+    $scope.selectedValues = {};
     $scope.isShowFullDataGroupVMs = false;
     $scope.isShowMoreDesc = false;
 
@@ -100,7 +102,6 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
 
         var attrInfo = AttrInfoService.getNodeAttrInfoForRG().getForId($scope.mapprSettings.nodeColorAttr);
         $scope.totalValue = _(attrInfo.valuesCount).keys().map(x => attrInfo.valuesCount[x]).max();
-        console.log('totalValue!', $scope.totalValue);
     };
 
     $scope.colorByEdgeAttrUpdate = function colorByEdgeAttrUpdate(colorAttr) {
@@ -122,6 +123,18 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
 
     $scope.calcLineWidth = function(num) {
         return num / $scope.totalValue * 100;
+    }
+
+    $scope.calcSelectedLineWidth = function(attr) {
+        if (!$scope.totalSelectedValue) {
+            return 0;
+        }
+
+        if (!$scope.selectedValues[attr.originalTitle]) {
+            return 0;
+        }
+
+        return $scope.selectedValues[attr.originalTitle] / $scope.totalSelectedValue * 100;
     }
 
     $scope.getSelectedSnapshot = function () {
@@ -166,7 +179,20 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
         $scope.ui.showViewToggle = !_.get(networkService.getCurrentNetwork(), 'networkInfo.hideArchsBridgers');
     });
 
+    $scope.$on(BROADCAST_MESSAGES.hss.select, function (e, data) {
+        if (!data.nodes.length) {
+            $scope.totalSelectedValue = 0;
+        }
 
+        const valuesCount = _.reduce(data.nodes, (acc, cv) => {
+            const attrValue = cv.attr[$scope.colorAttr];
+            acc[attrValue] = acc[attrValue] ? (acc[attrValue] + 1) : 1;
+            return acc;
+        }, {});
+
+        $scope.totalSelectedValue = _(valuesCount).keys().map(x => valuesCount[x]).max();
+        $scope.selectedValues = valuesCount;
+    });
 
     /*************************************
     ****** Core Functions *************

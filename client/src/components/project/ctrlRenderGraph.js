@@ -186,7 +186,12 @@ angular.module('common')
             $scope.isSnapshotDescription = false;
 
             $scope.getSelectedSnapshotTitle = function () {
-                return snapshotService.getCurrentSnapshot().snapName;
+                const snap = snapshotService.getCurrentSnapshot();
+                if (snap) {
+                    return snap.snapName;
+                }
+
+                return '';
             }
 
             $scope.getSelectedSnapshot = function () {

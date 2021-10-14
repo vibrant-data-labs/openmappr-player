@@ -5,8 +5,8 @@
      Will need change if 'false' use-case is required.
 */
 angular.module('common')
-    .directive('dirAttrRenderer', ['$timeout', 'FilterPanelService', 'nodeSelectionService', 'hoverService', 'graphSelectionService', 'layoutService', 'AttrInfoService', 'projFactory', 'networkService', 'BROADCAST_MESSAGES', 'dataGraph',
-        function($timeout, FilterPanelService, nodeSelectionService, hoverService, graphSelectionService, layoutService, AttrInfoService, projFactory, networkService, BROADCAST_MESSAGES, dataGraph) {
+    .directive('dirAttrRenderer', ['$timeout', 'FilterPanelService', 'nodeSelectionService', 'hoverService', 'graphSelectionService', 'layoutService', 'AttrInfoService', 'projFactory', 'networkService', 'BROADCAST_MESSAGES', 'dataGraph', 'renderGraphfactory',
+        function($timeout, FilterPanelService, nodeSelectionService, hoverService, graphSelectionService, layoutService, AttrInfoService, projFactory, networkService, BROADCAST_MESSAGES, dataGraph, renderGraphfactory) {
             'use strict';
 
             /*************************************
@@ -33,7 +33,8 @@ angular.module('common')
                     chosenNodes: '=',
                     theme: '=',
                     pinnedMedia: '=',
-                    focusNode: '=?'
+                    focusNode: '=?',
+                    gradient: '=?'
                 },
                 controller: ['$scope', ControllerFn],
                 link: postLinkFn
@@ -139,6 +140,18 @@ angular.module('common')
                     return this.isExtUser === 'true' || this.isExtUser === true;
                 };
 
+                this.isGradient = function() {
+                    return $scope.gradient;
+                }
+
+                this.getAllNodes = function() {
+                    return renderGraphfactory.getRenderer().graph.nodes();
+                }
+
+                this.getMapprSettings = function() {
+                    return $scope.$parent.mapprSettings;
+                }
+
                 this.getTotalNodesCount = function() {
                     return dataGraph.getAllNodes().length;
                 }
@@ -229,9 +242,7 @@ angular.module('common')
                     } else {
                         cs = graphSelectionService.getSelectedNodes();
                     }
-                    console.log('cs: ', cs);
                     scope.renderer.nodeValues = _.map(cs, 'attr.' + attrId);
-                    console.log('node values: ', scope.renderer.nodeValues);
                     if(attrs.isGrid == 'true' || attrs.isGrid == true) {
                         scope.renderer.nodeValue = scope.attrToRender.value;
                     }

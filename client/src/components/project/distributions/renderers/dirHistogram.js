@@ -47,7 +47,7 @@ angular.module('common')
                 selectionDefaultColor: '#315F6B',
                 highlightColor: '#666',
                 strokeWidth: 0.5,
-                histWidth: 320,
+                histWidth: 370,
                 histHeight: 75,
                 categoricalHeight: 200,
                 binCount: 18,
@@ -146,7 +146,7 @@ angular.module('common')
 
                 scope.$on(BROADCAST_MESSAGES.hss.select, function (ev, payload) {
                     var nodes = selectService.selectedNodes.length == subsetService.currentSubset().length ? [] : payload.nodes;
-                    updateSelectionBars(histoBars, nodes, attrInfo, histoData, mappTheme, false, histElem);
+                    updateSelectionBars(histoBars, nodes, attrInfo, histoData, mappTheme, false, histElem, renderCtrl);
                     updateFiltSelBars(histoBars, nodes, attrInfo, histoData);
                 });
 
@@ -170,13 +170,13 @@ angular.module('common')
                     histoBars = createGlobalDistribution(histElem, tooltip, attrInfo, renderCtrl, histoData);
 
                     if (!_.isEmpty(initialSelection)) {
-                        updateSelectionBars(histoBars, initialSelection, attrInfo, histoData, mappTheme, initialSelection.length === 1, histElem);
+                        updateSelectionBars(histoBars, initialSelection, attrInfo, histoData, mappTheme, initialSelection.length === 1, histElem, renderCtrl);
                         if (initialSelection.length > 1) {
                             updateFiltSelBars(histoBars, FilterPanelService.getCurrentSelection(), attrInfo, histoData);
                         }
                     }
                     else {
-                        updateSelectionBars(histoBars, FilterPanelService.getCurrentSelection(), attrInfo, histoData, mappTheme, false, histElem);
+                        updateSelectionBars(histoBars, FilterPanelService.getCurrentSelection(), attrInfo, histoData, mappTheme, false, histElem, renderCtrl);
                     }
 
                     redrawHistogram(attrInfo);
@@ -224,7 +224,7 @@ angular.module('common')
                         histoData.binType = getBinType(attrInfo);
                         histoBars = createGlobalDistribution(histElem, tooltip, attrInfo, renderCtrl, histoData, nodes);
                         $timeout(function () {
-                            updateSelectionBars(histoBars, [], attrInfo, histoData, mappTheme, false, histElem);
+                            updateSelectionBars(histoBars, [], attrInfo, histoData, mappTheme, false, histElem, renderCtrl);
                         }, 500);
                     }, 500);
                 }
@@ -590,7 +590,7 @@ angular.module('common')
                 // A formatter for counts.
                 // var formatCount = d3.format(",.0f");
                 var yAxisWidth, barWidth, width, height,
-                    containerWidth = 306; //histElem.clientWidth
+                    containerWidth = 370; //histElem.clientWidth
 
                 if (binType == 'int_variable' || binType == 'int_unique') {
                     binThresholds = getBinThresholds(attrInfo, opts, histoData);
@@ -690,13 +690,14 @@ angular.module('common')
                 var globalBarFillColor = opts.barColor;
                 // Make global bar
                 bar.append("rect")
-                    .attr('opacity', 1)
-                    .style({ fill: globalBarFillColor, 'shape-rendering': 'crispEdges' })
-                    .attr("data-main-bar", "true")
-                    .attr("x", function (d, i) { return getBarXPosn(d, i, binType, barWidth); })
-                    .attr("width", barWidth)
-                    .attr("y", height)
-                    .attr("height", 0);
+                .attr('opacity', 1)
+                .style({ fill: globalBarFillColor, 'shape-rendering': 'crispEdges' })
+                .attr("data-main-bar", "true")
+                .attr("x", function (d, i) { return getBarXPosn(d, i, binType, barWidth); })
+                .attr("width", barWidth)
+                .attr("y", height)
+                .attr("height", 0);
+ 
 
                 // Make selection bar, initially height 0
                 bar.append("rect")
@@ -816,7 +817,7 @@ angular.module('common')
                 return bar;
             }
 
-            function updateSelectionBars(bar, selectedNodes, attrInfo, histoData, mappTheme, showClusterNodes, histElem) {
+            function updateSelectionBars(bar, selectedNodes, attrInfo, histoData, mappTheme, showClusterNodes, histElem, renderCtrl) {
 
                 _log(logPrefix + 'rebuilding selections');
                 var principalNode = null;
@@ -827,6 +828,10 @@ angular.module('common')
                     selectedNodes = FilterPanelService.getNodesForSNCluster();
                 }
 
+                var allNodes = [];
+                if (renderCtrl && renderCtrl.isGradient()) {
+                    allNodes = renderCtrl.getAllNodes();
+                }
                 var opts = histoData.opts;
                 var selectionValuesMap = getSelectionValuesMap(selectedNodes, attrInfo.attr.id);
                 var selectionCountsList = histoData.selectionCountsList = mapSelectionToBars(attrInfo.attr.id, selectionValuesMap, histoData.d3Data, !histoData.isOrdinal, attrInfo);
@@ -852,7 +857,7 @@ angular.module('common')
                     svg.select('g.yaxis.right').remove();
                     svg.append("g")
                         .attr("class", "yaxis right")
-                        .attr("transform", "translate(273,10)")
+                        .attr("transform", "translate(343,10)")
                         .call(yAxis);
                 }
                 else {
@@ -869,13 +874,29 @@ angular.module('common')
                     barElem.selectAll('[data-mask-bar="true"]').remove();
                     globalBar.attr('opacity', 1);
                     var globalBarFillColor = selectedNodes.length ? opts.barColorAfterSelection : opts.barColor;
-                    globalBar.style({
-                        fill: globalBarFillColor,
-                        'shape-rendering': 'crispEdges'
-                        // stroke: opts.strokeColor,
-                        // 'stroke-width': opts.strokeWidth
-                    });
-
+                    if (renderCtrl && renderCtrl.isGradient()) {
+                        const mapprSettings = renderCtrl.getMapprSettings();
+                        const min = selectionCountsList[i].min;
+                        const max = selectionCountsList[i].max;
+                        const node = _.filter(allNodes, x => {
+                            const val = x.attr[mapprSettings.nodeColorAttr];
+                            return val >= min && val <= max;
+                        });
+                        const barColor = node && node.length ? node[0].colorStr : opts.barColor;
+                        globalBar.style({
+                            fill: barColor,
+                            'shape-rendering': 'crispEdges'
+                            // stroke: opts.strokeColor,
+                            // 'stroke-width': opts.strokeWidth
+                        });
+                    } else {
+                        globalBar.style({
+                            fill: globalBarFillColor,
+                            'shape-rendering': 'crispEdges'
+                            // stroke: opts.strokeColor,
+                            // 'stroke-width': opts.strokeWidth
+                        });
+                    }
 
                     // 2) Shrink filtered selection bars
                     filteredSelBars.attr('height', 0);
