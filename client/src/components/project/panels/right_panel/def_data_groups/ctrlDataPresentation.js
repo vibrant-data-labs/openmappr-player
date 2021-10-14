@@ -182,6 +182,7 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
     $scope.$on(BROADCAST_MESSAGES.hss.select, function (e, data) {
         if (!data.nodes.length) {
             $scope.totalSelectedValue = 0;
+            return;
         }
 
         const valuesCount = _.reduce(data.nodes, (acc, cv) => {
