@@ -9,8 +9,8 @@
       .legend-line-down.animate-fade(style="border-color: {{item.colorval}}" ng-class="{'only-one':(item.bridgers.length == 0 || item.archetypes.length == 0)}")
     h6.less-gutter.panel-text {{item.text}}
     h6.panel-number ({{getTooltipInfo(item)}})
-.panel-item-btn(ng-class="{'hidden' : isShowMore}")
-  button(ng-click="isShowMore = !isShowMore") Show More
+.panel-item-btn(ng-class="{'panel-item-btn_active' : isShowMore}")
+  button(ng-click="isShowMore = !isShowMore") Show {{ !isShowMore ? 'more' : 'less' }}
 .panel-item-more(ng-class="{'panel-item-more_open' : isShowMore }")
   .panel-item.pointable-cursor(ng-repeat="item in catListDataTail", ng-if="catListDataTail.length", ng-class="{'highlighted' : item.highlightOnNodeHover}", uib-tooltip="{{::item.name}}", tooltip-placement="right", tooltip-append-to-body="true")
     .flex-container.color-box(
