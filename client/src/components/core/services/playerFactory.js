@@ -69,7 +69,11 @@ function($q, $http, projFactory) {
     function getPlayerDocLocally() {
         console.log('[playerFactory.getPlayerDocLocally]');
         return $http.get(DATA_PATH + 'settings.json?t=' + Date.now()).then(function(response) {
-            console.log(response);
+            _.forEach(response.data.snapshots, (snap) => {
+                if (!snap.layout.settings.drawClustersCircle) {
+                    snap.layout.settings.drawClustersCircle = false;
+                }
+            });
             if(response.status === 500) {
                 currPlayerDefer.reject('Some error');
                 return null;
