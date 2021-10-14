@@ -80,6 +80,8 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
     };
 
     $scope.vm.nodeSizeAttr = _.find($scope.nodeSizeAttrs, 'id', $scope.mapprSettings.nodeSizeAttr);
+    $scope.isNumericItemByColor = _.find($scope.nodeColorAttrs, 'id', $scope.mapprSettings.nodeColorAttr);
+    
     $scope.selectedNodes = [];
     $scope.totalValue = 0;
     $scope.isShowFullDataGroupVMs = false;
@@ -90,6 +92,10 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
         $scope.dataGroupsInfo.colorNodesBy = colorAttr;
         $scope.mapprSettings.nodeColorAttr =  $scope.dataGroupsInfo.colorNodesBy.id;
 
+        if (colorAttr.isNumeric) {
+            $scope.isNumericItemByColor = colorAttr;
+        }
+        
         $rootScope.$broadcast(BROADCAST_MESSAGES.cb.changed, colorAttr);
 
         var attrInfo = AttrInfoService.getNodeAttrInfoForRG().getForId($scope.mapprSettings.nodeColorAttr);
