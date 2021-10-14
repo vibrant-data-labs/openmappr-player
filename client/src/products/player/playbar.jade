@@ -203,18 +203,6 @@
 
   //- RIGHT AREA
   .details-panel
-
-    .details-panel__row-data
-      .row-data__content
-        b {{getCurrentProjectTitle()}}
-      .button-group__item
-        button.button.button_type_play-toolbar.button_icon_info(
-          ng-click="openInfoPage()"
-          uib-tooltip="Project information"
-          tooltip-append-to-body="true"
-          tooltip-placement="right"
-        )
-
     .details-panel__row-data
       .row-data__content {{getSelectedSnapshotTitle() || ''}}
       .button-group__item

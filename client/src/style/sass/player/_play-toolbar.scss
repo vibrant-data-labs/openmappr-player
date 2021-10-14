@@ -285,10 +285,8 @@
       overflow-x: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
+      color: #BC3364;
     }
-
-    &:nth-child(1) { .row-data__content { color:  rgba(50, 60, 71, 0.8); } }
-    &:nth-child(2) { .row-data__content { color:  #BC3364; } }
   }
 
   &__extra-container {
