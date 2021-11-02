@@ -154,8 +154,8 @@ angular.module('common')
                             info.viznodes.push(node);
                             info.sumX += x;
                             info.sumY += y;
-                            if(!info.colorStr)
-                                info.colorStr = node.colorStr;
+                            if(!info.clusterColorStr)
+                                info.clusterColorStr = node.clusterColorStr;
                             if(node.inPop) {
                                 popped.push(node);
                             }
@@ -416,7 +416,7 @@ angular.module('common')
                             .style('position', 'absolute')
                             .style('font-size', function(node) {return toPx(labelSizeFunc(node));})
                             .style('color', function(node) {
-                                return node.isGroup ? node.colorStr : undefined;
+                                return node.isGroup ? node.clusterColorStr : undefined;
                             })
                         //.style('opacity', 0)
                             .classed(cssClass, true)
@@ -549,7 +549,7 @@ angular.module('common')
                     sel
                         .classed(cssHoverClass, true)
                         .classed(cssHoverHideClass, false)
-                        .style('color', function(node) {return node.isGroup ? node.colorStr : undefined;})
+                        .style('color', function(node) {return node.isGroup ? node.clusterColorStr : undefined;})
                         .select('p')
                         .text(function(node) {return labelRenderer.getLabel(node, settings);})
                     //.transition().duration(200)

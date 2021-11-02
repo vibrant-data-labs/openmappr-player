@@ -124,7 +124,7 @@ function ($q, $timeout, renderGraphfactory, inputMgmtService, graphHoverService,
             }
             
             if (event.data.all) {
-                selectService.selectNodes({ attr: settings('nodeColorAttr'), value: event.data.labelId });
+                selectService.selectNodes({ attr: settings('nodeClusterAttr'), value: event.data.labelId });
             }
             else {
                 var topNode = _getTopNode(event.data.node);

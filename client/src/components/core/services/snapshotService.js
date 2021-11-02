@@ -206,7 +206,7 @@ function ($q, $http, $rootScope, $routeParams, layoutService, graphSelectionServ
             return result;
         }
         var layoutProps = ['xaxis', 'yaxis'];
-        var layoutSettingsProps = ['nodeColorAttr', 'nodeSizeAttr', 'edgeColorAttr'];
+        var layoutSettingsProps = ['nodeColorAttr', 'nodeClusterAttr', 'nodeSizeAttr', 'edgeColorAttr'];
 
         _.each(mappSnapshots, function(snap) {
             var layout = snap.layout;
@@ -248,7 +248,7 @@ function ($q, $http, $rootScope, $routeParams, layoutService, graphSelectionServ
         if(layout.plotType.toLowerCase() == 'scatterplot') {
             suggestedSnap.descr += formatContent('X/Y Attributes', layout.xaxis + ', ' + layout.yaxis);
         }
-        suggestedSnap.descr += formatContent('Node color attribute', layout.settings.nodeColorAttr);
+        suggestedSnap.descr += formatContent('Node color attribute', layout.settings.nodeClusterAttr);
         suggestedSnap.descr += formatContent('Node size attribute', layout.settings.nodeSizeAttr);
 
         function formatContent(title, content) {

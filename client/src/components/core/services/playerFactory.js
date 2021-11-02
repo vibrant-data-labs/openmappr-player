@@ -73,6 +73,10 @@ function($q, $http, projFactory) {
                 if (!snap.layout.settings.drawClustersCircle) {
                     snap.layout.settings.drawClustersCircle = false;
                 }
+
+                if (!snap.layout.settings.nodeClusterAttr) {
+                    snap.layout.settings.nodeClusterAttr = snap.layout.settings.nodeColorAttr;
+                }
             });
             if(response.status === 500) {
                 currPlayerDefer.reject('Some error');

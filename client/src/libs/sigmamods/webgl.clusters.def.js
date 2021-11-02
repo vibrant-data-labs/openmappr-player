@@ -22,7 +22,7 @@
 
       var node = cluster.nodes[0];
       var color = sigma.utils.floatColor(
-        node.colorStr || settings('nodeColorDefaultValue')
+        node.clusterColorStr || settings('nodeColorDefaultValue')
       );
 
       var minMax = cluster.nodes.reduce((acc, cv) => {

@@ -133,7 +133,7 @@ function($q, renderGraphfactory, hoverService) {
     function labelHover(d) {
         var hoverFn = function() {
             _service.isGroupLabelHover = true;
-            hoverService.hoverNodes({ attr: renderGraphfactory.getRenderer().settings('nodeColorAttr'), value: d.id });
+            hoverService.hoverNodes({ attr: renderGraphfactory.getRenderer().settings('nodeClusterAttr'), value: d.id });
             hoverTimer = undefined;
         };
         _clearTimer();
@@ -210,7 +210,7 @@ function($q, renderGraphfactory, hoverService) {
             .classed(classes.cssSelNeighbourClass, node.isSelectedNeighbour && !node.isSelected)
             .classed(classes.cssDarkThemeClass, (labelOutlineColor=='#000000')) //HACK - see above 112
             .style('color', function() {
-                return node.isGroup ? node.colorStr : undefined;
+                return node.isGroup ? node.clusterColorStr : undefined;
             });
 
         // set event handlers on visible group labels

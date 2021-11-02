@@ -37,6 +37,7 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
 
     $scope.dataGroupsInfo = {
         colorNodesBy: null,
+        clusterNodesBy: null,
         colorEdgesBy: null,
         sortOp: '',
         sortReverse: false,
@@ -102,6 +103,14 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
 
         var attrInfo = AttrInfoService.getNodeAttrInfoForRG().getForId($scope.mapprSettings.nodeColorAttr);
         $scope.totalValue = _(attrInfo.valuesCount).keys().map(x => attrInfo.valuesCount[x]).max();
+    };
+
+    $scope.clusterByAttrUpdate = function clusterByAttrUpdate(colorAttr){
+        console.log(logPrefix + 'clusterBy: ', $scope.dataGroupsInfo.clusterNodesBy.id);
+        $scope.dataGroupsInfo.clusterNodesBy = colorAttr;
+        $scope.mapprSettings.nodeClusterAttr =  $scope.dataGroupsInfo.clusterNodesBy.id;
+       
+        $rootScope.$broadcast(BROADCAST_MESSAGES.cb.changed, colorAttr);
     };
 
     $scope.colorByEdgeAttrUpdate = function colorByEdgeAttrUpdate(colorAttr) {
@@ -212,6 +221,7 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
 
         _.assign($scope.dataGroupsInfo, {
             colorNodesBy: null,
+            clusterNodesBy: null,
             colorEdgesBy: null,
             sortOp: '',
             sortReverse: false
@@ -255,6 +265,10 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
         $scope.dataGroupsInfo.sortOp = _.find($scope.dataGroupSortOptions, {'title': $scope.layout.setting('legendSortOption')});
         $scope.dataGroupsInfo.sortReverse = $scope.layout.setting('legendSortIsReverse');
         $scope.dataGroupsInfo.colorNodesBy = _.find($scope.nodeColorAttrs, 'id', $scope.mapprSettings.nodeColorAttr);
+        $scope.dataGroupsInfo.clusterNodesBy = $scope.mapprSettings.nodeClusterAttr ?
+            _.find($scope.nodeColorAttrs, 'id', $scope.mapprSettings.nodeClusterAttr) : $scope.dataGroupsInfo.colorNodesBy;
+
+        console.log('cluster nodes by!', $scope.dataGroupsInfo.clusterNodesBy);
         $scope.dataGroupsInfo.colorEdgesBy = _.find($scope.edgeColorAttrs, 'id', $scope.mapprSettings.edgeColorAttr);
         console.assert($scope.dataGroupsInfo.colorNodesBy, "$scope.dataGroupsInfo.colorNodesBy can't be null");
         console.assert($scope.dataGroupsInfo.colorEdgesBy, "$scope.dataGroupsInfo.colorEdgesBy can't be null");

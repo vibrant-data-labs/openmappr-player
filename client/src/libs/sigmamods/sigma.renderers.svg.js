@@ -164,7 +164,7 @@
         this.camera.getRectangle(this.width, this.height)
       );
 
-      var colorAttr = this.settings(options, 'nodeColorAttr');
+      var colorAttr = this.settings(options, 'nodeClusterAttr');
       this.clustersOnScreen = graph.nodes().reduce((acc, node) => {
         const key = node.attr[colorAttr];
         let item = acc.find(x => x.key === key);

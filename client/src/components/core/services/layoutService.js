@@ -50,7 +50,7 @@ function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partiti
      */
     function ScaleBuilder (prefix) {
         this.prefix = prefix;
-        this.isColor = prefix.endsWith('Color');
+        this.isColor = prefix.endsWith('Color') || prefix.endsWith('Cluster');
         this.isEdge = prefix.startsWith('edge');
         this.defaultValues = {};
         this.defaultValues[prefix + 'Strat'] = 'attr'; // 'select' for manual selection
@@ -561,11 +561,13 @@ function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partiti
 
     var nodeSizeScaleBuilder = new ScaleBuilder('nodeSize'),
         nodeColorScaleBuilder = new ScaleBuilder('nodeColor'),
+        nodeClusterScaleBuilder = new ScaleBuilder('nodeCluster'),
         edgeSizeScaleBuilder = new ScaleBuilder('edgeSize'),
         edgeColorScaleBuilder = new ScaleBuilder('edgeColor');
 
     nodeSizeScaleBuilder.injectDataGraphSettings(dataGraphSettings);
     nodeColorScaleBuilder.injectDataGraphSettings(dataGraphSettings);
+    nodeClusterScaleBuilder.injectDataGraphSettings(dataGraphSettings);
     edgeSizeScaleBuilder.injectDataGraphSettings(dataGraphSettings);
     edgeColorScaleBuilder.injectDataGraphSettings(dataGraphSettings);
 
@@ -575,6 +577,10 @@ function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partiti
     });
     // node Color defaults
     nodeColorScaleBuilder.updateDefaultValues({
+        'Attr' : 'OriginalColor'
+    });
+
+    nodeClusterScaleBuilder.updateDefaultValues({
         'Attr' : 'OriginalColor'
     });
 
@@ -594,7 +600,7 @@ function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partiti
 
     nodeSizeScaleBuilder.injectSettings(defaultOriginalLayout.settings);
     nodeColorScaleBuilder.injectSettings(defaultOriginalLayout.settings);
-
+    nodeClusterScaleBuilder.injectSettings(defaultOriginalLayout.settings);
     edgeSizeScaleBuilder.injectSettings(defaultOriginalLayout.settings);
     edgeColorScaleBuilder.injectSettings(defaultOriginalLayout.settings);
 
@@ -739,10 +745,13 @@ function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partiti
     function setColorAttrib () {
         var self = this;
         var scaleGen = nodeColorScaleBuilder,
+            clusterScaleGen = nodeClusterScaleBuilder,
             mapprVals = scaleGen.extractValues(self.mapprSettings),
+            clusterMapprVals = clusterScaleGen.extractValues(self.mapprSettings),
             colorMap = self.mapprSettings.nodeUserColorMap[mapprVals.Attr];
 
         var scaler = scaleGen.genScale(self.mapprSettings);
+        var clusterScaler = clusterScaleGen.genScale(self.mapprSettings);
 
         self.scalers.color = function(value, partitionValue) {
             if(colorMap && _.isString(colorMap[value])) {
@@ -753,12 +762,30 @@ function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partiti
                 return mapprVals.DefaultValue;
             }
         };
+        self.scalers.clusterColor = function(value, partitionValue) {
+            if(colorMap && _.isString(colorMap[value])) {
+                return colorMap[value];
+            } else if(value != null) {
+                return clusterScaler(value, partitionValue);
+            } else {
+                return clusterMapprVals.DefaultValue;
+            }
+        };
+
         // Finally the func
         self._getColor = function _getColor (node) {
             var val = self.scalers.color(getAttrValue(node.attr[mapprVals.Attr]), node.attr[mapprVals.PartitionAttr]);
             if(val == null) {
                 console.warn("Color Scaler failed at value: %s -> %s", getAttrValue(node.attr[mapprVals.Attr]), val);
                 return mapprVals.DefaultValue;
+            } else { return val; }
+        };
+
+        self._getClusterColor = function _getClusterColor (node) {
+            var val = self.scalers.clusterColor(getAttrValue(node.attr[clusterMapprVals.Attr]), node.attr[clusterMapprVals.PartitionAttr]);
+            if(val == null) {
+                console.warn("Color Cluster Scaler failed at value: %s -> %s", getAttrValue(node.attr[clusterMapprVals.Attr]), val);
+                return clusterMapprVals.DefaultValue;
             } else { return val; }
         };
     }
@@ -936,7 +963,7 @@ function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partiti
     function getGroupAttr() {
         var layout = this.getCurrentIfExists();
         if( layout && layout.mapprSettings.nodeColorStrat == 'attr' ) {
-            var groupAttr = layout.mapprSettings.nodeColorAttr;
+            var groupAttr = layout.mapprSettings.nodeClusterAttr;
             var info = AttrInfoService.getNodeAttrInfoForRG().getForId(groupAttr);
             if(info && !info.isNumeric && !info.isTag && info.values.length > 1) {
                 return info;
@@ -1114,16 +1141,22 @@ function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partiti
         //
         this._getSize = _.noop;
         this._getColor = _.noop;
+        this._getClusterColor = _.noop;
 
         this._commonNodeT = function(node) {
             var color     = d3.rgb(this._getColor(node));
             var newColor = this._getColorDensity(node, color);
+            var clusterColor = d3.rgb(this._getClusterColor(node));
+            var newClusterColor = this._getColorDensity(node, clusterColor);
 
             node.size     = this._getSize(node);
             node.baseSize = node.size;
             node.colorStr = newColor.toString();
+            node.clusterColorStr = newClusterColor.toString();
             node.color    = [newColor.r, newColor.g, newColor.b];
+            node.clusterColor = [newClusterColor.r, newClusterColor.g, newClusterColor.b];
             node.colorStr = window.mappr.utils.colorStr(node.color);
+            node.clusterColorStr = window.mappr.utils.colorStr(node.clusterColor);
         };
         this._commonEdgeT = function(edge) {
             var color;
@@ -1163,10 +1196,10 @@ function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partiti
         this.isOriginal = true;
         this.gridAttr = this.getRawLayoutData().gridAttr; // for grid layout
         this.gridSortAttr = this.getRawLayoutData().gridSortAttr; // for grid layout
-        this.listAttrs = this.getRawLayoutData().listAttrs || [this.mapprSettings.nodeColorAttr];
+        this.listAttrs = this.getRawLayoutData().listAttrs || [this.mapprSettings.nodeClusterAttr];
         // this.listSortAttr = this.getRawLayoutData().listSortAttr || 'Cluster';
         // this.listSortReverse = this.getRawLayoutData().listSortReverse;
-        this.listSortAttrAr = this.getRawLayoutData().listSortAttrAr || [this.mapprSettings.nodeColorAttr];
+        this.listSortAttrAr = this.getRawLayoutData().listSortAttrAr || [this.mapprSettings.nodeClusterAttr];
         this.listSortReverseAr = this.getRawLayoutData().listSortReverseAr;
         this.listCompareIds = this.getRawLayoutData().listCompareIds;
         this.listColSizes = this.getRawLayoutData().listColSizes || [300];
