@@ -23,6 +23,7 @@
     margin: 10px;
     display: flex;
     justify-content: space-between;
+    margin-top: 13px;
   }
 
   .tab-content {
@@ -405,6 +406,7 @@
     .panel-scroll {
       overflow: auto;
       width: 100%;
+      margin-top: 3px;
     }
 
     .nav-tabs {

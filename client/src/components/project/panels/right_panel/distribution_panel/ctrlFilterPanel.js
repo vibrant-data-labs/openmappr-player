@@ -59,11 +59,21 @@ angular.module('common')
                 $scope.ui.subsetEnabled = data.selectionCount > 0;
             });
 
+            // scope.$on(BROADCAST_MESSAGES.hss.subset.init, function (ev, data) {
+            //     console.log('subsetinit!', data);
+            //     const cards = document.querySelectorAll('.card_type_filter');
+            //     cards.forEach((card) => {
+            //         card.classList.remove('card_expanded');
+            //     })
+            // });
+
             $scope.searchToggle = function searchToggle(attr) {
                 const card = document.querySelector('.card_type_filter[data-attr="' + attr.id + '"]');
                 //const searchBoxInput = document.getElementsByClassName('search-box__input')[0];
 
                 card.classList.toggle('card_expanded');
+                card.querySelector('input').focus();
+
                 //searchBoxInput.focus();
             }
 
