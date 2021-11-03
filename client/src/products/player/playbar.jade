@@ -207,12 +207,15 @@
       .row-data__content {{getSelectedSnapshotTitle() || ''}}
       .button-group__item
         button.button.button_type_play-toolbar(
-          ng-class="isSnapshotDescription ? 'button_icon_cancel' : 'button_icon_chevron-down'"
-          ng-click="toggleSnapshotDescription()"
-          uib-tooltip="Snapshot description"
+          ng-class="isSnapshotSelectorOpen ? 'button_icon_cancel' : 'button_icon_chevron-down'"
+          ng-click="toggleSnapshotSelector()"
+          uib-tooltip="Snapshot Selector"
           tooltip-append-to-body="true"
           tooltip-placement="right"
         )
 
-    .details-panel__extra-container(ng-if="isSnapshotDescription")
-      .extra-container__content(ng-bind-html="getSelectedSnapshot() || ''")
+    .details-panel__extra-container(ng-if="isSnapshotSelectorOpen")
+      .extra-container__content
+        .snapshot-selector__item(ng-repeat="snap in getSnapshots()", ng-click="selectSnapshot(snap)")
+          h3 {{snap.snapName}}
+          h6(ng-if="snap.subtitle") {{snap.subtitle}}

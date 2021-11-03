@@ -183,7 +183,7 @@ angular.module('common')
             $scope.isShowBreadcrumbs = true;
 
             // #####
-            $scope.isSnapshotDescription = false;
+            $scope.isSnapshotSelectorOpen = false;
 
             $scope.getSelectedSnapshotTitle = function () {
                 const snap = snapshotService.getCurrentSnapshot();
@@ -205,9 +205,23 @@ angular.module('common')
             $scope.getCurrentProjectTitle = function () {
                 return _.get($scope, '$parent.player.player.settings.headerTitle') || ''
             }
-            $scope.toggleSnapshotDescription = function () {
-                $scope.isSnapshotDescription = !$scope.isSnapshotDescription;
-                $scope.panelUI.openPanel('snapshots');
+
+            $scope.getSnapshots = function() {
+                return $scope.player.snapshots.filter(x => x.isEnabled);
+            }
+
+            $scope.toggleSnapshotSelector = function () {
+                $scope.isSnapshotSelectorOpen = !$scope.isSnapshotSelectorOpen;
+            }
+
+            $scope.selectSnapshot = function(snap) {
+                _.each($scope.player.snapshots, function(el) {
+                    el.isCurrentSnap = false;
+                });
+                snap.isCurrentSnap = true;
+
+                $scope.switchSnapshot(snap.id);
+                $scope.isSnapshotSelectorOpen = !$scope.isSnapshotSelectorOpen;
             }
 
             $scope.openInfoPage = function () {

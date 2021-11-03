@@ -278,7 +278,6 @@ module.exports = function(grunt) {
 				"client/src/products/player/ctrlLayoutDropdown.js",
 				"client/src/products/player/ctrlRightPanelTabsPlayer.js",
 				"client/src/products/player/ctrlSlidePanel.js",
-				"client/src/products/player/ctrlSnapshotSidePanel.js",
 				"client/src/products/player/ctrlTopMenu.js",
 				"client/src/products/player/dirActivateSnapOnScroll.js",
 				"client/src/products/player/dirImageOnLoad.js",

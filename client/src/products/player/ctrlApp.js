@@ -74,7 +74,6 @@ angular.module('player')
                 slidesPanelOpen: false,
                 modalPanelOpen: false,
                 persistFilterPanel: false,
-                snapshotPanelOpen: false,
                 currentPanelOpen: 'modal',
 
                 //hovers
@@ -104,9 +103,6 @@ angular.module('player')
                     case 'modal':
                         this.modalPanelOpen = true;
                         break;
-                    case 'snapshots':
-                        this.snapshotPanelOpen = true;
-                        break;
                     default:
                     }
                 },
@@ -117,7 +113,6 @@ angular.module('player')
                     this.hideInfoPanel = false;
                     this.slidesPanelOpen = false;
                     this.modalPanelOpen = false;
-                    this.snapshotPanelOpen = false;
                 },
                 togglePanel: function(pan) {
                     var tempBool;
