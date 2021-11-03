@@ -210,6 +210,22 @@ angular.module('common')
                 return $scope.player.snapshots.filter(x => x.isEnabled);
             }
 
+            $scope.formatSnapshotTitle = function(snap) {
+                if (snap.snapName.length > 72) {
+                    return snap.snapName.substring(0, 72) + '...';
+                }
+                
+                return snap.snapName;
+            }
+
+            $scope.formatSnapshotTooltip = function(snap) {
+                if (snap.snapName.length <= 72) {
+                    return '';
+                }
+
+                return snap.snapName;
+            }
+
             $scope.toggleSnapshotSelector = function () {
                 $scope.isSnapshotSelectorOpen = !$scope.isSnapshotSelectorOpen;
             }
