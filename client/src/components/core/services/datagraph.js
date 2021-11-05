@@ -295,6 +295,48 @@ angular.module('common')
                     console.assert(isFinite(n.size) && !isNaN(n.size), 'node size is invalid. ' + n.size + '. Bad layout?');
                     nodes.push(n);
                 });
+                
+                const clusterAttr = layout.mapprSettings.nodeClusterAttr;
+                const clusters = _.reduce(nodes, function(acc, cv) {
+                    const val = cv.attr[clusterAttr];
+                    if(!acc[val]) {
+                        acc[val] = [];
+                    }
+                    acc[val].push(cv.color);
+                    return acc;
+                }, {});
+
+                // calculate the most frequent color
+                Object.keys(clusters).forEach(function(key) {
+                    const colors = clusters[key];
+                    const colorStrs = colors.map(r => ({
+                        color: r,
+                        colorStr: window.mappr.utils.colorStr(r)
+                    }));
+
+                    const colorStats = _.reduce(colorStrs, function(acc, cv) {
+                        if (!acc[cv.colorStr]) {
+                            acc[cv.colorStr] = {
+                                count: 1,
+                                color: cv.color
+                            }
+                        } else {
+                            acc[cv.colorStr].count++;
+                        }
+
+                        return acc;
+                    }, {});
+                    
+                    const sorted = _.sortBy(colorStats, 'count');
+
+                    clusters[key] = sorted[sorted.length - 1].color;
+                });
+
+                _.each(nodes, function(node) {
+                    const val = node.attr[clusterAttr];
+                    node.clusterColor = clusters[val];
+                    node.clusterColorStr = window.mappr.utils.colorStr(node.clusterColor);
+                });
                 // sort to establish drawing order
                 nodes.sort(bigOnTop ? function (n1, n2) { return n1.size - n2.size; } :
                     function (n1, n2) { return n2.size - n1.size; });

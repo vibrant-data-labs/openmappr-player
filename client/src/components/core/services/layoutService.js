@@ -50,7 +50,7 @@ function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partiti
      */
     function ScaleBuilder (prefix) {
         this.prefix = prefix;
-        this.isColor = prefix.endsWith('Color') || prefix.endsWith('Cluster');
+        this.isColor = prefix.endsWith('Color') || prefix === 'nodeCluster';
         this.isEdge = prefix.startsWith('edge');
         this.defaultValues = {};
         this.defaultValues[prefix + 'Strat'] = 'attr'; // 'select' for manual selection
@@ -1146,17 +1146,14 @@ function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partiti
         this._commonNodeT = function(node) {
             var color     = d3.rgb(this._getColor(node));
             var newColor = this._getColorDensity(node, color);
-            var clusterColor = d3.rgb(this._getClusterColor(node));
-            var newClusterColor = this._getColorDensity(node, clusterColor);
 
             node.size     = this._getSize(node);
             node.baseSize = node.size;
             node.colorStr = newColor.toString();
-            node.clusterColorStr = newClusterColor.toString();
             node.color    = [newColor.r, newColor.g, newColor.b];
-            node.clusterColor = [newClusterColor.r, newClusterColor.g, newClusterColor.b];
             node.colorStr = window.mappr.utils.colorStr(node.color);
-            node.clusterColorStr = window.mappr.utils.colorStr(node.clusterColor);
+            node.clusterColor = node.color;
+            node.clusterColorStr = node.colorStr;
         };
         this._commonEdgeT = function(edge) {
             var color;
