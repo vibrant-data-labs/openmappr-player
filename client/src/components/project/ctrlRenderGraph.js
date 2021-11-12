@@ -182,6 +182,7 @@ angular.module('common')
             $scope.selectedSearchValueStr = null;
             $scope.isShowBreadcrumbs = true;
 
+            $scope.selectedSnapshot = null;
             // #####
             $scope.isSnapshotSelectorOpen = false;
 
@@ -235,6 +236,7 @@ angular.module('common')
                     el.isCurrentSnap = false;
                 });
                 snap.isCurrentSnap = true;
+                $scope.selectedSnapshot = snap;
 
                 $scope.switchSnapshot(snap.id);
                 $scope.isSnapshotSelectorOpen = !$scope.isSnapshotSelectorOpen;

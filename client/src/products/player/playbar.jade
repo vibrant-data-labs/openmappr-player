@@ -216,6 +216,6 @@
 
     .details-panel__extra-container(ng-if="isSnapshotSelectorOpen")
       .extra-container__content
-        .snapshot-selector__item(ng-repeat="snap in getSnapshots()", ng-click="selectSnapshot(snap)", uib-tooltip="{{formatSnapshotTooltip(snap)}}" tooltip-append-to-body="true" tooltip-placement="right")
+        .snapshot-selector__item(ng-repeat="snap in getSnapshots()", ng-click="selectSnapshot(snap)", ng-class="{ highlight: selectedSnapshot ? snap.isCurrentSnap: ($index == 0) }" uib-tooltip="{{formatSnapshotTooltip(snap)}}" tooltip-append-to-body="true" tooltip-placement="right")
           h3 {{formatSnapshotTitle(snap)}}
           h6(ng-if="snap.subtitle") {{snap.subtitle}}

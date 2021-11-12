@@ -306,8 +306,13 @@
         cursor: pointer;
         padding: .1em 0;
         padding-left: 10px;
+        border-bottom: 1px solid rgba(41, 101, 145, .3);
 
-        &:hover {
+        &:last-child {
+          border: none !important;
+        }
+
+        &.highlight, &:hover {
           background-color: rgba(41, 101, 145, .3);
         }
 
@@ -318,11 +323,14 @@
       h3 {
         font: 400 16px / 23px "Poppins";
         color: #BC3364;
-        margin-top: 10px;
+        margin-top: 5px;
+        margin-bottom: 0;
       }
 
       h6 {
-        font-size: 16px;
+        font-size: 14px;
+        font-weight: 300;
+        margin-top: 0;
       }
     } 
   }
