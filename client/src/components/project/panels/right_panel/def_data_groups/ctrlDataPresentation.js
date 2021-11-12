@@ -146,6 +146,12 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
         return $scope.selectedValues[attr.originalTitle] / $scope.totalSelectedValue * 100;
     }
 
+    $scope.$on(BROADCAST_MESSAGES.snapshot.changed, function (event, data) {
+        var colorNodesByAttr = data.snapshot.layout.settings.nodeColorAttr;
+        var nodeAttrs = layoutService.getNodeColorAttrs();
+        $scope.colorByAttrUpdate(nodeAttrs.find(x => x.id === colorNodesByAttr));
+    });
+
     $scope.getSelectedSnapshot = function () {
         var content = snapshotService.getCurrentSnapshot().descr;
         var index = content.indexOf('</p>') + 4;
