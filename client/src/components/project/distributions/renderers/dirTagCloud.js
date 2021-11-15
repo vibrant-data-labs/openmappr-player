@@ -136,7 +136,6 @@ angular.module('common')
 
                 scope.$on(BROADCAST_MESSAGES.hss.select, function (ev, data) {
                     if (!scope.catListData.data) return;
-                    
                     scope.catListData.data = scope.catListData.data.map(function mapData(cat) {
                         cat.isChecked = cat.isSubsetted || !cat.isSubsetted && selectService.hasAttrId(scope.attrToRender.id, cat.id);
 
@@ -145,45 +144,51 @@ angular.module('common')
                 });
 
                 scope.$on(BROADCAST_MESSAGES.hss.subset.changed, function (ev, data) {
+                    scope.attrToRender.searchQuery = '';
                     scope.showFilter = true;
                     scope.disappearAnimation = true;
                     scope.transition = true;
                     $timeout(function () {
-                        scope.isLoading = true;
-                        filteringCatVals = _.uniq(_.map(data.nodes, function (node) {
-                            return node.attr[scope.attrToRender.id];
-                        }));
-                        scope.catListData = (new Array(ITEMS_TO_SHOW)).map((r, i) => ({ id: i}));
-                        var _catListData = genTagListData(data.nodes,
-                            AttrInfoService.getNodeAttrInfoForRG().getForId(scope.attrToRender.id), filteringCatVals, FilterPanelService.getColorString(), genValColorMap(scope.attrToRender.id, data.nodes), sortType, sortOrder);
-                        scope.filteredListData = filterTags(data.nodes, _catListData);
-
-                        _catListData.data = _catListData.data.map(function mapData(cat) {
-                            cat.isSubsetted = cat.selPercentOfSel == 100;
-                            cat.isChecked = cat.isSubsetted;
-
-                            return cat;
-                        });
-
-                        var sortOps = scope.attrToRender.sortConfig;
-                        _catListData.data = sortTagData(_catListData.data,
-                            sortOps && sortOps.sortType || 'frequency',
-                            sortOps && sortOps.sortOrder || 'desc', false);
-                        setupFilterClasses(_catListData, false);
-                        scope.selNodesCount = data.nodes.length;
-
-                        distrData.numShownCats = Math.min(distrData.numShowGroups * ITEMS_TO_SHOW + initVisItemCount, _catListData.data.length);
-                        scope.$apply();
-
-                        scope.isLoading = false;
-                        scope.disappearAnimation = false;
-                        scope.catListData = _catListData;
+                        prepareCatListData(scope, data);
 
                         $timeout(() => {
                             scope.transition = false;
                         }, 1000);
                     }, 1000);
                 });
+
+                function prepareCatListData(scope, data) {
+                    scope.isLoading = true;
+                    filteringCatVals = _.uniq(_.map(data.nodes, function (node) {
+                        return node.attr[scope.attrToRender.id];
+                    }));
+                    scope.catListData = (new Array(ITEMS_TO_SHOW)).map((r, i) => ({ id: i}));
+                    var _catListData = genTagListData(data.nodes,
+                        AttrInfoService.getNodeAttrInfoForRG().getForId(scope.attrToRender.id), filteringCatVals, FilterPanelService.getColorString(), genValColorMap(scope.attrToRender.id, data.nodes), sortType, sortOrder);
+                    scope.filteredListData = filterTags(data.nodes, _catListData);
+
+                    _catListData.data = _catListData.data.map(function mapData(cat) {
+                        cat.isSubsetted = cat.selPercentOfSel == 100;
+                        cat.isChecked = cat.isSubsetted;
+
+                        return cat;
+                    });
+
+                    var sortOps = scope.attrToRender.sortConfig;
+                    _catListData.data = sortTagData(_catListData.data,
+                        sortOps && sortOps.sortType || 'frequency',
+                        sortOps && sortOps.sortOrder || 'desc', false);
+                    setupFilterClasses(_catListData, false);
+                    scope.selNodesCount = data.nodes.length;
+
+                    distrData.numShownCats = Math.min(distrData.numShowGroups * ITEMS_TO_SHOW + initVisItemCount, _catListData.data.length);
+                    //scope.$apply();
+
+                    scope.isLoading = false;
+                    scope.disappearAnimation = false;
+                    scope.catListData = _catListData;
+
+                }
 
                 scope.$on(BROADCAST_MESSAGES.hss.subset.init, function (ev) {
                     scope.showFirstPage();
@@ -212,7 +217,12 @@ angular.module('common')
                         distrData.numShowGroups = 0;
                         distrData.numShownCats = Math.min(distrData.numShowGroups * ITEMS_TO_SHOW + initVisItemCount, scope.filteredListData.length);
                     } else {
-                        scope.filteredListData = scope.catListData.data;
+                        var subsetData = subsetService.subsetNodes;
+                        if (subsetData && subsetData.length) {
+                            prepareCatListData(scope, { nodes: subsetData });
+                        } else {
+                            scope.filteredListData = scope.catListData.data;
+                        }
                     }
                 });
 
