@@ -62,6 +62,8 @@ angular.module('common')
                 scope.colorStr = FilterPanelService.getColorString();
                 scope.selNodesCount = 0;
                 scope.totalValue = 0;
+                scope.totalSelectedValue = 0;
+                scope.selectedValues = {};
                 scope.isShowMore = false;
 
                 
@@ -173,14 +175,39 @@ angular.module('common')
                     return num / scope.totalValue * 100;
                 }
 
+                scope.calcSelectedLineWidth = function(attr) {
+                    if (!scope.totalSelectedValue) {
+                        return 0;
+                    }
+            
+                    if (!scope.selectedValues[attr.id]) {
+                        return 0;
+                    }
+            
+                    return scope.selectedValues[attr.id] / scope.totalSelectedValue * 100;
+                }
+
                 scope.$on(BROADCAST_MESSAGES.hss.select, function (ev, data) {
+                    if (!data.nodes.length) {
+                        scope.totalSelectedValue = 0;
+                        return;
+                    }
+                    const valuesCount = _.reduce(data.nodes, (acc, cv) => {
+                        const attrValue = cv.attr[scope.attrToRender.id];
+                        acc[attrValue] = acc[attrValue] ? (acc[attrValue] + 1) : 1;
+                        return acc;
+                    }, {});
+            
+                    scope.totalSelectedValue = _(valuesCount).keys().map(x => valuesCount[x]).max();
+                    scope.selectedValues = valuesCount;   
+
                     if (!scope.catListData.data) return;
 
                     scope.catListData.data = scope.catListData.data.map(function mapData(cat) {
                         cat.isChecked = cat.isSubsetted || !cat.isSubsetted && selectService.hasAttrId(scope.attrToRender.id, cat.id);
 
                         return cat;
-                    });
+                    });                 
                 });
                 /**
          * watch filters being enabled disabled
