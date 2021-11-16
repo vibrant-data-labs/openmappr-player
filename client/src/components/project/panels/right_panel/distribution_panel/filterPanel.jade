@@ -10,7 +10,10 @@
 		.panel-scroll.flex-fill.flex-vert-container(ng-controller="FilterPanelCtrl")
 			//- span {{filteredDistrAttrs.length}} of {{nodeDistrAttrs.length}}
 			div()
-				ul.filter-list(data-dir-virtual-scroll="", variable-height="", container-item-count="nodeDistrAttrs.length" dir-kill-tooltip-on-scroll, ng-if="ui.renderDistr", on-scroll="onScroll")
+				div.filter-list-category__head(ng-class="{'filter-list-category_open' : isShowMainCategory}", ng-click='showMainCategory()')
+					h5.filter-list-category__title Main Attributes
+					button.filter-list-category__btn(ng-class='{"filter-list-category__btn_active": isShowMainCategory}')
+				ul.filter-list(container-item-count="nodeDistrAttrs.length" dir-kill-tooltip-on-scroll, ng-class="{'filter-list_shown' : ui.renderDistr && isShowMainCategory}", on-scroll="onScroll")
 					li.filter-list__item(
 						ng-repeat="attr in ui.filteredAttrs = ((hasPriority ? nodeDistrAttrsHigh : nodeDistrAttrs) | filter: {title : ui.statsSearchKey}) track by attr.id",
 						ng-if="attr.visible", ng-class="{'attr-hidden':!attr.visible, 'first': ($index == 1), 'chart-first-item': attr.isFirstChart, 'tags-first-item': attr.isFirstTag}",
@@ -62,10 +65,10 @@
 						)
 							span {{::attr.title}}
 							span(ng-show="attr.principalVal") :&nbsp;{{attr.principalVal}}
-			.filter-list-additional(ng-if="hasPriority")
-				div.filter-list-additional__head(ng-class="{'filter-list-additional_open' : isShowAdditionalCategory}", ng-click='showAdditionCat()')
-					h5.filter-list-additional__title Additional Attributes
-					button.filter-list-additional__btn(ng-class='{"filter-list-additional__btn_active": isShowAdditionalCategory}')
+			.filter-list-category(ng-if="hasPriority")
+				div.filter-list-category__head(ng-class="{'filter-list-category_open' : isShowAdditionalCategory}", ng-click='showAdditionCat()')
+					h5.filter-list-category__title Additional Attributes
+					button.filter-list-category__btn(ng-class='{"filter-list-category__btn_active": isShowAdditionalCategory}')
 				ul.filter-list(container-item-count="nodeDistrAttrs.length" dir-kill-tooltip-on-scroll, ng-class="{'filter-list_shown' : ui.renderDistr && isShowAdditionalCategory}", on-scroll="onScroll")
 					li.filter-list__item(
 						ng-repeat="attr in ui.filteredAttrs = (nodeDistrAttrsLow | filter: {title : ui.statsSearchKey}) track by attr.id",
