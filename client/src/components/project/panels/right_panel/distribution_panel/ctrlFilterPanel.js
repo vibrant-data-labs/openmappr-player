@@ -25,6 +25,7 @@ angular.module('common')
             $scope.nodeDistrAttrsLow = [];
             $scope.currentSelection = [];
             $scope.MAPP_EDITOR_OPEN = $rootScope.MAPP_EDITOR_OPEN;
+            $scope.isShowMainCategory = true;
             $scope.isShowAdditionalCategory = false;
             /**
     * Scope methods
@@ -238,6 +239,10 @@ angular.module('common')
                         $scope.nodeDistrAttrsLow = [...$scope.nodeDistrAttrsLow, i];
                     }
                 })
+
+                $scope.showMainCategory = function() {
+                    $scope.isShowMainCategory = !$scope.isShowMainCategory;
+                }
 
                 $scope.showAdditionCat = function() {
                     $scope.isShowAdditionalCategory = !$scope.isShowAdditionalCategory;

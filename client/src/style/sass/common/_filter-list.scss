@@ -24,7 +24,7 @@
   }
 }
 
-.filter-list-additional {
+.filter-list-category {
   
 
   &__head {
@@ -36,7 +36,7 @@
   }
 
   &__title {
-    color: #BC3364;
+    color: #296591;
   }
 
   &__btn {
@@ -123,6 +123,7 @@
 
       .card__action-search {
         margin-left: auto;
+        transition: transform 450ms ease;
 
         button {
           width: 24px;
@@ -149,7 +150,7 @@
         background-size: 16px;
         padding: 0;
         opacity: .8;
-        transition: opacity .2s;
+        transition: all .2s;
 
         &:hover {
           opacity: 1;
@@ -333,8 +334,17 @@
     + h6 {
       margin-top: -20px !important;
       text-align: left;
-      padding: 0 0 0 10px;
+      padding: 0 0 0 20px;
       font: 500 15px/20px "Poppins" !important;
+    }
+
+    .card__action-sort,
+    .card__action-search {
+      transform: scale(0);
+    }
+
+    .card__action-sort {
+      margin-left: -16px;
     }
   }
 
