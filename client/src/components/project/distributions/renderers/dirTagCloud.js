@@ -206,7 +206,12 @@ angular.module('common')
                     console.log('dirTagCloud: sortConfig', sortOps);
                     sortType = sortOps && sortOps.sortType || 'frequency';
                     sortOrder = sortOps && sortOps.sortOrder || 'desc';
-                    scope.catListData.data = sortTagData(scope.catListData.data, sortType, sortOrder, scope.catListData.highlightedCats.length > 0);
+                    var subsetData = subsetService.subsetNodes;
+                    if (subsetData && subsetData.length) {
+                        prepareCatListData(scope, { nodes: subsetData });
+                    }
+                    
+                    scope.filteredListData = sortTagData(scope.filteredListData, sortType, sortOrder, scope.catListData.highlightedCats.length > 0)
                 }, true);
 
                 scope.$watch('attrToRender.searchQuery', function onSearchQueryChanged(newVal, oldVal) {
