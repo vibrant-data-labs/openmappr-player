@@ -328,10 +328,16 @@
     &__value {
       font-size: 14px;
       color: #616161;
+      padding-left: 10px;
     }
 
     &__value-wrap {
       padding-left: 10px;
     }
   }
+}
+
+.tag-list-wrap {
+  width: 100%;
+  display: block;
 }
