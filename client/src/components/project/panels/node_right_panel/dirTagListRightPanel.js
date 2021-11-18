@@ -1,12 +1,12 @@
 /*globals d3,$  */
 angular.module('common')
-    .directive('dirTagListRightPanel', ['$timeout', '$q', '$filter', 'FilterPanelService', 'dataGraph', 'AttrInfoService', 'SelectorService', 'BROADCAST_MESSAGES', 'hoverService', 'selectService', 'subsetService',
-        function ($timeout, $q, $filter, FilterPanelService, dataGraph, AttrInfoService, SelectorService, BROADCAST_MESSAGES, hoverService, selectService, subsetService) {
+    .directive('dirTagListRightPanel', ['hoverService', 'selectService',
+        function (hoverService, selectService) {
             'use strict';
 
             /*************************************
-    ******** Directive description *******
-    **************************************/
+            ******** Directive description *******
+            **************************************/
             var dirDefn = {
                 restrict: 'AE',
                 templateUrl: '#{player_prefix_index}/components/project/panels/node_right_panel/tagListRightPanel.html',
@@ -73,20 +73,5 @@ angular.module('common')
                 }
                 
             }
-
-
-
-            
-
-            
-
-            
-
-            
-
-            
-
-            
-
-            return dirDefn;
-        }]);
+          return dirDefn;
+}]);

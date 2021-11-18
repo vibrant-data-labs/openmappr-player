@@ -1,10 +1,15 @@
 .node-right-panel {
   background: #EBEFF2;
-  padding-top: 64px;
 
   .section {
     border-bottom: 1px solid #E4EAEF;
     background: #fff;
+
+    &--head {
+      position: fixed;
+      top: 0;
+      z-index: 1;
+    }
 
     &:not(:last-child) {
       margin-bottom: 10px;
@@ -20,11 +25,11 @@
       display: flex;
       padding: 20px;
       align-items: center;
-      position: fixed;
-      top: 0;
       width: 345px;
       background: #fff;
       z-index: 100;
+      border-bottom: 1px solid #E4EAEF;
+      margin-bottom: 10px;
 
       + .section__content {
         padding-top: 0;
@@ -285,16 +290,18 @@
     .section-info {
       max-width:50%;
 
-      &-wide {
+      &--wide {
         max-width: 100%;
+        flex: 0 0 100%;
       }
     }
+
     .tag-list__item {
       text-overflow: ellipsis;
       overflow: hidden;
       display: inline-block;
       max-width: 100%;
-      margin: 0;
+      margin: 0 5px 0 0;
       .cat-text-container, .cat-text-container > div {
         overflow: hidden;
         max-width: 100%;
@@ -334,10 +341,22 @@
     &__value-wrap {
       padding-left: 10px;
     }
+
+    &__controls {
+      text-align: right;
+    }
+
+    &__more-btn {
+      color: #939698;
+    }
   }
 }
 
 .tag-list-wrap {
   width: 100%;
   display: block;
+}
+
+.section-wrap {
+  padding-top: 138px;
 }
