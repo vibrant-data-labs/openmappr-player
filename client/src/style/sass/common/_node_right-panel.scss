@@ -87,9 +87,21 @@
                     .user {
                         display: flex;
                         align-items: center;
+                        border-top: 1px solid rgba(#000, 0);
+                        border-bottom: 1px solid rgba(#000, 0);
+                        transition: all 400ms ease;
+                        padding: 5px 0;
 
-                        &:not(:last-child) {
-                            margin-bottom: 10px;
+                        &:hover {
+                            border-top-color: $gray-light;
+                            border-bottom-color: $gray-light;
+                            background: #f9f7f7;
+                            margin: 0 -20px;
+                            padding: 5px 20px;
+                            
+                            .info-user h6 {
+                                color: rgb(46 173 190);
+                            }
                         }
 
                         .info-user {
