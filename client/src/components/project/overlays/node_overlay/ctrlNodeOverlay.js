@@ -254,9 +254,14 @@ angular.module('common')
 
             $scope.darken = window.mappr.utils.darkenColor;
 
-            $scope.parseLinks = function(text) {
-                text = text.replace(/(http|www)[^\s]+/g, function(match) { return '<a href="' + match + '" target="_blank">' + match + '</a>' });
-                return text;
+            $scope.parseLinks = function(tab) {
+                const { text, value } = tab;
+                
+                if (!text.isExpanded) {
+                    return text.shortValue.replace(/(http|www)[^\s]+/g, function(match) { return '<a href="' + match + '" target="_blank">' + match + '</a>' }) + '...'
+                } else {
+                    return value.replace(/(http|www)[^\s]+/g, function(match) { return '<a href="' + match + '" target="_blank">' + match + '</a>' });
+                }
             }
 
             $scope.$watch(function() {
