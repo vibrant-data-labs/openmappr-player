@@ -8,38 +8,53 @@
   &__input-wrap {
     position: relative;
     display: flex;
+    z-index: 1;
 
     .search-input {
       width: 100%;
+
+      &:before {
+        content: '';
+        display: block;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 38px;
+        height: 38px;
+        background: deployedUrl('/img/filter-panel/search.svg') no-repeat;
+        background-size: 16px;
+        background-position: center;
+        opacity: .6;
+      }
     }
   }
 
   &__input {
     width: 100%;
-    padding: 0 22px;
+    padding: 0 32px;
     border: 0;
     font-weight: 400;
     font-size: 14px;
-    line-height: 36px;
+    height: 38px;
     color: #000;
-    border-radius: 3px;
-    background: deployedUrl('/img/play-toolbar/search-purple.svg') 6px 50% no-repeat;
-    background-size: 12px;
+    border-radius: 3px 0 0 3px;
     border: 1px solid $gray-light;
+    border-right: none;
+    font: 400 15px/1 "Poppins";
 
     &::placeholder {
       color: #AEAEAE;
     }
   }
 
-  &__close {
+  &__clear {
     background: deployedUrl('/img/play-toolbar/cancel-grey.svg') 50% no-repeat;
     position: absolute;
-    right: 0;
+    right: 36px;
     top: 0;
     font-size: 0;
-    width: 26px;
-    height: 26px;
+    width: 38px;
+    height: 38px;
     padding: 0;
 
     &:hover {
@@ -57,7 +72,6 @@
 
 .search-dropdown {
   position: relative;
-  border-right: 1px solid #E5E5E5;
 
   &_opened {
     //border-color: transparent;
@@ -81,7 +95,7 @@
     justify-content: center;
     height: 100%;
     padding: 0;
-    background: #296591;
+    background: #eff2f5;
     cursor: pointer;
     position: relative;
     white-space: nowrap;
@@ -90,12 +104,13 @@
     overflow: hidden;
     width: 36px;
     border-radius: 0 3px 3px 0;
+    border: 1px solid #e6e6e6;
 
     &::before {
       content: '';
-      width: 20px;
-      height: 20px;
-      background: deployedUrl('/img/search/filter.svg');
+      width: 18px;
+      height: 18px;
+      background: deployedUrl('/img/search/filter-icon.svg');
       background-repeat: no-repeat;
       background-size: cover;
       display: block;
@@ -106,7 +121,7 @@
     display: none;
     visibility: hidden;
     position: absolute;
-    top: 31px;
+    top: 39px;
     left: -1px;
     right: 0;
     z-index: 20;

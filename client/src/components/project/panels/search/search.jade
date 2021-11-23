@@ -43,7 +43,7 @@
         ng-blur="ui.showInfoIcon = false"
         placeholder="Search"
       )
-
+      button.search-box__clear(ng-if="globalSearch.text" ng-click="handleClearSearch()")
     .search-box__dropdown.search-dropdown(ng-class="{ 'search-dropdown_opened': searchDropdownVisible}")
       span.search-dropdown__button(role="button" ng-click="toggleSearchDropdown()") 
       //{{selectedSearchValue.length > 0 ? selectedSearchValueStr : 'All'}}
