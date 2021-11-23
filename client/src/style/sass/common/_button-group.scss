@@ -122,8 +122,9 @@
   }
 
   &_zoom {
+    flex-direction: row !important;
     position: fixed;
-    top: calc(50% - 39px);
-    left: calc($right-panel-width + 20px);
+    bottom: 20px;
+    left: 62%;
   }
 }
