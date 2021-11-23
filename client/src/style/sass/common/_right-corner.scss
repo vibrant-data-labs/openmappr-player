@@ -14,15 +14,20 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    border: 1px solid transparent;
+    border: 1px solid #E0DFE6;
     color: #323C47;
-    background-color: #296591;
+    background-color: #F0F2F5;
+
+    &:first-child {
+      border-bottom: none;
+    }
 
     &::before {
       content: '';
       width: 18px;
       height: 18px;
       background-repeat: no-repeat;
+      background-size: 100%;
       transition: all .3s;
     }
 
@@ -30,7 +35,9 @@
       border-radius: 3px 3px 0 0;
 
       &::before {
-        background-image: deployedUrl('/img/tabs-menu/feedback.svg');
+        background-image: deployedUrl('/img/edit.svg');
+        width: 21px;
+        height: 21px;
       }
     }
 
@@ -38,7 +45,7 @@
       border-radius: 0 0 3px 3px;
 
       &::before {
-        background-image: deployedUrl('/img/tabs-menu/export_white.svg');
+        background-image: deployedUrl('/img/export.svg');
       }
     }
   }
