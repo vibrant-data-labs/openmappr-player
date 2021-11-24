@@ -361,6 +361,8 @@ angular.module('common')
                         renderTemplate = 'tag_simple.html';
                         break;
                     case 'tag-cloud':
+                    case 'tag-cloud_2':
+                    case 'tag-cloud_3':
                         renderTemplate = 'tag_cloud.html';
                         break;
                     case 'wide-tag-cloud':

@@ -61,6 +61,7 @@ angular.module('common')
                 scope.catListData = [];
                 scope.colorStr = FilterPanelService.getColorString();
                 scope.selNodesCount = 0;
+                scope.tagGrid = renderCtrl.attrInfo.attr.renderType;
 
                 // prepares the data which is put into scope
                 function draw() {

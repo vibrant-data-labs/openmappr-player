@@ -118,6 +118,14 @@
       &.loading {
         opacity: 0;
       }
+
+      &.tag-cloud_2 {
+        width: calc(50% - 4px);
+      }
+
+      &.tag-cloud_3 {
+        width: calc(33% - 4px);
+      }
     }
 
     .cat-item {
