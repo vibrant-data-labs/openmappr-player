@@ -19,7 +19,6 @@ module.exports = {
         xaxis: "Clustered_1_X",
         settings: {
           isShowSelectedNodeTab: true, // boolean - option to hide/show neighbor list in right panel
-          isShowDropdownScatterplot: true,
           selectedNodeCommonTitle: 'Neighbors',
           selectedNodeIncomingTitle: 'Incoming',
           selectedNodeOutgoingTitle: 'Outgoing',
