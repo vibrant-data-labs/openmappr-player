@@ -226,7 +226,7 @@ angular.module('common')
                         if (subsetData && subsetData.length) {
                             prepareCatListData(scope, { nodes: subsetData });
                         } else {
-                            scope.filteredListData = scope.catListData.data;
+                            scope.filteredListData = $filter('filter')(scope.catListData.data, (item) => item.id )
                         }
                     }
                 });
