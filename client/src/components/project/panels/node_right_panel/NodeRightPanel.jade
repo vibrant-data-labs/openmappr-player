@@ -1,8 +1,8 @@
 button.right-panel-btn(ng-click="toggleRightPanel()", ng-class="{'right-panel-btn_active': beginOverlayRightPanel}")
-.focus-rigth-panel(ng-click="cancelOverlay();", ng-show="beginOverlayRightPanel")
+.focus-rigth-panel(ng-click="cancelOverlay()" ng-class="{'active': beginOverlayRightPanel}")
   .node-rigth-panel-overlay
-    .animate-node-right(ng-if="showOverlay")
-      .animate-fade.node-rigth-panel-container( ng-if="showFocusNode && mapprSettings.nodeFocusRenderTemplate == 'node-right-panel'" style="padding-top:{{scrollPaddingTop}}px" dir-kill-tooltip-on-scroll)
+    .animate-node-right
+      .animate-fade.node-rigth-panel-container(ng-if="mapprSettings.nodeFocusRenderTemplate == 'node-right-panel'" style="padding-top:{{scrollPaddingTop}}px" dir-kill-tooltip-on-scroll)
         .node-rigth-panel.node-right-panel(ng-click="$event.stopPropagation();")
           div(ng-if="nodeRightInfo")
             section.section(ng-if="nodeRightInfo.section1.length")

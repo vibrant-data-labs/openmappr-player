@@ -1067,7 +1067,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 3px 0 0 3px;
-  box-shadow: -14px 2px 14px rgb(0 0 0 / 20%);
+  box-shadow: -10px 2px 14px rgba(#000, 0.08);
   transition: all 225ms linear;
 
   &:before {
@@ -1081,7 +1081,7 @@
   }
 
   &_active {
-    right: 346px;
+    transform: translateX(-346px);
 
     &:before {
       transform: rotate(90deg);
