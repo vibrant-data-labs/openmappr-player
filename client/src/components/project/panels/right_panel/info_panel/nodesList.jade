@@ -1,7 +1,6 @@
 .info-item.flex-fill-column
 	div.panel-list.panel-list--scrollable
-		.panel-list-info(ng-mouseleave="handleLeave()")
-			.panel-list-info__load(ng-if="!PanelListInfo") Loading...
+		.panel-list-info(ng-mouseleave="handleLeave()" ng-if="isDisplayTooltip && isShowTooltip")
 			.panel-list-info__content(ng-if="PanelListInfo")
 				.panel-list-info__head
 					.panel-list-info__photo(ng-if="PanelListInfo.photo")

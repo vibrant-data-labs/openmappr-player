@@ -54,7 +54,8 @@ function(BROADCAST_MESSAGES, playerFactory, hoverService, selectService, subsetS
 
         var hasSelection = selectService.getSelectedNodes() && selectService.getSelectedNodes().length;
         var hasSubset = subsetService.currentSubset() && subsetService.currentSubset().length;
-
+        
+        scope.isShowTooltip = false;
         scope.isShowMoreTextTooltip = false;
         scope.isShowMoreTagsTooltips = false;
         scope.PanelListInfo = null;
@@ -95,6 +96,7 @@ function(BROADCAST_MESSAGES, playerFactory, hoverService, selectService, subsetS
         scope.selectNode = function(node, $event) {
             hoverService.unhover();
             selectService.selectSingleNode(node.id, true);
+            scope.handleLeave();
         };
 
         scope.hoverNode = function(nodeId) {
@@ -157,6 +159,7 @@ function(BROADCAST_MESSAGES, playerFactory, hoverService, selectService, subsetS
         }
 
         scope.handleLeave = function() {
+            scope.isShowTooltip = false;
             scope.PanelListInfo = null;
             scope.isShowMoreTextTooltip = false;
             scope.isShowMoreTagsTooltips = false;
@@ -205,13 +208,18 @@ function(BROADCAST_MESSAGES, playerFactory, hoverService, selectService, subsetS
             return d3.rgb(scope.layout.scalers.color(cluster)).toString();
         }
 
-        scope.debounceHoverNode = _.debounce(hoverNodes, 300);
+        scope.debounceHoverNode = _.debounce(hoverNodes, 150);
 
         function hoverNodes(node) {
-            if (scope.isDisplayTooltip) {
-                setPanelInfo(node);
-            }
+            const selectedNode = scope.singleNode;
 
+            if (!selectedNode || selectedNode.id !== node.id) {
+                setPanelInfo(node);
+                scope.isShowTooltip = true;
+            } else {
+                scope.handleLeave();
+            }
+            
             parCtrl.persistSelection();
             hoverService.hoverNodes({ ids: node.id });
         }

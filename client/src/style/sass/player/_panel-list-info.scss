@@ -8,12 +8,6 @@
   transform: translateY(-50%);
   width: 328px;
   max-height: 400px;
-  max-height: 55%;
-  display: none;
-
-  .panel-list:hover & {
-    display: block;
-  }
 
   &:before {
     content: '';
@@ -26,7 +20,7 @@
 
   &__content {
     overflow-y: auto;
-    height: 400px;
+    max-height: 400px;
     padding: 15px;
   }
 
