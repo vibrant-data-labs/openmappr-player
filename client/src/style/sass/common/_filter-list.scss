@@ -86,7 +86,7 @@
         .card__search-box {
           visibility: visible;
           display: block;
-          width: 50%;
+          width: 100%;
         }
       }
 
@@ -119,6 +119,11 @@
 
       .card__action-sort {
         order: -1;
+      }
+
+      .card__search-wrap {
+        margin: 0 5px 0 auto;
+        max-width: 50%;
       }
 
       .card__action-search {

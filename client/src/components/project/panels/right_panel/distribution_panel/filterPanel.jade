@@ -44,13 +44,13 @@
 										tooltip-placement="right", 
 										tooltip-append-to-body="true"
 										)
+									.card__search-wrap(ng-if="attr.renderType != 'horizontal-bars'")
+										.card__action-search
+											button(ng-click="searchToggle(attr)") search
 
-									.card__action-search
-										button(ng-click="searchToggle(attr)") search
-
-									.card__search-box
-										input(type='text', ng-model="attr.searchQuery", ng-change="search(attr, $event)")/
-										button.close(ng-click="clearSearch(attr); searchToggle(attr);") close
+										.card__search-box
+											input(type='text', ng-model="attr.searchQuery", ng-change="search(attr, $event)")/
+											button.close(ng-click="clearSearch(attr); searchToggle(attr);") close
 								button.card__action-collapse(ng-click="collapseCard($event)")
 									
 							.card__body
