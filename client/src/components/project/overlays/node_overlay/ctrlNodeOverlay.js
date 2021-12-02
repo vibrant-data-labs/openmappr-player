@@ -749,7 +749,8 @@ angular.module('common')
             function getSectionTags(attr, values, result) {
                 const { attrType, renderType } = attr;
                 const isWide = renderType === 'wide-tag-cloud';
-                if (renderType !== 'tag-cloud' && !isWide) return;
+                const isHorizontalBar = renderType === 'horizontal-bars';
+                if (renderType !== 'tag-cloud' && !isWide && !isHorizontalBar) return;
                 var attrInfo = AttrInfoService.getNodeAttrInfoForRG().getForId(attr.id);
                 if (attrType === 'liststring') {
                     if(attrInfo.isSingleton) {
