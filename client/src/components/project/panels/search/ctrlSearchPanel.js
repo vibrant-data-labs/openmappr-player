@@ -95,7 +95,10 @@ function($scope, $rootScope, $timeout, searchService, BROADCAST_MESSAGES, uiServ
         $scope.showSearchResults = false;
     };
 
-
+    $scope.handleClearSearch = function() {
+        $scope.globalSearch.text = '';
+        $scope.hideSearchResults();
+    }
 
 
     /*************************************
