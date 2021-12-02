@@ -4,8 +4,8 @@ button.right-panel-btn(ng-click="toggleRightPanel()", ng-class="{'right-panel-bt
     .animate-node-right(ng-if="showOverlay")
       .animate-fade.node-rigth-panel-container( ng-if="showFocusNode && mapprSettings.nodeFocusRenderTemplate == 'node-right-panel'" style="padding-top:{{scrollPaddingTop}}px" dir-kill-tooltip-on-scroll)
         .node-rigth-panel.node-right-panel(ng-click="$event.stopPropagation();")
-          div(ng-if="nodeRightInfo")
-            section.section(ng-if="nodeRightInfo.section1.length")
+          div.section-wrap(ng-if="nodeRightInfo")
+            section.section.section--head(ng-if="nodeRightInfo.section1.length")
               .section__header
                 h3.section__title Selected Node
                 .section__icons.icons
@@ -49,7 +49,7 @@ button.right-panel-btn(ng-click="toggleRightPanel()", ng-class="{'right-panel-bt
                   iframe(ng-if="tab.value.includes('http') && !tab.text" ng-src="{{ tab.value | trustUrl }}", id='iframe001', width="100%", height="200px" frameborder="0", webkitallowfullscreen, mozallowfullscreen, allowfullscreen)
                   a.section__more(href="#", ng-if="tab.text && tab.text.couldExpand && tab.text.isExpanded", ng-click="toggleText(tab, $event)") &larr; Less
                   p(ng-if="tab.text && !tab.value.includes('http')") {{tab.text.isExpanded ? tab.value : (tab.text.shortValue + '...')}}
-                  p(ng-if="tab.text && tab.value.includes('http')" ng-bind-html="parseLinks(tab.value)")
+                  p(ng-if="tab.text && tab.value.includes('http')" ng-bind-html="parseLinks(tab.text.isExpanded ? tab.value : (tab.text.shortValue + '...'))")
                   a.section__more(href="#", ng-if="tab.text && tab.text.couldExpand && !tab.text.isExpanded", ng-click="toggleText(tab, $event)") Read More &rarr;
 
             section.section.section_tabs(ng-if="nodeRightInfo.sectionTags.length", dir-elem-ready="onSection3Load(null, $event)")
@@ -72,19 +72,10 @@ button.right-panel-btn(ng-click="toggleRightPanel()", ng-class="{'right-panel-bt
                   ng-repeat="sections in nodeRightInfo.sectionTags"
                   ng-if="sectionActive3==$index"
                 )
-                  .tag-list__item(ng-repeat="tag in sections.value" ng-class="{'tag-list__item-wide': sections.isWide}")
-                    .tooltip-positioner(tooltip-placement="right" tooltip-append-to-body="true" tooltip-is-open="openTooltip")
-                    .cat-info
-                    .cat-list.tag-cloud
-                      .cat-item(style="cursor:pointer", ng-mouseover="onSectionHover(sections, tag)", ng-mouseleave="onSectionLeave()", ng-click="onSectionSelect(sections, tag)")
-                        .cat-highlight(style="opacity: 0;")
-                        .cat-text-container
-                          div.cat-text.no-margin.truncate
-                            {{tag}}
-
+                  dir-tag-list-right-panel.tag-list-wrap(section="sections")
             section.section.section_compact(ng-if="nodeRightInfo.sectionShortTags.length")
               .section__content.section__info.section__short-strings
-                dl#information.section-info(ng-repeat="number in nodeRightInfo.sectionShortTags" ng-class="{'section-info-wide': number.isWide}")
+                dl.section-info(ng-repeat="number in nodeRightInfo.sectionShortTags" ng-class="{'section-info--wide': number.isWide}")
                   dt.section-info__label(
                     dir-elem-ready="onTitleLoad(number, $event)",
                     uib-tooltip="{{number.popupText}}", 
@@ -92,23 +83,9 @@ button.right-panel-btn(ng-click="toggleRightPanel()", ng-class="{'right-panel-bt
                     tooltip-append-to-body="true"
                   )
                     div.label-text.truncate {{number.key}}
-
-                  dd.section-info__value(ng-repeat="val in number.values", ng-class="{'tag-list__item': val.isTag}")
-                    .cat-list.tag-cloud(ng-if="val.isTag")
-                      .cat-item(
-                        dir-elem-ready="onTagLoad(val, $event)"
-                        style="cursor:pointer", 
-                        ng-mouseover="onSectionHover(number, val.value, $event)", 
-                        ng-mouseleave="onSectionLeave()", 
-                        ng-click="onSectionSelect(number, val.value)",
-                        uib-tooltip="{{val.popupText}}", 
-                        tooltip-placement="left", 
-                        tooltip-append-to-body="true")
-                        .vert-align.cat-text-container
-                          div.cat-text.no-margin.truncate
-                            {{val.value}}
-                    span.section-info__value(ng-if="!val.isTag") {{val.value}}
-
+                
+                  dir-attr-short-tags(section="number")
+                
                 dd.section-info__value.section-info__value-wrap(ng-repeat="val in number.values", ng-class="{'tag-list__item': val.isTag}")
                   .cat-list.tag-cloud(ng-if="val.isTag")
                     .cat-item(

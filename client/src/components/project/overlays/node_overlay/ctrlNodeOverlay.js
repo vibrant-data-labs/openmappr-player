@@ -653,7 +653,17 @@ angular.module('common')
                     if (mapToSectionFour(attr)) result.section4.push({ key: attr.title ? attr.title : attr.id, value: parseValueToSection4(attr, values[attr.id]) });
                     getSectionTags(attr, values, result);
                 });
+                
+                result.sectionShortTags.map(item => {
+                    if (_.some(item.values, {isTag: true}) && _.some(item.values, {isTag: false})) {
+                        item.isWide = true;
+                        item.values = _.sortBy(item.values, (el) => !el.isTag)
 
+                        if (item.values.length > 5) {
+                            item.isCollapsed = true;
+                        }
+                    }
+                })
 
                 $scope.nodeRightInfo = result;
             }
