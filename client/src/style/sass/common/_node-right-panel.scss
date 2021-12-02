@@ -302,6 +302,12 @@
       display: inline-block;
       max-width: 100%;
       margin: 0 5px 0 0;
+      font-size: 13px;
+      line-height: 20px;
+      color: rgb(97, 97, 97);
+      font-family: "Roboto";
+      padding-left: 5px;
+
       .cat-text-container, .cat-text-container > div {
         overflow: hidden;
         max-width: 100%;
@@ -325,17 +331,17 @@
       text-overflow: ellipsis;
       overflow: hidden;
       white-space: nowrap;
+      font-size: 13px;
+      line-height: 20px;
+      color: rgb(97, 97, 97);
+      font-family: "Roboto";
+      padding-left: 7px;
     }
 
     &__label {
-      font: 400 13px/20px 'Poppins';
       color: #BC3364;
-    }
-
-    &__value {
-      font-size: 14px;
-      color: #616161;
-      padding-left: 10px;
+      font: 400 13px/20px 'Poppins';
+      padding: 0;
     }
 
     &__value-wrap {
@@ -348,6 +354,9 @@
 
     &__more-btn {
       color: #939698;
+      font-size: 13px;
+      line-height: 20px;
+      font-family: "Roboto";
     }
   }
 }
