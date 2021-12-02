@@ -286,6 +286,7 @@ function($scope, $rootScope, $timeout, searchService, BROADCAST_MESSAGES, uiServ
 
     function selectAllNodes(showSearchResults) {
         selectService.selectNodes({ ids: _.map($scope.searchResults, 'id'), searchText: $scope.globalSearch.text, searchAttr: $scope.selectedSearchValue, scope: $scope});
+        $scope.globalSearch.text = '';
         $scope.searchToggle();
         if(!showSearchResults) {
             $scope.hideSearchResults();
