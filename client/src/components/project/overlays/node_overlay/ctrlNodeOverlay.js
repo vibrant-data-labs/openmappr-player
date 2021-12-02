@@ -755,7 +755,8 @@ angular.module('common')
                 const { attrType, renderType } = attr;
                 const isWide = renderType === 'wide-tag-cloud';
                 const isHorizontalBar = renderType === 'horizontal-bars';
-                if (renderType !== 'tag-cloud' && !isWide && !isHorizontalBar) return;
+                const cloudRenderTypes = ['tag-cloud', 'tag-cloud_2', 'tag-cloud_3'];
+                if (!cloudRenderTypes.includes(renderType) && !isWide && !isHorizontalBar) return;
                 var attrInfo = AttrInfoService.getNodeAttrInfoForRG().getForId(attr.id);
                 if (attrType === 'liststring') {
                     if(attrInfo.isSingleton) {
