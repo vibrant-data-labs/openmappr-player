@@ -98,6 +98,19 @@
           &.crunchbase {
             background: deployedUrl('/img/node-right-panel/crunchbase.svg') 50% no-repeat;
           }
+
+          &.guidestar {
+            transform: scale(1.25);
+            margin-top: -2px;
+          }
+
+          &.youtube {
+            transform: scale(1.4);
+          }
+
+          &.vimeo {
+            transform: scale(1.2);
+          }
         }
 
         img {
