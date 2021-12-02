@@ -64,7 +64,7 @@ angular.module('common')
                         hoveredSingleNode = hoverData.ids[0];
                         this.hoveredNodes = this.hoveredNodes.concat(hoverData.ids);
                     } else {
-                        this.hoveredNodes = hoverData.ids;
+                        this.hoveredNodes = [hoverData.ids];
                     }
                 } else {
                     var cs = filter(hoverData, subsetService.subsetNodes)

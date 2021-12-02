@@ -221,7 +221,7 @@ angular.module('common')
                 })
             }
 
-            function selectSingleNode(id) {
+            function selectSingleNode(id, listPanelPrevent = false) {
                 var node = findNodeWithId(id);
                 this.singleNode = node;
                 var currentSubset = subsetService.currentSubset();
@@ -232,6 +232,7 @@ angular.module('common')
                     selectionCount: this.selectedNodes.length,
                     isSubsetted: currentSubset.length > 0,
                     nodes: nodes,
+                    listPanelPrevent,
                 });
             }
 
