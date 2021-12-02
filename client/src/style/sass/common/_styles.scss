@@ -957,7 +957,6 @@ i {
     @include transition(opacity .3s ease-out);
     display: block;
     filter: alpha(opacity=0);
-    font-size: 14px;
     left: -10000px;
     letter-spacing: 1px;
     line-height: 1.4em;
@@ -966,6 +965,7 @@ i {
     position: absolute;
     visibility: visible;
     z-index: 100000;
+    font: 400 14px/21px "Poppins";
 
     &.in {
         @include transition(opacity .3s ease-out);
@@ -995,54 +995,52 @@ i {
 }
 
 .tooltip-inner {
-    background-color: $tooltip-bg;
+    background-color: #fff;
     border-radius: 2px;
-    color: $text-color-dark;
+    color: #323C47;
     max-width: 500px;
     padding: 8px 14px;
     text-align: center;
     text-decoration: none;
+    border: 1px solid #cecece;
+    box-shadow: 0 6px 10px $gray-light;
 }
 
 .tooltip-arrow {
-    border-color: transparent;
-    border-style: solid;
-    height: 0;
     position: absolute;
-    width: 0;
+    background: #fff;
+    width: 8px;
+    height: 8px;
+    border-top: 1px solid #cecece;
+    border-left: 1px solid #cecece;
 }
 
 .tooltip.top .tooltip-arrow {
-    -webkit-transform: scale(1, 1.5);
-    border-top-color: $tooltip-bg;
-    border-width: 8px 8px 0;
-    bottom: 0;
-    left: 50%;
-    margin-left: -8px;
+    transform: rotate(225deg);
+    border-top-color: #cecece;
+    border-width: 1px;
+    bottom: 4px;
 }
 
 .tooltip.right .tooltip-arrow {
-    border-right-color: $tooltip-bg;
-    border-width: 5px 5px 5px 0;
-    left: 0;
-    margin-top: -5px;
-    top: 50%;
+    transform: rotate(315deg);
+    border-right-color: transparent;
+    border-width: 1px;
+    left: 2px;
 }
 
 .tooltip.left .tooltip-arrow {
-    border-left-color: $tooltip-bg;
-    border-width: 5px 0 5px 5px;
-    margin-top: -5px;
-    right: 0;
-    top: 50%;
+    transform: rotate(135deg);
+    border-left-color: #cecece;
+    border-width: 1px;
+    right: 2px;
 }
 
 .tooltip.bottom .tooltip-arrow {
-    border-bottom-color: $tooltip-bg;
-    border-width: 0 5px 5px;
-    left: 50%;
-    margin-left: -5px;
-    top: 0;
+    transform: rotate(45deg);
+    border-bottom-color: transparent;
+    border-width: 1px;
+    top: 2px;
 }
 
 //for positioning the tooltip in renderers
