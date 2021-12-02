@@ -241,7 +241,8 @@ function($q, $rootScope, $timeout, dataGraph, layoutService, renderGraphfactory,
         var leftPanelWidth = rightPanel.width();
 
         var width = Math.max(minSize, Math.abs(minx - maxx)), height = Math.max(minSize, Math.abs(miny - maxy));
-        var ratioX = width / (window.innerWidth - leftPanelWidth - layoutService.marginX), ratioY = height / (window.innerHeight - layoutService.marginY);
+        var ratioX = width / (window.innerWidth - leftPanelWidth - layoutService.marginX - ((window.innerWidth - leftPanelWidth) / 100 * 5)), 
+            ratioY = height / (window.innerHeight - layoutService.marginY - (window.innerHeight / 100 * 3 ));
         var ratio = ratioX > ratioY ? ratioX : ratioY;
         pos.x += ratio * layoutService.offsetX;
         pos.y -= ratio * layoutService.offsetY;

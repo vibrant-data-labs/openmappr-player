@@ -23,13 +23,13 @@
         left: 20px;
         right: 0;
         position: absolute;
-        width: 95%;
+        width: 90%;
     }
 
     .yaxis-bkgrnd {
         background: $axis-bkgrnd;
         border-right: 1px solid $panel-border;
-        top: 7%;
+        top: 10%;
         height: 83%;
         position: absolute;
         left: 0;
@@ -253,5 +253,9 @@
         h4 > span {
             padding: 2px 12px;
         }
+    }
+
+    .subtitle {
+        font-size: 14px;
     }
 }
