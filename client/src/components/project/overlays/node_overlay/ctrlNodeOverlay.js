@@ -166,7 +166,9 @@ angular.module('common')
 
             $scope.onTitleLoad = function(number, $event) {
                 var elem = $event.target[0];
-                if (!number.popupText && $(elem).find('.label-text')[0].scrollWidth > elem.clientWidth) {
+                const labelText = $(elem).find('.label-text');
+                if (number.popupText || !labelText.length) return;
+                if (labelText[0].scrollWidth > elem.clientWidth) {
                     number.popupText = number.key;
                 }
             }

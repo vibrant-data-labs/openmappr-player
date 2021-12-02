@@ -115,6 +115,7 @@ angular.module('common')
 
                 $scope.$on(BROADCAST_MESSAGES.hss.select, function(e, data) {
                     if (data.selectionCount > 0) {
+                        $scope.hasSelection = true;
                         refresh(selectService.getSelectedNodes());
                     }
                     $scope.selInfo.interactionType = 'select';
@@ -132,6 +133,7 @@ angular.module('common')
 
                     if (!data.selectionCount) {
                         initialise();
+                        $scope.hasSelection = false;
                     }
                 });
 

@@ -19,7 +19,8 @@ function(BROADCAST_MESSAGES, playerFactory, hoverService, selectService, subsetS
             selectedGroups: '=',
             sortTypes: '=',
             sortInfo: '=',
-            searchQuery: '='
+            searchQuery: '=',
+            hasSelection: '='
         },
         templateUrl: '#{player_prefix_index}/components/project/panels/right_panel/info_panel/nodesList.html',
         link: postLinkFn
@@ -47,14 +48,15 @@ function(BROADCAST_MESSAGES, playerFactory, hoverService, selectService, subsetS
         scope.singleNode = selectService.singleNode;
         scope.isShowInfo = false;
         scope.isDisplayTooltip = false;
+        scope.filteredNodes = scope.nodes;
 
         playerFactory.getPlayerLocally().then(function(resp) {
-            scope.isDisplayTooltip = resp.player.settings.displayTooltipCard;
+            const isFalsy = (val) => val === undefined || val === null;
+            const displayTooltipCard = resp.player.settings.displayTooltipCard;
+            scope.isDisplayTooltip = isFalsy(displayTooltipCard) ? true : displayTooltipCard;
         })
 
-        var hasSelection = selectService.getSelectedNodes() && selectService.getSelectedNodes().length;
-        var hasSubset = subsetService.currentSubset() && subsetService.currentSubset().length;
-        
+        scope.hasSelection = selectService.getSelectedNodes() && selectService.getSelectedNodes().length;
         scope.isShowTooltip = false;
         scope.isShowMoreTextTooltip = false;
         scope.isShowMoreTagsTooltips = false;
@@ -67,6 +69,7 @@ function(BROADCAST_MESSAGES, playerFactory, hoverService, selectService, subsetS
                 }, 400);
             }
         });
+
         scope.$watch('sortInfo.sortOrder', function() {
             if (scope.singleNode) {
                 $timeout(function() {
@@ -75,19 +78,16 @@ function(BROADCAST_MESSAGES, playerFactory, hoverService, selectService, subsetS
             }            
         });
 
-        if (hasSubset && hasSelection) {
-            scope.nodesStatus = 'Nodes selected';
-            scope.linksStatus = 'Links selected';
-        } else if (hasSubset) {
-            scope.nodesStatus = 'Nodes subset';
-            scope.linksStatus = 'Links subset';
-        } else if(hasSelection) {
-            scope.nodesStatus = 'Nodes selected';
-            scope.linksStatus = 'Links selected';
-        } else {
-            scope.nodesStatus = 'Total nodes';
-            scope.linksStatus = 'Total links';
-        }
+        scope.$watch('searchQuery', function() {
+            if (!scope.searchQuery) {
+                scope.filteredNodes = scope.nodes;
+                return;
+            }
+            
+            scope.filteredNodes = _.filter(scope.nodes, (node) => {
+                return node.attr[scope.labelAttr].toUpperCase().indexOf(scope.searchQuery.toUpperCase()) != -1;
+            });
+        });
 
         layoutService.getCurrent().then(function (layout) {
             scope.layout = layout;
