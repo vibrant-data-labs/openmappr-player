@@ -109,7 +109,7 @@
       }
 
       .card__title {
-        margin: 0 0 3px 9px;
+        margin: 0 0 0 9px;
         color: #BC3364;
         font: 500 15px/24px 'Poppins';
         width: 45%;
@@ -175,6 +175,10 @@
           &.desc {
             background-image: deployedUrl('/img/filter-panel/alphabet-sort-desc.png')
           }
+        }
+
+        &:first-of-type {
+          margin-right: 6px;
         }
       }
 
