@@ -1,6 +1,6 @@
 angular.module('common')
-.directive('dirNodesList', ['BROADCAST_MESSAGES', 'hoverService', 'selectService', 'subsetService', 'FilterPanelService', 'layoutService', '$timeout',
-function(BROADCAST_MESSAGES, hoverService, selectService, subsetService, FilterPanelService, layoutService, $timeout) {
+.directive('dirNodesList', ['BROADCAST_MESSAGES', 'playerFactory', 'hoverService', 'selectService', 'subsetService', 'FilterPanelService', 'layoutService', '$timeout',
+function(BROADCAST_MESSAGES, playerFactory, hoverService, selectService, subsetService, FilterPanelService, layoutService, $timeout) {
     'use strict';
 
     /*************************************
@@ -19,11 +19,14 @@ function(BROADCAST_MESSAGES, hoverService, selectService, subsetService, FilterP
             selectedGroups: '=',
             sortTypes: '=',
             sortInfo: '=',
-            searchQuery: '='
+            searchQuery: '=',
+            hasSelection: '='
         },
         templateUrl: '#{player_prefix_index}/components/project/panels/right_panel/info_panel/nodesList.html',
         link: postLinkFn
     };
+
+    const MAX_TOOLTIP_STRING_LENGTH = 400;
 
     /*************************************
     ************ Local Data **************
@@ -44,16 +47,20 @@ function(BROADCAST_MESSAGES, hoverService, selectService, subsetService, FilterP
 
         scope.singleNode = selectService.singleNode;
         scope.isShowInfo = false;
+        scope.isDisplayTooltip = false;
+        scope.filteredNodes = scope.nodes;
 
-        var hasSelection = selectService.getSelectedNodes() && selectService.getSelectedNodes().length;
-        var hasSubset = subsetService.currentSubset() && subsetService.currentSubset().length;
+        playerFactory.getPlayerLocally().then(function(resp) {
+            const isFalsy = (val) => val === undefined || val === null;
+            const displayTooltipCard = resp.player.settings.displayTooltipCard;
+            scope.isDisplayTooltip = isFalsy(displayTooltipCard) ? true : displayTooltipCard;
+        })
 
-        scope.PanelListInfo = {
-            name: '',
-            photo: '',
-            description: '',
-            tags: []
-        }
+        scope.hasSelection = selectService.getSelectedNodes() && selectService.getSelectedNodes().length;
+        scope.isShowTooltip = false;
+        scope.isShowMoreTextTooltip = false;
+        scope.isShowMoreTagsTooltips = false;
+        scope.PanelListInfo = null;
 
         scope.$watch('sortInfo.sortType', function() {
             if (scope.singleNode) {
@@ -62,6 +69,7 @@ function(BROADCAST_MESSAGES, hoverService, selectService, subsetService, FilterP
                 }, 400);
             }
         });
+
         scope.$watch('sortInfo.sortOrder', function() {
             if (scope.singleNode) {
                 $timeout(function() {
@@ -70,19 +78,16 @@ function(BROADCAST_MESSAGES, hoverService, selectService, subsetService, FilterP
             }            
         });
 
-        if (hasSubset && hasSelection) {
-            scope.nodesStatus = 'Nodes selected';
-            scope.linksStatus = 'Links selected';
-        } else if (hasSubset) {
-            scope.nodesStatus = 'Nodes subset';
-            scope.linksStatus = 'Links subset';
-        } else if(hasSelection) {
-            scope.nodesStatus = 'Nodes selected';
-            scope.linksStatus = 'Links selected';
-        } else {
-            scope.nodesStatus = 'Total nodes';
-            scope.linksStatus = 'Total links';
-        }
+        scope.$watch('searchQuery', function() {
+            if (!scope.searchQuery) {
+                scope.filteredNodes = scope.nodes;
+                return;
+            }
+            
+            scope.filteredNodes = _.filter(scope.nodes, (node) => {
+                return node.attr[scope.labelAttr].toUpperCase().indexOf(scope.searchQuery.toUpperCase()) != -1;
+            });
+        });
 
         layoutService.getCurrent().then(function (layout) {
             scope.layout = layout;
@@ -90,7 +95,8 @@ function(BROADCAST_MESSAGES, hoverService, selectService, subsetService, FilterP
 
         scope.selectNode = function(node, $event) {
             hoverService.unhover();
-            selectService.selectSingleNode(node.id);
+            selectService.selectSingleNode(node.id, true);
+            scope.handleLeave();
         };
 
         scope.hoverNode = function(nodeId) {
@@ -115,8 +121,8 @@ function(BROADCAST_MESSAGES, hoverService, selectService, subsetService, FilterP
 
         scope.filterNode = function(node) {
             if (!scope.searchQuery) { return true; }
-            var regex = new RegExp(scope.searchQuery, 'gi');
-            return node.attr[scope.labelAttr].match(regex);
+            
+            return node.attr[scope.labelAttr].toUpperCase().indexOf(scope.searchQuery.toUpperCase()) != -1;
         };
 
         scope.getNodeTooltipHtml = function(node) {
@@ -152,6 +158,29 @@ function(BROADCAST_MESSAGES, hoverService, selectService, subsetService, FilterP
             }
         }
 
+        scope.handleLeave = function() {
+            scope.isShowTooltip = false;
+            scope.PanelListInfo = null;
+            scope.isShowMoreTextTooltip = false;
+            scope.isShowMoreTagsTooltips = false;
+        }
+
+        scope.isLongText = function(text) {
+            return text.length > MAX_TOOLTIP_STRING_LENGTH;
+        }
+
+        scope.getTooltipText = function(text) {
+            return scope.isLongText(text) ? text.slice(0, MAX_TOOLTIP_STRING_LENGTH) + '...' : text; 
+        }
+
+        scope.toggleMoreText = function() {
+            scope.isShowMoreTextTooltip = !scope.isShowMoreTextTooltip;
+        }
+        
+        scope.toggleMoreTags = function() {
+            scope.isShowMoreTagsTooltips = !scope.isShowMoreTagsTooltips;
+        }
+
         scope.$on(BROADCAST_MESSAGES.hss.select, function(ev, data) {
             if (data.filtersCount > 0) {
                 scope.nodesStatus = 'Nodes selected';
@@ -166,7 +195,10 @@ function(BROADCAST_MESSAGES, hoverService, selectService, subsetService, FilterP
 
             if (data.nodes.length == 1) {
                 scope.singleNode = data.nodes[0];
-                scrollTo(scope.singleNode.id);
+
+                if (!data.listPanelPrevent) {
+                    scrollTo(scope.singleNode.id);
+                }
             } else {
                 scope.singleNode = null;
             }
@@ -176,18 +208,23 @@ function(BROADCAST_MESSAGES, hoverService, selectService, subsetService, FilterP
             return d3.rgb(scope.layout.scalers.color(cluster)).toString();
         }
 
-        scope.debounceHoverNode = _.debounce(hoverNodes, 300);
+        scope.debounceHoverNode = _.debounce(hoverNodes, 150);
 
         function hoverNodes(node) {
-            scope.isShowInfo = true;
-            setPanelInfo(node);
+            const selectedNode = scope.singleNode;
 
+            if (!selectedNode || selectedNode.id !== node.id) {
+                setPanelInfo(node);
+                scope.isShowTooltip = true;
+            } else {
+                scope.handleLeave();
+            }
+            
             parCtrl.persistSelection();
             hoverService.hoverNodes({ ids: node.id });
         }
 
         function unHoverNodes(nodeIds) {
-            scope.isShowInfo = false;
             hoverService.unhover();
             if (scope.selectedGroup != undefined) hoverNodes(scope.selectedGroup);
         }

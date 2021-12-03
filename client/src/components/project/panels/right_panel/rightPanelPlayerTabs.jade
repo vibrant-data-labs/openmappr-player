@@ -25,13 +25,13 @@
 
 
   .side-menu__footer
-    ul.right-corner
+    ul.right-corner(ng-if="showButtons")
 
       li.right-corner__item
         a(href="mailto:support@openmappr.org" target="_blank")
           span.right-corner__link.right-corner__link_feedback( 
             data-toggle="tooltip" 
-            uib-tooltip="Submit Feedback"
+            uib-tooltip="Email us improve this map"
             tooltip-placement="left"
             tooltip-append-to-body="true")
 

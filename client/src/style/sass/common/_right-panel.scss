@@ -118,6 +118,14 @@
       &.loading {
         opacity: 0;
       }
+
+      &.tag-cloud_2 {
+        width: calc(50% - 4px);
+      }
+
+      &.tag-cloud_3 {
+        width: calc(33% - 4px);
+      }
     }
 
     .cat-item {
@@ -502,7 +510,9 @@
       padding: 0;
       display: flex;
       flex-direction: column;
-
+      border-bottom: 1px solid $panel-border;
+      box-shadow: 0 2px 2px $shadow-color-light;
+      
       &__numeric {
         padding: 10px;
       }
@@ -638,8 +648,6 @@
 
     .header {
       background: $panel-tab-background;
-      border-bottom: 1px solid $panel-border;
-      box-shadow: 0 2px 2px $shadow-color-light;
       position: relative;
       z-index: 2;
 
@@ -676,7 +684,10 @@
         background: $panel-background;
         position: relative;
         z-index: 2;
-        margin-top: -2px;
+
+        &--sized-by {
+          border-bottom: 1px solid $gray-light;
+        }
       }
 
       .colored-legend {
@@ -963,7 +974,6 @@
   display: flex;
   align-items: center;
   position: relative;
-  margin-right: 16px;
 
   &__input {
     display: none;
@@ -1037,12 +1047,19 @@
     transition: width 1s ease;
   }
 
+  &__btn {
+    font: 400 12px/18px "Poppins";
+    color: #BC3364;
+  }
+
   &__btn-box {
     text-align: right;
     padding: 10px 0;
 
     &_active {
-      order: 1;
+      order: -1;
+      text-align: left;
+      margin: -15px 0 0 25px;
     }
   }
 
@@ -1099,7 +1116,7 @@
 }
 .horizontal-bar {
   .panel-item {
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid #fff;
   }
 }
 .panel-item-more {
@@ -1110,11 +1127,25 @@
   }
 }
 
-.panel-item-btn {
-  padding: 10px 0;
-  text-align: right !important;
+.panel-item-actions {
+  padding: 7px 0;
+  font: 400 12px/18px "Poppins";
+  color: #BC3364;
+  position: relative;
+  background: #F5F6F8;
+  border-radius: 4px;
+  margin-top: 8px;
 
   &_active {
     order: 1;
+  }
+
+  &__info {
+    color: #6A707E;
+  }
+
+  &__btn {
+    position: absolute;
+    right: 0;
   }
 }

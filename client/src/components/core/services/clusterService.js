@@ -22,7 +22,6 @@ function ($rootScope, dataGraph, renderGraphfactory) {
 
             return {...acc, [key]: acc[key] ? [...acc[key], node] : [node]}
         }, {})
-        console.log('RESULt', res);
         return res;
     }
 

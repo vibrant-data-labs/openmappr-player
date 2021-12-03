@@ -2,7 +2,7 @@
 	.flex-vert-container.width-100.panel-scroll(style="overflow-x: hidden")
 		//- .header(ng-mouseenter="panelUI.summaryPanelOpen ? showLegendBtns = true : showLegendBtns = false; panelUI.summaryPanelHover = true;" ng-mouseleave="showLegendBtns = false; panelUI.summaryPanelHover = false;" ng-class="{'active': panelUI.summaryPanelOpen}")
 		.header(ng-mouseenter="panelUI.summaryPanelOpen ? showLegendBtns = true : showLegendBtns = false;" ng-mouseleave="showLegendBtns = false;")
-			.row.vert-align.main
+			.row.vert-align.main.main--sized-by
 				.col-xs-12
 					h6.title.text-uppercase.pointable-cursor.vert-align
 							.title-space.width-100
@@ -146,16 +146,19 @@
 											.colz-xs-1
 												//- i.fa.fa-plus(ng-click='selectNodeNeighborByIds(l.bridgers, $event); $event.stopPropagation();', ng-mouseenter='hoverNodeNeighborByIds(l.bridgers, $event); $event.stopPropagation();', ng-mouseleave='hoverNodesByIds([], $event); $event.stopPropagation();')
 						.color-box__btn-box(ng-class="{'color-box__btn-box_active': isShowFullDataGroupVMs}")
-							button.color-box__btn(ng-click="isShowFullDataGroupVMs = !isShowFullDataGroupVMs") Show {{!isShowFullDataGroupVMs ? 'more' : 'less' }}
+							button.color-box__btn(ng-click="isShowFullDataGroupVMs = !isShowFullDataGroupVMs") {{!isShowFullDataGroupVMs ? 'Show more' : '← Less' }}
 						div(ng-if="isShowFullDataGroupVMs")
 							.panel-item.pointable-cursor(ng-repeat="l in dataGroupVMsTail | filter:searchText:false | limitTo: ui.dataGroupsViewCount", ng-class="{'highlighted' : l.highlightOnNodeHover}", uib-tooltip="{{::l.name}}", tooltip-placement="right", tooltip-append-to-body="true")
 								.flex-container.color-box(ng-click='selectNodesByAttrib(l.originalTitle, $event)', ng-mouseenter='hoverNodesByAttrib(l.originalTitle, $event, 0)', ng-mouseleave='unhoverNodes($event)')
 									.legend-icon(ng-style='l.color')
 									span.color-box__line(style="background-color: {{l.colorval + 50}}; width: {{calcLineWidth(l.num)}}%")
+									span.color-box__line(style="background-color: {{l.colorval + 50}}; width: {{calcSelectedLineWidth(l)}}%")
 									div(ng-if="ui.summaryToggleOpen && (l.archetypes.length > 0 || l.bridgers.length > 0)")
 										.legend-line-down.animate-fade(style="border-color: {{l.colorval}}" ng-class="{'only-one':(l.bridgers.length == 0 || l.archetypes.length == 0)}")
 									h6.less-gutter.panel-text {{l.name}}
-									h6.panel-number {{l.num}}
+									h6.panel-number 
+										span(ng-if="totalSelectedValue") {{selectedValues[l.originalTitle] || 0}} /
+										{{l.num}}
 								div.animate-fade(ng-if="ui.summaryToggleOpen")
 									.row.vert-align(ng-show="l.archetypes.length > 0")
 										.col-xs-3
@@ -190,9 +193,9 @@
 					h5 Description
 					.color-box__description(ng-if="getSelectedSnapshot().length")
 						div(ng-bind-html="getSelectedSnapshot()[0]")
-						.color-box__description-btn-wrap
-							button.color-box__description-btn(ng-click="isShowMoreDesc = !isShowMoreDesc", ng-style="{ 'display': isShowMoreDesc ? 'none' : ''}") More
 						.color-box__description-hidden(ng-bind-html="getSelectedSnapshot()[1]", ng-if="isShowMoreDesc")
+						.color-box__description-btn-wrap
+							button.color-box__description-btn(ng-click="isShowMoreDesc = !isShowMoreDesc") {{isShowMoreDesc ? 'Less' : 'More'}}
 					div
 					.pointable-cursor(ng-show="dataGroupVMs.length > ui.dataGroupsViewCount", ng-click='loadMoreDataGroups(); $event.stopPropagation();')
 						.h6

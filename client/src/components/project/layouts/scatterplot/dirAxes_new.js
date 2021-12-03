@@ -13,16 +13,18 @@ function ($rootScope, $q, $compile, $timeout, renderGraphfactory, layoutService,
         //
         '<div id="axes" class="axis-container">'+
             '<div ng-show="yshow" class="yaxis-tit"><div><h4 class="truncate no-text-transform" uib-tooltip="{{mapprSettings.yAxTooltip}}" tooltip-placement="right">' + 
-            '<select class="resizeselect" ng-change="updateYLayout(attr.id)" ng-model="yaxisId">' + 
+            '<select class="resizeselect" ng-if="attrs.length" ng-change="updateYLayout(attr.id)" ng-model="yaxisId">' + 
             '<option ng-repeat="attr in attrs" value="{{attr.id}}" ng-selected="attr.id == yaxisId">{{attr.title}}</option>' +
             '</select>' +
+            '<span ng-if="!attrs.length" class="subtitle">{{getTitle(yaxisId)}}</span>' +
             '</h4></div></div>'+
             '<div ng-show="yshow" class="yaxis-bkgrnd"></div>'+
             '<div ng-show="yshow && mapprSettings.yAxTickShow" class="yaxis"></div>'+
             '<div ng-show="xshow" class="xaxis-tit"><div><h4 class="truncate no-text-transform" uib-tooltip="{{mapprSettings.xAxTooltip}}" tooltip-placement="top">' + 
-            '<select class="resizeselect" ng-change="updateXLayout(attr.id)" ng-model="xaxisId">' + 
+            '<select class="resizeselect" ng-if="attrs.length" ng-change="updateXLayout(attr.id)" ng-model="xaxisId">' + 
             '<option ng-repeat="attr in attrs" value="{{attr.id}}" ng-selected="attr.id == xaxisId">{{attr.title}}</option>' +
-            '</select>' +            
+            '</select>' +   
+            '<span ng-if="!attrs.length" class="subtitle">{{getTitle(xaxisId)}}</span>' +  
             '</h4></div></div>'+
             '<div ng-show="xshow" class="xaxis-bkgrnd"></div>'+
             '<div ng-show="xshow" class="xaxis-container">'+
@@ -79,7 +81,7 @@ function ($rootScope, $q, $compile, $timeout, renderGraphfactory, layoutService,
         scope.xAxisTitle = '';
         scope.yAxisTitle = '';
         scope.attrs = [];
-
+        
         function buildRenderGraph (graphData, layout) {
             return $q(function(resolve, reject){
                 console.log('buildRenderGraph called');
@@ -108,6 +110,11 @@ function ($rootScope, $q, $compile, $timeout, renderGraphfactory, layoutService,
         
         scope.updateXLayout = function(attrId) {
             updateLayout(scope.xaxisId, 'x');
+        }
+
+        scope.getTitle = function(id) {
+            const attr = dataGraph.getNodeAttrs().find(item => item.id === id);
+            return attr.title;
         }
 
         scope.$on(BROADCAST_MESSAGES.sigma.rendered, processAxis);
@@ -210,7 +217,7 @@ function ($rootScope, $q, $compile, $timeout, renderGraphfactory, layoutService,
             scope[axis + 'axisId'] = scope.layout.attr[axis];
             scope.attrs = [];
             _.each(dataGraph.getNodeAttrs(), function(attr) {
-                if(AttrInfoService.isDistrAttr(attr, infoObj.getForId(attr.id)) && attr.isNumeric && attr.visible) {
+                if(AttrInfoService.isDistrAttr(attr, infoObj.getForId(attr.id)) && attr.isNumeric && attr.visible && (attr.axis == 'all' || attr.axis == axis)) {
                     scope.attrs.push(attr);
                 }
             });

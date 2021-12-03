@@ -61,6 +61,7 @@ angular.module('common')
                 scope.catListData = [];
                 scope.colorStr = FilterPanelService.getColorString();
                 scope.selNodesCount = 0;
+                scope.tagGrid = renderCtrl.attrInfo.attr.renderType;
 
                 // prepares the data which is put into scope
                 function draw() {
@@ -226,7 +227,7 @@ angular.module('common')
                         if (subsetData && subsetData.length) {
                             prepareCatListData(scope, { nodes: subsetData });
                         } else {
-                            scope.filteredListData = scope.catListData.data;
+                            scope.filteredListData = $filter('filter')(scope.catListData.data, (item) => item.id )
                         }
                     }
                 });

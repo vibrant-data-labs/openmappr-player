@@ -38,6 +38,7 @@ angular.module('common')
              */
 
             $scope.currentExport = 'all';
+            $scope.showButtons = true;
 
             $scope.exportCurrentImage = function() {
                 var currentExport = $scope.currentExport;
@@ -68,6 +69,10 @@ angular.module('common')
                     document.getElementById("floatingForm").style.display = "block";
                 }
             }
+
+            $scope.$on(BROADCAST_MESSAGES.hss.select, function(ev, data) {
+                $scope.showButtons = data.nodes.length != 1;
+            });
 
             $scope.rightPanelTabs = [
                 {

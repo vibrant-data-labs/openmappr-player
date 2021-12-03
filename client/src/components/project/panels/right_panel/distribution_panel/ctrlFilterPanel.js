@@ -8,7 +8,7 @@ angular.module('common')
     **************************************/
             var logPrefix = '[ctrlFilterPanel: ] ';          
             var groups = {
-                tag: ['tag-cloud'],
+                tag: ['tag-cloud', 'tag-cloud_2', 'tag-cloud_3'],
                 widetag: ['wide-tag-cloud'],
                 charts: ['histogram'],
                 bars: ['horizontal-bars']
@@ -348,10 +348,8 @@ angular.module('common')
                 var layout = layoutService.getCurrentIfExists();
                 if(layout) {
                     $scope.nodeColorStr = FilterPanelService.genColorString(layout.setting('nodeColorAttr'));
-                    console.log(777, $scope.nodeColorStr);
                 } else {
                     $scope.nodeColorStr = FilterPanelService.getColorString();
-                    console.log(777, $scope.nodeColorStr);
                 }
             }
 

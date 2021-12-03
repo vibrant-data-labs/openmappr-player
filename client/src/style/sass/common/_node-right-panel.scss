@@ -1,10 +1,15 @@
 .node-right-panel {
   background: #EBEFF2;
-  padding-top: 64px;
 
   .section {
     border-bottom: 1px solid #E4EAEF;
     background: #fff;
+
+    &--head {
+      position: fixed;
+      top: 0;
+      z-index: 1;
+    }
 
     &:not(:last-child) {
       margin-bottom: 10px;
@@ -20,11 +25,11 @@
       display: flex;
       padding: 20px;
       align-items: center;
-      position: fixed;
-      top: 0;
       width: 345px;
       background: #fff;
       z-index: 100;
+      border-bottom: 1px solid #E4EAEF;
+      margin-bottom: 10px;
 
       + .section__content {
         padding-top: 0;
@@ -92,6 +97,19 @@
 
           &.crunchbase {
             background: deployedUrl('/img/node-right-panel/crunchbase.svg') 50% no-repeat;
+          }
+
+          &.guidestar {
+            transform: scale(1.25);
+            margin-top: -2px;
+          }
+
+          &.youtube {
+            transform: scale(1.4);
+          }
+
+          &.vimeo {
+            transform: scale(1.2);
           }
         }
 
@@ -285,16 +303,24 @@
     .section-info {
       max-width:50%;
 
-      &-wide {
+      &--wide {
         max-width: 100%;
+        flex: 0 0 100%;
       }
     }
+
     .tag-list__item {
       text-overflow: ellipsis;
       overflow: hidden;
       display: inline-block;
       max-width: 100%;
-      margin: 0;
+      margin: 0 5px 0 0;
+      font-size: 13px;
+      line-height: 20px;
+      color: rgb(97, 97, 97);
+      font-family: "Roboto";
+      padding-left: 10px;
+
       .cat-text-container, .cat-text-container > div {
         overflow: hidden;
         max-width: 100%;
@@ -318,20 +344,41 @@
       text-overflow: ellipsis;
       overflow: hidden;
       white-space: nowrap;
+      font-size: 13px;
+      line-height: 20px;
+      color: rgb(97, 97, 97);
+      font-family: "Roboto";
+      padding-left: 11px;
     }
 
     &__label {
-      font: 400 13px/20px 'Poppins';
       color: #BC3364;
-    }
-
-    &__value {
-      font-size: 14px;
-      color: #616161;
+      font: 400 13px/20px 'Poppins';
+      padding: 0;
     }
 
     &__value-wrap {
       padding-left: 10px;
     }
+
+    &__controls {
+      text-align: right;
+    }
+
+    &__more-btn {
+      color: #939698;
+      font-size: 13px;
+      line-height: 20px;
+      font-family: "Roboto";
+    }
   }
+}
+
+.tag-list-wrap {
+  width: 100%;
+  display: block;
+}
+
+.section-wrap {
+  padding-top: 138px;
 }

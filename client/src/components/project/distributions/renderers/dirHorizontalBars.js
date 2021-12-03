@@ -65,7 +65,7 @@ angular.module('common')
                 scope.totalSelectedValue = 0;
                 scope.selectedValues = {};
                 scope.isShowMore = false;
-
+                scope.displayItemsBars = 10;
                 
                 // prepares the data which is put into scope
                 function draw() {
@@ -89,9 +89,10 @@ angular.module('common')
                             setupFilterClasses(catListData, !scope.showFilter);
                             filterTags(cs, catListData);
                             scope.totalValue = catListData.maxValue;
-
-                            scope.catListData = catListData.data.slice(0, 10);
-                            scope.catListDataTail = catListData.data.slice(10);
+                            scope.totalItems = catListData.data.length;
+                            console.log('catListData', catListData);
+                            scope.catListData = catListData.data.slice(0, scope.displayItemsBars);
+                            scope.catListDataTail = catListData.data.slice(scope.displayItemsBars);
 
                             distrData.numShownCats = Math.min(distrData.numShowGroups * ITEMS_TO_SHOW + initVisItemCount, catListData.data.length);
                         }, 1000)
@@ -139,8 +140,8 @@ angular.module('common')
 
                         scope.isLoading = false;
                         scope.disappearAnimation = false;
-                        scope.catListData = _catListData.data.slice(0, 10);
-                        scope.catListDataTail = _catListData.data.slice(10);
+                        scope.catListData = _catListData.data.slice(0, scope.displayItemsBars);
+                        scope.catListDataTail = _catListData.data.slice(scope.displayItemsBars);
                         
                         scope.totalValue = _catListData.maxValue;
                         scope.isShowMore = !scope.catListDataTail.length;
@@ -254,6 +255,9 @@ angular.module('common')
                     selectFilter(catData);
                 };
 
+                scope.toggleShowMore = function() {
+                    scope.isShowMore = !scope.isShowMore;
+                }
                 /// filter stuff
                 function setupFilterClasses(catListData, isfilterDisabled) {
                     var inFilteringMode = filteringCatVals.length > 0;

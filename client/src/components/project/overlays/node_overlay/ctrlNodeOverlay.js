@@ -166,7 +166,9 @@ angular.module('common')
 
             $scope.onTitleLoad = function(number, $event) {
                 var elem = $event.target[0];
-                if (!number.popupText && $(elem).find('.label-text')[0].scrollWidth > elem.clientWidth) {
+                const labelText = $(elem).find('.label-text');
+                if (number.popupText || !labelText.length) return;
+                if (labelText[0].scrollWidth > elem.clientWidth) {
                     number.popupText = number.key;
                 }
             }
@@ -254,9 +256,14 @@ angular.module('common')
 
             $scope.darken = window.mappr.utils.darkenColor;
 
-            $scope.parseLinks = function(text) {
-                text = text.replace(/(http|www)[^\s]+/g, function(match) { return '<a href="' + match + '" target="_blank">' + match + '</a>' });
-                return text;
+            $scope.parseLinks = function(tab) {
+                const { text, value } = tab;
+                
+                if (!text.isExpanded) {
+                    return text.shortValue.replace(/(http|www)[^\s]+/g, function(match) { return '<a href="' + match + '" target="_blank">' + match + '</a>' }) + '...'
+                } else {
+                    return value.replace(/(http|www)[^\s]+/g, function(match) { return '<a href="' + match + '" target="_blank">' + match + '</a>' });
+                }
             }
 
             $scope.$watch(function() {
@@ -656,7 +663,17 @@ angular.module('common')
                     if (mapToSectionFour(attr)) result.section4.push({ key: attr.title ? attr.title : attr.id, value: parseValueToSection4(attr, values[attr.id]) });
                     getSectionTags(attr, values, result);
                 });
+                
+                result.sectionShortTags.map(item => {
+                    if (_.some(item.values, {isTag: true}) && _.some(item.values, {isTag: false})) {
+                        item.isWide = true;
+                        item.values = _.sortBy(item.values, (el) => !el.isTag)
 
+                        if (item.values.length > 5) {
+                            item.isCollapsed = true;
+                        }
+                    }
+                })
 
                 $scope.nodeRightInfo = result;
             }
@@ -740,7 +757,9 @@ angular.module('common')
             function getSectionTags(attr, values, result) {
                 const { attrType, renderType } = attr;
                 const isWide = renderType === 'wide-tag-cloud';
-                if (renderType !== 'tag-cloud' && !isWide) return;
+                const isHorizontalBar = renderType === 'horizontal-bars';
+                const cloudRenderTypes = ['tag-cloud', 'tag-cloud_2', 'tag-cloud_3'];
+                if (!cloudRenderTypes.includes(renderType) && !isWide && !isHorizontalBar) return;
                 var attrInfo = AttrInfoService.getNodeAttrInfoForRG().getForId(attr.id);
                 if (attrType === 'liststring') {
                     if(attrInfo.isSingleton) {
@@ -815,6 +834,10 @@ angular.module('common')
                 if (url.includes('linkedin.com')) return 'https://image.flaticon.com/icons/svg/2111/2111499.svg'
                 if (url.includes('crunchbase.com')) return 'data:image/png;base64,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';
                 if (url.includes('ted.com')) return 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/TED_three_letter_logo.svg/1024px-TED_three_letter_logo.svg.png';
+                if (url.includes('candid.org')) return '#{player_prefix_index_source}/img/candid_icon.jpg';
+                if (url.includes('guidestar.org')) return '#{player_prefix_index_source}/img/guidestar.svg';
+                if (url.includes('youtube.com')) return '#{player_prefix_index_source}/img/youtube.svg';
+                if (url.includes('vimeo.com')) return '#{player_prefix_index_source}/img/vimeo.svg';
                 return 'https://image.flaticon.com/icons/svg/455/455691.svg'
             }
 
@@ -824,6 +847,10 @@ angular.module('common')
                 if (url.includes('linkedin.com')) return 'Linkedin.com';
                 if (url.includes('crunchbase.com')) return 'Crunchbase.com';
                 if (url.includes('ted.com')) return 'Ted.com';
+                if (url.includes('candid.org')) return 'Candid.org';
+                if (url.includes('guidestar.org')) return 'Guidestar.org';
+                if (url.includes('youtube.com')) return 'Youtube.com';
+                if (url.includes('vimeo.com')) return 'Vimeo.com';
                 return 'External Link';
             }
 
@@ -834,6 +861,10 @@ angular.module('common')
                 else if (url.includes('linkedin.com')) result['linkedin'] = true;
                 else if (url.includes('crunchbase.com')) result['crunchbase'] = true;
                 else if (url.includes('ted.com')) result['ted'] = true;
+                else if (url.includes('candid.org')) result['candid'] = true;
+                else if (url.includes('guidestar.org')) result['guidestar'] = true;
+                else if (url.includes('youtube.com')) result['youtube.com'] = true;
+                else if (url.includes('vimeo.com')) result['vimeo'] = true;
                 else result['website'] = true;
 
                 return result;

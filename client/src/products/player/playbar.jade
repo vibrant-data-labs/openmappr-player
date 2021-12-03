@@ -57,13 +57,13 @@
                   dl.filter-section
                     dt.filter-section__label
                       | Search Results  
-                      span(ng-if="operation.searchAttr") &nbsp;({{operation.searchAttr.title}})
+                      span(ng-if="operation.searchAttr") &nbsp;{{operation.searchAttr.title}}
                       | :
 
                     dd.filter-section__content
                       ul.filter-section__list
                         li.filter-section__item
-                          span {{operation.searchText}}            
+                          span "{{operation.searchText}}"    
               .filter-section-wrap(ng-repeat="filter in operations.filterArray(operation)", ng-if="operation.filters")
                 dl.filter-section
                   dt.filter-section__label
