@@ -5,6 +5,15 @@
 .focus-rigth-panel{
     position: fixed;
     z-index: 1000;
+    transition: all 225ms linear;
+    transform: translateX(350px);
+    top: 0;
+    right: 0;
+    height: 100%;
+    
+    &.active {
+        transform: translateX(0);
+    }
 
     .focus-node {
           .circle {
@@ -35,10 +44,9 @@
                 height: 100%;
                 z-index: 999;
                 overflow-y: scroll;
-                box-shadow: 0 2px 21px rgba(#000, .5);
+                box-shadow: 0 0 10px rgba(#000, .08);
 
                 .section {
-                    width: 100%;
                     height: auto;
 
                     .title {

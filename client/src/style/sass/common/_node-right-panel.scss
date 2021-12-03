@@ -6,7 +6,7 @@
     background: #fff;
 
     &--head {
-      position: fixed;
+      position: sticky;
       top: 0;
       z-index: 1;
     }
@@ -377,8 +377,4 @@
 .tag-list-wrap {
   width: 100%;
   display: block;
-}
-
-.section-wrap {
-  padding-top: 138px;
 }

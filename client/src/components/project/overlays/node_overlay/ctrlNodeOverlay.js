@@ -270,7 +270,9 @@ angular.module('common')
                 return $scope.showOverlay;
             }, function() {
                 if (!selectService.singleNode) {
-                    $scope.nodeRightInfo = null;
+                    setTimeout(() => {
+                        $scope.nodeRightInfo = null;
+                    }, 300)
                 }
                 if ($scope.showOverlay) {
                     document.body.classList.add('node-right-panel_opened');
@@ -429,8 +431,9 @@ angular.module('common')
                 else {
                     $rootScope.$broadcast(BROADCAST_MESSAGES.nodeOverlay.removing, { clearSelections: false });
                 }
-
-                $scope.nodeRightInfo = null;
+                setTimeout(() => {
+                    $scope.nodeRightInfo = null;
+                }, 300)
             }
 
             function switchToNeighbor(node, $event) {
