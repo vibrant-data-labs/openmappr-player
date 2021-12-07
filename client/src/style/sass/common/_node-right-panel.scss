@@ -8,7 +8,7 @@
     &--head {
       position: sticky;
       top: 0;
-      z-index: 1;
+      z-index: 100;
     }
 
     &:not(:last-child) {
@@ -23,7 +23,7 @@
 
     &__header  {
       display: flex;
-      padding: 20px;
+      padding: 12px;
       align-items: center;
       width: 345px;
       background: #fff;
@@ -40,6 +40,10 @@
       font: 400 15px/23px 'Poppins';
       color: #BC3364;
       margin: 0;
+
+      &--project {
+        padding: 8px;
+      }
     }
 
     &__icons {
@@ -148,6 +152,8 @@
 
     &__content {
       padding: 10px 20px;
+      display: flex;
+      justify-content: flex-end;
     }
 
     &__info {

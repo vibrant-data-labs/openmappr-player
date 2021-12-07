@@ -1,6 +1,7 @@
 .node-selected {
   display: flex;
   align-items: center;
+  flex: 1;
   
   &__img {
     flex: 0 0 45px;
@@ -17,7 +18,7 @@
 
   &__title {
     font: 500 14px/21px "Poppins";
-    color: #0C0C0C;
+    color: #BC3364;
   }
 
   &__desc {
