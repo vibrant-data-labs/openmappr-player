@@ -6,11 +6,10 @@
 		tooltip-placement="bottom-left", 
 		tooltip-append-to-body="true"
 	)
-	span {{ getStatictext() }}:
-
+	
 	span.sort-options(uib-dropdown dropdown-append-to-body)
 		span(uib-dropdown-toggle auto-close="outsideClick" ng-click="keepDrawerOpen = true;" uib-tooltip="Sort Options", tooltip-placement="right" tooltip-append-to-body="true")
-			span.text-link.text-capitalize {{getSortTypeLabel(sortConfig.sortType)}}
+			span.card__title-full {{ title }}:
 		.uib-dropdown-menu.uib-dropdown-menu-flexing(uib-dropdown-menu, ng-class="{'dropdown-menu-right': alignToRight}")
 			.uib-dropdown-click-close(ng-click="keepDrawerOpen = false;")
 			//- inline style to center dropdowns

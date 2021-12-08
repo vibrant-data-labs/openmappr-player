@@ -976,11 +976,10 @@
   position: relative;
 
   &__input {
-    display: none;
-    width: 100%;
-    border: 2px solid #EBEFF2;
+    width: 0;
+    opacity: 0;
+    border: 1px solid #EBEFF2;
     transition: background-color 0.2s;
-    padding: 3px 30px 4px 8px;
     font: 400 15px/1 "Poppins";
     border-radius: 4px;
     transition: border-color 0.2s;
@@ -990,8 +989,14 @@
       border-color: #ccd6de;
     }    
 
+    &:focus {
+      border-color: #BC3364;
+    }
+
     .node-search--opened & {
-      display: block;
+      padding: 3px 30px 4px 8px;
+      width: 100%;
+      opacity: 1;
     }       
   }
 

@@ -3,11 +3,11 @@
     dir-sort-menu(sort-types="selInfo.sortTypes" sort-config="selInfo.sortInfo" short-view="true")
   .filter-header__right-part
     .node-search(ng-class="{'node-search--opened': showSearch}")
-      button.node-search__btn.node-search__btn--open(ng-click="showSearch = true" uib-tooltip="Search nodes" tooltip-append-to-body="true")
-      input.node-search__input(type="text" ng-model="nodeSearchQuery" ng-model-options="{debounce: 300}" placeholder="search nodes...")
-      button.node-search__btn.node-search__btn--close(ng-click="showSearch = false; nodeSearchQuery = '';")
+      button.node-search__btn.node-search__btn--open(ng-click="handleToggleSearch(true)" uib-tooltip="Search nodes" tooltip-append-to-body="true")
+      input.node-search__input(type="text"  ng-model="value.text" ng-model-options="{debounce: 300}" placeholder="search nodes...")
+      button.node-search__btn.node-search__btn--close(ng-click="handleToggleSearch(false)")
 #info-panel-scroll.panel-scroll.flex-fill.flex-vert-container
-  dir-nodes-list(ng-if="!hasSelection" nodes="selInfo.genericSelNodes", links="selInfo.genericSelLinks" selected-groups="selInfo.selectedGroups", label-attr="selInfo.labelAttr" node-color-attr="selInfo.nodeColorAttr" node-color-attr-title="selInfo.nodeColorAttrTitle" panel-mode="selInfo.panelMode" sort-types="selInfo.sortTypes" sort-info="selInfo.sortInfo" has-selection="hasSelection" search-query="nodeSearchQuery")
-  dir-nodes-list(ng-if="hasSelection" nodes="selInfo.genericSelNodes", links="selInfo.genericSelLinks" selected-groups="selInfo.selectedGroups", label-attr="selInfo.labelAttr" node-color-attr="selInfo.nodeColorAttr" node-color-attr-title="selInfo.nodeColorAttrTitle" panel-mode="selInfo.panelMode" sort-types="selInfo.sortTypes" sort-info="selInfo.sortInfo" has-selection="hasSelection" search-query="nodeSearchQuery")
+  dir-nodes-list(ng-if="!hasSelection" nodes="selInfo.genericSelNodes", links="selInfo.genericSelLinks" selected-groups="selInfo.selectedGroups", label-attr="selInfo.labelAttr" node-color-attr="selInfo.nodeColorAttr" node-color-attr-title="selInfo.nodeColorAttrTitle" panel-mode="selInfo.panelMode" sort-types="selInfo.sortTypes" sort-info="selInfo.sortInfo" has-selection="hasSelection" search-query="value.text")
+  dir-nodes-list(ng-if="hasSelection" nodes="selInfo.genericSelNodes", links="selInfo.genericSelLinks" selected-groups="selInfo.selectedGroups", label-attr="selInfo.labelAttr" node-color-attr="selInfo.nodeColorAttr" node-color-attr-title="selInfo.nodeColorAttrTitle" panel-mode="selInfo.panelMode" sort-types="selInfo.sortTypes" sort-info="selInfo.sortInfo" has-selection="hasSelection" search-query="value.text")
   dir-neighbor-nodes(ng-if="selInfo.panelMode == 'node' " sel-node="selInfo.principalNode" panel-mode="selInfo.panelMode" label-attr="selInfo.labelAttr" sel-nodes="selInfo.genericSelNodes" node-neighbors="selInfo.nodeNeighbors" link-info-attrs="selInfo.linkInfoAttrs")
   dir-node-info-attrs(ng-if="selInfo.panelMode == 'node' && ui.showInfoAttrs " sel-node="selInfo.principalNode" pinned-media="pinnedMedia")
