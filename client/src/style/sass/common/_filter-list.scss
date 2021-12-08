@@ -86,7 +86,14 @@
         .card__search-box {
           visibility: visible;
           display: block;
-          width: 100%;
+          width: 50%;
+          margin-left: auto;
+        }
+
+        .card__search-wrap {
+          .card__search-box { 
+            width: 100%;
+          }
         }
       }
 
@@ -112,7 +119,7 @@
         margin: 0 0 0 9px;
         color: #BC3364;
         font: 500 15px/24px 'Poppins';
-        width: 45%;
+        white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
       }
@@ -183,7 +190,6 @@
         background: #fff;
         visibility: hidden;
         display: none;
-        flex-grow: 1;
 
         &::before {
           position: absolute;
