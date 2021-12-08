@@ -20,7 +20,7 @@
         border-top: 1px solid $panel-border;
         bottom: 2em;
         height: 100px;
-        left: 20px;
+        left: 100px;
         right: 0;
         position: absolute;
         width: 90%;
@@ -41,9 +41,10 @@
     .xaxis-container {
         bottom: 2em;
         height: 100px;
-        left: -190px;
+        left: 100px;
         right: 0;
         position: absolute;
+        overflow: hidden;
 
         // width: 100%;
     }
@@ -52,7 +53,7 @@
         bottom: 100px;
         position: absolute;
         // width: 800px;
-
+        transform: translateX(-290px);
 
         .marker {
             border-right: 1px solid $axis-marker-color;
