@@ -163,6 +163,11 @@ function(BROADCAST_MESSAGES, playerFactory, hoverService, selectService, subsetS
             scope.PanelListInfo = null;
             scope.isShowMoreTextTooltip = false;
             scope.isShowMoreTagsTooltips = false;
+            
+            if (scope.intervalId) {
+                clearInterval(scope.intervalId);
+                scope.$apply();
+            }
         }
 
         scope.isLongText = function(text) {
@@ -202,6 +207,8 @@ function(BROADCAST_MESSAGES, playerFactory, hoverService, selectService, subsetS
             } else {
                 scope.singleNode = null;
             }
+
+            scope.handleLeave();
         })
 
         function getFunctionColor(cluster) {
@@ -210,12 +217,21 @@ function(BROADCAST_MESSAGES, playerFactory, hoverService, selectService, subsetS
 
         scope.debounceHoverNode = _.debounce(hoverNodes, 150);
 
-        function hoverNodes(node) {
+        function hoverNodes(node, event) {
             const selectedNode = scope.singleNode;
 
             if (!selectedNode || selectedNode.id !== node.id) {
                 setPanelInfo(node);
                 scope.isShowTooltip = true;
+                scope.intervalId = setInterval(() => {
+                    try {
+                        if (!$('.panel-list-info').is(':hover') && !$('.nodes-list').is(':hover')) {
+                            scope.handleLeave();
+                        }
+                    } catch (e) {
+                        scope.handleLeave();
+                    }
+                }, 1000);
             } else {
                 scope.handleLeave();
             }

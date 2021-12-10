@@ -986,6 +986,7 @@
     font: 400 15px/1 "Poppins";
     border-radius: 4px;
     transition: border-color 0.2s;
+    background: #fff deployedUrl('/img/filter-panel/search.svg') 12px 50% no-repeat;
     text-indent: 20px;
     
     &:hover {
@@ -993,11 +994,13 @@
     }    
 
     &:focus {
-      border-color: #BC3364;
+      border-color: rgba(#BA3665, .5);
+      background-image: deployedUrl('/img/filter-panel/search-purple.svg');
+      color:#000;
     }
 
     .node-search--opened & {
-      padding: 3px 30px 4px 8px;
+      padding: 3px 30px 4px 10px;
       width: 100%;
       opacity: 1;
     }       
@@ -1015,7 +1018,7 @@
 
     &--open {
       .node-search--opened & {
-        margin-right: -28px;
+        display: none;
       }
     }
     
@@ -1162,4 +1165,12 @@
     position: absolute;
     right: 0;
   }
+}
+
+.nodes-list h6 {
+  font-weight: 300 !important;
+  margin-top: 5px !important;
+  margin-bottom: 5px !important;
+  margin-left: -28px !important;
+  height: 17px;
 }

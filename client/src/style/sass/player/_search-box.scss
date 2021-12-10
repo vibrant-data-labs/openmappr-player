@@ -12,20 +12,6 @@
 
     .search-input {
       width: 100%;
-
-      &:before {
-        content: '';
-        display: block;
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 38px;
-        height: 38px;
-        background: deployedUrl('/img/filter-panel/search.svg') no-repeat;
-        background-size: 16px;
-        background-position: center;
-        opacity: .6;
-      }
     }
   }
 
@@ -41,9 +27,16 @@
     border: 1px solid $gray-light;
     border-right: none;
     font: 400 15px/1 "Poppins";
+    background: #fff deployedUrl('/img/filter-panel/search.svg') 12px 50% no-repeat;
 
     &::placeholder {
       color: #AEAEAE;
+    }
+
+    &:focus {
+      border-color: rgba(#BA3665, .5);
+      color: #000;
+      background-image: deployedUrl('/img/filter-panel/search-purple.svg');
     }
   }
 
