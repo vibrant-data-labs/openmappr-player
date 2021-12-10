@@ -63,9 +63,7 @@
           width: 16px;
 
           &.facebook,
-          &.linkedin,
           &.email,
-          &.crunchbase,
           &.website {
             opacity: .7;
             transition: opacity .2s;
@@ -83,25 +81,12 @@
             background: deployedUrl('/img/node-right-panel/facebook.svg') 50% no-repeat;
           }
 
-          &.linkedin {
-            background: deployedUrl('/img/node-right-panel/linkedin.svg') 50% no-repeat;
-          }
-
           &.website {
             background: deployedUrl('/img/node-right-panel/website.svg') 50% no-repeat;
           }
 
           &.email {
             background: deployedUrl('/img/node-right-panel/mail.svg') 50% no-repeat;
-          }
-
-          &.crunchbase {
-            background: deployedUrl('/img/node-right-panel/crunchbase.svg') 50% no-repeat;
-          }
-
-          &.guidestar {
-            transform: scale(1.25);
-            margin-top: -2px;
           }
 
           &.youtube {
