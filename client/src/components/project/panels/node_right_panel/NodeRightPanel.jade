@@ -7,16 +7,6 @@ button.right-panel-btn(ng-click="toggleRightPanel()", ng-class="{'right-panel-bt
           div.section-wrap(ng-if="nodeRightInfo")
             section.section.section--head(ng-if="nodeRightInfo.section1.length")
               .section__header
-                h3.section__title Selected Node
-                .section__icons.icons
-                  .section__icons-icon(ng-repeat="link in nodeRightInfo.section1" ng-if="link.type == 'link'")
-                    a(href="{{link.value}}" target="_blank" uib-tooltip="Go to {{link.tooltip}}" tooltip-placement="left" tooltip-append-to-body="true" ng-class="link.class")
-                      img(alt="{{link.value}}" ng-src="{{link.icon}}")
-                  .section__icons-icon(ng-repeat="email in nodeRightInfo.section1" ng-if="email.type == 'email'")
-                    a(href="mailto:{{email.value}}" target="_blank" uib-tooltip="{{email.tooltip}}" tooltip-placement="left" tooltip-append-to-body="true" ng-class="email.class")
-                      img(alt="{{email.value}}" ng-src="{{email.icon}}")                    
-
-              .section__content
                 .nameContainer.node-selected(ng-repeat="info in nodeRightInfo.section1" ng-if="info.type == 'name'")
                   .node-selected__img(
                     ng-style="getImgStyle(info)"
@@ -24,6 +14,14 @@ button.right-panel-btn(ng-click="toggleRightPanel()", ng-class="{'right-panel-bt
                   .node-selected__info
                     h6.node-selected__title {{info.name}}
                     .node-selected__desc {{info.description}}
+              .section__content
+                .section__icons.icons
+                  .section__icons-icon(ng-repeat="link in nodeRightInfo.section1" ng-if="link.type == 'link'")
+                    a(href="{{link.value}}" target="_blank" uib-tooltip="Go to {{link.tooltip}}" tooltip-placement="left" tooltip-append-to-body="true" ng-class="link.class")
+                      img(alt="{{link.value}}" ng-src="{{link.icon}}")
+                  .section__icons-icon(ng-repeat="email in nodeRightInfo.section1" ng-if="email.type == 'email'")
+                    a(href="mailto:{{email.value}}" target="_blank" uib-tooltip="{{email.tooltip}}" tooltip-placement="left" tooltip-append-to-body="true" ng-class="email.class")
+                      img(alt="{{email.value}}" ng-src="{{email.icon}}")     
 
             section.section.section_tabs(ng-if="nodeRightInfo.section2.length", dir-elem-ready="onSection2Load(null, $event)")
               .tabContainer
@@ -190,7 +188,7 @@ button.right-panel-btn(ng-click="toggleRightPanel()", ng-class="{'right-panel-bt
                               p {{link.description}}            
           .project-info(ng-if="!nodeRightInfo")
             .section__header
-              h3.section__title {{projectInfoName}}
+              h3.section__title.section__title--project {{projectInfoName}}
             .project-info__content
               div(ng-bind-html="projectInfoTitle | trustHtml")
               div(ng-bind-html="projectInfoDesc | trustHtml")

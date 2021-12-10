@@ -484,7 +484,6 @@ angular.module('common')
             }
 
             function finishAnimation() {
-                var prevShowOverlay = $scope.showOverlay;
                 $scope.showOverlay = true;
                 $scope.showNeighborNode = false;
                 $scope.hideContent = false;
@@ -511,13 +510,6 @@ angular.module('common')
                             borderColor: ''
                         });
                     });
-
-                    if (!prevShowOverlay) {
-                        var container = document.querySelector('.section__icons');
-                        if (container) {
-                            container.parentElement.scrollIntoView();
-                        }
-                    }
                 });
 
                 if($scope.focusNode.id && $scope.focusNode.dataPointId) {
