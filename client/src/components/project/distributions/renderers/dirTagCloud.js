@@ -19,8 +19,6 @@ angular.module('common')
     ************ Local Data **************
     **************************************/
             var dirPrefix = '[dirTagCloud] ';
-            var ITEMS_TO_SHOW = 20;
-            var ITEMS_TO_SHOW_INITIALLY = 20;
             var totalNodes = 0;
 
 
@@ -33,10 +31,26 @@ angular.module('common')
     ******** Post Link Function *********
     **************************************/
             function postLinkFn(scope, element, attrs, renderCtrl) {
+                scope.tagGrid = renderCtrl.attrInfo.attr.renderType;
+                switch (scope.tagGrid) {
+                    case 'tag-cloud_2':
+                        scope.ITEMS_TO_SHOW = 16,
+                        scope.ITEMS_TO_SHOW_INITIALLY = 16
+                        break;
+                    case 'tag-cloud_3':
+                        scope.ITEMS_TO_SHOW = 15,
+                        scope.ITEMS_TO_SHOW_INITIALLY = 15
+                        break;
+                    default:
+                        scope.ITEMS_TO_SHOW = 20,
+                        scope.ITEMS_TO_SHOW_INITIALLY = 20
+                        break;
+                }
+
                 var attrId = scope.attrToRender.id;
                 var filteringCatVals = [];
                 var isCompareView = renderCtrl.isCompareView();
-                var initVisItemCount = isCompareView ? 20 : ITEMS_TO_SHOW_INITIALLY;
+                var initVisItemCount = isCompareView ? 20 : scope.ITEMS_TO_SHOW_INITIALLY;
                 var sortOrder = scope.attrToRender.sortOps.sortOrder;
                 var sortType = scope.attrToRender.sortOps.sortType;
 
@@ -54,15 +68,15 @@ angular.module('common')
 
                         return distrData.numShownCats - distrData.step + 1;
                     },
-                    step: ITEMS_TO_SHOW
+                    step: scope.ITEMS_TO_SHOW
                 };
+
                 scope.attrId = attrId;
                 scope.distrData = distrData;
                 scope.catListData = [];
                 scope.colorStr = FilterPanelService.getColorString();
                 scope.selNodesCount = 0;
-                scope.tagGrid = renderCtrl.attrInfo.attr.renderType;
-
+                
                 // prepares the data which is put into scope
                 function draw() {
                     var nodes = dataGraph.getRenderableGraph().graph.nodes,
@@ -85,7 +99,7 @@ angular.module('common')
                     filterTags(cs, catListData);
                     // moveSelectedItemsToTop(cs, catListData, distrData.numShowGroups * initVisItemCount);
                     scope.catListData = catListData;
-                    distrData.numShownCats = Math.min(distrData.numShowGroups * ITEMS_TO_SHOW + initVisItemCount, catListData.data.length);
+                    distrData.numShownCats = Math.min(distrData.numShowGroups * scope.ITEMS_TO_SHOW + initVisItemCount, catListData.data.length);
                 }
 
                 try {
@@ -163,7 +177,7 @@ angular.module('common')
                     filteringCatVals = _.uniq(_.map(data.nodes, function (node) {
                         return node.attr[scope.attrToRender.id];
                     }));
-                    scope.catListData = (new Array(ITEMS_TO_SHOW)).map((r, i) => ({ id: i}));
+                    scope.catListData = (new Array(scope.ITEMS_TO_SHOW)).map((r, i) => ({ id: i}));
                     var _catListData = genTagListData(data.nodes,
                         AttrInfoService.getNodeAttrInfoForRG().getForId(scope.attrToRender.id), filteringCatVals, FilterPanelService.getColorString(), genValColorMap(scope.attrToRender.id, data.nodes), sortType, sortOrder);
                     scope.filteredListData = filterTags(data.nodes, _catListData);
@@ -182,7 +196,7 @@ angular.module('common')
                     setupFilterClasses(_catListData, false);
                     scope.selNodesCount = data.nodes.length;
 
-                    distrData.numShownCats = Math.min(distrData.numShowGroups * ITEMS_TO_SHOW + initVisItemCount, _catListData.data.length);
+                    distrData.numShownCats = Math.min(distrData.numShowGroups * scope.ITEMS_TO_SHOW + initVisItemCount, _catListData.data.length);
                     //scope.$apply();
 
                     scope.isLoading = false;
@@ -221,7 +235,7 @@ angular.module('common')
                     if (newVal) {
                         scope.filteredListData = $filter('filter')(scope.catListData.data, {text: newVal});
                         distrData.numShowGroups = 0;
-                        distrData.numShownCats = Math.min(distrData.numShowGroups * ITEMS_TO_SHOW + initVisItemCount, scope.filteredListData.length);
+                        distrData.numShownCats = Math.min(distrData.numShowGroups * scope.ITEMS_TO_SHOW + initVisItemCount, scope.filteredListData.length);
                     } else {
                         var subsetData = subsetService.subsetNodes;
                         if (subsetData && subsetData.length) {
@@ -250,22 +264,22 @@ angular.module('common')
 
                 scope.showLastPage = function() {
                     distrData.numShowGroups = Math.floor(scope.filteredListData.length / distrData.step);
-                    distrData.numShownCats = Math.min(distrData.numShowGroups * ITEMS_TO_SHOW + initVisItemCount, scope.filteredListData.length);
+                    distrData.numShownCats = Math.min(distrData.numShowGroups * scope.ITEMS_TO_SHOW + initVisItemCount, scope.filteredListData.length);
                 };
 
                 scope.showMore = function () {
                     distrData.numShowGroups++;
-                    distrData.numShownCats = Math.min(distrData.numShowGroups * ITEMS_TO_SHOW + initVisItemCount, scope.filteredListData.length);
+                    distrData.numShownCats = Math.min(distrData.numShowGroups * scope.ITEMS_TO_SHOW + initVisItemCount, scope.filteredListData.length);
                 };
                 scope.showLess = function () {
                     distrData.numShowGroups--;
                     distrData.numShowGroups = distrData.numShowGroups < 0 ? 0 : distrData.numShowGroups;
-                    distrData.numShownCats = Math.min(distrData.numShowGroups * ITEMS_TO_SHOW + initVisItemCount, scope.filteredListData.length);
+                    distrData.numShownCats = Math.min(distrData.numShowGroups * scope.ITEMS_TO_SHOW + initVisItemCount, scope.filteredListData.length);
                 };
 
                 scope.showFirstPage = function() {
                     distrData.numShowGroups = 0;
-                    distrData.numShownCats = Math.min(distrData.numShowGroups * ITEMS_TO_SHOW + initVisItemCount, scope.filteredListData.length);
+                    distrData.numShownCats = Math.min(distrData.numShowGroups * scope.ITEMS_TO_SHOW + initVisItemCount, scope.filteredListData.length);
                 };
 
                 // mousr stuff
