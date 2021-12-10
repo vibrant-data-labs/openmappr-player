@@ -173,6 +173,13 @@ angular.module('common')
                 }
             }
 
+            $scope.isFullWidth = function(index) {
+                const section = $scope.nodeRightInfo.sectionShortTags;
+                const nextIndex = index + 1;
+                const nextIsWide = !section[nextIndex] || section[nextIndex].isWide;
+                return index % 2 == 0 && nextIsWide;
+            }
+
             $scope.onTabLoad = function(tab, $event) {
                 var elem = $($event.target[0]).find('span')[0];
                 if (elem.scrollWidth > elem.clientWidth) {

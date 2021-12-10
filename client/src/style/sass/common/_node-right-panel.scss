@@ -1,6 +1,14 @@
 .node-right-panel {
   background: #EBEFF2;
 
+  #tedtags {
+    width: 100%;
+
+    .tag-list__item {
+      max-width: 100%;
+    }
+  }
+
   .section {
     border-bottom: 1px solid #E4EAEF;
     background: #fff;
@@ -328,6 +336,11 @@
 
     &:nth-child(odd) {
       padding-right: 5px;
+    }
+
+    &.full-width {
+      max-width: 100%;
+      flex-basis: 100%;
     }
 
     &__label,
