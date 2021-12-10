@@ -113,77 +113,8 @@
 			.panel-scroll(ng-if="!ui.showingLinks && mapprSettings.nodeColorStrat != 'select' && mapprSettings.nodeColorStrat != 'fixed'", dir-kill-tooltip-on-scroll)
 				.panel-list(ng-if="!isNodeColorNumeric" ng-class="{'highlighted': ui.highlightingNodes}")
 					.flex
-						.panel-item.pointable-cursor(ng-repeat="l in dataGroupVMs | filter:searchText:false | limitTo: ui.dataGroupsViewCount", ng-class="{'highlighted' : l.highlightOnNodeHover}", uib-tooltip="{{::l.name}}", tooltip-placement="right", tooltip-append-to-body="true")
-							.flex-container.color-box(ng-click='selectNodesByAttrib(l.originalTitle, $event)', ng-mouseenter='hoverNodesByAttrib(l.originalTitle, $event, 0)', ng-mouseleave='unhoverNodes($event)')
-								.legend-icon(ng-style='l.color')
-								span.color-box__line(style="background-color: {{l.colorval + 50}}; width: {{calcLineWidth(l.num)}}%")
-								span.color-box__line(style="background-color: {{l.colorval + 50}}; width: {{calcSelectedLineWidth(l)}}%")
-								div(ng-if="ui.summaryToggleOpen && (l.archetypes.length > 0 || l.bridgers.length > 0)")
-									.legend-line-down.animate-fade(style="border-color: {{l.colorval}}" ng-class="{'only-one':(l.bridgers.length == 0 || l.archetypes.length == 0)}")
-								h6.less-gutter.panel-text {{l.name}}
-								h6.panel-number 
-									span(ng-if="totalSelectedValue") {{selectedValues[l.originalTitle] || 0}} /
-									{{l.num}}
-							div.animate-fade(ng-if="ui.summaryToggleOpen")
-								.row.vert-align(ng-show="l.archetypes.length > 0")
-									.col-xs-3
-										.legend-line-across(style="border-color: {{l.colorval}}")
-									.col-xs-9
-										.row.vert-align.less-gutter(ng-click='selectNodesByIds(l.archetypes, $event); $event.stopPropagation();', ng-mouseenter='hoverNodesByIds(l.archetypes, $event); $event.stopPropagation();', ng-mouseleave='hoverNodesByIds([], $event); $event.stopPropagation();')
-											.col-xs-3.less-gutter.text-center
-												i.fa.fa-1-3x.fa-bullseye(ng-style='l.color')
-											.col-xs-9
-												.h6.less-gutter {{l.archetypes.length}} Archetypes
-								.row.vert-align(ng-show="l.bridgers.length > 0")
-									.col-xs-3
-										.legend-line-across(style="border-color: {{l.colorval}}")
-									.col-xs-9
-										.row.vert-align.less-gutter(ng-href="", ng-click='selectNodesByIds(l.bridgers, $event); $event.stopPropagation();', ng-mouseenter='hoverNodesByIds(l.bridgers, $event); $event.stopPropagation();', ng-mouseleave='hoverNodesByIds([], $event); $event.stopPropagation();')
-											.col-xs-3.less-gutter.text-center
-												i.icon-bridger(ng-style='l.color')
-											.col-xs-4
-												.h6.less-gutter {{l.bridgers.length}} Bridgers
-											.colz-xs-1
-												//- i.fa.fa-plus(ng-click='selectNodeNeighborByIds(l.bridgers, $event); $event.stopPropagation();', ng-mouseenter='hoverNodeNeighborByIds(l.bridgers, $event); $event.stopPropagation();', ng-mouseleave='hoverNodesByIds([], $event); $event.stopPropagation();')
-						.color-box__btn-box(ng-class="{'color-box__btn-box_active': isShowFullDataGroupVMs}")
-							button.color-box__btn(ng-click="isShowFullDataGroupVMs = !isShowFullDataGroupVMs") {{!isShowFullDataGroupVMs ? 'Show more' : '← Less' }}
-						div(ng-if="isShowFullDataGroupVMs")
-							.panel-item.pointable-cursor(ng-repeat="l in dataGroupVMsTail | filter:searchText:false | limitTo: ui.dataGroupsViewCount", ng-class="{'highlighted' : l.highlightOnNodeHover}", uib-tooltip="{{::l.name}}", tooltip-placement="right", tooltip-append-to-body="true")
-								.flex-container.color-box(ng-click='selectNodesByAttrib(l.originalTitle, $event)', ng-mouseenter='hoverNodesByAttrib(l.originalTitle, $event, 0)', ng-mouseleave='unhoverNodes($event)')
-									.legend-icon(ng-style='l.color')
-									span.color-box__line(style="background-color: {{l.colorval + 50}}; width: {{calcLineWidth(l.num)}}%")
-									span.color-box__line(style="background-color: {{l.colorval + 50}}; width: {{calcSelectedLineWidth(l)}}%")
-									div(ng-if="ui.summaryToggleOpen && (l.archetypes.length > 0 || l.bridgers.length > 0)")
-										.legend-line-down.animate-fade(style="border-color: {{l.colorval}}" ng-class="{'only-one':(l.bridgers.length == 0 || l.archetypes.length == 0)}")
-									h6.less-gutter.panel-text {{l.name}}
-									h6.panel-number 
-										span(ng-if="totalSelectedValue") {{selectedValues[l.originalTitle] || 0}} /
-										{{l.num}}
-								div.animate-fade(ng-if="ui.summaryToggleOpen")
-									.row.vert-align(ng-show="l.archetypes.length > 0")
-										.col-xs-3
-											.legend-line-across(style="border-color: {{l.colorval}}")
-										.col-xs-9
-											.row.vert-align.less-gutter(ng-click='selectNodesByIds(l.archetypes, $event); $event.stopPropagation();', ng-mouseenter='hoverNodesByIds(l.archetypes, $event); $event.stopPropagation();', ng-mouseleave='hoverNodesByIds([], $event); $event.stopPropagation();')
-												.col-xs-3.less-gutter.text-center
-													i.fa.fa-1-3x.fa-bullseye(ng-style='l.color')
-												.col-xs-9
-													.h6.less-gutter {{l.archetypes.length}} Archetypes
-									.row.vert-align(ng-show="l.bridgers.length > 0")
-										.col-xs-3
-											.legend-line-across(style="border-color: {{l.colorval}}")
-										.col-xs-9
-											.row.vert-align.less-gutter(ng-href="", ng-click='selectNodesByIds(l.bridgers, $event); $event.stopPropagation();', ng-mouseenter='hoverNodesByIds(l.bridgers, $event); $event.stopPropagation();', ng-mouseleave='hoverNodesByIds([], $event); $event.stopPropagation();')
-												.col-xs-3.less-gutter.text-center
-													i.icon-bridger(ng-style='l.color')
-												.col-xs-4
-													.h6.less-gutter {{l.bridgers.length}} Bridgers
-												.colz-xs-1
-												//- i.fa.fa-plus(ng-click='selectNodeNeighborByIds(l.bridgers, $event); $event.stopPropagation();', ng-mouseenter='hoverNodeNeighborByIds(l.bridgers, $event); $event.stopPropagation();', ng-mouseleave='hoverNodesByIds([], $event); $event.stopPropagation();')
-				
-						//- .row.pointable-cursor(ng-if='$last', ng-click='ui.showAllNodes = false; $event.stopPropagation();' ng-show='ui.showAllNodes')
-						//- 	.col-xs-12
-						//- 		em.text-right less&hellip;
+						dir-attr-renderer(attr-to-render="dataGroupsInfo.colorNodesBy", node-color-str="nodeColorStr", is-node="true", show-filter="true", disable-filter="false" theme="appUi.theme" pinned-media="pinnedMedia" gradient="true")
+
 				.panel-list(ng-if="isNodeColorNumeric && isNumericItemByColor")
 					.panel-list__numeric(ng-repeat="item in [isNumericItemByColor]")
 						dir-attr-renderer(attr-to-render="item", node-color-str="nodeColorStr", is-node="true", show-filter="true", disable-filter="false" theme="appUi.theme" pinned-media="pinnedMedia" gradient="true")

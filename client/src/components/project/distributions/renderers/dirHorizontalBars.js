@@ -232,12 +232,20 @@ angular.module('common')
                 scope.getTooltipInfo = function(catData) {
                     var subsetLength = subsetService.currentSubset().length;
                     
+                    var total = 0;
                     if (subsetLength) {
                         var currentFreq = subsetLength > 0 ? catData.selTagFreq : catData.globalTagFreq;
-                        return currentFreq;
+                        total = currentFreq;
                     } else {
-                        return catData.globalTagFreq;
+                        total = catData.globalTagFreq;
                     }
+
+                    const selectedVals = scope.selectedValues[catData.id];
+                    if (scope.totalSelectedValue) {
+                        return (selectedVals || 0) + ' / ' + total;
+                    }
+
+                    return total;
                 }
 
                 scope.overCat = function (catData, event) {
