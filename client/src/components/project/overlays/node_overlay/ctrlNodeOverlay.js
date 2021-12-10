@@ -850,7 +850,18 @@ angular.module('common')
                 if (url.includes('guidestar.org')) return 'Guidestar.org';
                 if (url.includes('youtube.com')) return 'Youtube.com';
                 if (url.includes('vimeo.com')) return 'Vimeo.com';
-                return 'External Link';
+                
+                if (!url.startsWith('http')) {
+                    url = 'https://' + url;
+                }
+
+                try {
+                    const urlData = new URL(url);
+                    return urlData.hostname || 'External Link';
+                }
+                catch (e) {
+                    return 'External Link';
+                }
             }
 
             function getLinkClass(url) {
