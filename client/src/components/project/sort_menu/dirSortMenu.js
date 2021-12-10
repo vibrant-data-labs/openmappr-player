@@ -5,7 +5,8 @@
 
 // Sort orders are common => ascending & descending
 angular.module('common')
-.directive('dirSortMenu', ['AttrInfoService', function(AttrInfoService) {
+.directive('dirSortMenu', ['AttrInfoService', 'snapshotService', 'BROADCAST_MESSAGES', 
+function(AttrInfoService, snapshotService, BROADCAST_MESSAGES) {
     'use strict';
 
     /*************************************
@@ -60,7 +61,8 @@ angular.module('common')
 
         scope.sortOrders = sortOrders;
         scope.staticText = staticText;
-
+        scope.title = snapshotService.getCurrentSnapshot().snapName;
+        
         scope.$watch('sortConfig.sortType', function() {
             if (!scope.sortConfig) return;
             var attrInfo = AttrInfoService.getNodeAttrInfoForRG().getForId(scope.sortConfig.sortType);
@@ -103,7 +105,11 @@ angular.module('common')
 
         scope.getStatictext = function getStatictext() {
             return scope.shortView ? scope.staticText.short : scope.staticText.standart;
-        }        
+        }
+        
+        scope.$on(BROADCAST_MESSAGES.snapshot.changed, function(event, data) {
+            scope.title = data.snapshot.snapName;
+        });
     }
 
 

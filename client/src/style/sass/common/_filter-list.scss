@@ -383,4 +383,13 @@
       padding: 0;
     }
   }
+
+  &__title-full {
+    color: #BC3364;
+    font: 500 15px/24px "Poppins";
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-flex;
+    cursor: pointer;
+  }
 }

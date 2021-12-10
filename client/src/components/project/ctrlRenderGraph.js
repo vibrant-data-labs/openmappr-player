@@ -169,6 +169,9 @@ angular.module('common')
                 }
             };
 
+            $scope.value = {
+                text: ''
+            };
             /**
     * Scope methods
     */
@@ -340,6 +343,17 @@ angular.module('common')
             $scope.collapseBreadcrumbs = function() {
                 $scope.isShowBreadcrumbs = !$scope.isShowBreadcrumbs;
             }
+
+            $scope.handleToggleSearch = function(bool) {
+                if (bool) {
+                    const input = document.querySelector('.node-search__input');
+                    input.focus();
+                } else {
+                    $scope.value.text = "";
+                }
+                $scope.showSearch = bool;
+            }
+
 
             $scope.$on(BROADCAST_MESSAGES.hss.select, function (e, data) {
 
