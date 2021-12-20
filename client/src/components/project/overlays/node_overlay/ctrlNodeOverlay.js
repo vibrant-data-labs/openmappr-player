@@ -227,6 +227,7 @@ angular.module('common')
             }
 
             $scope.onHover = function(link) {
+                console.log('LINL@', link);
                 $scope.hoverTimeout.then(function() {
                     hoverService.hoverNodes({ ids: [link.nodeId], force: true});
                 });

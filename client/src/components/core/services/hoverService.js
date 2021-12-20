@@ -276,7 +276,7 @@ angular.module('common')
                                 });
                             });
                         }
-
+                        console.log('DEGREE', degree);
                         if (degree > 0) {
                             var neighborsFirstLevel = graph[neighbourFn](node.id);
                             drawNeighbors(neighborsFirstLevel);
