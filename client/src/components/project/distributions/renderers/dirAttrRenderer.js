@@ -234,6 +234,13 @@ angular.module('common')
                         });
                     }
                 });
+                
+                scope.$on(BROADCAST_MESSAGES.snapshot.changed, function(event, data) {
+                    $timeout(function() {
+                        scope.renderer.renderTemplate = getRenderTemplate(scope.attrToRender, scope.isSized);
+                        scope.shouldRender = true;
+                    });
+                });
 
                 function setupScope (attrId) {
                     var cs;
