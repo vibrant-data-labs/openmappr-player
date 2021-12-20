@@ -79,8 +79,9 @@ angular.module('common')
                     });
                 }
 
+                var isShowNeighbors = hoverData.hasOwnProperty('showNeighbors') ? hoverData.showNeighbors : true;
                 var snapshot = snapshotService.getCurrentSnapshot();
-                _hoverHelper(this.hoveredNodes, snapshot ? (snapshot.layout.settings.nodeSelectionDegree || 0) : 0, hoverData.withNeighbors);
+                _hoverHelper(this.hoveredNodes, snapshot ? (snapshot.layout.settings.nodeSelectionDegree || 0) : 0, hoverData.withNeighbors, isShowNeighbors);
             }
 
             function filter(data, subset) {
@@ -153,14 +154,14 @@ angular.module('common')
                 _hoverHelper(this.hoveredNodes, snapshot ? (snapshot.layout.settings.nodeSelectionDegree || 0) : 0, !!selectService.singleNode);
             }
 
-            function _hoverHelper(ids, degree, withNeighbors) {
+            function _hoverHelper(ids, degree, withNeighbors, showNeighbors = true) {
                 if (deferAction) {
                     $timeout.cancel(deferAction);
                 }
 
                 deferAction = $timeout(function () {
                     degree = degree || 0;
-                    hoverByIds(ids, degree, false, withNeighbors);
+                    hoverByIds(ids, degree, false, withNeighbors, showNeighbors);
                 }, 100);
             }
 
@@ -169,7 +170,7 @@ angular.module('common')
             * @param  {[type]} nodeIds [nodeIds, agregations not allowed]
             * @return {[type]}         [description]
             */
-            function hoverByIds(nodeIds, degree, hoveredFromGraph, withNeighbors) {
+            function hoverByIds(nodeIds, degree, hoveredFromGraph, withNeighbors, showNeighbors) {
                 // Make sure the ids exist in the dataGraph
                 var rd = dataGraph.getRawDataUnsafe();
                 if (!_.isArray(nodeIds) || !_.isObject(nodeIds))
@@ -181,12 +182,12 @@ angular.module('common')
                         if (!rd.hasNode(n))
                             console.warn('Node Id: %i does not exist in the node', n.id);
                     });
-                    return _hoverNodes(nodeIds, degree, hoveredFromGraph, withNeighbors);
+                    return _hoverNodes(nodeIds, degree, hoveredFromGraph, withNeighbors, showNeighbors);
                 }
             }
 
             // These nodes are shown on screen. Aggr allowed
-            function _hoverNodes(nodes, degree, hoveredFromGraph, withNeighbors) {
+            function _hoverNodes(nodes, degree, hoveredFromGraph, withNeighbors, showNeighbors) {
                 hoverHandler('overNodes', {
                     data: {
                         nodes: nodes,
@@ -194,11 +195,11 @@ angular.module('common')
                         graphHover: hoveredFromGraph != null ? hoveredFromGraph : true,
                         withNeighbors: withNeighbors
                     }
-                }, inputMgmtService.inputMapping().hoverNode, degree);
+                }, inputMgmtService.inputMapping().hoverNode, degree, showNeighbors);
             }
 
             // clears current hovers, and sets the event.data.nodes to hover state
-            function hoverHandler(eventName, event, inputMap, degree) {
+            function hoverHandler(eventName, event, inputMap, degree, showNeighbors) {
                 var nodes;
                 var hoverTiggeredFromGraph = _.isObject(event.data) && event.data.graphHover != null ? event.data.graphHover : true;
                 if (event.data.allNodes != undefined) {
@@ -209,10 +210,10 @@ angular.module('common')
                 }
                 // console.log("[hoverService] hoverHandler hovering over " + nodes.length + " nodes");
 
-                draw(nodes, event.data.withNeighbors, degree);
+                draw(nodes, event.data.withNeighbors, degree, showNeighbors);
             }
 
-            function draw(nodeIds, withNeighbors, degree) {
+            function draw(nodeIds, withNeighbors, degree, showNeighbors) {
                 var selectedNodes = selectService.selectedNodes;
                 var subsetNodes = subsetService.subsetNodes;
                 var sigRender = renderGraphfactory.getRenderer();
@@ -276,11 +277,14 @@ angular.module('common')
                                 });
                             });
                         }
-                        console.log('DEGREE', degree);
+
                         if (degree > 0) {
                             var neighborsFirstLevel = graph[neighbourFn](node.id);
-                            drawNeighbors(neighborsFirstLevel);
-
+                            
+                            if (showNeighbors) {
+                                drawNeighbors(neighborsFirstLevel);
+                            }
+                            
                             if (degree > 1) {
                                 _.forEach(_.keys(neighborsFirstLevel), function (firstLevelNeighborId) {
                                     var neighborsSecondLevel = graph[neighbourFn](firstLevelNeighborId);
