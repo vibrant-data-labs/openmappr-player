@@ -18,6 +18,7 @@ angular.module('common')
 
                 // Values passed to scope will serve as RENDER OPTIONS for child render directives
                 scope: {
+                    renderToType: '=',
                     attrToRender: '=', // attribute value(s), name only if plotting global distribution
                     nodeColorStr: '=',
                     isNode: '@',
@@ -186,7 +187,7 @@ angular.module('common')
                 scope.maxAttrs = 10;
                 scope.shouldRender = true;
                 setupScope(scope.attrToRender.id);
-                scope.renderer.renderTemplate = getRenderTemplate(scope.attrToRender, scope.isSized);
+                scope.renderer.renderTemplate = getRenderTemplate(scope.attrToRender, scope.isSized, scope.renderToType);
 
                 scope.$on(BROADCAST_MESSAGES.selectNodes, function(e, data) {
                     if(!_.isArray(_.get(data, 'nodes'))) {
@@ -197,9 +198,9 @@ angular.module('common')
                         setupScope(scope.attrToRender.id);
                         // reset attribute to render so will accurately reset rendered attrs
                         // (using for twitterfeed to accurately switch between node selection)
-                        scope.renderer.renderTemplate = getRenderTemplate({}, scope.isSized);
+                        scope.renderer.renderTemplate = getRenderTemplate({}, scope.isSized, scope.renderToType);
                         $timeout(function() {
-                            scope.renderer.renderTemplate = getRenderTemplate(scope.attrToRender, scope.isSized);
+                            scope.renderer.renderTemplate = getRenderTemplate(scope.attrToRender, scope.isSized, scope.renderToType);
                         });
                     }
                 });
@@ -207,7 +208,7 @@ angular.module('common')
                 // Update render template if renderType changed
                 scope.$on(BROADCAST_MESSAGES.attr.renderTypeChanged, function(e, data) {
                     if(data.id == scope.attrToRender.id) {
-                        scope.renderer.renderTemplate = getRenderTemplate(scope.attrToRender, scope.isSized);
+                        scope.renderer.renderTemplate = getRenderTemplate(scope.attrToRender, scope.isSized, scope.renderToType);
                     }
                 });
 
@@ -216,7 +217,7 @@ angular.module('common')
 
                     $timeout(function() {
                         scope.shouldRender = true;
-                        scope.renderer.renderTemplate = getRenderTemplate(scope.attrToRender, scope.isSized);
+                        scope.renderer.renderTemplate = getRenderTemplate(scope.attrToRender, scope.isSized, scope.renderToType);
                         setupScope(scope.attrToRender.id);
                     }, 200);
                 });
@@ -228,19 +229,13 @@ angular.module('common')
                         var x = scope.$on(BROADCAST_MESSAGES.dataGraph.nodeAttrsUpdated, function() {
                             x();
                             $timeout(function() {
-                                scope.renderer.renderTemplate = getRenderTemplate(scope.attrToRender, scope.isSized);
+                                scope.renderer.renderTemplate = getRenderTemplate(scope.attrToRender, scope.isSized, scope.renderToType);
                                 scope.shouldRender = true;
                             });
                         });
                     }
                 });
                 
-                scope.$on(BROADCAST_MESSAGES.snapshot.changed, function(event, data) {
-                    $timeout(function() {
-                        scope.renderer.renderTemplate = getRenderTemplate(scope.attrToRender, scope.isSized);
-                        scope.shouldRender = true;
-                    });
-                });
 
                 function setupScope (attrId) {
                     var cs;
@@ -341,8 +336,14 @@ angular.module('common')
                 return graphSelectionService.getSelectedNodes() || [];
             }
 
-            function getRenderTemplate(attr, isSized) {
+            function getRenderTemplate(attr, isSized, type = null) {
                 var renderTemplate = '';
+
+                if (type && type === 'horizontal-bars') {
+                    renderTemplate = 'horizontal_bars.html';
+                    return renderTemplate;
+                }
+
                 if(attr.renderType && attr.renderType != 'default') {
                     switch(attr.renderType) {
                     case 'densitybar':

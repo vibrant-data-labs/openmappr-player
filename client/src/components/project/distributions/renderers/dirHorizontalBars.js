@@ -170,6 +170,12 @@ angular.module('common')
                     }
                     
                 });
+                
+                scope.$on(BROADCAST_MESSAGES.snapshot.changed, function (ev, data) {
+                    setTimeout(() => {
+                        draw();
+                    }, 0)
+                });
 
                 scope.calcLineWidth = function(item) {
                     var num = item.selTagFreq || item.globalTagFreq;
