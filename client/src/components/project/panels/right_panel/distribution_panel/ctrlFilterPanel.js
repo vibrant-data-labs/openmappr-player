@@ -31,7 +31,7 @@ angular.module('common')
     * Scope methods
     */
             $scope.resetFilters = resetFilters;
-
+            $scope.tagsTypes = ['tags', 'tag-cloud', 'tag-cloud_2', 'tag-cloud_3', 'wide-tag-cloud'];
 
             /*************************************
     ****** Event Listeners/Watches *******
@@ -117,6 +117,9 @@ angular.module('common')
                 }
             };
 
+            $scope.isShowSortButton = function(attr, $event) {
+                return $scope.tagsTypes.includes(attr.renderType) || attr.renderType === 'categorylist';
+            }
             /*************************************
     ********* Initialise *****************
     **************************************/
@@ -170,7 +173,7 @@ angular.module('common')
 
                 $rootScope.canShowTagsBtn = function() {
                     return $scope.nodeDistrAttrs.some(function(attr) { 
-                        return attr.visible && (attr.renderType == 'tag-cloud' || attr.renderType == 'wide-tag-cloud');
+                        return attr.visible && $scope.tagsTypes.includes(attr.renderType);
                     });
                 }
 
@@ -440,8 +443,7 @@ angular.module('common')
 
             function setSortForTags(attrs, selectionMode) {
                 _.each(attrs, function(attr) {
-                    if ((attr.renderType === 'tags' || attr.renderType === 'tag-cloud' || attr.renderType === 'wide-tag-cloud')
-                && _.get(attr, 'sortOps.sortType') !== 'alphabetical') {
+                    if ( $scope.tagsTypes.includes(attr.renderType) && _.get(attr, 'sortOps.sortType') !== 'alphabetical') {
                         attr.sortOps.sortType = selectionMode ? 'statistical' : 'frequency';
                     }
                 });
