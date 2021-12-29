@@ -228,7 +228,7 @@ angular.module('common')
 
             $scope.onHover = function(link) {
                 $scope.hoverTimeout.then(function() {
-                    hoverService.hoverNodes({ ids: [link.nodeId], force: true});
+                    hoverService.hoverNodes({ ids: [link.nodeId], force: true, showNeighbors: false});
                 });
             };
     
