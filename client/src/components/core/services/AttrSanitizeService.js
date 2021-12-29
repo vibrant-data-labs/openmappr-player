@@ -31,7 +31,7 @@ angular.module('common')
         // Available in both workbench & player
         // Not to be stored in attr descriptor
         attr.sortOps = {};
-        if(attr.renderType === 'tags' || attr.renderType === 'tag-cloud' || attr.renderType === 'wide-tag-cloud') {
+        if(attr.renderType === 'tags' || attr.renderType === 'tag-cloud' || attr.renderType === 'tag-cloud_2' || attr.renderType === 'tag-cloud_3' || attr.renderType === 'wide-tag-cloud') {
             attr.sortOps.sortType = 'statistical'; // alphabetical/frequency/statistical
             attr.sortOps.sortOrder = 'desc'; // asc/desc
         } else if(attr.renderType === 'categorylist') {

@@ -29,7 +29,7 @@
 										) {{::attr.title}}
 
 									button.card__action-sort(
-										ng-if="attr.renderType == 'tags' || attr.renderType == 'categorylist' || attr.renderType == 'tag-cloud' || attr.renderType == 'wide-tag-cloud'",
+										ng-if="isShowSortButton(attr)",
 										ng-class="{ 'up': attr.sortConfig && attr.sortConfig.sortType === 'frequency' && attr.sortConfig.sortOrder === 'asc', 'disabled': attr.sortConfig && attr.sortConfig.sortType !== 'frequency' }",
 										ng-click="setSortOrder(attr, 'frequency')"
 										uib-tooltip="Sort by frequency of occurrence",
@@ -37,7 +37,7 @@
 										tooltip-append-to-body="true"
 										)
 									button.card__action-sort.card__action-sort-alphabet(
-										ng-if="attr.renderType == 'tags' || attr.renderType == 'categorylist' || attr.renderType == 'tag-cloud' || attr.renderType == 'wide-tag-cloud'",
+										ng-if="isShowSortButton(attr)",
 										ng-class="{ 'desc': attr.sortConfig && attr.sortConfig.sortType === 'alphabetical' && attr.sortConfig.sortOrder === 'desc', 'disabled': !attr.sortConfig || (attr.sortConfig && attr.sortConfig.sortType !== 'alphabetical') }", 
 										ng-click="setSortOrder(attr, 'alphabetical')"
 										uib-tooltip="Sorted alphabetically",
@@ -85,7 +85,7 @@
 										) {{::attr.title}}
 
 									button.card__action-sort(
-										ng-if="attr.renderType == 'tags' || attr.renderType == 'categorylist' || attr.renderType == 'tag-cloud' || attr.renderType == 'wide-tag-cloud'",
+										ng-if="isShowSortButton(attr)",
 										ng-class="{ 'up': attr.sortConfig && attr.sortConfig.sortType === 'frequency' && attr.sortConfig.sortOrder === 'asc', 'disabled': attr.sortConfig && attr.sortConfig.sortType !== 'frequency' }",
 										ng-click="setSortOrder(attr, 'frequency')"
 										uib-tooltip="Sort by frequency of occurrence",
@@ -93,7 +93,7 @@
 										tooltip-append-to-body="true"
 										)
 									button.card__action-sort.card__action-sort-alphabet(
-										ng-if="attr.renderType == 'tags' || attr.renderType == 'categorylist' || attr.renderType == 'tag-cloud' || attr.renderType == 'wide-tag-cloud'",
+										ng-if="isShowSortButton(attr)",
 										ng-class="{ 'desc': attr.sortConfig && attr.sortConfig.sortType === 'alphabetical' && attr.sortConfig.sortOrder === 'desc', 'disabled': !attr.sortConfig || (attr.sortConfig && attr.sortConfig.sortType !== 'alphabetical') }", 
 										ng-click="setSortOrder(attr, 'alphabetical')"
 										uib-tooltip="Sorted alphabetically",
