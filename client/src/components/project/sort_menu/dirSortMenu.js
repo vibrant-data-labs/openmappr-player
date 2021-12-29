@@ -86,14 +86,11 @@ function(AttrInfoService, snapshotService, BROADCAST_MESSAGES) {
             scope.sortConfig.sortOrder = newSortOrder;
             //attrInfo = ;
             console.log('sortmenu setSortOder');
-            $event.stopPropagation();
         }
     
         scope.setSortType = function setSortType(sortType, $event) {
             scope.sortConfig = scope.sortConfig || {};
             scope.sortConfig.sortType = sortType;
-            console.log('sortmenu setSortType');
-            $event.stopPropagation();
         }
 
         scope.getSortTypeLabel = function getSortTypeLabel(sortType) {
