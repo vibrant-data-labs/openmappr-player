@@ -121,7 +121,7 @@ button.right-panel-btn(ng-click="toggleRightPanel()", ng-class="{'right-panel-bt
                     dd.section-info__value {{number.value}}
               .wrap(ng-if="isShowNeighbours && ((neighs.in && neighs.in.length) || (neighs.out && neighs.out.length))")
                 section.section.section_tabs(ng-if="directLink")
-                  .tabContainer
+                  .tabContainer(ng-class="{'tabContainer_without-title' : !(ongoingTitle && incomingTitle)}")
                     .tabVisible
                       .tab(ng-if="neighs.out && neighs.out.length")
                         button(ng-class="{active: sectionNeigh=='out'}", ng-click="activeNeigh('out')") 
@@ -133,7 +133,7 @@ button.right-panel-btn(ng-click="toggleRightPanel()", ng-class="{'right-panel-bt
                           span {{commonTitle}}
 
                   .section__content
-                    #neighborsOut.tabcontent(ng-if="sectionNeigh=='out'")
+                    #neighborsOut.tabcontent.neighborsOut(ng-if="sectionNeigh=='out'")
                       .user(ng-repeat="link in neighs.out", style="cursor:pointer;", ng-mouseover="onHover(link)", ng-mouseleave="onHoverOut()", ng-click="onNeighborClick(link)")
                           .img-user
                               div.img(
