@@ -834,7 +834,7 @@ angular.module('common')
                 if (url.includes('linkedin.com')) return '#{player_prefix_index_source}/img/linkedin.svg'
                 if (url.includes('crunchbase.com')) return '#{player_prefix_index_source}/img/crunchbase.svg';
                 if (url.includes('ted.com')) return 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/TED_three_letter_logo.svg/1024px-TED_three_letter_logo.svg.png';
-                if (url.includes('candid.org') || url.includes('guidestar.org')) return '#{player_prefix_index_source}/img/candid_icon.jpg';
+                if (url.includes('candid.org') || url.includes('guidestar.org')) return '#{player_prefix_index_source}/img/Candid_Icon.jpg';
                 if (url.includes('youtube.com')) return '#{player_prefix_index_source}/img/youtube.svg';
                 if (url.includes('vimeo.com')) return '#{player_prefix_index_source}/img/vimeo.svg';
                 return 'https://image.flaticon.com/icons/svg/455/455691.svg'

@@ -144,6 +144,9 @@ async function buildResources() {
 
       const mappingData = fs.readFileSync('./mapping.json');
       jsonData = JSON.parse(mappingData);
+      if (process.env.MAPPR_DEBUG) {
+        jsonData.sourceUrl = '';
+      }
       playerBuildPrefix = jsonData.sourceUrl;
     }
 
