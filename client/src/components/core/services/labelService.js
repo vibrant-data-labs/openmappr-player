@@ -23,7 +23,7 @@ angular.module('common')
 
             var labelSizeFuncFactory = labelRenderer.labelSizeFuncFactory;
             var collisionCount;
-            var leftPanelWidth = 432;
+            var leftPanelWidth = 475;
 
 
             // Initialise sigma

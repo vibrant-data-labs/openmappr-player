@@ -27,7 +27,7 @@
         mX = 'x' in e.data.containerPoint ? e.data.containerPoint.x : mX;
         mY = 'y' in e.data.containerPoint ? e.data.containerPoint.y : mY;
         
-        mX = mX - self.width / 2;
+        mX = mX - self.width / 2 - 20;
         mY = mY - self.height / 2;
       }
 
