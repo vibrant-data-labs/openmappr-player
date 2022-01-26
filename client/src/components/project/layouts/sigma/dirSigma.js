@@ -506,6 +506,10 @@ function ($rootScope, renderGraphfactory, eventBridgeFactory, dataGraph, labelSe
                 $rootScope.$broadcast(BROADCAST_MESSAGES.sigma.rendered, sig);
             }
             __rendering_in_progress__ = false;
+            
+            if (scope.layout.isGeo) {
+                zoomService.zoomReset();
+            }
         }
 
         function preTweenOpts(settings, cam) {
