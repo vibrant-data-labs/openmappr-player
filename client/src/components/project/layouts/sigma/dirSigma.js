@@ -292,9 +292,9 @@ function ($rootScope, renderGraphfactory, eventBridgeFactory, dataGraph, labelSe
                             node.size = node[tweenPrefix + 'size'];
                         });
                     }
-                    renderG();
+                    renderG(true);
                 });
-            } else { renderG(); }
+            } else { renderG(false); }
         }
 
         function tweenSetup (tweenType, rg) {
@@ -491,7 +491,7 @@ function ($rootScope, renderGraphfactory, eventBridgeFactory, dataGraph, labelSe
         /**
          * Sets mapprSettings into Sigma and renders it.
          */
-        function renderG() {
+        function renderG(isGeoZoomReset) {
             __rendering_in_progress__ = true;
             var timestart = Date.now();
             console.log('[dirSigma.renderG] Render graph started');
@@ -507,7 +507,7 @@ function ($rootScope, renderGraphfactory, eventBridgeFactory, dataGraph, labelSe
             }
             __rendering_in_progress__ = false;
             
-            if (scope.layout.isGeo) {
+            if (scope.layout.isGeo && isGeoZoomReset) {
                 zoomService.zoomReset();
             }
         }
