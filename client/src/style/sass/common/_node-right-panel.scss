@@ -38,6 +38,7 @@
       z-index: 100;
       border-bottom: 1px solid #E4EAEF;
       margin-bottom: 10px;
+      overflow-x: hidden;
 
       + .section__content {
         padding-top: 0;
@@ -261,6 +262,8 @@
 
   .tabContainer {
     position: relative;
+    background: rgb(228, 234, 239);
+    padding-top: 10px;
 
     &::after {
       content: '';
@@ -270,7 +273,6 @@
       top: 0;
       bottom: 0;
       right: 0;
-      background: linear-gradient(to right, rgba(#E4EAEF, 0), rgba(#E4EAEF,  1));
     }
   }
 

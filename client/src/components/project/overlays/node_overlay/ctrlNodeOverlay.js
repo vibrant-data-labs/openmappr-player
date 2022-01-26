@@ -703,10 +703,11 @@ angular.module('common')
 
                 $scope.sectionNeigh = outgoing.length > 0 ? 'out' : 'in';
 
-                $scope.commonTitle = settings('selectedNodeCommonTitle');
-                $scope.incomingTitle = settings('selectedNodeIncomingTitle');
-                $scope.ongoingTitle = settings('selectedNodeOutgoingTitle');
-                $scope.isShowNeighbours = settings('isShowSelectedNodeTab');
+                $scope.commonTitle = settings('selectedNodeCommonTitle') || 'Neighbors';
+                $scope.incomingTitle = settings('selectedNodeIncomingTitle') || 'Incoming';
+                $scope.ongoingTitle = settings('selectedNodeOutgoingTitle') || 'Outgoing';
+                const isShowSelectedNodeTab = settings('isShowSelectedNodeTab');
+                $scope.isShowNeighbours = isShowSelectedNodeTab === undefined ? true : isShowSelectedNodeTab;
                 $scope.directLink = settings('edgeDirectional');
                 $scope.allNeighs = _.sortBy(outgoing.concat(incoming), [{'weight': 'desc' }]);
             }
