@@ -98,8 +98,8 @@ button.right-panel-btn(ng-click="toggleRightPanel()", ng-class="{'right-panel-bt
                           {{val.value}}
                   span.section-info__value(ng-if="!val.isTag") {{val.value}}
 
-            section.section.section_compact(ng-if="nodeRightInfo.section4.length")
-              .section__content.section__info
+            section.section.section_compact
+              .section__content.section__info(ng-if="nodeRightInfo.section4.length")
                 dl#numberAndDates.section-info(
                   ng-repeat="number in nodeRightInfo.section4"
                   style="width: {{Section4Largest}}px"
