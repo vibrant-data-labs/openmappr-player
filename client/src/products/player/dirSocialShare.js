@@ -1,5 +1,5 @@
 angular.module('player')
-.directive('dirSocialShare', ['$rootScope', 'BROADCAST_MESSAGES', '$location', '$window', 'urlShortenService', 'Analytics', function ($rootScope, BROADCAST_MESSAGES, $location, $window, urlShortenService, Analytics) {
+.directive('dirSocialShare', ['$rootScope', 'BROADCAST_MESSAGES', '$location', '$window', 'urlShortenService', function ($rootScope, BROADCAST_MESSAGES, $location, $window, urlShortenService) {
     'use strict';
 
     /*************************************
@@ -68,7 +68,6 @@ angular.module('player')
             e.preventDefault();
             poppedUpWindow = popupWindow('', pageTitle, 600, 400);
             constructLink();
-            Analytics.trackEvent('share', attrs.dirSocialShare);
         });
     }
 

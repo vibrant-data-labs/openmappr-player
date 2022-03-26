@@ -75,8 +75,6 @@
         // 'mgo-angular-wizard',
         'ng.deviceDetector',
         'ngAudio',
-        'angular-google-analytics',
-        'analytics.mixpanel',
         'vs-repeat',
         'angular-intro'
     ])
@@ -129,14 +127,7 @@
             //$httpProvider.defaults.headers.get['If-Modified-Since'] = '0';
 
         }])
-
-        .config(function (AnalyticsProvider) {
-            // Add configuration code as desired - see below
-            AnalyticsProvider
-                .setAccount('UA-70875599-1')
-                .ignoreFirstPageLoad(true);
-        })
-
+        
         .config(['cfpLoadingBarProvider',
             function(cfpLoadingBarProvider) {
                 cfpLoadingBarProvider.latencyThreshold = 100;

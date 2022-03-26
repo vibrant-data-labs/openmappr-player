@@ -167,6 +167,4 @@ module.exports = ["/js/products/player/app/app.js",
   "/js/products/player/dirSocialShare.js",
   "/js/products/player/auth/ctrlPlayerAuth.js",
   "/js/products/player/auth/ctrlSurveyEmailAuth.js",
-  "/js/products/player/analytics/analytics.config.js",
-  "/js/products/player/analytics/analyticsService.js",
   "/js/components/core/services/clusterService.js"];
