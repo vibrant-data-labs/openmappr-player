@@ -233,7 +233,7 @@ angular.module('common')
                     distrData.searchQuery = newVal || '';
 
                     if (newVal) {
-                        scope.filteredListData = $filter('filter')(scope.catListData.data, {text: newVal});
+                        scope.filteredListData = $filter('filter')(scope.catListData.data, {text: newVal, isCurrent: true});
                         distrData.numShowGroups = 0;
                         distrData.numShownCats = Math.min(distrData.numShowGroups * scope.ITEMS_TO_SHOW + initVisItemCount, scope.filteredListData.length);
                     } else {

@@ -255,7 +255,7 @@ angular.module('common')
                 }
 
                 scope.overCat = function (catData, event) {
-                    hoverService.hoverNodes({ attr: attrId, value: catData.id });
+                    hoverService.hoverNodes({ attr: scope.attrToRender.id, value: catData.id });
                 };
 
                 scope.outCat = function (catData, event) {
@@ -284,7 +284,7 @@ angular.module('common')
 
                 /// Select nodes by filter
                 function selectFilter(catData) {
-                    selectService.selectNodes({ attr: attrId, value: catData.id });
+                    selectService.selectNodes({ attr: scope.attrToRender.id, value: catData.id });
                 }
             }
 
