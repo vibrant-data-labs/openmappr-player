@@ -1,6 +1,6 @@
 angular.module('common')
-.controller('DataPresentationCtrl', ['$scope', '$rootScope','$timeout', '$q', 'uiService', 'AttrInfoService' ,'layoutService', 'snapshotService', 'networkService', 'nodeSelectionService','projFactory', 'renderGraphfactory', 'FilterPanelService', 'BROADCAST_MESSAGES', 'dataGraph', 'hoverService', 'selectService',
-function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutService, snapshotService, networkService, nodeSelectionService, projFactory, renderGraphfactory, FilterPanelService, BROADCAST_MESSAGES, dataGraph, hoverService, selectService) {
+.controller('DataPresentationCtrl', ['$scope', '$rootScope','$timeout', '$q', 'uiService', 'AttrInfoService' ,'layoutService', 'snapshotService', 'networkService', 'nodeSelectionService','projFactory', 'renderGraphfactory', 'FilterPanelService', 'BROADCAST_MESSAGES', 'dataGraph', 'hoverService', 'selectService', 'subsetService',
+function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutService, snapshotService, networkService, nodeSelectionService, projFactory, renderGraphfactory, FilterPanelService, BROADCAST_MESSAGES, dataGraph, hoverService, selectService, subsetService) {
     'use strict';
 
     /*************************************
@@ -150,6 +150,15 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
         var colorNodesByAttr = data.snapshot.layout.settings.nodeColorAttr;
         var nodeAttrs = layoutService.getNodeColorAttrs();
         $scope.colorByAttrUpdate(nodeAttrs.find(x => x.id === colorNodesByAttr));
+
+        $timeout(function() {
+            if (subsetService.subsetNodes.length > 0) {
+                $scope.$broadcast(BROADCAST_MESSAGES.hss.subset.changed, {
+                    subsetCount: subsetService.currentSubset().length,
+                    nodes: subsetService.subsetNodes,
+                });
+            }
+        }, 500);
     });
 
     $scope.getSelectedSnapshot = function () {
