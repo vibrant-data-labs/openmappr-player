@@ -231,9 +231,9 @@ angular.module('common')
 
                 scope.$watch('attrToRender.searchQuery', function onSearchQueryChanged(newVal, oldVal) {
                     distrData.searchQuery = newVal || '';
-
+                        
                     if (newVal) {
-                        scope.filteredListData = $filter('filter')(scope.catListData.data, {text: newVal, isCurrent: true});
+                        scope.filteredListData = $filter('filter')(scope.catListData.data, subsetService.currentSubset().length === 0?{text: newVal}:{text: newVal ,  isCurrent: true});
                         distrData.numShowGroups = 0;
                         distrData.numShownCats = Math.min(distrData.numShowGroups * scope.ITEMS_TO_SHOW + initVisItemCount, scope.filteredListData.length);
                     } else {
