@@ -114,7 +114,7 @@ function ($rootScope, $q, $compile, $timeout, renderGraphfactory, layoutService,
 
         scope.getTitle = function(id) {
             const attr = dataGraph.getNodeAttrs().find(item => item.id === id);
-            return attr.title;
+            return attr ? attr.title  : '' ;
         }
 
         scope.$on(BROADCAST_MESSAGES.sigma.rendered, processAxis);
