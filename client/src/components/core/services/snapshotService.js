@@ -240,12 +240,12 @@ function ($q, $http, $rootScope, $routeParams, layoutService, graphSelectionServ
         if(!layout) throw new Error('Layout not found');
         if(!network) throw new Error('Current network not set');
         var networkAttrsList = dataGraph.getNodeAttrTitlesForIds(networkService.getNetworkAttrs(network.id)),
-            layoutName = _.contains(['scatterplot', 'geo'], layout.plotType.toLowerCase()) ? layout.plotType.toLowerCase() : 'cluster';
+            layoutName = _.contains(['scatterplot', 'clustered-scatterplot', 'geo'], layout.plotType.toLowerCase()) ? layout.plotType.toLowerCase() : 'cluster';
 
         suggestedSnap.snapName = network.name + ' - ' + layoutName + (_getSnapTypeGenCount(layoutName, network.id) + 1);
         suggestedSnap.descr = formatContent('Network', network.name);
         suggestedSnap.descr += formatContent('Attributes used to create network', networkAttrsList.join(', '));
-        if(layout.plotType.toLowerCase() == 'scatterplot') {
+        if(['scatterplot', 'clustered-scatterplot'].includes(layout.plotType.toLowerCase())) {
             suggestedSnap.descr += formatContent('X/Y Attributes', layout.xaxis + ', ' + layout.yaxis);
         }
         suggestedSnap.descr += formatContent('Node color attribute', layout.settings.nodeClusterAttr);
@@ -278,10 +278,10 @@ function ($q, $http, $rootScope, $routeParams, layoutService, graphSelectionServ
             return snapGenMap[layoutType];
         }
         else {
-            return _.contains(['geo', 'scatterplot'], layoutType)
+            return _.contains(['geo', 'scatterplot', 'clustered-scatterplot'], layoutType)
                 ? _.filter(getNetworkSnapshots(networkId), 'layout.plotType', layoutType).length
                 : _.reject(getNetworkSnapshots(networkId), function(layout) {
-                    return _.contains(['geo', 'scatterplot'], layout.plotType);
+                    return _.contains(['geo', 'scatterplot', 'clustered-scatterplot'], layout.plotType);
                 }).length;
         }
     }
