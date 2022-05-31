@@ -14,11 +14,11 @@
 						//- h5 {{extUserInfo.userName}}
 						.dots-loader(ng-if="!snapInfo || !snapInfo.snapsLoaded" ng-include=' "#{player_prefix_index}/player/dotsLoader.html" ')
 						geolayout.map(ng-if="plotType == 'geo'" ng-click="triggerInteraction();")
-						scatterlayout(ng-if="plotType == 'scatterplot'" ng-click="triggerInteraction();")
+						scatterlayout(ng-if="plotType == 'scatterplot' || plotType == 'clustered-scatterplot'" ng-click="triggerInteraction();")
 						sig(ng-click="triggerInteraction();" ng-show="plotType != 'grid'")
 						dir-grid-layout.animate-fade(ng-if="plotType == 'grid'")
 						dir-list-layout.animate-fade(ng-if="plotType == 'list'")
-						drawaxis(ng-if="plotType == 'scatterplot'") 
+						drawaxis(ng-if="plotType == 'scatterplot' || plotType == 'clustered-scatterplot'") 
 						//- div(ng-controller="NodeOverlayCtrl", ng-include=' "#{player_prefix_index}/components/project/overlays/node_overlay/nodeOverlay.html" ')
 						div(ng-controller="NodeOverlayCtrl" ng-include=' "#{player_prefix_index}/components/project/panels/node_right_panel/NodeRightPanel.html" ')
 						div(ng-controller="NodePopCtrl", ng-include=' "#{player_prefix_index}/components/project/overlays/node_pop/nodePop.html" ')
