@@ -57,6 +57,7 @@ button.right-panel-btn(ng-click="toggleRightPanel()", ng-class="{'right-panel-bt
                     button(
                       ng-class="{active: sectionActive3==$index}", 
                       ng-click="activeTabs3($index)",
+                      style="max-width: 110px",
                       uib-tooltip="{{tab.headerPopupText}}", 
                       tooltip-placement="bottom", 
                       tooltip-append-to-body="true")
