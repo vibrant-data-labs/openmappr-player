@@ -291,7 +291,7 @@ function($scope, $rootScope, $timeout, $interval, $document, BROADCAST_MESSAGES,
             } else {
                 if(snap.layout.plotType == 'geo') {
                     return 'icon-earth';
-                } else if(snap.layout.plotType == 'scatterplot') {
+                } else if(['scatterplot', 'clustered-scatterplot'].includes(snap.layout.plotType)) {
                     return 'icon-scatter';
                 } else if(snap.layout.plotType == 'grid') {
                     return 'icon-grid-layout';
