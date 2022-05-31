@@ -41,7 +41,8 @@ button.right-panel-btn(ng-click="toggleRightPanel()", ng-class="{'right-panel-bt
                   .tab.more(role="button", ng-if="section2More", ng-click="scrollParentRight($event)")
 
               .section__content
-                #description.tabcontent(ng-repeat="tab in nodeRightInfo.section2", ng-if="sectionActive2==$index")
+                #description.tabcontent(ng-repeat="tab in nodeRightInfo.section2", ng-if="sectionActive2==$index",style="max-width:100%;")
+                
                   iframe(ng-if="tab.value.includes('http') && !tab.text" ng-src="{{ tab.value | trustUrl }}", id='iframe001', width="100%", height="200px" frameborder="0", webkitallowfullscreen, mozallowfullscreen, allowfullscreen)
                   a.section__more(href="#", ng-if="tab.text && tab.text.couldExpand && tab.text.isExpanded", ng-click="toggleText(tab, $event)") &larr; Less
                   p(ng-if="tab.text && !tab.value.includes('http')") {{tab.text.isExpanded ? tab.value : (tab.text.shortValue + '...')}}
