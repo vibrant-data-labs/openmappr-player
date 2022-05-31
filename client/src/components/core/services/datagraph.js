@@ -394,9 +394,12 @@ angular.module('common')
                 function calcBaseScalingRatio(bounds) {
                     var marginX = 120;  // duplicates values in layoutService to avoid circular dependency
                     var marginY = 120;
+                    var isScatterplot = layout.plotType === 'scatterplot';
+                    var extraMarginX = isScatterplot ? 100 : 0;
+                    var extraMarginY = isScatterplot ? 200 : 0;
                     return Math.max(
-                        (Math.abs(bounds.minx - bounds.maxx)) / (window.innerWidth - marginX),
-                        (Math.abs(bounds.miny - bounds.maxy)) / (window.innerHeight - marginY)
+                        (Math.abs(bounds.minx - bounds.maxx)) / (window.innerWidth - (marginX + extraMarginX)),
+                        (Math.abs(bounds.miny - bounds.maxy)) / (window.innerHeight - (marginY + extraMarginY))
                     );
                 }
 
