@@ -632,7 +632,6 @@ angular.module('common')
                         console.log('triggering snapshost laoded');
                         $rootScope.$broadcast(BROADCAST_MESSAGES.snapshot.loaded, {
                             snapshot: snap,
-                            showOverlay: true
                         });
                         console.groupEnd();
 
