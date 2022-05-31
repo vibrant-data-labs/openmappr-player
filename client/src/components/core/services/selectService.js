@@ -301,12 +301,13 @@ angular.module('common')
                 var currentSubset = subsetService.currentSubset();
 
                 if (this.singleNode) {
+                    var selected = this.getSelectedNodes().filter(s=>s.id !== this.singleNode.id);
                     this.singleNode = null;
                     $rootScope.$broadcast(BROADCAST_MESSAGES.hss.select, {
                         filtersCount: this.getActiveFilterCount(),
-                        selectionCount: this.selectedNodes.length,
+                        selectionCount: selected.length,
                         isSubsetted: currentSubset.length > 0,
-                        nodes: this.getSelectedNodes(),
+                        nodes: selected,
                     });
                     
                     return;
