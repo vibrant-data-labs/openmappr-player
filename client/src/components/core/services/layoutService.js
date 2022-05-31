@@ -1047,7 +1047,7 @@ function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partiti
         //Initialize Sigma Settings.
         var mapprSettings = null;
         //This ensures defaults always exist even if the layout didn't have them before
-        if(this.plotType == 'scatterplot')
+        if(['scatterplot', 'clustered-scatterplot'].includes(this.plotType))
             mapprSettings = _.clone(defaultScatterPlot.settings);
         else if(this.plotType === 'geo')
             mapprSettings = _.clone(defaultGeo.settings);
@@ -1172,7 +1172,11 @@ function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partiti
         } else if (layoutOpts.plotType == 'scatterplot') {
             ScatterPlot.call(this);
             console.log('Created layout ScatterPlot: %O', this);
-        } else if(layoutOpts.plotType == 'geo'){
+        } else if (layoutOpts.plotType == 'clustered-scatterplot') {
+            ClusteredScatterplot.call(this);
+            console.log('Created layout Clustered ScatterPlot: %O', this);
+        }
+        else if(layoutOpts.plotType == 'geo'){
             console.log('Created layout geo: %O', this);
             Geo.call(this);
         } else if (layoutOpts.plotType.indexOf('athena') !== -1) {
@@ -1415,6 +1419,278 @@ function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partiti
             }
         }
     }
+
+    function ClusteredScatterplot() {
+        var self = this;
+        this.isScatterPlot = true;
+
+        var defaultAttr = {};
+        defaultAttr.x = 'OriginalX';
+        defaultAttr.y = 'OriginalY';
+
+        this.attr = {};
+        var rawLayoutData = this.getRawLayoutData();
+        this.attr.xaxis = rawLayoutData.clusterXAttr || defaultAttr.x;
+        this.attr.yaxis = rawLayoutData.clusterYAttr || defaultAttr.y;
+        this.attr.x = rawLayoutData.nodeXAttr || defaultAttr.x;
+        this.attr.y = rawLayoutData.nodeYAttr || defaultAttr.y;
+        var clusterInfoAttr = rawLayoutData.settings.nodeClusterAttr;
+        this.nodeAttr = {
+            x: rawLayoutData.nodeXAttr || defaultAttr.x,
+            y: rawLayoutData.nodeYAttr || defaultAttr.y
+        };
+        
+        this.isOrdinal = {};
+        this.isOrdinal.x = false;
+        this.isOrdinal.y = false;
+
+        this.scalers.x = null;
+        this.scalers.y = null;
+
+        this.defCamera.y = - scatterplotOffsetY;
+
+        this.scalers.x_scaler_info = {
+            scalerType : rawLayoutData.x_scaler_type || 'linear',
+            base : rawLayoutData.x_scaler_base || 10,
+            exponent : rawLayoutData.x_scaler_exponent || 2,
+            shiftInputValBy : 0 // the amount by which the value has been shifted
+        };
+        this.scalers.y_scaler_info = {
+            scalerType : rawLayoutData.y_scaler_type || 'linear',
+            base : rawLayoutData.y_scaler_base || 10,
+            exponent : rawLayoutData.y_scaler_exponent || 2,
+            shiftInputValBy : 0
+        };
+
+        this.scalers.nodeX_scaler_info = {
+            scalerType : rawLayoutData.x_scaler_type || 'linear',
+            base : rawLayoutData.x_scaler_base || 10,
+            exponent : rawLayoutData.x_scaler_exponent || 2,
+            shiftInputValBy : 0
+        };
+        this.scalers.nodeY_scaler_info = {
+            scalerType : rawLayoutData.y_scaler_type || 'linear',
+            base : rawLayoutData.y_scaler_base || 10,
+            exponent : rawLayoutData.y_scaler_exponent || 2,
+            shiftInputValBy : 0
+        };
+
+        this.recalculateClusters = function () {
+            const allNodes = dataGraph.getAllNodes();
+
+            const clusterInfo = allNodes.reduce(function (acc, cv) {
+                const clusterAttrValue = cv.attr[clusterInfoAttr];
+                const clusterXValue = self.getClusterPlotValue(cv, 'x');
+                const clusterYValue = self.getClusterPlotValue(cv, 'y');
+                return {
+                    ...acc,
+                    [clusterAttrValue]: [...(acc[clusterAttrValue] || []), { 
+                        x: clusterXValue,
+                        y: clusterYValue,
+                        nodeX: self.getPlotableValue(cv, 'x'),
+                        nodeY: self.getPlotableValue(cv, 'y')
+                    }]
+                };
+            }, {});
+
+            clusterInfo.__calculated = {};
+            for(let clusterValue in clusterInfo) {
+                if (clusterValue === '__calculated') continue;
+                var nodeData = clusterInfo[clusterValue];
+                const numberOfData = nodeData ? nodeData.length : 1;
+                clusterInfo.__calculated[clusterValue] = {
+                    x: _.sum(nodeData, 'x') / numberOfData,
+                    y: _.sum(nodeData, 'y') / numberOfData,
+                    nodeX: _.sum(nodeData, 'nodeX') / numberOfData,
+                    nodeY: _.sum(nodeData, 'nodeY') / numberOfData
+                };
+            }
+
+            self.clusterInfo = clusterInfo;
+        }
+
+        this.setupLayoutFuncs.push(function setupAxisAttrs() {
+            var aspect  = this.mapprSettings['scatterAspect'];
+            var wd      = window.innerWidth - marginRt - 50 - marginLeft;
+            var ht      = (window.innerHeight - marginTop - scatterplotMarginBtm);
+            var centerX = wd/2;
+            var centerY = (window.innerHeight - marginTop - scatterplotMarginBtm)/2;
+            aspect = Math.max(0, Math.min(aspect, 1));  // constrain value
+            aspect = Math.pow(2, 2*aspect-1);   // map (0,1) to (1/2, 2) with 1 at center of range
+            //aspect = 1;
+            var rangeX = aspect * ht;
+            var rangeY = ht;
+            if(rangeX > wd) {
+                rangeY = rangeY * wd/rangeX;
+                rangeX = wd;
+            }
+            this.setAxisAttr(this.attr.xaxis, 'x', centerX - (rangeX - 80), centerX + rangeX/2);
+            this.setAxisAttr(this.attr.yaxis, 'y', centerY - rangeY/2, centerY + rangeY/2);
+            this.setAxisAttr(this.nodeAttr.x, 'nodeX', centerX - (rangeX - 80), centerX + rangeX/2);
+            this.setAxisAttr(this.nodeAttr.y, 'nodeY', centerY - rangeY/2, centerY + rangeY/2);
+
+            this.recalculateClusters();
+        });
+
+        this.setAxisAttr = _setAxisAttr;
+        this.getPlotableValue = getPlotableValue;
+
+        this.getClusterPlotValue = function(node, axis) {
+            var clusteredCenter = node.attr[self.attr[axis + 'axis']], newValue = null;
+            if (self.isOrdinal[axis]) {
+                newValue = Math.round(self.scalers[axis](clusteredCenter));
+            } else {
+                newValue = self.scalers[axis](parseFloat(clusteredCenter));
+            }
+
+            if(newValue == null || isNaN(newValue)) {
+                console.warn("Invalid getPlotableValue for axis :%s , %s -> %s", axis, clusteredCenter, newValue);
+                newValue = 0;
+            }
+            if(self.isOrdinal[axis]) {
+                newValue += _.random(-5,5);
+            }
+            return newValue;
+        };
+
+        this.getNodePlotableValue = function (node, axis) {
+            var attrValue = node.attr[clusterInfoAttr];
+            var clusterData = self.clusterInfo.__calculated[attrValue];
+            var clusterCenter = clusterData[axis];
+            var nodeCenter = clusterData[`node${axis.toUpperCase()}`];
+
+            var value = self.getPlotableValue(node, axis);
+            return value + clusterCenter - nodeCenter;
+        }
+
+        this.nodeT = function nodeT (node) {
+            this._commonNodeT(node);
+            node.x = this.getNodePlotableValue(node, 'x');
+            node.y = this.getNodePlotableValue(node, 'y');
+            //console.log(node.x, node.y);
+        };
+        this.edgeT = function edgeT(edge) {
+            this._commonEdgeT(edge);
+        };
+
+        this.setAttrX = function setAttrX(attribName) {
+            // this.attr.x = attribName || 'OriginalX';
+        };
+        this.setAttrY = function setAttrY(attribName) {
+            // this.attr.y = attribName || 'OriginalY';
+        };
+
+        this._setScaler = function _setScaler(axis, scalerType, base, exponent) {
+            this.scalers[axis + '_scaler_info'] = {
+                scalerType : scalerType,
+                base : parseFloat(base),
+                exponent : parseFloat(exponent)
+            };
+        };
+
+        this.setScalerInfoX = _.bind(_.partial(this._setScaler, 'x'), this);
+        this.setScalerInfoY = _.bind(_.partial(this._setScaler, 'y'), this);
+
+        function getPlotableValue(node, axis) {
+            var value = node.attr[self.nodeAttr[axis]], newValue = null;
+            if (self.isOrdinal[axis]) {
+                newValue = Math.round(self.scalers[`node${axis.toUpperCase()}`](value));
+            } else {
+                newValue = self.scalers[`node${axis.toUpperCase()}`](parseFloat(value));
+                //console.log(value, newValue);
+            }
+
+            if(newValue == null || isNaN(newValue)) {
+                console.warn("Invalid getPlotableValue for axis :%s , %s -> %s", axis, value, newValue);
+                newValue = 0;
+            }
+            if(self.isOrdinal[axis]) {
+                newValue += _.random(-5,5);
+            }
+            return newValue;
+        }
+
+        function _setAxisAttr(attribName, axis, rangeMin, rangeMax) {
+            var scaler, self = this;
+            var toInvert = this.mapprSettings['invert' + axis.toUpperCase()];
+            var attrInfo = AttrInfoService.getNodeAttrInfoForRG().getForId(attribName);
+            self.scalers[axis + '_scaler_info'].shiftInputValBy = 0; // reset shift Info
+
+            // Check whether attribute exists on node
+            if (attrInfo) {
+                self.attr[axis] = attribName;
+                // if numeric, scale linearly
+                if (attrInfo.isNumeric) {
+                    self.isOrdinal[axis] = false;
+                    var scalerInfo = self.scalers[axis + '_scaler_info'];
+                    var bounds = attrInfo.bounds;
+                    var domain = [bounds.min, bounds.max];
+                    var shiftInputVal = false;
+                    var shiftInputValBy = 0;
+
+                    switch(scalerInfo.scalerType) {
+                    case 'linear' : scaler = d3.scale.linear();
+                        break;
+                    case 'exponential' : scaler = d3.scale.pow().exponent(+scalerInfo.exponent);
+                        break;
+                    case 'log' : scaler = d3.scale.log().base(+scalerInfo.base);
+                        // `1` lies inside the domain
+                        if(domain[0] < 1 && domain[1] > 1) {
+                            shiftInputVal = true;
+                            shiftInputValBy = (-1 * domain[0]) + 1;
+                            domain[1] = domain[1] + shiftInputValBy;
+                            domain[0] = 1;
+                        }
+                        break;
+                    default : scaler = d3.scale.linear();
+                    }
+
+                    // Invert domain if required
+                    if(toInvert) {
+                        domain = domain.reverse();
+                        // if(shiftInputVal) {
+                        //  shiftInputValBy = (-1 * domain[0]) + 1;
+                        // }
+                    }
+                    scaler.domain(domain);
+                    scaler.nice();
+                    scaler.rangeRound([rangeMin, rangeMax]);
+
+                    if(shiftInputVal) {
+                        //log fails if the bounds contain zero, since log 0 is infinity. So move bounds to solve this issue
+                        var oldScaler = scaler;
+                        scaler = function (val) {
+                            return oldScaler(val + shiftInputValBy);
+                        };
+                        // range -> domain mapping (invert)
+                        scaler.invert = function(val) {
+                            return oldScaler.invert(val) - shiftInputValBy;
+                        };
+                    }
+                    self.scalers[axis] = scaler;
+                    scalerInfo.shiftInputValBy = shiftInputValBy;
+                } else {
+                    //Build an Ordinal Scale
+                    self.isOrdinal[axis] = true;
+                    scaler = d3.scale.ordinal();
+                    scaler.domain(attrInfo.values);
+                    scaler.rangePoints([rangeMin, rangeMax], 0);
+                    self.scalers[axis] = scaler;
+                    // Invert domain if required
+                    if(toInvert) {
+                        self.scalers[axis].domain(self.scalers[axis].domain().reverse());
+                    }
+                }
+            } else {
+                console.warn('Attribute does not exist on the nodes. attribName: %s, nodes: %O',
+                    attribName, dataGraph.getAllNodes());
+                console.warn('Reverting to DefaultAttribute on axis:' + axis);
+                self.attr[axis] = defaultAttr[axis];
+                self.setAxisAttr(self.attr[axis], axis, rangeMin, rangeMax);
+            }
+        }
+    }
+
     function Geo() {
         var prefix = renderGraphfactory.getTweenPrefix();
         this.isGeo = true;

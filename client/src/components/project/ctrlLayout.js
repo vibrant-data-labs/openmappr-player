@@ -313,7 +313,7 @@ function ($scope, $q, $timeout, eventBridgeFactory, leafletData, layoutService, 
 
             // layout.setting("disableAggregation", graphData.nodes.length < 10000);
 
-            if(plotType === 'scatterplot' || plotType === 'geo') {
+            if(['scatterplot', 'clustered-scatterplot'].includes(plotType) || plotType === 'geo') {
                 layout.setting('drawGroupLabels', false);
                 layout.setting("drawEdges", false);
             }
@@ -321,11 +321,11 @@ function ($scope, $q, $timeout, eventBridgeFactory, leafletData, layoutService, 
                 layout.setting('drawGroupLabels', $scope.mapprSettings.drawGroupLabels != null ? $scope.mapprSettings.drawGroupLabels : true);
                 layout.setting("drawEdges", $scope.mapprSettings.drawEdges != null ? $scope.mapprSettings.drawEdges : true);
             }
-            if((plotType === 'scatterplot' || plotType.indexOf('athena') === 0) && layoutOpts) {
+            if((['scatterplot', 'clustered-scatterplot'].includes(plotType) || plotType.indexOf('athena') === 0) && layoutOpts) {
                 layout.setAttrX(layoutOpts.xAttr);
                 layout.setAttrY(layoutOpts.yAttr);
             }
-            if(plotType === 'scatterplot' && layoutOpts) {
+            if(['scatterplot', 'clustered-scatterplot'].includes(plotType) && layoutOpts) {
                 layout.setScalerInfoX(layoutOpts.xScaleType, layoutOpts.xScaleBase , layoutOpts.xScaleExponent);
                 layout.setScalerInfoY(layoutOpts.yScaleType, layoutOpts.yScaleBase , layoutOpts.yScaleExponent);
             }

@@ -271,6 +271,9 @@ angular.module('common')
                     $scope.selInfo.singleNodeInfo.id = selNode.id;
                     $scope.selInfo.clusterVal = selNode.attr.Cluster || '';
                     $scope.selInfo.colorStr = selNode.colorStr;
+                    if (selNodes.length == 1){
+                        selectService.singleNode = selNode;
+                    } 
                     console.log('sel node: ', selNode);
                     console.log('sel info: ', $scope.selInfo);
                 }

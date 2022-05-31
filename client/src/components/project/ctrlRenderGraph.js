@@ -631,7 +631,7 @@ angular.module('common')
                         $rootScope.$broadcast(BROADCAST_MESSAGES.dataGraph.loaded, data);
                         console.log('triggering snapshost laoded');
                         $rootScope.$broadcast(BROADCAST_MESSAGES.snapshot.loaded, {
-                            snapshot: snap
+                            snapshot: snap,
                         });
                         console.groupEnd();
 
