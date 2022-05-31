@@ -81,22 +81,6 @@ function ($rootScope, $q, $compile, $timeout, renderGraphfactory, layoutService,
         scope.xAxisTitle = '';
         scope.yAxisTitle = '';
         scope.attrs = [];
-        
-        function buildRenderGraph (graphData, layout) {
-            return $q(function(resolve, reject){
-                console.log('buildRenderGraph called');
-                var currRG =  dataGraph.getRenderableGraph();
-                var zoomLevel = currRG != null ? currRG.zoomLevel : layout.setting('savedZoomLevel');
-                if(graphData && !graphData.isEmpty()) {
-                    var g = dataGraph.buildRenderableGraph(graphData, layout, zoomLevel);
-                    AttrInfoService.loadInfosForRG(g, layout);
-                    resolve(g);
-                } else {
-                    console.warn('buildRenderGraph called with crappy graphData. Investigate this');
-                    reject(new Error('buildRenderGraph called with crappy graphData. Investigate this'));
-                }
-            });
-        }
 
         function updateLayout(attrId, axis) {
             scope.layout.attr[axis] = attrId;
@@ -114,13 +98,13 @@ function ($rootScope, $q, $compile, $timeout, renderGraphfactory, layoutService,
 
         scope.getTitle = function(id) {
             const attr = dataGraph.getNodeAttrs().find(item => item.id === id);
-            return attr.title;
+            return attr ? attr.title : '';
         }
 
         scope.$on(BROADCAST_MESSAGES.sigma.rendered, processAxis);
 
         function processAxis() {
-            if(scope.layout.plotType == 'scatterplot') {
+            if(['scatterplot', 'clustered-scatterplot'].includes(scope.layout.plotType)) {
                 _.each(axisIds, function(axis) {
                     if(scope.layout.setting(axis + 'AxShow')) {
                         scope[axis + 'show'] = true;
@@ -213,8 +197,13 @@ function ($rootScope, $q, $compile, $timeout, renderGraphfactory, layoutService,
         // Build an axis
         function buildAxis (axis) {
             // scatterplot always builds
-
-            scope[axis + 'axisId'] = scope.layout.attr[axis];
+            var isClustered = scope.layout.plotType == 'clustered-scatterplot';
+            if (!isClustered) {
+                scope[axis + 'axisId'] = scope.layout.attr[axis];
+            } else if (isClustered) {
+                scope[axis + 'axisId'] = scope.layout.attr[axis + 'axis'];
+            }
+            
             scope.attrs = [];
             _.each(dataGraph.getNodeAttrs(), function(attr) {
                 if(AttrInfoService.isDistrAttr(attr, infoObj.getForId(attr.id)) && attr.isNumeric && attr.visible && (attr.axis == 'all' || attr.axis == axis)) {
@@ -230,7 +219,7 @@ function ($rootScope, $q, $compile, $timeout, renderGraphfactory, layoutService,
                 sigCamRatio  = sig.cameras.cam1.ratio,
                 zoomLevel    = dataGraph.getRenderableGraph().zoomLevel,
                 renderGraph  = dataGraph.getRenderableGraph(),
-                axisLabel    = layout.attr[axis],
+                axisLabel    = isClustered ? layout.attr[axis + 'axis'] : layout.attr[axis],
                 attrInfo     = AttrInfoService.getNodeAttrInfoForRG().getForId(axisLabel),
                 displaySize = axis === 'x' ? $('#sig-holder').width(): $('#sig-holder').height();
 
@@ -262,11 +251,14 @@ function ($rootScope, $q, $compile, $timeout, renderGraphfactory, layoutService,
                     scale = d3.scale.pow();
                 }
 
-                scale.domain([attrInfo.bounds.min + shiftInputValBy, attrInfo.bounds.max + shiftInputValBy]);
+                var initialMaxValue = attrInfo.bounds.max + shiftInputValBy;
+                var max = initialMaxValue > 0 && initialMaxValue < 1 ? 1 : (initialMaxValue);
 
-                scale.nice(numTicks + extensions);
+                scale.domain([attrInfo.bounds.min + shiftInputValBy, max]);
 
-                ticks = scale.ticks(numTicks + extensions);
+                scale.nice(numTicks);
+
+                ticks = scale.ticks(numTicks);
 
                 _.each(ticks, function(tickPos) {
                     // Calculate the position at which the tick needs to be rendered.

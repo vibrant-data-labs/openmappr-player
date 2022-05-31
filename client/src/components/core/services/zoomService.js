@@ -127,7 +127,7 @@ function($q, $rootScope, $timeout, dataGraph, layoutService, renderGraphfactory,
             var pos = {};
             var cam = renderer.camera;
             var newRatio;
-            if (layoutService.getCurrentIfExists().plotType == 'scatterplot') {
+            if (['scatterplot', 'clustered-scatterplot'].includes(layoutService.getCurrentIfExists().plotType)) {
                 newRatio = 1.5;
             } else {
                 newRatio = newCam.ratio;

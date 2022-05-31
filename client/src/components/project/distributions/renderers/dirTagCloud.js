@@ -62,7 +62,7 @@ angular.module('common')
                     searchQuery: '',
                     initialItemCount: initVisItemCount,
                     startItem: function() {
-                        if (distrData.numShownCats == scope.filteredListData.length) {
+                        if (scope.filteredListData && distrData.numShownCats == scope.filteredListData.length) {
                             return distrData.numShowGroups * distrData.step + 1;
                         }
 
@@ -180,8 +180,8 @@ angular.module('common')
                     scope.catListData = (new Array(scope.ITEMS_TO_SHOW)).map((r, i) => ({ id: i}));
                     var _catListData = genTagListData(data.nodes,
                         AttrInfoService.getNodeAttrInfoForRG().getForId(scope.attrToRender.id), filteringCatVals, FilterPanelService.getColorString(), genValColorMap(scope.attrToRender.id, data.nodes), sortType, sortOrder);
-                    scope.filteredListData = filterTags(data.nodes, _catListData);
-
+                    scope.filteredListData = filterTags(data.nodes, _catListData).filter(function(s){return s.id});
+                    console.log({filteredListData:scope.filteredListData});
                     _catListData.data = _catListData.data.map(function mapData(cat) {
                         cat.isSubsetted = cat.selPercentOfSel == 100;
                         cat.isChecked = cat.isSubsetted;
@@ -231,9 +231,9 @@ angular.module('common')
 
                 scope.$watch('attrToRender.searchQuery', function onSearchQueryChanged(newVal, oldVal) {
                     distrData.searchQuery = newVal || '';
-
+                        
                     if (newVal) {
-                        scope.filteredListData = $filter('filter')(scope.catListData.data, {text: newVal, isCurrent: true});
+                        scope.filteredListData = $filter('filter')(scope.catListData.data, subsetService.currentSubset().length === 0?{text: newVal}:{text: newVal ,  isCurrent: true});
                         distrData.numShowGroups = 0;
                         distrData.numShownCats = Math.min(distrData.numShowGroups * scope.ITEMS_TO_SHOW + initVisItemCount, scope.filteredListData.length);
                     } else {

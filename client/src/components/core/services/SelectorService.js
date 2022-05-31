@@ -71,9 +71,9 @@ angular.module('common')
                     var isNumber = function(val) { return !Number.isNaN(Number(val))}
                     return _.reduce(this.attrRanges, function(acc, cv) {
                         var description = '';
-                        if (isNumber(cv.min) && isNumber(cv.max)) {
+                        if (isNumber(cv.min) && cv.min > 0 && isNumber(cv.max)) {
                             description = 'btw';
-                        } else if (isNumber(cv.min)) {
+                        } else if (isNumber(cv.min) && cv.min > 0 ) {
                             description = 'ht';
                         } else {
                             description = 'lt';

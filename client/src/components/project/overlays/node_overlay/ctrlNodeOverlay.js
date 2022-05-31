@@ -115,7 +115,7 @@ angular.module('common')
                     showNodeDetailOnLoad = snapData.snapshot.layout.settings.showNodeDetailOnLoad && $scope.mapprSettings.nodeFocusShow;
                 }
                 if ($scope.player.player.settings.showStartInfo) {
-                    $scope.toggleRightPanel();
+                   $timeout(()=> $scope.toggleRightPanel(),500);
                 }
             });
             $scope.$on(BROADCAST_MESSAGES.snapshot.changed, function onSnapChange(e, data) {
