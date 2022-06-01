@@ -171,15 +171,11 @@ angular.module('common')
                     
                 });
                 
-                scope.$on(BROADCAST_MESSAGES.snapshot.changed, function (ev, data) {
-                    setTimeout(() => {
-                        draw();
-                    }, 0)
-                });
-
                 scope.calcLineWidth = function(item) {
-                    var num = item.selTagFreq || item.globalTagFreq;
-                    return num / scope.totalValue * 100;
+                    if (item) {
+                        var num = item.selTagFreq || item.globalTagFreq;
+                        return num / scope.totalValue * 100;
+                    }
                 }
 
                 scope.calcSelectedLineWidth = function(attr) {
@@ -236,22 +232,24 @@ angular.module('common')
                 });
 
                 scope.getTooltipInfo = function(catData) {
-                    var subsetLength = subsetService.currentSubset().length;
-                    
-                    var total = 0;
-                    if (subsetLength) {
-                        var currentFreq = subsetLength > 0 ? catData.selTagFreq : catData.globalTagFreq;
-                        total = currentFreq;
-                    } else {
-                        total = catData.globalTagFreq;
-                    }
+                    if (catData) {
+                        var subsetLength = subsetService.currentSubset().length;
+                        var total = 0;
+                        if (subsetLength) {
+                            var currentFreq = subsetLength > 0 ? catData.selTagFreq : catData.globalTagFreq;
+                            total = currentFreq;
+                        } else {
+                            total = catData.globalTagFreq;
+                        }
 
-                    const selectedVals = scope.selectedValues[catData.id];
-                    if (scope.totalSelectedValue) {
-                        return (selectedVals || 0) + ' / ' + total;
-                    }
+                        const selectedVals = scope.selectedValues[catData.id];
+                        if (scope.totalSelectedValue) {
+                            return (selectedVals || 0) + ' / ' + total;
+                        }
 
-                    return total;
+                        return total;
+                    }
+                    return 0
                 }
 
                 scope.overCat = function (catData, event) {
@@ -265,7 +263,7 @@ angular.module('common')
                 // mousr stuff
                 scope.onCatClick = function (catData, event) {
                     if (catData.isSubsetted) return;
-                    
+
                     selectFilter(catData);
                 };
 
