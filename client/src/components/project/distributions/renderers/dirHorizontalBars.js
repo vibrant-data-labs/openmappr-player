@@ -248,10 +248,11 @@ angular.module('common')
 
                     const selectedVals = scope.selectedValues[catData.id];
                     if (scope.totalSelectedValue) {
-                        return (selectedVals || 0) + ' / ' + total;
+                        //return (selectedVals || 0) + ' / ' + total;
+                        return ((selectedVals || 0) / total * 100).toFixed(1) + `% / ${catData.percentage}%`;
                     }
-
-                    return total;
+                   
+                    return catData.percentage ? `${catData.percentage}%`: total;
                 }
 
                 scope.overCat = function (catData, event) {
@@ -311,12 +312,18 @@ angular.module('common')
                 var currSelFreqs = getCurrSelFreqsObj(currentSel, attrInfo.attr);
                 var maxValue = 0;
                 var maxFreq = attrInfo.nValues;
-
+                var usePercentage = true;
                 var inFilteringMode = filteringCatVals.length > 0;
                 var highlightedCats = [];
                 var subset = subsetService.currentSubset()
                 var settings = renderGraphfactory.getRenderer().settings;
-
+                var values = attrInfo.values.map(function(catVal){
+                    var globalFreq = attrInfo.valuesCount[catVal],
+                        selTagFreq = currSelFreqs[catVal] || 0;
+                    return subset.length ? selTagFreq : globalFreq;
+                });
+                var maxVal = values.reduce(function(v,v1){return v+v1;});
+                console.log({maxVal});
                 var catData = _.map(attrInfo.values, function genCatData(catVal) {
                     var globalFreq = attrInfo.valuesCount[catVal],
                         selTagFreq = currSelFreqs[catVal] || 0;
@@ -342,11 +349,12 @@ angular.module('common')
                     const color = attrInfo.attr.id === settings('nodeColorAttr') ? 
                             d3.rgb(layout.scalers.color(catVal)).toString() : 
                             '#cccccc';
-
+                    var percent = maxVal/100; 
                     return {
                         colorVal: color,
                         colorStr: valColorMap[catVal] && _.isArray(valColorMap[catVal]) ? valColorMap[catVal][0] : defColorStr,
                         text: catVal, // the text in the bar
+                        percentage: usePercentage ? (val / percent).toFixed(1) : undefined,
                         id: catVal, // the Id of cat
                         selPercent: selTagFreq > 0 ? Math.max(0.1, selTagFreq / totalNodes * 100) : 0,
                         selPercentOfSel: currentSel.length < 2 ? globalFreq / totalNodes * 100 : selTagFreq / currentSel.length * 100,
