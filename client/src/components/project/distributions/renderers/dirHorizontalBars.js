@@ -249,7 +249,7 @@ angular.module('common')
                     const selectedVals = scope.selectedValues[catData.id];
                     if (scope.totalSelectedValue) {
                         //return (selectedVals || 0) + ' / ' + total;
-                        return ((selectedVals || 0) / total * 100).toFixed(1) + '% / 100%';
+                        return ((selectedVals || 0) / total * 100).toFixed(1) + `% / ${catData.percentage}%`;
                     }
                    
                     return catData.percentage ? `${catData.percentage}%`: total;
