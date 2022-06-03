@@ -224,7 +224,7 @@ angular.module('common')
                         histoData.binType = getBinType(attrInfo);
                         histoBars = createGlobalDistribution(histElem, tooltip, attrInfo, renderCtrl, histoData, nodes);
                         $timeout(function () {
-                            updateSelectionBars(histoBars, [], attrInfo, histoData, mappTheme, false, histElem, renderCtrl);
+                            updateSelectionBars(histoBars, [], attrInfo, histoData, mappTheme, false, histElem, renderCtrl, scope.isLogScale);
                         }, 500);
                     }, 500);
                 }
@@ -817,7 +817,7 @@ angular.module('common')
                 return bar;
             }
 
-            function updateSelectionBars(bar, selectedNodes, attrInfo, histoData, mappTheme, showClusterNodes, histElem, renderCtrl) {
+            function updateSelectionBars(bar, selectedNodes, attrInfo, histoData, mappTheme, showClusterNodes, histElem, renderCtrl,isLogScale) {
 
                 _log(logPrefix + 'rebuilding selections');
                 var principalNode = null;
@@ -879,7 +879,7 @@ angular.module('common')
                         const min = selectionCountsList[i].min;
                         const max = selectionCountsList[i].max;
                         const node = _.filter(allNodes, x => {
-                            const val = x.attr[mapprSettings.nodeColorAttr];
+                            const val = isLogScale ? Math.log10(x.attr[mapprSettings.nodeColorAttr]):x.attr[mapprSettings.nodeColorAttr];
                             return val >= min && val <= max;
                         });
                         const barColor = node && node.length ? node[0].colorStr : opts.barColor;
