@@ -93,7 +93,6 @@ function ($rootScope, $q, $compile, $timeout, renderGraphfactory, layoutService,
         }
         
         scope.updateXLayout = function(attrId) {
-            console.log('QQQQ', attrId, scope.xaxisId);
             updateLayout(scope.xaxisId, 'x');
         }
 
