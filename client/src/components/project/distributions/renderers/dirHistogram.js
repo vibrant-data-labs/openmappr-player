@@ -147,7 +147,7 @@ angular.module('common')
                 scope.$on(BROADCAST_MESSAGES.hss.select, function (ev, payload) {
                     var nodes = selectService.selectedNodes.length == subsetService.currentSubset().length ? [] : payload.nodes;
                     updateSelectionBars(histoBars, nodes, attrInfo, histoData, mappTheme, false, histElem, renderCtrl);
-                    updateFiltSelBars(histoBars, nodes, attrInfo, histoData);
+                    updateFiltSelBars(histoBars, nodes, attrInfo, histoData, renderCtrl);
                 });
 
                 scope.$on(BROADCAST_MESSAGES.hss.subset.changed, function (ev, payload) {
@@ -413,9 +413,11 @@ angular.module('common')
                 return histoRangeList;
             }
 
-            function getSelectionColor(nodes, opts) {
+            function getSelectionColor(nodes, opts, selectionColor, isColorAttr) {
                 if (_.keys(_.indexBy(nodes, 'colorStr')).length === 1) {
                     return nodes[0].colorStr;
+                } else if (isColorAttr) {
+                    return selectionColor || opts.selectionDefaultColor;
                 }
                 else {
                     return opts.selectionDefaultColor;
@@ -817,6 +819,17 @@ angular.module('common')
                 return bar;
             }
 
+            function getNodeClusterColor(nodes, attrId) {
+                var maxNode = _(nodes).map(function(x) {
+                    return {
+                        [attrId]: x.attr[attrId],
+                        color: x.colorStr
+                    }
+                }).sortBy(attrId).last();
+
+                return maxNode ? maxNode.color : undefined;
+            }
+
             function updateSelectionBars(bar, selectedNodes, attrInfo, histoData, mappTheme, showClusterNodes, histElem, renderCtrl,isLogScale) {
 
                 _log(logPrefix + 'rebuilding selections');
@@ -837,7 +850,9 @@ angular.module('common')
                 var selectionCountsList = histoData.selectionCountsList = mapSelectionToBars(attrInfo.attr.id, selectionValuesMap, histoData.d3Data, !histoData.isOrdinal, attrInfo);
                 _log(logPrefix + 'selection values map data: ', selectionValuesMap);
                 _log(logPrefix + 'selection counts list: ', selectionCountsList);
-                var selectionColor = getSelectionColor(selectedNodes, opts);
+                var isColorBy = renderCtrl.getMapprSettings().nodeColorAttr == attrInfo.attr.id;
+                var nodeClusterColor = isColorBy && attrInfo.isNumeric ? getNodeClusterColor(selectedNodes, attrInfo.attr.id) : undefined;
+                var selectionColor = getSelectionColor(selectedNodes, opts, nodeClusterColor, isColorBy);
 
                 var selectionData = _.map(selectionCountsList, function (r) { return { y: r.selectionCount } });
                 var yScaleFunc = generateYScale(attrInfo, histoData.height, selectionData);
@@ -960,14 +975,16 @@ angular.module('common')
 
             }
 
-            function updateFiltSelBars(bar, selectedNodes, attrInfo, histoData) {
+            function updateFiltSelBars(bar, selectedNodes, attrInfo, histoData, renderCtrl) {
                 _log(logPrefix + 'rebuilding selections');
                 var opts = histoData.opts;
                 var selectionValuesMap = getSelectionValuesMap(selectedNodes, attrInfo.attr.id);
                 var filtSelectionCountsList = mapSelectionToBars(attrInfo.attr.id, selectionValuesMap, histoData.d3Data, !histoData.isOrdinal, attrInfo);
                 _log(logPrefix + 'filtered selection values map data: ', selectionValuesMap);
                 _log(logPrefix + 'filtered selection counts list: ', filtSelectionCountsList);
-                var selectionColor = getSelectionColor(selectedNodes, opts);
+                var isColorBy = renderCtrl.getMapprSettings().nodeColorAttr == attrInfo.attr.id;
+                var nodeClusterColor = isColorBy && attrInfo.isNumeric ? getNodeClusterColor(selectedNodes, attrInfo.attr.id) : undefined;
+                var selectionColor = getSelectionColor(selectedNodes, opts, nodeClusterColor, isColorBy);
 
                 var yScaleFunc = generateYScale(attrInfo, histoData.height, _.map(filtSelectionCountsList, function (r) { return { y: r.selectionCount } }));
                 bar.each(function (d, i) {
