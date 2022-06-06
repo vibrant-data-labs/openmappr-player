@@ -11,29 +11,37 @@ function ($rootScope, $q, $compile, $timeout, renderGraphfactory, layoutService,
         //
         // WARN: there is a hardcode of 50 offset for both top and left in the drawMarker to counter CSS margins.
         //
-        '<div id="axes" class="axis-container">'+
-            '<div ng-show="yshow" class="yaxis-tit"><div><h4 class="truncate no-text-transform" uib-tooltip="{{mapprSettings.yAxTooltip}}" tooltip-placement="right">' + 
-            '<select class="resizeselect" ng-if="attrs.length" ng-change="updateYLayout(attr.id)" ng-model="yaxisId">' + 
-            '<option ng-repeat="attr in attrs" value="{{attr.id}}" ng-selected="attr.id == yaxisId">{{attr.title}}</option>' +
-            '</select>' +
-            '<span ng-if="!attrs.length" class="subtitle">{{getTitle(yaxisId)}}</span>' +
-            '</h4></div></div>'+
-            '<div ng-show="yshow" class="yaxis-bkgrnd"></div>'+
-            '<div ng-show="yshow && mapprSettings.yAxTickShow" class="yaxis"></div>'+
-            '<div ng-show="xshow" class="xaxis-tit"><div><h4 class="truncate no-text-transform" uib-tooltip="{{mapprSettings.xAxTooltip}}" tooltip-placement="top">' + 
-            '<select class="resizeselect" ng-if="attrs.length" ng-change="updateXLayout(attr.id)" ng-model="xaxisId">' + 
-            '<option ng-repeat="attr in attrs" value="{{attr.id}}" ng-selected="attr.id == xaxisId">{{attr.title}}</option>' +
-            '</select>' +   
-            '<span ng-if="!attrs.length" class="subtitle">{{getTitle(xaxisId)}}</span>' +  
-            '</h4></div></div>'+
-            '<div ng-show="xshow" class="xaxis-bkgrnd"></div>'+
-            '<div ng-show="xshow" class="xaxis-container">'+
-            '<div ng-show="xshow && mapprSettings.xAxTickShow" class="xaxis"></div>'+
-            '</div>'+
-            '<div ng-show="xshow && yshow" class="axes-square"></div>'+
-            '<div ng-show="xshow && yshow" class="x-end-axe-square"></div>'+
-            '<div ng-show="xshow && yshow" class="y-end-axe-square"></div>'+
-        '</div>',
+        `<div id="axes" class="axis-container">
+            <div ng-show="yshow" class="yaxis-tit">
+                <div>
+                    <h4 class="truncate no-text-transform" uib-tooltip="{{mapprSettings.yAxTooltip}}" tooltip-placement="right">
+                        <select class="resizeselect yaxis-selector" ng-if="attrs.length" ng-change="updateYLayout()" ng-model="yaxisId">
+                            <option ng-repeat="attr in attrs" ng-attr-value="attr.id" ng-selected="attr.id == yaxisId">{{attr.title}}</option>
+                        </select>
+                        <span ng-if="!attrs.length" class="subtitle">{{getTitle(yaxisId)}}</span>
+                    </h4>
+                </div>
+            </div>
+            <div ng-show="yshow" class="yaxis-bkgrnd"></div>
+            <div ng-show="yshow && mapprSettings.yAxTickShow" class="yaxis"></div>
+            <div ng-show="xshow" class="xaxis-tit">
+                <div>
+                    <h4 class="truncate no-text-transform" uib-tooltip="{{mapprSettings.xAxTooltip}}" tooltip-placement="top">
+                        <select class="resizeselect xaxis-selector" ng-if="attrs.length" ng-change="updateXLayout()" ng-model="xaxisId">
+                            <option ng-repeat="attr in attrs" value="{{attr.id}}" ng-selected="attr.id == xaxisId">{{attr.title}}</option>
+                        </select>
+                        <span ng-if="!attrs.length" class="subtitle">{{getTitle(xaxisId)}}</span>
+                    </h4>
+                </div>
+            </div>
+            <div ng-show="xshow" class="xaxis-bkgrnd"></div>
+            <div ng-show="xshow" class="xaxis-container">
+                <div ng-show="xshow && mapprSettings.xAxTickShow" class="xaxis"></div>
+            </div>
+            <div ng-show="xshow && yshow" class="axes-square"></div>
+            <div ng-show="xshow && yshow" class="x-end-axe-square"></div>
+            <div ng-show="xshow && yshow" class="y-end-axe-square"></div>
+        </div>`,
         restrict: 'EA',
         scope: true,
         link: postLinkFn
@@ -84,16 +92,22 @@ function ($rootScope, $q, $compile, $timeout, renderGraphfactory, layoutService,
 
         function updateLayout(attrId, axis) {
             scope.layout.attr[axis] = attrId;
+
             rebuildAndRepositionMarkers();
             $rootScope.$broadcast(BROADCAST_MESSAGES.sigma.resize);
         }
 
-        scope.updateYLayout = function(attrId) {
-            updateLayout(scope.yaxisId, 'y');
+        // not sure why it works only with direct selector
+        scope.updateYLayout = function() {
+            const val = $('.yaxis-selector').val();
+            console.log('new attr Y', val);
+            updateLayout(val, 'y');
         }
         
-        scope.updateXLayout = function(attrId) {
-            updateLayout(scope.xaxisId, 'x');
+        scope.updateXLayout = function() {
+            const val = $('.xaxis-selector').val();
+            console.log('new attr X', val);
+            updateLayout(val, 'x');
         }
 
         scope.getTitle = function(id) {

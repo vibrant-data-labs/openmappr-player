@@ -19,10 +19,6 @@
       z-index: 100;
     }
 
-    &:not(:last-child) {
-      margin-bottom: 10px;
-    }
-
     &_compact {
       .section__content {
         margin-bottom: -10px;
@@ -36,7 +32,7 @@
       width: 345px;
       background: #fff;
       z-index: 100;
-      border-bottom: 1px solid #E4EAEF;
+      
       margin-bottom: 10px;
       overflow-x: hidden;
 
@@ -149,6 +145,13 @@
       display: flex;
     }
 
+    &__social {
+      padding: 10px 20px;
+      display: flex;
+      background: #fff;
+      border-bottom: 1px solid #E4EAEF;
+    }
+
     &__info {
       display: flex;
       flex-wrap: wrap;
@@ -189,15 +192,15 @@
         }
 
         &.less {
+          height: 35px;
           position: absolute;
           left: 0;
-          top: 0;
           bottom: 0;
           z-index: 10;
           padding: 0;
           width: 40px;
-          border-radius: 5px 0 0 0;
-          background: #D2D6D9 deployedUrl('/img/tab-more.svg') 50% no-repeat;
+          border-radius: 0 0 0 5px;
+          background: #fbfbfb deployedUrl('/img/tab-more.svg') 50% no-repeat;
           cursor: pointer;
           transition: background-color .2s;
           transform: rotate(180deg);
@@ -208,15 +211,15 @@
         }
 
         &.more {
+          height: 35px;
           position: absolute;
           right: 0;
-          top: 0;
           bottom: 0;
           z-index: 10;
           padding: 0;
           width: 40px;
           border-radius: 5px 0 0 0;
-          background: #D2D6D9 deployedUrl('/img/tab-more.svg') 50% no-repeat;
+          background: #fbfbfb deployedUrl('/img/tab-more.svg') 50% no-repeat;
           cursor: pointer;
           transition: background-color .2s;
 
@@ -264,6 +267,10 @@
     position: relative;
     background: rgb(228, 234, 239);
     padding-top: 10px;
+
+    &_pt {
+      padding-top: 25px;
+    }
 
     &::after {
       content: '';

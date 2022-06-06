@@ -21,7 +21,6 @@
     "publish-player": "npm run build-and-publish:no-date && npm run build-and-publish:with-date"
   },
   "dependencies": {
-    "12": "^1.0.2",
     "aws-sdk": "^2.754.0",
     "bluebird": "^3.7.2",
     "child_process": "^1.0.2",

@@ -161,6 +161,11 @@
                                 display: none;
                             }
 
+                            button{
+                                text-overflow: ellipsis;
+                                overflow: hidden;
+                            }
+
                             //::-webkit-scrollbar {
                             //    background-color: #efefef;
                             //}

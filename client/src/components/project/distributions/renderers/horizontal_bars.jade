@@ -1,4 +1,4 @@
-.panel-item.pointable-cursor(ng-repeat="item in catListData", ng-class="{'highlighted' : item.highlightOnNodeHover}", uib-tooltip="{{::item.name}}", tooltip-placement="right", tooltip-append-to-body="true")
+.panel-item.pointable-cursor(ng-repeat="item in catListData track by $index", ng-class="{'highlighted' : item.highlightOnNodeHover}", uib-tooltip="{{::item.name}}", tooltip-placement="right", tooltip-append-to-body="true")
   .flex-container.color-box(
     ng-mouseenter="overCat(item, $event)", 
 		ng-mouseleave="outCat(item)",
@@ -14,7 +14,7 @@
   span.panel-item-actions__info {{isShowMore ? totalItems : displayItemsBars}} of {{totalItems}}
   button.panel-item-actions__btn(ng-click="toggleShowMore()"){{ !isShowMore ? 'Show More →' : '← Less' }}
 .panel-item-more(ng-class="{'panel-item-more_open' : isShowMore }")
-  .panel-item.pointable-cursor(ng-repeat="item in catListDataTail", ng-if="catListDataTail.length", ng-class="{'highlighted' : item.highlightOnNodeHover}", uib-tooltip="{{::item.name}}", tooltip-placement="right", tooltip-append-to-body="true")
+  .panel-item.pointable-cursor(ng-repeat="item in catListDataTail track by $index", ng-if="catListDataTail.length", ng-class="{'highlighted' : item.highlightOnNodeHover}", uib-tooltip="{{::item.name}}", tooltip-placement="right", tooltip-append-to-body="true")
     .flex-container.color-box(
       ng-mouseenter="overCat(item, $event)", 
       ng-mouseleave="outCat(item)",
