@@ -235,17 +235,19 @@ angular.module('common')
                     if (catData) {
                         var subsetLength = subsetService.currentSubset().length;
                         var total = 0;
+                        var percent = catData.totalNodes / 100;
                         if (subsetLength) {
                             var currentFreq = subsetLength > 0 ? catData.selTagFreq : catData.globalTagFreq;
                             total = currentFreq;
+                            percent = subsetLength / 100;
                         } else {
                             total = catData.globalTagFreq;
                         }
-
+                        
                         const selectedVals = scope.selectedValues[catData.id];
                         if (scope.totalSelectedValue) {
                             //return (selectedVals || 0) + ' / ' + total;
-                            return ((selectedVals || 0) / total * 100).toFixed(1) + `% / ${catData.percentage}%`;
+                            return ((selectedVals || 0) / percent).toFixed(1) + `% / ${catData.percentage}%`;
                         }
                        
                         return catData.percentage ? `${catData.percentage}%`: total;
