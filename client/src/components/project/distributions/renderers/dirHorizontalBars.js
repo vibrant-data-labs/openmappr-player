@@ -187,7 +187,7 @@ angular.module('common')
                         return 0;
                     }
             
-                    return scope.selectedValues[attr.id] / scope.totalSelectedValue * 100;
+                    return scope.selectedValues[attr.id] / attr.val * 100;
                 }
 
                 scope.$on(BROADCAST_MESSAGES.hss.select, function (ev, data) {
@@ -235,17 +235,19 @@ angular.module('common')
                     if (catData) {
                         var subsetLength = subsetService.currentSubset().length;
                         var total = 0;
+                        var percent = catData.totalNodes / 100;
                         if (subsetLength) {
                             var currentFreq = subsetLength > 0 ? catData.selTagFreq : catData.globalTagFreq;
                             total = currentFreq;
+                            percent = subsetLength / 100;
                         } else {
                             total = catData.globalTagFreq;
                         }
-
+                        
                         const selectedVals = scope.selectedValues[catData.id];
                         if (scope.totalSelectedValue) {
                             //return (selectedVals || 0) + ' / ' + total;
-                            return ((selectedVals || 0) / total * 100).toFixed(1) + `% / ${catData.percentage}%`;
+                            return ((selectedVals || 0) / percent).toFixed(1) + `% / ${catData.percentage}%`;
                         }
                        
                         return catData.percentage ? `${catData.percentage}%`: total;
@@ -349,6 +351,7 @@ angular.module('common')
                             '#cccccc';
                     var percent = maxVal/100; 
                     return {
+                        val:val,
                         colorVal: color,
                         colorStr: valColorMap[catVal] && _.isArray(valColorMap[catVal]) ? valColorMap[catVal][0] : defColorStr,
                         text: catVal, // the text in the bar
