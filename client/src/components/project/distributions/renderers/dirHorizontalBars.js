@@ -187,7 +187,7 @@ angular.module('common')
                         return 0;
                     }
             
-                    return scope.selectedValues[attr.id] / scope.totalSelectedValue * 100;
+                    return scope.selectedValues[attr.id] / attr.val * 100;
                 }
 
                 scope.$on(BROADCAST_MESSAGES.hss.select, function (ev, data) {
@@ -351,6 +351,7 @@ angular.module('common')
                             '#cccccc';
                     var percent = maxVal/100; 
                     return {
+                        val:val,
                         colorVal: color,
                         colorStr: valColorMap[catVal] && _.isArray(valColorMap[catVal]) ? valColorMap[catVal][0] : defColorStr,
                         text: catVal, // the text in the bar
