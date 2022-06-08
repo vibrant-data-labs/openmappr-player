@@ -247,8 +247,18 @@ angular.module('common')
                     graph = renderGraphfactory.sig().graph;
                 }
                 var edges = {};
-                var nodes = _.map(nodeIds, function (nodeId) {
-                    var node = findNodeWithId(nodeId, sigRender.sig);
+                
+                var nodesFilter = _.reduce(nodeIds, function(acc, nodeId) {
+                    const node = findNodeWithId(nodeId, sigRender.sig);
+
+                    if (node) {
+                        acc.push(node);
+                    }
+                    return acc;
+                }, []);
+
+                var nodes = _.map(nodesFilter, function (node) {
+                    var nodeId = node.id;
                     var isSelected = selectedNodes.indexOf(nodeId) > -1;
                     if (isSelected) {
                         node.isSelected = true;
@@ -257,6 +267,7 @@ angular.module('common')
                         node.isSelected = false;
                         node.inHover = true;
                     }
+                    
                     if (hoveredSingleNode && hoveredSingleNode == nodeId ||
                         selectService.singleNode && selectService.singleNode.id == nodeId) {
                         node.specialHighlight = true;
