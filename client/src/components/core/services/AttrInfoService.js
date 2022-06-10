@@ -362,14 +362,17 @@ angular.module('common')
                 var i, val, valInfo, nVal;
                 values = _.map(values).sort(function(a,b){ return a > b ? 1 : -1; });
                 nVal = values.length;
+                var maxBound = Math.round(d3.max(values)*100);
+                var minBound = Math.round(d3.min(values)*100);
+                var isSingleBar = maxBound == minBound;
                 destination.bounds = {
-                    max: Math.round(d3.max(values)*100)/100,
+                    max: (isSingleBar ? (maxBound + 5): maxBound)/100,
                     //quantile_90: Math.round(d3.quantile(values,0.90)*100)/100,
                     quantile_75: Math.round(d3.quantile(values,0.75)*100)/100,
                     quantile_50: Math.round(d3.median(values)*100)/100,
                     quantile_25: Math.round(d3.quantile(values,0.25)*100)/100,
                     //quantile_10: Math.round(d3.quantile(values,0.10)*100)/100,
-                    min: Math.round(d3.min(values)*100)/100
+                    min: (isSingleBar ? (minBound - 5): minBound)/100
                     // mean: Math.round(d3.mean(values)*100)/100
                 };
                 destination.stats = {
@@ -506,6 +509,10 @@ angular.module('common')
                 // set bins for integers with a small range of values
                 if( attrInfo.isInteger && (attrInfo.bounds.max - attrInfo.bounds.min) < 40 ) {
                     nBins = attrInfo.bounds.max - attrInfo.bounds.min + 1;
+                }
+
+                if (attrInfo.isNumeric && attrInfo.bounds.max === attrInfo.bounds.min) {
+                    nBins = 1;
                 }
                 return nBins;
             }
