@@ -164,7 +164,9 @@ angular.module('common')
                     var nodes = subsetService.subsetNodes;
                    
                     if (!nodes.length) {
-                        draw();
+                        $timeout(function() {
+                            draw();
+                        }, 0);
                     } else {
                         drawSubsetNodes({nodes, subsetCount: nodes.length})
                     }
