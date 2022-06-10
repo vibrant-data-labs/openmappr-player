@@ -148,8 +148,10 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
 
     $scope.$on(BROADCAST_MESSAGES.snapshot.changed, function (event, data) {
         var colorNodesByAttr = data.snapshot.layout.settings.nodeColorAttr;
+        var sizeByAttr = data.snapshot.layout.settings.nodeSizeAttr;
         var nodeAttrs = layoutService.getNodeColorAttrs();
         $scope.colorByAttrUpdate(nodeAttrs.find(x => x.id === colorNodesByAttr));
+        $scope.sizeByAttrUpdate(nodeAttrs.find(x => x.id === sizeByAttr));
 
         $timeout(function() {
             if (subsetService.subsetNodes.length > 0) {
@@ -224,6 +226,7 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
     **************************************/
 
     function initialise() {
+        console.log('ctrlDataPresentation! nodeSizeAttr', $scope.mapprSettings.nodeSizeAttr);
         if(_.any($scope.dataGroupVMs, 'editClusterName')) {
             console.info(logPrefix + 'legend in edit mode, skipping initialise.');
             return;
