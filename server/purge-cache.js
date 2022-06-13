@@ -38,7 +38,7 @@ async function purgeCloudFront(bucketName) {
   console.warn(`Found distributions: ${distributions.length}`);
   distributions.forEach((d) => console.warn(d.Aliases.Items.join(',')));
 
-  //await Promise.all(distributions.map(d => invalidateDistribution(d)));
+  await Promise.all(distributions.map(d => invalidateDistribution(d)));
   console.warn('Distribution invalidating is created');
 
   return distributions.map(d => ({
