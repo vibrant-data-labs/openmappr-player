@@ -8,7 +8,7 @@
     span.color-box__line(style="background-color: {{item.colorVal + 50}}; width: {{calcSelectedLineWidth(item)}}%")    
     div(ng-if="ui.summaryToggleOpen && (item.archetypes.length > 0 || item.bridgers.length > 0)")
       .legend-line-down.animate-fade(style="border-color: {{item.colorVal}}" ng-class="{'only-one':(item.bridgers.length == 0 || item.archetypes.length == 0)}")
-    h6.less-gutter.panel-text {{item.text}}
+    h6.less-gutter.panel-text(ng-class="{'reduced': isInSelection }") {{item.text}}
     h6.panel-number {{getTooltipInfo(item)}}
 .panel-item-actions(ng-if="catListDataTail.length", ng-class="{'panel-item-actions_active' : isShowMore}")
   span.panel-item-actions__info {{isShowMore ? totalItems : displayItemsBars}} of {{totalItems}}

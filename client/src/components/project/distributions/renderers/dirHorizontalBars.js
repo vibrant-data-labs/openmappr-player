@@ -193,6 +193,7 @@ angular.module('common')
                 }
 
                 scope.$on(BROADCAST_MESSAGES.hss.select, function (ev, data) {
+                    scope.isInSelection = Boolean(data.nodes.length);
                     if (!data.nodes.length) {
                         scope.totalSelectedValue = 0;
                         return;
@@ -212,7 +213,7 @@ angular.module('common')
                         cat.isChecked = cat.isSubsetted || !cat.isSubsetted && selectService.hasAttrId(scope.attrToRender.id, cat.id);
 
                         return cat;
-                    });                 
+                    });
                 });
                 /**
          * watch filters being enabled disabled
@@ -249,7 +250,7 @@ angular.module('common')
                         const selectedVals = scope.selectedValues[catData.id];
                         if (scope.totalSelectedValue) {
                             //return (selectedVals || 0) + ' / ' + total;
-                            return ((selectedVals || 0) / percent).toFixed(1) + `% / ${catData.percentage}%`;
+                            return ((selectedVals || 0) / total * 100).toFixed(1) + `% / ${catData.percentage}%`;
                         }
                        
                         return catData.percentage ? `${catData.percentage}%`: total;

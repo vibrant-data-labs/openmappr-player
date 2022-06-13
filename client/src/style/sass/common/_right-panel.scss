@@ -150,6 +150,10 @@
     display: block;
     text-overflow: ellipsis;
     white-space: nowrap;
+
+    &.reduced {
+      max-width: 70%;
+    }
   }
 
   .panel-edit-icon {
