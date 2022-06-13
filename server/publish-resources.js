@@ -8,6 +8,7 @@ const fs = require('fs'),
     mime = require('mime-types'),
     { argv } = require('yargs');
 const getLastCommit = require('./publish-player');
+const purgeCache = require('./purge-cache');
 
 const bucketPrefix = "mappr-player";
 const dataOnly = argv.dataOnly;
@@ -150,10 +151,13 @@ async function readFilesAndUpload() {
     bar1.update(files.length);
     bar1.stop();
 
-    console.log('Site is served on ' + `http://${bucketName}.s3-website-${s3.config.region || 'us-east-1'}.amazonaws.com/`)
+    console.log('Site is served on ' + `http://${bucketName}.s3-website-${s3.config.region || 'us-east-1'}.amazonaws.com/`);
+
+    return bucketName;
 };
 
 readFilesAndUpload()
+    .then(bn => purgeCache(bn))
     .then(() => {
         console.log('All files have been published');
         process.exit(0);
