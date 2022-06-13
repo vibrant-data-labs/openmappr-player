@@ -182,7 +182,7 @@ angular.module('common')
 
             $scope.onTabLoad = function(tab, $event) {
                 var elem = $($event.target[0]).find('span')[0];
-                if (elem.scrollWidth > elem.clientWidth) {
+                if (elem.scrollWidth > elem.clientWidth + 2) {
                     elem.style.textOverflow = 'ellipsis';
                     tab.headerPopupText = tab.key;
                 }

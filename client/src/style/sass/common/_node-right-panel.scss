@@ -181,6 +181,7 @@
           span {
             overflow: hidden;
             vertical-align: bottom;
+            display: block;
           }
 
           &:hover {
@@ -268,7 +269,6 @@
   .tabContainer {
     position: relative;
     background: rgb(228, 234, 239);
-    padding-top: 10px;
 
     &_pt {
       padding-top: 0px;
