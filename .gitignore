@@ -105,3 +105,4 @@ Thumbs.db
 /publish
 /server/config/s3Config.js
 /server/config/local.js
+data

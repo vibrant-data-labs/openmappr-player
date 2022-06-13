@@ -156,6 +156,7 @@
                             width: 100%;
                             overflow: hidden;
                             -ms-overflow-style: none;
+                            max-height: 28px;
 
                             &::-webkit-scrollbar {
                                 display: none;
