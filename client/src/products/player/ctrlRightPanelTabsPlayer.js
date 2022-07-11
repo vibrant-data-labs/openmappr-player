@@ -39,6 +39,9 @@ angular.module('common')
 
             $scope.currentExport = 'all';
             $scope.showButtons = true;
+            $scope.feedbackType = "email";
+            $scope.feedbackText = "Questions, Suggestions, Feedback? Send us your thoughts!";
+            $scope.feedbackLink = "support@openmappr.org";
 
             $scope.exportCurrentImage = function() {
                 var currentExport = $scope.currentExport;
@@ -116,7 +119,11 @@ angular.module('common')
             ];
 
             playerFactory.getPlayerLocally().then(function(resp) {
-                $scope.displayExportButton = resp.settings.displayExportButton;
+              const { displayExportButton, feedback } = resp.settings
+              $scope.displayExportButton = displayExportButton
+              $scope.feedbackLink = feedback.link
+              $scope.feedbackText = feedback.text
+              $scope.feedbackType = feedback.type
             })
             
             /**
