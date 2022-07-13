@@ -1,3 +1,25 @@
+.details-panel(
+  ng-if="layout.plotType != 'list' && layout.plotType != 'grid'"
+)
+  .details-panel__project-title
+    {{getCurrentProjectTitle()}}
+    button.details-panel__project-btn(ng-click="openRightPanel()")
+  .details-panel__row-data
+    .row-data__content {{getSelectedSnapshotTitle() || ''}}
+    .button-group__item
+      button.button.button_type_play-toolbar(
+        ng-class="isSnapshotSelectorOpen ? 'button_icon_cancel' : 'button_icon_chevron-down'"
+        ng-click="toggleSnapshotSelector()"
+        uib-tooltip="Snapshot Selector"
+        tooltip-append-to-body="true"
+        tooltip-placement="right"
+      )
+
+  .details-panel__extra-container(ng-if="isSnapshotSelectorOpen")
+    .extra-container__content
+      .snapshot-selector__item(ng-repeat="snap in getSnapshots()", ng-click="selectSnapshot(snap)", ng-class="{ highlight: selectedSnapshot ? snap.isCurrentSnap: ($index == 0) }" uib-tooltip="{{formatSnapshotTooltip(snap)}}" tooltip-append-to-body="true" tooltip-placement="right")
+        h3 {{formatSnapshotTitle(snap)}}
+        h6(ng-if="snap.subtitle") {{snap.subtitle}}
 .playbar.play-toolbar(ng-class="{'play-toolbar_opened': showSearch}")
   .play-toolbar__buttons
     .button-group_type_play-toolbar
@@ -201,21 +223,3 @@
         tooltip-placement="right"
       ) zoom -
 
-  //- RIGHT AREA
-  .details-panel
-    .details-panel__row-data
-      .row-data__content {{getSelectedSnapshotTitle() || ''}}
-      .button-group__item
-        button.button.button_type_play-toolbar(
-          ng-class="isSnapshotSelectorOpen ? 'button_icon_cancel' : 'button_icon_chevron-down'"
-          ng-click="toggleSnapshotSelector()"
-          uib-tooltip="Snapshot Selector"
-          tooltip-append-to-body="true"
-          tooltip-placement="right"
-        )
-
-    .details-panel__extra-container(ng-if="isSnapshotSelectorOpen")
-      .extra-container__content
-        .snapshot-selector__item(ng-repeat="snap in getSnapshots()", ng-click="selectSnapshot(snap)", ng-class="{ highlight: selectedSnapshot ? snap.isCurrentSnap: ($index == 0) }" uib-tooltip="{{formatSnapshotTooltip(snap)}}" tooltip-append-to-body="true" tooltip-placement="right")
-          h3 {{formatSnapshotTitle(snap)}}
-          h6(ng-if="snap.subtitle") {{snap.subtitle}}

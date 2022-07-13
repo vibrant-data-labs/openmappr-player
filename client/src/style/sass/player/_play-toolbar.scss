@@ -2,7 +2,8 @@
   position: absolute;
   right: 20px;
   left: $side-menu-width + $right-panel-width + 20px;
-  top: 5px;
+  // top: 5px;
+  bottom: 20px;
   padding-left: 20px;
 
   &__buttons {
@@ -45,7 +46,7 @@
     position: absolute;
     left: 0;
     right: 0;
-    top: 50px;
+    bottom: 5px;
   }
 
   .selected,
@@ -260,8 +261,39 @@
 
 .details-panel {
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: column;
   width: 328px;
+  position: absolute;
+  left: 465px;
+  top: 5px;
+
+  &__project-title {
+    font: 400 18px "Poppins";
+    color: #BC3364;
+    display: flex;
+    align-items: center;
+    margin: 11px 0 7px 8px;
+  }
+
+  &__project-btn {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    margin-left: 10px;
+    padding: 0;
+
+    &:after {
+      content: '';
+      display: block;
+      width: 100%;
+      height: 100%;
+      background-image: deployedUrl('/img/tabs-menu/fa-info-circle_blue.svg');
+      background-repeat: no-repeat;
+    }
+  }
 
   &__row-data {
     height: 27px;
@@ -294,7 +326,7 @@
 
     .extra-container__content {
       position: absolute;
-      bottom: 0;
+      top: 0;
       width: 100%;
       height: 200px;
       overflow-y: scroll;

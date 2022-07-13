@@ -198,6 +198,10 @@ angular.module('common')
                 return '';
             }
 
+            $scope.openRightPanel = function() {
+                $scope.$broadcast(BROADCAST_MESSAGES.ip.changed);
+            }
+
             $scope.getSelectedSnapshot = function () {
                 var currentSnapshot = snapshotService.getCurrentSnapshot();
                 var title = currentSnapshot.snapName;
