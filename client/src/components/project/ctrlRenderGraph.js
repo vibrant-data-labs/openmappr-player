@@ -214,6 +214,10 @@ angular.module('common')
                 return _.get($scope, '$parent.player.player.settings.headerTitle') || ''
             }
 
+            $scope.getLogos = function () {
+                return _.get($scope, '$parent.player.player.settings.logos') || [];
+            }
+
             $scope.getSnapshots = function() {
                 return $scope.player.snapshots.filter(x => x.isEnabled);
             }

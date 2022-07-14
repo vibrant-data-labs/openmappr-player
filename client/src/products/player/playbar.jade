@@ -4,6 +4,9 @@
   .details-panel__project-title
     {{getCurrentProjectTitle()}}
     button.details-panel__project-btn(ng-click="openRightPanel()")
+    .details-panel__logos
+      span.details-panel__logo-item(ng-repeat="logo in getLogos()")
+        img(src="{{logo}}")
   .details-panel__row-data
     .row-data__content {{getSelectedSnapshotTitle() || ''}}
     .button-group__item
