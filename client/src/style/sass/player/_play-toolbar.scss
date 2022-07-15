@@ -261,22 +261,23 @@
 
 .details-panel {
   display: flex;
-  flex-direction: column;
   position: absolute;
   left: 465px;
   top: 5px;
+  right: 20px;
+  align-items: flex-start;
 
   &__project-title {
     font: 400 18px "Poppins";
     color: #BC3364;
     display: flex;
-    align-items: center;
-    margin: 11px 0 7px 8px;
+    align-items: flex-start;
+    margin: 8px 0 7px 8px;
   }
 
   &__project-btn {
-    width: 30px;
-    height: 30px;
+    flex: 0 0 26px;
+    height: 26px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -301,7 +302,7 @@
     border: 1px solid #e6e6e6;
     background: white;
     border-radius: 2px;
-    width: 328px;
+    width: 300px;
 
     .button-group__item {
       height: 100%;
@@ -323,6 +324,7 @@
 
   &__extra-container {
     position: relative;
+    width: 300px;
 
     .extra-container__content {
       position: absolute;
@@ -367,29 +369,53 @@
     } 
   }
 
+  &__title {
+    white-space: nowrap;
+  }
+
   &__logos {
     display: flex;
     align-items: center;
-    margin-left: 10px;
+    margin: 6px 0 0 10px;
+    flex-wrap: wrap;
+    padding-right: 20px;
   }
 
   &__logo-item {
-    width: 28px;
+    // width: 28px;
     height: 28px;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 4px;
+    padding: 3px;
     border: 1px solid #eee;
     border-radius: 4px;
-    margin: 0 2px;
+    margin: 2px;
     background-color: #fff;
-    
+    box-shadow: 0 1px 4px 0px #0000000f;
+
     img {
       width: 100%;
       height: 100%;
       object-fit: contain;
       object-position: center center;
     }
+  }
+  &__logo-more {
+    width: 25px;
+    height: 25px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 2px;
+
+    img {
+      width: 75%;
+    }
+  }
+
+  &__left {
+    position: relative;
   }
 }

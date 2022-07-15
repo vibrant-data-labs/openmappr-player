@@ -215,7 +215,16 @@ angular.module('common')
             }
 
             $scope.getLogos = function () {
-                return _.get($scope, '$parent.player.player.settings.logos') || [];
+                return _.get($scope, '$parent.player.player.settings.logos').slice(0, 5) || [];
+            }
+
+            $scope.isShowMoreBtn = true;
+
+            $scope.showMoreLogos = function() {
+                $scope.getLogos = function () {
+                    return _.get($scope, '$parent.player.player.settings.logos') || [];
+                }
+                $scope.isShowMoreBtn = false;
             }
 
             $scope.getSnapshots = function() {
