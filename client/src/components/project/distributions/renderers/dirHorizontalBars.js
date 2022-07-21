@@ -1,7 +1,7 @@
 /*globals d3,$  */
 angular.module('common')
-    .directive('dirHorizontalBars', ['$timeout', '$q', 'FilterPanelService', 'dataGraph', 'AttrInfoService', 'SelectorService', 'BROADCAST_MESSAGES', 'hoverService', 'selectService', 'subsetService', 'layoutService', 'renderGraphfactory',
-        function ($timeout, $q, FilterPanelService, dataGraph, AttrInfoService, SelectorService, BROADCAST_MESSAGES, hoverService, selectService, subsetService, layoutService, renderGraphfactory) {
+    .directive('dirHorizontalBars', ['$timeout', '$q', 'FilterPanelService', 'dataGraph', 'AttrInfoService', 'SelectorService', 'BROADCAST_MESSAGES', 'hoverService', 'selectService', 'subsetService', 'layoutService', 'renderGraphfactory', 'clusterService',
+        function ($timeout, $q, FilterPanelService, dataGraph, AttrInfoService, SelectorService, BROADCAST_MESSAGES, hoverService, selectService, subsetService, layoutService, renderGraphfactory, clusterService) {
             'use strict';
 
             /*************************************
@@ -41,7 +41,9 @@ angular.module('common')
                 var sortType = scope.attrToRender.sortOps.sortType;
 
                 totalNodes = dataGraph.getAllNodes().length;
+                const x = clusterService.getAllClusters()
 
+                console.log("YYY", dataGraph.getAllNodes())
                 var distrData = {
                     numShowGroups: 0,
                     numShownCats: initVisItemCount,
@@ -84,6 +86,7 @@ angular.module('common')
                     }
                     
                     layoutService.getCurrent().then(function(layout) {
+                        console.log('YY', layout);
                         $timeout(function() {
                             var catListData = genTagListData(cs, attrInfo, filteringCatVals, defColorStr, valColorMap, sortType, sortOrder, layout);
                             setupFilterClasses(catListData, !scope.showFilter);
