@@ -295,7 +295,6 @@ angular.module('common')
                     console.assert(isFinite(n.size) && !isNaN(n.size), 'node size is invalid. ' + n.size + '. Bad layout?');
                     nodes.push(n);
                 });
-                console.log('XX', layout);
                 const clusterAttr = layout.mapprSettings.nodeClusterAttr;
                 const clusters = _.reduce(nodes, function(acc, cv) {
                     const val = cv.attr[clusterAttr];
@@ -305,8 +304,6 @@ angular.module('common')
                     acc[val].push(cv.color);
                     return acc;
                 }, {});
-                console.log('XXX', nodes);
-                console.log("CLUSTERS", clusters, clusterAttr);
                 // calculate the most frequent color
                 Object.keys(clusters).forEach(function(key) {
                     const colors = clusters[key];
