@@ -85,20 +85,7 @@ angular.module('common')
                     
                     layoutService.getCurrent().then(function(layout) {
                         $timeout(function() {
-                            const nodes = [];
-                            _.each(dataGraph.getAllNodes(), function (node) {
-                                var n = _.clone(node);
-                                layout.nodeT(n);
-                                nodes.push(n);
-                            });
-                            const clusterAttr = layout.mapprSettings.nodeClusterAttr;
-                            const clusters = _.reduce(nodes, function(acc, cv) {
-                                const val = cv.attr[clusterAttr];
-                                acc[val] = cv.clusterColorStr;
-                                return acc;
-                            }, {});
-
-                            var catListData = genTagListData(cs, attrInfo, filteringCatVals, defColorStr, valColorMap, sortType, sortOrder, layout, clusters);
+                            var catListData = genTagListData(cs, attrInfo, filteringCatVals, defColorStr, valColorMap, sortType, sortOrder, layout);
                             
                             setupFilterClasses(catListData, !scope.showFilter);
                             filterTags(cs, catListData);
@@ -322,7 +309,21 @@ angular.module('common')
      * @param  {Object} valColorMap      A mapping from Value to it's corresponding color
      * @return {Object}                  An object used to render cat listing
      */
-            function genTagListData(currentSel, globalAttrInfo, filteringCatVals, defColorStr, valColorMap, sortType, sortOrder, layout, clusters) {
+            function getClusters (layout) {
+                const nodes = [];
+                _.each(dataGraph.getAllNodes(), function (node) {
+                    var n = _.clone(node);
+                    layout.nodeT(n);
+                    nodes.push(n);
+                });
+                const clusterAttr = layout.mapprSettings.nodeClusterAttr;
+                return _.reduce(nodes, function(acc, cv) {
+                    const val = cv.attr[clusterAttr];
+                    acc[val] = cv.clusterColorStr;
+                    return acc;
+                }, {});
+            }
+            function genTagListData(currentSel, globalAttrInfo, filteringCatVals, defColorStr, valColorMap, sortType, sortOrder, layout) {
                 var attrInfo = globalAttrInfo;
                 var currSelFreqs = getCurrSelFreqsObj(currentSel, attrInfo.attr);
                 var maxValue = 0;
@@ -361,10 +362,8 @@ angular.module('common')
                         importance = globalFreq;
                     }
                     
-                    // const color = attrInfo.attr.id === settings('nodeColorAttr') ? 
-                    //         d3.rgb(layout.scalers.color(catVal)).toString() : 
-                    //         '#cccccc';
-                    const color = clusters[catVal] || '#cccccc';
+                    const clusters = getClusters(layout);
+                    const color = (clusters && clusters[catVal]) || '#cccccc';
                     var percent = maxVal/100; 
                     return {
                         val:val,
