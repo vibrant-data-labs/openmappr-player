@@ -111,9 +111,9 @@
 			/// Node Color Panel
 			///
 			.panel-scroll(ng-if="!ui.showingLinks && mapprSettings.nodeColorStrat != 'select' && mapprSettings.nodeColorStrat != 'fixed'", dir-kill-tooltip-on-scroll)
-				.panel-list(ng-if="!isNodeColorNumeric" ng-class="{'highlighted': ui.highlightingNodes}")
+				.panel-list( ng-class="{'highlighted': ui.highlightingNodes}")
 					.flex
-						dir-attr-renderer(render-to-type="'horizontal-bars'", attr-to-render="dataGroupsInfo.colorNodesBy", node-color-str="nodeColorStr", is-node="true", show-filter="true", disable-filter="false" theme="appUi.theme" pinned-media="pinnedMedia" gradient="true")
+						dir-attr-renderer(render-to-type="'horizontal-bars'", attr-to-render="dataGroupsInfo.clusterNodesBy", node-color-str="nodeColorStr", is-node="true", show-filter="true", disable-filter="false" theme="appUi.theme" pinned-media="pinnedMedia" gradient="true")
 
 				.panel-list(ng-if="isNodeColorNumeric && isNumericItemByColor")
 					.panel-list__numeric(ng-repeat="item in [isNumericItemByColor]")
