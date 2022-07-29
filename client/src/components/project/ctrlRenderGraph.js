@@ -231,6 +231,24 @@ angular.module('common')
             }
 
             $scope.toggleSnapshotSelector = function () {
+                if (!$scope.isSnapshotSelectorOpen) {
+                    setTimeout(() => {
+                        let scroll = 0;
+                        const elem = document.querySelector('.extra-container__content');
+                        
+                        for (const item of elem.children) {
+                            if (!$scope.selectedSnapshot || item.id === $scope.selectedSnapshot.snapName) {
+                                break;
+                            }
+                            scroll += item.offsetHeight;
+                        }
+
+                        if (elem) {
+                            elem.scroll({top: scroll, behavior: 'smooth'});
+                        }
+                    }, 100)
+                }
+
                 $scope.isSnapshotSelectorOpen = !$scope.isSnapshotSelectorOpen;
             }
 
