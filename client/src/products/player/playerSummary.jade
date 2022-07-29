@@ -26,7 +26,6 @@
 
 					.filter-list__item(
 						ng-class="{'attr-hidden':!vm.nodeSizeAttr.visible, 'first': ($index == 1), 'chart-first-item': vm.nodeSizeAttr.isFirstChart, 'tags-first-item': vm.nodeSizeAttr.isFirstTag}",
-						ng-click='selectNodesByAttrib(vm.nodeSizeAttr.title, vm.nodeSizeAttr.value, $event)'
 					)
 						section.card.card_type_filter(data-attr="{{vm.nodeSizeAttr.id}}", ng-class="{'card__chart' : vm.nodeSizeAttr.attrType == 'integer' || vm.nodeSizeAttr.attrType == 'float' || vm.nodeSizeAttr.attrType == 'boolean' || vm.nodeSizeAttr.attrType == 'year' || vm.nodeSizeAttr.attrType == 'timestamp' }")
 							.card__body

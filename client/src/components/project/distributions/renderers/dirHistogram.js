@@ -145,7 +145,7 @@ angular.module('common')
                 };
 
                 scope.$on(BROADCAST_MESSAGES.hss.select, function (ev, payload) {
-                    var nodes = selectService.selectedNodes.length == subsetService.currentSubset().length ? [] : payload.nodes;
+                    var nodes = payload.nodes;
                     updateSelectionBars(histoBars, nodes, attrInfo, histoData, mappTheme, false, histElem, renderCtrl);
                     updateFiltSelBars(histoBars, nodes, attrInfo, histoData, renderCtrl);
                 });
