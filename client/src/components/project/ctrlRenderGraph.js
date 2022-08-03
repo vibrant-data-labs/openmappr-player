@@ -253,14 +253,14 @@ angular.module('common')
                         let scroll = 0;
                         const elem = document.querySelector('.extra-container__content');
                         
-                        for (const item of elem.children) {
-                            if (!$scope.selectedSnapshot || item.id === $scope.selectedSnapshot.snapName) {
-                                break;
-                            }
-                            scroll += item.offsetHeight;
-                        }
-
                         if (elem) {
+                            for (const item of elem.children) {
+                                if (!$scope.selectedSnapshot || item.id === $scope.selectedSnapshot.snapName) {
+                                    break;
+                                }
+                                scroll += item.offsetHeight;
+                            }
+
                             elem.scroll({top: scroll, behavior: 'smooth'});
                         }
                     }, 100)
