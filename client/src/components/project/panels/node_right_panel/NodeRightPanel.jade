@@ -188,7 +188,7 @@ button.right-panel-btn(ng-click="toggleRightPanel()", ng-class="{'right-panel-bt
                               p {{link.description}}            
           .project-info(ng-if="!nodeRightInfo")
             .section__header
-              h3.section__title.section__title--project {{projectInfoName}}
+              h3.section__title.section__title--project {{drawerTitle}}
             .project-info__content
               div(ng-bind-html="projectInfoTitle | trustHtml")
               div(ng-bind-html="projectInfoDesc | trustHtml")

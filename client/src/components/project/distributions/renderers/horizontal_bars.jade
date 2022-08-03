@@ -4,8 +4,8 @@
 		ng-mouseleave="outCat(item)",
     ng-click="onCatClick(item, $event)")
     .legend-icon(style="color: {{item.colorVal}}")
-    span.color-box__line(style="background-color: {{item.colorVal + 50}}; width: {{calcLineWidth(item)}}%")
-    span.color-box__line(style="background-color: {{item.colorVal + 50}}; width: {{calcSelectedLineWidth(item)}}%")    
+    span.color-box__line(style="background-color: {{item.colorVal}}; width: {{calcLineWidth(item)}}%; opacity: 0.5")
+    span.color-box__line(style="background-color: {{item.colorVal}}; width: {{calcSelectedLineWidth(item)}}%; opacity: 0.5")    
     div(ng-if="ui.summaryToggleOpen && (item.archetypes.length > 0 || item.bridgers.length > 0)")
       .legend-line-down.animate-fade(style="border-color: {{item.colorVal}}" ng-class="{'only-one':(item.bridgers.length == 0 || item.archetypes.length == 0)}")
     h6.less-gutter.panel-text(ng-class="{'reduced': isInSelection }") {{item.text}}

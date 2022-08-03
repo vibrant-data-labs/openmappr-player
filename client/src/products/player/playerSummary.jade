@@ -117,7 +117,7 @@
 					//- 	span
 					//- 		button.square-btn.small-btn.panel-btn(type="button", ng-click="clearSelections();") Reset
 				.color-box__description-wrap
-					h5 Description
+					.color-box__description-title Snapshot Description
 					.color-box__description(ng-if="getSelectedSnapshot().length")
 						div(ng-bind-html="getSelectedSnapshot()[0]")
 						.color-box__description-hidden(ng-bind-html="getSelectedSnapshot()[1]", ng-if="isShowMoreDesc")

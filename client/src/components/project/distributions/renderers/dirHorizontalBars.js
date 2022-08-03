@@ -1,7 +1,7 @@
 /*globals d3,$  */
 angular.module('common')
-    .directive('dirHorizontalBars', ['$timeout', '$q', 'FilterPanelService', 'dataGraph', 'AttrInfoService', 'SelectorService', 'BROADCAST_MESSAGES', 'hoverService', 'selectService', 'subsetService', 'layoutService', 'renderGraphfactory',
-        function ($timeout, $q, FilterPanelService, dataGraph, AttrInfoService, SelectorService, BROADCAST_MESSAGES, hoverService, selectService, subsetService, layoutService, renderGraphfactory) {
+    .directive('dirHorizontalBars', ['$timeout', '$q', 'FilterPanelService', 'dataGraph', 'AttrInfoService', 'SelectorService', 'BROADCAST_MESSAGES', 'hoverService', 'selectService', 'subsetService', 'layoutService', 'renderGraphfactory', 'clusterService',
+        function ($timeout, $q, FilterPanelService, dataGraph, AttrInfoService, SelectorService, BROADCAST_MESSAGES, hoverService, selectService, subsetService, layoutService, renderGraphfactory, clusterService) {
             'use strict';
 
             /*************************************
@@ -86,6 +86,7 @@ angular.module('common')
                     layoutService.getCurrent().then(function(layout) {
                         $timeout(function() {
                             var catListData = genTagListData(cs, attrInfo, filteringCatVals, defColorStr, valColorMap, sortType, sortOrder, layout);
+                            
                             setupFilterClasses(catListData, !scope.showFilter);
                             filterTags(cs, catListData);
                             scope.totalValue = catListData.maxValue;
@@ -93,10 +94,8 @@ angular.module('common')
                             console.log('catListData', catListData);
                             scope.catListData = catListData.data.slice(0, scope.displayItemsBars);
                             scope.catListDataTail = catListData.data.slice(scope.displayItemsBars);
-
                             distrData.numShownCats = Math.min(distrData.numShowGroups * ITEMS_TO_SHOW + initVisItemCount, catListData.data.length);
                         }, 1000)
-                        
                     })
                 }
 
@@ -310,6 +309,20 @@ angular.module('common')
      * @param  {Object} valColorMap      A mapping from Value to it's corresponding color
      * @return {Object}                  An object used to render cat listing
      */
+            function getClusters (layout) {
+                const nodes = [];
+                _.each(dataGraph.getAllNodes(), function (node) {
+                    var n = _.clone(node);
+                    layout.nodeT(n);
+                    nodes.push(n);
+                });
+                const clusterAttr = layout.mapprSettings.nodeClusterAttr;
+                return _.reduce(nodes, function(acc, cv) {
+                    const val = cv.attr[clusterAttr];
+                    acc[val] = cv.clusterColorStr;
+                    return acc;
+                }, {});
+            }
             function genTagListData(currentSel, globalAttrInfo, filteringCatVals, defColorStr, valColorMap, sortType, sortOrder, layout) {
                 var attrInfo = globalAttrInfo;
                 var currSelFreqs = getCurrSelFreqsObj(currentSel, attrInfo.attr);
@@ -349,9 +362,8 @@ angular.module('common')
                         importance = globalFreq;
                     }
                     
-                    const color = attrInfo.attr.id === settings('nodeColorAttr') ? 
-                            d3.rgb(layout.scalers.color(catVal)).toString() : 
-                            '#cccccc';
+                    const clusters = getClusters(layout);
+                    const color = (clusters && clusters[catVal]) || '#cccccc';
                     var percent = maxVal/100; 
                     return {
                         val:val,
