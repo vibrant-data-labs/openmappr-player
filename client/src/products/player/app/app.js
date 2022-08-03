@@ -237,7 +237,8 @@
                 nodeBrowser: {
                     refresh: 'nodeBrowser:refresh',
                     show: 'ip:show'
-                }
+                },
+                changed: 'changed'
             },
             
             // Colored By

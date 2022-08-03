@@ -11,6 +11,11 @@ angular.module('player')
             var loadPlayerData = $q.defer();
             var timeStart = Date.now();
 
+            var tabs = {
+                summary: 'filter',
+                legend: 'summary',
+                list: 'info'
+            }
 
 
             /*************************************
@@ -198,7 +203,8 @@ angular.module('player')
 
             $scope.$on(BROADCAST_MESSAGES.snapshot.loaded, function(e, data) {
                 $scope.snapInfo.activeSnap = data.snapshot;
-                $scope.panelUI.openPanel('filter');
+                const key = $scope.player.player.settings.tabs[0] || 'filter';
+                $scope.panelUI.openPanel(tabs[key]);
             });
 
             $scope.$on(BROADCAST_MESSAGES.sigma.rendered, function(e, data) {

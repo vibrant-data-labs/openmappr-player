@@ -90,7 +90,7 @@ angular.module('common')
             };
 
             $scope.toggleRightPanel = function() {
-                $scope.projectInfoName = $scope.player.player.settings.modalTitle;
+                $scope.drawerTitle = $scope.player.player.settings.defaultPanel;
                 $scope.projectInfoTitle = $scope.player.player.settings.modalSubtitle;
                 $scope.projectInfoDesc = $scope.player.player.settings.modalDescription;
 
@@ -155,6 +155,10 @@ angular.module('common')
                 if (!$scope.beginOverlayRightPanel) {
                     $scope.toggleRightPanel();
                 }
+            });
+
+            $scope.$on(BROADCAST_MESSAGES.ip.changed, function(ev) {
+                $scope.toggleRightPanel();
             });
 
             $scope.onTagLoad = function(section, $event) {
