@@ -119,15 +119,15 @@ angular.module('common')
             };
 
             playerFactory.getPlayerLocally().then(function(resp) {
-                const { displayExportButton, feedback } = resp.settings
-                $scope.displayExportButton = displayExportButton
-                $scope.feedbackLink = feedback.link
-                $scope.feedbackText = feedback.text
-                $scope.feedbackType = feedback.type
+                const { displayExportButton, feedback } = resp.settings;
+                $scope.displayExportButton = displayExportButton;
+                $scope.feedbackLink = feedback.link;
+                $scope.feedbackText = feedback.text;
+                $scope.feedbackType = feedback.type;
 
                 const tabs = resp.player.settings.tabs || Object.keys($scope.tabs);
                 $scope.rightPanelTabs = tabs.map((el) => {
-                    return $scope.tabs[el]
+                    return $scope.tabs[el];
                 })
             })
             
