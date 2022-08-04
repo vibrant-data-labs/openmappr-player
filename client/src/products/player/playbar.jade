@@ -6,204 +6,185 @@
     .details-panel__project-title
       span.details-panel__title{{getCurrentProjectTitle()}}
       button.details-panel__project-btn(ng-click="openRightPanel()")
-    .details-panel__row-data
-      .row-data__content {{getSelectedSnapshotTitle() || ''}}
-      .button-group__item
-        button.button.button_type_play-toolbar(
-          ng-class="isSnapshotSelectorOpen ? 'button_icon_cancel' : 'button_icon_chevron-down'"
-          ng-click="toggleSnapshotSelector()"
-          uib-tooltip="Snapshot Selector"
-          tooltip-append-to-body="true"
-          tooltip-placement="right"
+  .details-panel__controls
+    button.details-panel__button.details-panel__button--search(ng-class="{'active': showSearch}", ng-click="searchToggle()")
+    .playbar.play-toolbar(ng-class="{'play-toolbar_opened': showSearch}")
+      .play-toolbar__buttons
+        .button-group_type_play-toolbar
+          .play-toolbar__content(ng-if="operations.list.length > 1 && operations.opened")
+            .play-toolbar__reset-wrap
+              button.button_reset(
+                ng-click="resetFilters()",
+                ng-disabled="!(ui.activeFilterCount > 0)"
+              ) Clear Selection
+              button.button_collapse(
+                ng-click="collapseBreadcrumbs()",
+                ng-class="{'button_collapse_hide': !isShowBreadcrumbs}"
+              )
+            .play-toolbar-list
+              section.play-toolbar-list__item(ng-repeat="operation in operations.list",
+                ng-if="operation.type != 'init' && isShowBreadcrumbs"
+                ng-class="{'play-toolbar-list__item_subsetted' : operation.type == 'subset', 'play-toolbar-list__item_selected': operation.type == 'select', 'play-toolbar-list__item_opened': operation.isOpened }")
+                header.play-toolbar-list__header(ng-if="operation.type == 'select' || operation.type == 'subset'", ng-click="operations.toggleOperation(operation)")
+                  span(ng-class="{'selected' : $last, 'total': !$last}") {{operation.nodesCount}}
+                  = ' '
+                  | of
+                  = ' '
+                  span.total {{operation.totalNodes}}
+                  = ' '
+                  | nodes
+                  =' '
+                  b(ng-if="operation.type == 'select'") selected
+                  b(ng-if="operation.type == 'subset'", ng-class="{ 'span-subset': ($last || ($index == operations.list.length - 2 && operations.last().type == 'select')) }") subsetted
+
+                  button(ng-if="$index == operations.list.length -1", ng-click="resetOperation()").button_icon_cancel
+
+                .play-toolbar-list__content(ng-if="(operation.searchText || operation.filters) && operation.isOpened")
+                  .filter-section-wrap(ng-if="operation.searchText")
+                      dl.filter-section
+                        dt.filter-section__label
+                          | Search Results  
+                          span(ng-if="operation.searchAttr") &nbsp;{{operation.searchAttr.title}}
+                          | :
+
+                        dd.filter-section__content
+                          ul.filter-section__list
+                            li.filter-section__item
+                              span "{{operation.searchText}}"    
+                  .filter-section-wrap(ng-repeat="filter in operations.filterArray(operation)", ng-if="operation.filters")
+                    dl.filter-section
+                      dt.filter-section__label
+                        | {{filter.attrInfo.attr.title}}:
+
+                      dd.filter-section__content
+                        ul.filter-section__list(ng-if="!operations.isNumeric(filter.attrInfo)")
+                          li.filter-section__item(ng-repeat="val in filter.values.values")
+                            span.filter-section__divider(
+                              ng-if="filter.values.values.length > 1 && $index == filter.values.values.length -1"
+                            ) &nbsp;or&nbsp;
+                            span {{val}}
+                        ul.filter-section__list(ng-if="operations.isNumeric(filter.attrInfo)")
+                          li.filter-section__item(ng-repeat="val in filter.values")
+                            span(ng-if="filter.values.length > 1 && $index == filter.values.length -1") &nbsp;or&nbsp;
+
+                            span.filter-section__item_array(
+                              ng-if="val.description == 'btw'&& (filter.attrInfo.attr.attrType != 'year' && filter.attrInfo.attr.attrType != 'timestamp')"
+                            )
+                              | between
+                              = ' '
+                              span {{val.values[0] | number:2}}
+                              = ' '
+                              span.filter-section__divider and
+                              = ' '
+                              span {{val.values[1] | number:2}}
+
+                            span.filter-section__item_array(
+                              ng-if="val.description == 'btw' && (filter.attrInfo.attr.attrType == 'year')"
+                            )
+                              | between
+                              = ' '
+                              span {{val.values[0]}}
+                              = ' '
+                              span.filter-section__divider and
+                              span {{val.values[1]}}
+
+                            span.filter-section__item_array(
+                              ng-if="val.description == 'btw' && (filter.attrInfo.attr.attrType == 'timestamp')"
+                            )
+                              | between
+                              = ' '
+                              span {{operations.formatTime(val.values[0])}}
+                              = ' '
+                              span.filter-section__divider and
+                              span {{operations.formatTime(val.values[1])}}
+
+                            span(
+                              ng-if="val.description == 'ht' && (filter.attrInfo.attr.attrType == 'year')"
+                            )
+                              | after
+                              = ' '
+                              span {{val.values[0].toString().split('.')[0]}}
+
+                            span.filter-section__item_array(
+                              ng-if="val.description == 'ht' && (filter.attrInfo.attr.attrType == 'timestamp')"
+                            )
+                              | after
+                              = ' '
+                              span {{operations.formatTime(val.values[0])}}
+
+                            span.filter-section__item_array(
+                              ng-if="val.description == 'ht' && (filter.attrInfo.attr.attrType != 'year' && filter.attrInfo.attr.attrType != 'timestamp')"
+                            )
+                              | higher than
+                              = ' '
+                              span {{val.values[0] | number:2}}
+
+                            span.filter-section__item_array(
+                              ng-if="val.description == 'lt' && (filter.attrInfo.attr.attrType == 'year')"
+                            )
+                              | before
+                              = ' '
+                              span {{val.values[0].toString().split('.')[0]}}
+
+                            span.filter-section__item_array(
+                              ng-if="val.description == 'lt' && (filter.attrInfo.attr.attrType == 'timestamp')"
+                            )
+                              | before
+                              = ' '
+                              span {{operations.formatTime(val.values[0])}}
+
+                            span.filter-section__item_array(
+                              ng-if="val.description == 'lt' && (filter.attrInfo.attr.attrType != 'year' && filter.attrInfo.attr.attrType != 'timestamp')"
+                            )
+                              | lower than
+                              = ' '
+                              span {{val.values[0] | number:2}}
+
+                            span(ng-if="val.description == 'eq'") {{val.values[0]}}
+          button.button_summarize(
+            ng-click="subsetFilters()",
+            ng-if="ui.subsetEnabled"
+            uib-tooltip="Click to summarize the selected nodes in the ‘Summary’ tab"
+            tooltip-append-to-body="true"
+            tooltip-placement="right"
+          ) Summarize Selection
+
+      //- .button-group_type_play-toolbar.search
+      //-   .button-group__item
+      //-     button.button.button_type_play-toolbar.button_icon_search(ng-click="searchToggle()") search
+
+      .play-toolbar__search(
+        ng-controller="SearchPanelCtrl"
+        ng-include=' "#{player_prefix_index_source}/partials/components/project/panels/search/search.html" '
       )
-
-    .details-panel__extra-container(ng-if="isSnapshotSelectorOpen")
-      .extra-container__content
-        .snapshot-selector__item(ng-repeat="snap in getSnapshots()", ng-click="selectSnapshot(snap)", ng-class="{ highlight: selectedSnapshot ? snap.isCurrentSnap: ($index == 0) }" uib-tooltip="{{formatSnapshotTooltip(snap)}}" tooltip-append-to-body="true" tooltip-placement="right")
-          h3 {{formatSnapshotTitle(snap)}}
-          h6(ng-if="snap.subtitle") {{snap.subtitle}}
-  .details-panel__logos
-    span.details-panel__logo-item(ng-repeat="logo in getLogos()")
-      img(src="{{logo}}")
-    button.details-panel__logo-more(ng-click="showMoreLogos()", ng-if="isShowMoreBtn && getLogos().length > 4", 
-      data-toggle="tooltip" 
-      uib-tooltip="Show more partners"
-      tooltip-placement="bottom"
-      tooltip-append-to-body="true")
-      img(src="/img/play-toolbar/plus.svg")
-.playbar.play-toolbar(ng-class="{'play-toolbar_opened': showSearch}")
-  .play-toolbar__buttons
-    .button-group_type_play-toolbar
-      //- .button-group__item(
-      //-   ng-class="{ 'subset-enabled': ui.subsetEnabled }"
-      //-   uib-tooltip="Apply your selection to summarize its characteristics in the Tags and Charts and to enable searching or filtering within it"
-      //-   tooltip-placement="bottom"
-      //-   tooltip-append-to-body="true"
-      //-   )
+    button.details-panel__button.details-panel__button--share
+    button.details-panel__button.details-panel__button--info
+    button.details-panel__button.details-panel__button--menu
+  //- .details-panel__logos
+  //-   span.details-panel__logo-item(ng-repeat="logo in getLogos()")
+  //-     img(src="{{logo}}")
+  //-   button.details-panel__logo-more(ng-click="showMoreLogos()", ng-if="isShowMoreBtn && getLogos().length > 4", 
+  //-     data-toggle="tooltip" 
+  //-     uib-tooltip="Show more partners"
+  //-     tooltip-placement="bottom"
+  //-     tooltip-append-to-body="true")
+  //-     img(src="/img/play-toolbar/plus.svg")
+.details-panel__snapshots
+  .row-data__content {{getSelectedSnapshotTitle() || ''}}
+  .button-group__item
+    button.button.button_type_play-toolbar(
+      ng-class="isSnapshotSelectorOpen ? 'button_icon_cancel' : 'button_icon_chevron-down'"
+      ng-click="toggleSnapshotSelector()"
+      uib-tooltip="Snapshot Selector"
+      tooltip-append-to-body="true"
+      tooltip-placement="right"
+  )
+  .details-panel__extra-container(ng-if="isSnapshotSelectorOpen")
+    .extra-container__content
+      .snapshot-selector__item(ng-repeat="snap in getSnapshots()", ng-click="selectSnapshot(snap)", ng-class="{ highlight: selectedSnapshot ? snap.isCurrentSnap: ($index == 0) }" uib-tooltip="{{formatSnapshotTooltip(snap)}}" tooltip-append-to-body="true" tooltip-placement="right")
+        h3 {{formatSnapshotTitle(snap)}}
+        h6(ng-if="snap.subtitle") {{snap.subtitle}}
         
-
-      
-
-      //- .button-group__item.button-group__select(ng-class="{ 'opened': operations.list.length > 1 && operations.opened, 'closed': operations.list.length > 1 && !operations.opened }", ng-click="operations.togglePanel()")
-      //-   span(ng-if="operations.last().type == 'init'")
-      //-     b {{operations.last().totalNodes}}
-      //-     = ' '
-      //-     | total nodes
-      //-   span(ng-if="operations.last().type == 'select' || operations.last().type == 'subset'")
-      //-     b {{operations.last().nodesCount}}
-      //-     = ' '
-      //-     | nodes
-      //-     = ' '
-      //-     span(ng-if="operations.last().type == 'select'") selected
-      //-     span(ng-if="operations.last().type == 'subset'") subsetted
-
-      .play-toolbar__content(ng-if="operations.list.length > 1 && operations.opened")
-        .play-toolbar__reset-wrap
-          button.button_reset(
-            ng-click="resetFilters()",
-            ng-disabled="!(ui.activeFilterCount > 0)"
-          ) Clear Selection
-          button.button_collapse(
-            ng-click="collapseBreadcrumbs()",
-            ng-class="{'button_collapse_hide': !isShowBreadcrumbs}"
-          )
-        .play-toolbar-list
-          section.play-toolbar-list__item(ng-repeat="operation in operations.list",
-            ng-if="operation.type != 'init' && isShowBreadcrumbs"
-            ng-class="{'play-toolbar-list__item_subsetted' : operation.type == 'subset', 'play-toolbar-list__item_selected': operation.type == 'select', 'play-toolbar-list__item_opened': operation.isOpened }")
-            header.play-toolbar-list__header(ng-if="operation.type == 'select' || operation.type == 'subset'", ng-click="operations.toggleOperation(operation)")
-              span(ng-class="{'selected' : $last, 'total': !$last}") {{operation.nodesCount}}
-              = ' '
-              | of
-              = ' '
-              span.total {{operation.totalNodes}}
-              = ' '
-              | nodes
-              =' '
-              b(ng-if="operation.type == 'select'") selected
-              b(ng-if="operation.type == 'subset'", ng-class="{ 'span-subset': ($last || ($index == operations.list.length - 2 && operations.last().type == 'select')) }") subsetted
-
-              button(ng-if="$index == operations.list.length -1", ng-click="resetOperation()").button_icon_cancel
-
-            .play-toolbar-list__content(ng-if="(operation.searchText || operation.filters) && operation.isOpened")
-              .filter-section-wrap(ng-if="operation.searchText")
-                  dl.filter-section
-                    dt.filter-section__label
-                      | Search Results  
-                      span(ng-if="operation.searchAttr") &nbsp;{{operation.searchAttr.title}}
-                      | :
-
-                    dd.filter-section__content
-                      ul.filter-section__list
-                        li.filter-section__item
-                          span "{{operation.searchText}}"    
-              .filter-section-wrap(ng-repeat="filter in operations.filterArray(operation)", ng-if="operation.filters")
-                dl.filter-section
-                  dt.filter-section__label
-                    | {{filter.attrInfo.attr.title}}:
-
-                  dd.filter-section__content
-                    ul.filter-section__list(ng-if="!operations.isNumeric(filter.attrInfo)")
-                      li.filter-section__item(ng-repeat="val in filter.values.values")
-                        span.filter-section__divider(
-                          ng-if="filter.values.values.length > 1 && $index == filter.values.values.length -1"
-                        ) &nbsp;or&nbsp;
-                        span {{val}}
-                    ul.filter-section__list(ng-if="operations.isNumeric(filter.attrInfo)")
-                      li.filter-section__item(ng-repeat="val in filter.values")
-                        span(ng-if="filter.values.length > 1 && $index == filter.values.length -1") &nbsp;or&nbsp;
-
-                        span.filter-section__item_array(
-                          ng-if="val.description == 'btw'&& (filter.attrInfo.attr.attrType != 'year' && filter.attrInfo.attr.attrType != 'timestamp')"
-                        )
-                          | between
-                          = ' '
-                          span {{val.values[0] | number:2}}
-                          = ' '
-                          span.filter-section__divider and
-                          = ' '
-                          span {{val.values[1] | number:2}}
-
-                        span.filter-section__item_array(
-                          ng-if="val.description == 'btw' && (filter.attrInfo.attr.attrType == 'year')"
-                        )
-                          | between
-                          = ' '
-                          span {{val.values[0]}}
-                          = ' '
-                          span.filter-section__divider and
-                          span {{val.values[1]}}
-
-                        span.filter-section__item_array(
-                          ng-if="val.description == 'btw' && (filter.attrInfo.attr.attrType == 'timestamp')"
-                        )
-                          | between
-                          = ' '
-                          span {{operations.formatTime(val.values[0])}}
-                          = ' '
-                          span.filter-section__divider and
-                          span {{operations.formatTime(val.values[1])}}
-
-                        span(
-                          ng-if="val.description == 'ht' && (filter.attrInfo.attr.attrType == 'year')"
-                        )
-                          | after
-                          = ' '
-                          span {{val.values[0].toString().split('.')[0]}}
-
-                        span.filter-section__item_array(
-                          ng-if="val.description == 'ht' && (filter.attrInfo.attr.attrType == 'timestamp')"
-                        )
-                          | after
-                          = ' '
-                          span {{operations.formatTime(val.values[0])}}
-
-                        span.filter-section__item_array(
-                          ng-if="val.description == 'ht' && (filter.attrInfo.attr.attrType != 'year' && filter.attrInfo.attr.attrType != 'timestamp')"
-                        )
-                          | higher than
-                          = ' '
-                          span {{val.values[0] | number:2}}
-
-                        span.filter-section__item_array(
-                          ng-if="val.description == 'lt' && (filter.attrInfo.attr.attrType == 'year')"
-                        )
-                          | before
-                          = ' '
-                          span {{val.values[0].toString().split('.')[0]}}
-
-                        span.filter-section__item_array(
-                          ng-if="val.description == 'lt' && (filter.attrInfo.attr.attrType == 'timestamp')"
-                        )
-                          | before
-                          = ' '
-                          span {{operations.formatTime(val.values[0])}}
-
-                        span.filter-section__item_array(
-                          ng-if="val.description == 'lt' && (filter.attrInfo.attr.attrType != 'year' && filter.attrInfo.attr.attrType != 'timestamp')"
-                        )
-                          | lower than
-                          = ' '
-                          span {{val.values[0] | number:2}}
-
-                        span(ng-if="val.description == 'eq'") {{val.values[0]}}
-        button.button_summarize(
-          ng-click="subsetFilters()",
-          ng-if="ui.subsetEnabled"
-          uib-tooltip="Click to summarize the selected nodes in the ‘Summary’ tab"
-          tooltip-append-to-body="true"
-          tooltip-placement="right"
-        ) Summarize Selection
-
-    //- .button-group_type_play-toolbar.search
-    //-   .button-group__item
-    //-     button.button.button_type_play-toolbar.button_icon_search(ng-click="searchToggle()") search
-
-    .play-toolbar__search(
-      ng-controller="SearchPanelCtrl"
-      ng-include=' "#{player_prefix_index_source}/partials/components/project/panels/search/search.html" '
-    )
-
       //.button-group__item
       //  button.button.button_type_play-toolbar.button_icon_help help
 

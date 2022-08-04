@@ -1,10 +1,7 @@
 .play-toolbar {
-  position: absolute;
-  right: 20px;
-  left: $side-menu-width + $right-panel-width + 20px;
-  // top: 5px;
-  bottom: 20px;
-  padding-left: 20px;
+  width: 0;
+  overflow: hidden;
+  transition: width 350ms linear;
 
   &__buttons {
     display: block;
@@ -12,11 +9,8 @@
     border-radius: 3px;
     background: #fff;
     max-width: 328px;
-  }
-
-  &__search {
-    // display: none;
-    // visibility: hidden;
+    overflow: hidden;
+    width: 0;
   }
 
   &__reset-wrap {
@@ -25,17 +19,9 @@
 
   &_opened {
     left: $side-menu-width + $right-panel-width + 20px;
+    width: 294px;
+    overflow: visible;
 
-    //.play-toolbar__buttons {
-    //  display: none;
-    //  visibility: hidden;
-    //}
-
-    .play-toolbar__search {
-      display: block;
-      visibility: visible;
-      order: -1;
-    }
     .button-group_type_play-toolbar.search{
       visibility: hidden;
       display: none;
@@ -262,10 +248,14 @@
 .details-panel {
   display: flex;
   position: absolute;
-  left: 465px;
-  top: 5px;
-  right: 20px;
-  align-items: flex-start;
+  left: 450px;
+  top: 0;
+  right: 0;
+  align-items: center;
+  height: 80px;
+  background: rgba(255,255,255, 0.8);
+  border-bottom: 1px solid #E4EAEF;
+  padding: 0 0 0 32px;
 
   &__project-title {
     font: 400 18px "Poppins";
@@ -295,15 +285,18 @@
     }
   }
 
-  &__row-data {
-    height: 27px;
+  &__snapshots {
+    position: absolute;
+    left: 482px;
+    top: 97px;
+    height: 40px;
     display: flex;
     align-items: center;
     border: 1px solid #e6e6e6;
     background: white;
-    border-radius: 2px;
-    width: 300px;
-
+    border-radius: 4px;
+    width: 287px;
+    box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.1);
     .button-group__item {
       height: 100%;
       border-left: 1px solid #e6e6e6;
@@ -313,18 +306,19 @@
     .row-data__content {
       width: 100%;
       padding: 0 10px;
-      font: 400 16px/26px 'Poppins';
+      font: 400 16px/40px 'Poppins';
       line-height: 23px;
       overflow-x: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
-      color: #BC3364;
+      color: #616161;
     }
   }
 
   &__extra-container {
-    position: relative;
-    width: 300px;
+    position: absolute;
+    width: 100%;
+    top: 40px;
 
     .extra-container__content {
       position: absolute;
@@ -417,5 +411,73 @@
 
   &__left {
     position: relative;
+  }
+
+  &__controls {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+  }
+
+  &__button {
+    width: 56px;
+    height: 61px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 350ms ease;
+    padding: 0;
+
+    &:before {
+      content: '';
+      display: block;
+      width: 24px;
+      height: 24px;
+      background-repeat: no-repeat;
+      background-size: 100%;
+    }
+
+    &:hover {
+      background: #E4EAEF;
+    }
+
+    &--menu {
+      width: 72px;
+      height: 79px;
+
+      &:before {
+        background-image: deployedUrl('/img/play-toolbar/burger.svg')
+      }
+    }
+
+    &--share {
+      &:before {
+        background-image: deployedUrl('/img/play-toolbar/share.svg')
+      }
+    }
+
+    &--info {
+      &:before {
+        background-image: deployedUrl('/img/play-toolbar/info.svg')
+      }
+    }
+
+    &--search {
+      z-index: 10;
+
+      &:before {
+        background-image: deployedUrl('/img/play-toolbar/loop.svg')
+      }
+
+      &.active {
+        width: 40px;
+        height: 40px;
+        margin-right: -40px;
+
+        &:hover {
+          background-color: transparent;
+        }
+      }
+    }
   }
 }

@@ -96,11 +96,11 @@
     overflow: visible;
     position: absolute;
     right: 0;
-    bottom: 37px;
+    top: 44px;
     width: 100%;
     padding: 24px;
     border: 1px solid #EBEFF2;
-    max-height: 50vh;
+    max-height: max-content;
 
     &__header,
     &__list,
