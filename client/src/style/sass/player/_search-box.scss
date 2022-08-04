@@ -99,6 +99,8 @@
     overflow: hidden;
     width: 36px;
     border-radius: 0 3px 3px 0;
+    transform: scale(0);
+    transition: all 350ms ease;
 
     &::before {
       content: '';
@@ -109,13 +111,17 @@
       background-size: cover;
       display: block;
     }
+
+    .play-toolbar_opened & {
+      transform: scale(1);
+    }
   }
 
   &__list {
     display: none;
     visibility: hidden;
     position: absolute;
-    bottom: 39px;
+    top: 45px;
     z-index: 20;
     margin: 0;
     padding: 0;

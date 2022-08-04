@@ -5,12 +5,14 @@
 
   &__buttons {
     display: block;
-    position: relative;
+    position: absolute;
     border-radius: 3px;
     background: #fff;
     max-width: 328px;
     overflow: hidden;
-    width: 0;
+    width: 300px;
+    right: 20px;
+    top: 100px;
   }
 
   &__reset-wrap {
@@ -29,10 +31,10 @@
   }
 
   &__content {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 5px;
+    // position: absolute;
+    // left: 0;
+    // right: 0;
+    // bottom: 5px;
   }
 
   .selected,
@@ -256,13 +258,26 @@
   background: rgba(255,255,255, 0.8);
   border-bottom: 1px solid #E4EAEF;
   padding: 0 0 0 32px;
-
+  
   &__project-title {
     font: 400 18px "Poppins";
     color: #BC3364;
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     margin: 8px 0 7px 8px;
+  }
+
+  &__project-logo {
+    display: block;
+    flex: 0 0 42px;
+    height: 42px;
+    margin-right: 12px;
+
+    img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
   }
 
   &__project-btn {
@@ -417,6 +432,11 @@
     margin-left: auto;
     display: flex;
     align-items: center;
+    transition: all 225ms linear;
+
+    .node-right-panel_opened & {
+      transform: translateX(-345px);
+    }
   }
 
   &__button {
@@ -447,6 +467,12 @@
 
       &:before {
         background-image: deployedUrl('/img/play-toolbar/burger.svg')
+      }
+
+      .node-right-panel_opened & {
+        &:before {
+          background-image: deployedUrl('/img/play-toolbar/close.svg')
+        }
       }
     }
 

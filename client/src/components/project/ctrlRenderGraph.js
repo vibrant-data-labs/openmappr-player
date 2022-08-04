@@ -211,11 +211,11 @@ angular.module('common')
                 return `<h3>${title}</h3>${subtitle ? '<h6>' + subtitle + '</h6>' : ''}${desc}`;
             }
             $scope.getCurrentProjectTitle = function () {
-                return _.get($scope, '$parent.player.player.settings.headerTitle') || ''
+                return _.get($scope, '$parent.player.player.settings.projectLogoTitle') || '';
             }
 
-            $scope.getLogos = function () {
-                return _.get($scope, '$parent.player.player.settings.logos').slice(0, 5) || [];
+            $scope.getCurrentLogoImage = function () {
+                return _.get($scope, '$parent.player.player.settings.projectLogoImageUrl') || null;
             }
 
             $scope.isShowMoreBtn = true;

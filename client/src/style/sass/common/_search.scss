@@ -7,7 +7,6 @@
 }
 
 .search {
-    width: 440px;
     color: $gray;
     cursor: pointer;
     font-size: 15px;
@@ -98,10 +97,11 @@
     right: 0;
     top: 44px;
     width: 100%;
-    padding: 24px;
+    padding: 20px;
     border: 1px solid #EBEFF2;
-    max-height: max-content;
-
+    height: max-content;
+    max-height: 50vh;
+    
     &__header,
     &__list,
     &__footer{
