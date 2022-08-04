@@ -514,7 +514,6 @@
       padding: 0;
       display: flex;
       flex-direction: column;
-      border-bottom: 1px solid #e6e6e6;
       
       &__numeric {
         padding: 10px;
@@ -1189,4 +1188,16 @@
   margin-bottom: 5px !important;
   margin-left: -28px !important;
   height: 17px;
+}
+
+.legend-title {
+  padding: 20px 20px 16px 26px;
+}
+
+.main {
+  &--sized-by {
+    border-bottom: 1px solid $panel-border;
+    box-shadow: 0 2px 2px $shadow-color-light;
+    padding-bottom: 15px;
+  }
 }
