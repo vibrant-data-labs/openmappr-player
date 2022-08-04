@@ -187,8 +187,8 @@ angular.module('common')
                     if (!scope.selectedValues[attr.id]) {
                         return 0;
                     }
-            
-                    return scope.selectedValues[attr.id] / attr.val * 100;
+                    const totalValues = Object.values(scope.selectedValues).reduce((acc, i) => acc += i, 0);            
+                    return scope.selectedValues[attr.id] / totalValues * 100;
                 }
 
                 scope.$on(BROADCAST_MESSAGES.hss.select, function (ev, data) {
@@ -233,6 +233,17 @@ angular.module('common')
                     distrData.searchQuery = newVal || '';
                 });
 
+                function roundValue (value) {
+                    if (value < 1 && value > 0) {
+                        return '< 1%'
+                    } 
+                    if (value <= 0) {
+                        return 0;
+                    }
+
+                    return `${Math.round(value)}%`;
+                }
+
                 scope.getTooltipInfo = function(catData) {
                     if (catData) {
                         var subsetLength = subsetService.currentSubset().length;
@@ -245,14 +256,14 @@ angular.module('common')
                         } else {
                             total = catData.globalTagFreq;
                         }
-                        
+                        const totalValues = Object.values(scope.selectedValues).reduce((acc, i) => acc += i, 0);
                         const selectedVals = scope.selectedValues[catData.id];
                         if (scope.totalSelectedValue) {
                             //return (selectedVals || 0) + ' / ' + total;
-                            return ((selectedVals || 0) / total * 100).toFixed(1) + `% / ${catData.percentage}%`;
+                            return roundValue(((selectedVals || 0) / totalValues * 100).toFixed(1)) + ` / ${roundValue(catData.percentage)}`;
                         }
-                       
-                        return catData.percentage ? `${catData.percentage}%`: total;
+                        
+                        return roundValue(catData.percentage || total);
                     }
                     return 0
                 }
