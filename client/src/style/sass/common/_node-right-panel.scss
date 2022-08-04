@@ -35,8 +35,6 @@
       width: 345px;
       background: #fff;
       z-index: 100;
-      
-      margin-bottom: 10px;
       overflow-x: hidden;
 
       + .section__content {
@@ -149,7 +147,7 @@
     }
 
     &__social {
-      padding: 10px 20px;
+      padding: 0 20px 10px;
       display: flex;
       background: #fff;
       border-bottom: 1px solid #E4EAEF;
