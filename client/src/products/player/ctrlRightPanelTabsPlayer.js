@@ -39,6 +39,9 @@ angular.module('common')
 
             $scope.currentExport = 'all';
             $scope.showButtons = true;
+            $scope.feedbackType = "email";
+            $scope.feedbackText = "Questions, Suggestions, Feedback? Send us your thoughts!";
+            $scope.feedbackLink = "support@openmappr.org";
 
             $scope.exportCurrentImage = function() {
                 var currentExport = $scope.currentExport;
@@ -74,8 +77,8 @@ angular.module('common')
                 $scope.showButtons = data.nodes.length != 1;
             });
 
-            $scope.rightPanelTabs = [
-                {
+            $scope.tabs = {
+                summary: {
                     title: 'Summary',
                     panel: 'filter',
                     cmd: function () {
@@ -87,7 +90,7 @@ angular.module('common')
                             }, 100);
                     }
                 },
-                {
+                legend: {
                     title: 'Legend',
                     panel: 'summary',
                     tooltipTitle: 'See color and sizing information',
@@ -95,7 +98,7 @@ angular.module('common')
                         $scope.panelUI.openPanel('summary');
                     }
                 },
-                {
+                list:{
                     title: 'List',
                     showSelCount: true,
                     panel: 'info',
@@ -113,10 +116,19 @@ angular.module('common')
                 //     }
                 // },
                 
-            ];
+            };
 
             playerFactory.getPlayerLocally().then(function(resp) {
-                $scope.displayExportButton = resp.settings.displayExportButton;
+                const { displayExportButton, feedback } = resp.settings;
+                $scope.displayExportButton = displayExportButton;
+                $scope.feedbackLink = feedback.link;
+                $scope.feedbackText = feedback.text;
+                $scope.feedbackType = feedback.type;
+
+                const tabs = resp.player.settings.tabs || Object.keys($scope.tabs);
+                $scope.rightPanelTabs = tabs.map((el) => {
+                    return $scope.tabs[el];
+                })
             })
             
             /**

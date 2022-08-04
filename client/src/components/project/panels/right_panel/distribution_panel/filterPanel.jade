@@ -11,7 +11,7 @@
 			//- span {{filteredDistrAttrs.length}} of {{nodeDistrAttrs.length}}
 			div()
 				div.filter-list-category__head(ng-class="{'filter-list-category_open' : isShowMainCategory}", ng-click='showMainCategory()')
-					h5.filter-list-category__title Main Attributes
+					h5.filter-list-category__title Data Filters
 					button.filter-list-category__btn(ng-class='{"filter-list-category__btn_active": isShowMainCategory}')
 				ul.filter-list(container-item-count="nodeDistrAttrs.length" dir-kill-tooltip-on-scroll, ng-class="{'filter-list_shown' : ui.renderDistr && isShowMainCategory}", on-scroll="onScroll")
 					li.filter-list__item(
@@ -67,7 +67,7 @@
 							span(ng-show="attr.principalVal") :&nbsp;{{attr.principalVal}}
 			.filter-list-category(ng-if="hasPriority")
 				div.filter-list-category__head(ng-class="{'filter-list-category_open' : isShowAdditionalCategory}", ng-click='showAdditionCat()')
-					h5.filter-list-category__title Additional Attributes
+					h5.filter-list-category__title Advanced Filters
 					button.filter-list-category__btn(ng-class='{"filter-list-category__btn_active": isShowAdditionalCategory}')
 				ul.filter-list(container-item-count="nodeDistrAttrs.length" dir-kill-tooltip-on-scroll, ng-class="{'filter-list_shown' : ui.renderDistr && isShowAdditionalCategory}", on-scroll="onScroll")
 					li.filter-list__item(

@@ -94,13 +94,13 @@
     margin: 0;
     min-width: 246px;
     overflow: visible;
-    position: relative;
+    position: absolute;
     right: 0;
-    top: 0;
+    bottom: 37px;
     width: 100%;
     padding: 24px;
-    border-top: 1px solid #EBEFF2;
-    max-height: 80vh;
+    border: 1px solid #EBEFF2;
+    max-height: 50vh;
 
     &__header,
     &__list,
