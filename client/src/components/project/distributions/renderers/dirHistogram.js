@@ -1,6 +1,6 @@
 angular.module('common')
-    .directive('dirHistogram', ['$timeout', 'AttrInfoService', 'projFactory', 'FilterPanelService', 'BROADCAST_MESSAGES', 'hoverService', 'selectService', 'subsetService', 'dataGraph',
-        function ($timeout, AttrInfoService, projFactory, FilterPanelService, BROADCAST_MESSAGES, hoverService, selectService, subsetService, dataGraph) {
+    .directive('dirHistogram', ['$timeout', 'AttrInfoService', 'projFactory', 'FilterPanelService', 'BROADCAST_MESSAGES', 'hoverService', 'selectService', 'subsetService', 'dataGraph', 'layoutService',
+        function ($timeout, AttrInfoService, projFactory, FilterPanelService, BROADCAST_MESSAGES, hoverService, selectService, subsetService, dataGraph, layoutService) {
             'use strict';
 
             /*************************************
@@ -148,6 +148,10 @@ angular.module('common')
                     var nodes = payload.nodes;
                     updateSelectionBars(histoBars, nodes, attrInfo, histoData, mappTheme, false, histElem, renderCtrl);
                     updateFiltSelBars(histoBars, nodes, attrInfo, histoData, renderCtrl);
+                });
+
+                scope.$on(BROADCAST_MESSAGES.cb.changed, function (ev, payload) {
+                    redrawHistogram(attrInfo);
                 });
 
                 scope.$on(BROADCAST_MESSAGES.hss.subset.changed, function (ev, payload) {
@@ -889,30 +893,35 @@ angular.module('common')
                     barElem.selectAll('[data-mask-bar="true"]').remove();
                     globalBar.attr('opacity', 1);
                     var globalBarFillColor = selectedNodes.length ? opts.barColorAfterSelection : opts.barColor;
-                    if (renderCtrl && renderCtrl.isGradient()) {
-                        const mapprSettings = renderCtrl.getMapprSettings();
-                        const min = selectionCountsList[i].min;
-                        const max = selectionCountsList[i].max;
-                        const node = _.filter(allNodes, x => {
-                            const val = isLogScale ? Math.log10(x.attr[mapprSettings.nodeColorAttr]):x.attr[mapprSettings.nodeColorAttr];
-                            return val >= min && val <= max;
-                        });
-                        const barColor = node && node.length ? node[0].colorStr : opts.barColor;
-                        globalBar.style({
-                            fill: barColor,
-                            'shape-rendering': 'crispEdges'
-                            // stroke: opts.strokeColor,
-                            // 'stroke-width': opts.strokeWidth
-                        });
-                    } else {
-                        globalBar.style({
-                            fill: globalBarFillColor,
-                            'shape-rendering': 'crispEdges'
-                            // stroke: opts.strokeColor,
-                            // 'stroke-width': opts.strokeWidth
-                        });
-                    }
 
+                    layoutService.getCurrent().then(resp => {
+                        const nodeColorAttr = resp.mapprSettings.nodeColorAttr;
+                        const isShow = (attrInfo.attr.id === nodeColorAttr) && attrInfo.attr.isNumeric;
+                        
+                        if (renderCtrl && renderCtrl.isGradient() && isShow) {
+                            const mapprSettings = renderCtrl.getMapprSettings();
+                            const min = selectionCountsList[i].min;
+                            const max = selectionCountsList[i].max;
+                            const node = _.filter(allNodes, x => {
+                                const val = isLogScale ? Math.log10(x.attr[mapprSettings.nodeColorAttr]):x.attr[mapprSettings.nodeColorAttr];
+                                return val >= min && val <= max;
+                            });
+                            const barColor = node && node.length ? node[0].colorStr : opts.barColor;
+                            globalBar.style({
+                                fill: barColor,
+                                'shape-rendering': 'crispEdges'
+                                // stroke: opts.strokeColor,
+                                // 'stroke-width': opts.strokeWidth
+                            });
+                        } else {
+                            globalBar.style({
+                                fill: globalBarFillColor,
+                                'shape-rendering': 'crispEdges'
+                                // stroke: opts.strokeColor,
+                                // 'stroke-width': opts.strokeWidth
+                            });
+                        }
+                    })
                     // 2) Shrink filtered selection bars
                     filteredSelBars.attr('height', 0);
 

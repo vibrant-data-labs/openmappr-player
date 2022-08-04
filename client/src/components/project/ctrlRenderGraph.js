@@ -198,6 +198,10 @@ angular.module('common')
                 return '';
             }
 
+            $scope.openRightPanel = function() {
+                $scope.$broadcast(BROADCAST_MESSAGES.ip.changed);
+            }
+
             $scope.getSelectedSnapshot = function () {
                 var currentSnapshot = snapshotService.getCurrentSnapshot();
                 var title = currentSnapshot.snapName;
@@ -208,6 +212,19 @@ angular.module('common')
             }
             $scope.getCurrentProjectTitle = function () {
                 return _.get($scope, '$parent.player.player.settings.headerTitle') || ''
+            }
+
+            $scope.getLogos = function () {
+                return _.get($scope, '$parent.player.player.settings.logos').slice(0, 5) || [];
+            }
+
+            $scope.isShowMoreBtn = true;
+
+            $scope.showMoreLogos = function() {
+                $scope.getLogos = function () {
+                    return _.get($scope, '$parent.player.player.settings.logos') || [];
+                }
+                $scope.isShowMoreBtn = false;
             }
 
             $scope.getSnapshots = function() {
@@ -231,6 +248,24 @@ angular.module('common')
             }
 
             $scope.toggleSnapshotSelector = function () {
+                if (!$scope.isSnapshotSelectorOpen) {
+                    setTimeout(() => {
+                        let scroll = 0;
+                        const elem = document.querySelector('.extra-container__content');
+                        
+                        if (elem) {
+                            for (const item of elem.children) {
+                                if (!$scope.selectedSnapshot || item.id === $scope.selectedSnapshot.snapName) {
+                                    break;
+                                }
+                                scroll += item.offsetHeight;
+                            }
+
+                            elem.scroll({top: scroll, behavior: 'smooth'});
+                        }
+                    }, 100)
+                }
+
                 $scope.isSnapshotSelectorOpen = !$scope.isSnapshotSelectorOpen;
             }
 

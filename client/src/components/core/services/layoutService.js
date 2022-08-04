@@ -896,6 +896,8 @@ function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partiti
         function _filterAttrs (attr) {
             var maxItems = Math.max(attr.nValues/2, MAX_COLOR_ITEMS);
             var clusteringStrings = ["Cluster", "Louvain", "louvain"];
+            if(!Boolean(attr.selectable) && attr.selectable !== undefined) return false;
+            
             if(attr.attrType == 'color') {
                 return true;
             }

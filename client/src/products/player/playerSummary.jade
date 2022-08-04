@@ -2,47 +2,6 @@
 	.flex-vert-container.width-100.panel-scroll(style="overflow-x: hidden")
 		//- .header(ng-mouseenter="panelUI.summaryPanelOpen ? showLegendBtns = true : showLegendBtns = false; panelUI.summaryPanelHover = true;" ng-mouseleave="showLegendBtns = false; panelUI.summaryPanelHover = false;" ng-class="{'active': panelUI.summaryPanelOpen}")
 		.header(ng-mouseenter="panelUI.summaryPanelOpen ? showLegendBtns = true : showLegendBtns = false;" ng-mouseleave="showLegendBtns = false;")
-			.row.vert-align.main.main--sized-by
-				.col-xs-12
-					h6.title.text-uppercase.pointable-cursor.vert-align
-							.title-space.width-100
-								h6.title.text-uppercase.truncate.vert-align
-									.title-space
-										span.inline.nowrap
-											span Sized by:&nbsp;&nbsp;
-											span(uib-dropdown dropdown-append-to-body)
-												span(uib-dropdown-toggle auto-close="outsideClick" ng-click="keepDrawerOpen = true;")
-													span.text-link {{vm.nodeSizeAttr.title}}
-														i.fa.fa-angle-down
-												.uib-dropdown-menu.uib-dropdown-menu-flexing(uib-dropdown-menu)
-													.uib-dropdown-click-close(ng-click="keepDrawerOpen = false;")
-													.uib-dropdown-flex-content(style="margin-left: 25px;")
-														.uib-dropdown-triangle
-														.uib-dropdown-flex.center
-															ul.dd-list.list-unstyled(style="max-height:50vh;overflow-y:auto;")
-																li.row.vert-align.pointable-cursor(ng-repeat="item in nodeSizeAttrs", ng-click="sizeByAttrUpdate(item)", style="width: auto")
-																	.col-xs-12
-																		h6.no-margin {{item.title}}
-
-					.filter-list__item(
-						ng-class="{'attr-hidden':!vm.nodeSizeAttr.visible, 'first': ($index == 1), 'chart-first-item': vm.nodeSizeAttr.isFirstChart, 'tags-first-item': vm.nodeSizeAttr.isFirstTag}",
-					)
-						section.card.card_type_filter(data-attr="{{vm.nodeSizeAttr.id}}", ng-class="{'card__chart' : vm.nodeSizeAttr.attrType == 'integer' || vm.nodeSizeAttr.attrType == 'float' || vm.nodeSizeAttr.attrType == 'boolean' || vm.nodeSizeAttr.attrType == 'year' || vm.nodeSizeAttr.attrType == 'timestamp' }")
-							.card__body
-								.card__content(ng-repeat="attrItem in [vm.nodeSizeAttr]")
-									dir-attr-renderer(attr-to-render="attrItem", noe-color-str="nodeColorStr", is-node="true", show-filter="true", disable-filter="false" theme="appUi.theme" pinned-media="pinnedMedia")
-
-						h6.no-margin.text-center.title(
-							ng-if="vm.nodeSizeAttr.attrType == 'integer' || vm.nodeSizeAttr.attrType == 'float' || vm.nodeSizeAttr.attrType == 'boolean' || vm.nodeSizeAttr.attrType == 'year' || vm.nodeSizeAttr.attrType == 'timestamp'"
-							uib-tooltip="{{vm.nodeSizeAttr.metadata.descr || vm.nodeSizeAttr.title}}"
-							tooltip-placement='right'
-							tooltip-append-to-body="true"
-						)
-							span {{vm.nodeSizeAttr.title}}
-							span(ng-show="vm.nodeSizeAttr.principalVal") :&nbsp;{{vm.nodeSizeAttr.principalVal}}
-				//- .col-xs-4
-				//- 	span
-				//- 		button.square-btn.small-btn.panel-btn(type="button", ng-click="clearSelections();") Reset
 			.row.vert-align.main
 				.col-xs-12(ng-if="dataGroupsInfo.colorNodesBy.id !== dataGroupsInfo.clusterNodesBy.id")
 					h6.title.text-uppercase.pointable-cursor.vert-align
@@ -119,8 +78,45 @@
 						dir-attr-renderer(attr-to-render="item", node-color-str="nodeColorStr", is-node="true", show-filter="true", disable-filter="false" theme="appUi.theme" pinned-media="pinnedMedia" gradient="true")
 						h6.panel-list__title {{isNumericItemByColor.title}}
 					
+				.row.vert-align.main.main--sized-by
+					.col-xs-12
+						h6.title.text-uppercase.vert-align.legend-title
+							span Sized by:&nbsp;&nbsp;
+								span(uib-dropdown dropdown-append-to-body)
+									span(uib-dropdown-toggle auto-close="outsideClick" ng-click="keepDrawerOpen = true;")
+										span.text-link {{vm.nodeSizeAttr.title}}
+											i.fa.fa-angle-down
+									.uib-dropdown-menu.uib-dropdown-menu-flexing(uib-dropdown-menu)
+										.uib-dropdown-click-close(ng-click="keepDrawerOpen = false;")
+										.uib-dropdown-flex-content(style="margin-left: 25px;")
+											.uib-dropdown-triangle
+											.uib-dropdown-flex.center
+												ul.dd-list.list-unstyled(style="max-height:50vh;overflow-y:auto;")
+													li.row.vert-align.pointable-cursor(ng-repeat="item in nodeSizeAttrs", ng-click="sizeByAttrUpdate(item)", style="width: auto")
+														.col-xs-12
+															h6.no-margin {{item.title}}
+
+						.filter-list__item(
+							ng-class="{'attr-hidden':!vm.nodeSizeAttr.visible, 'first': ($index == 1), 'chart-first-item': vm.nodeSizeAttr.isFirstChart, 'tags-first-item': vm.nodeSizeAttr.isFirstTag}",
+						)
+							section.card.card_type_filter(data-attr="{{vm.nodeSizeAttr.id}}", ng-class="{'card__chart' : vm.nodeSizeAttr.attrType == 'integer' || vm.nodeSizeAttr.attrType == 'float' || vm.nodeSizeAttr.attrType == 'boolean' || vm.nodeSizeAttr.attrType == 'year' || vm.nodeSizeAttr.attrType == 'timestamp' }")
+								.card__body
+									.card__content(ng-repeat="attrItem in [vm.nodeSizeAttr]")
+										dir-attr-renderer(attr-to-render="attrItem", noe-color-str="nodeColorStr", is-node="true", show-filter="true", disable-filter="false" theme="appUi.theme" pinned-media="pinnedMedia")
+
+							h6.no-margin.text-center.title(
+								ng-if="vm.nodeSizeAttr.attrType == 'integer' || vm.nodeSizeAttr.attrType == 'float' || vm.nodeSizeAttr.attrType == 'boolean' || vm.nodeSizeAttr.attrType == 'year' || vm.nodeSizeAttr.attrType == 'timestamp'"
+								uib-tooltip="{{vm.nodeSizeAttr.metadata.descr || vm.nodeSizeAttr.title}}"
+								tooltip-placement='right'
+								tooltip-append-to-body="true"
+							)
+								span {{vm.nodeSizeAttr.title}}
+								span(ng-show="vm.nodeSizeAttr.principalVal") :&nbsp;{{vm.nodeSizeAttr.principalVal}}
+					//- .col-xs-4
+					//- 	span
+					//- 		button.square-btn.small-btn.panel-btn(type="button", ng-click="clearSelections();") Reset
 				.color-box__description-wrap
-					h5 Description
+					.color-box__description-title Snapshot Description
 					.color-box__description(ng-if="getSelectedSnapshot().length")
 						div(ng-bind-html="getSelectedSnapshot()[0]")
 						.color-box__description-hidden(ng-bind-html="getSelectedSnapshot()[1]", ng-if="isShowMoreDesc")
