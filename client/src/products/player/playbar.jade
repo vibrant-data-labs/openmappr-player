@@ -10,18 +10,24 @@
   .details-panel__controls
     button.details-panel__button.details-panel__button--search(ng-class="{'active': showSearch}", ng-click="searchToggle()")
     .playbar.play-toolbar(ng-class="{'play-toolbar_opened': showSearch}")
-      
-
-      //- .button-group_type_play-toolbar.search
-      //-   .button-group__item
-      //-     button.button.button_type_play-toolbar.button_icon_search(ng-click="searchToggle()") search
-
       .play-toolbar__search(
         ng-controller="SearchPanelCtrl"
         ng-include=' "#{player_prefix_index_source}/partials/components/project/panels/search/search.html" '
       )
-    button.details-panel__button.details-panel__button--share
-    button.details-panel__button.details-panel__button--info
+    .details-panel__share
+      button.details-panel__button.details-panel__button--share(ng-click="toggleSharePanel()")
+      .details-panel__share-box(ng-if="isShowShare")
+        .details-panel__share-title Copy project url
+        .details-panel__clipboard.clipboard 
+          input.clipboard__input(type="text" value="{{host}}")
+          button.clipboard__btn(ng-click="copyClipboard()")
+        .details-panel__share-title(ng-if="isShareLinks") Or share it:
+        .details-panel__share-items(ng-click="toggleSharePanel()")
+          a.details-panel__share-item.details-panel__share-item--facebook(ng-if="facebookLink" href="{{facebookLink}}" target="_black" rel="nofollow") Facebook
+          a.details-panel__share-item.details-panel__share-item--linkedin(ng-if="linkedinLink" href="{{linkedinLink}}" target="_black" rel="nofollow") LinkedIn
+          a.details-panel__share-item.details-panel__share-item--twitter(ng-if="twitterLink" href="{{twitterLink}}" target="_black" rel="nofollow") Twitter
+
+    button.details-panel__button.details-panel__button--info(ng-click="openProjectInfo()")
     button.details-panel__button.details-panel__button--menu(ng-click="openRightPanel()")
   //- .details-panel__logos
   //-   span.details-panel__logo-item(ng-repeat="logo in getLogos()")
@@ -44,7 +50,7 @@
   )
   .details-panel__extra-container(ng-if="isSnapshotSelectorOpen")
     .extra-container__content
-      .snapshot-selector__item(ng-repeat="snap in getSnapshots()", ng-click="selectSnapshot(snap)", ng-class="{ highlight: selectedSnapshot ? snap.isCurrentSnap: ($index == 0) }" uib-tooltip="{{formatSnapshotTooltip(snap)}}" tooltip-append-to-body="true" tooltip-placement="right")
+      .snapshot-selector__item(ng-repeat="snap in getSnapshots()", ng-attr-id="{{ snap.snapName }}" ng-click="selectSnapshot(snap)", ng-class="{ highlight: selectedSnapshot ? snap.isCurrentSnap: ($index == 0) }" uib-tooltip="{{formatSnapshotTooltip(snap)}}" tooltip-append-to-body="true" tooltip-placement="right")
         h3 {{formatSnapshotTitle(snap)}}
         h6(ng-if="snap.subtitle") {{snap.subtitle}}
         
@@ -195,24 +201,20 @@
 )
 
   //- LEFT AREA
-  .button-group.button-group_type_play-toolbar.button-group_vertical.button-group_zoom
-
-    .button-group__item
-      button.button.button_type_play-toolbar.button_icon_target(ng-click="zoomInfo.zoomExtents()") target
-
-    .button-group__item
-      button.button.button_type_play-toolbar.button_icon_plus(
+  .button-zoom
+    button.button-zoom__item(ng-click="zoomInfo.zoomExtents()") target
+    .button-zoom__box
+      button.button-zoom__box-item.button-zoom__box-item--plus(
         ng-click="zoomInfo.zoomIn()"
         uib-tooltip="Zoom in"
         tooltip-append-to-body="true"
-        tooltip-placement="right"
+        tooltip-placement="left"
       ) zoom +
-
-    .button-group__item
-      button.button.button_type_play-toolbar.button_icon_minus(
+      
+      button.button-zoom__box-item.button-zoom__box-item--minus(
         ng-click="zoomInfo.zoomOut()"
         uib-tooltip="Zoom out"
         tooltip-append-to-body="true"
-        tooltip-placement="right"
+        tooltip-placement="left"
       ) zoom -
 

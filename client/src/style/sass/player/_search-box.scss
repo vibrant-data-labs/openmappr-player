@@ -27,30 +27,31 @@
     border-right: none;
     font: 400 15px/1 "Poppins";
     background: rgba(232, 236, 241, 0.5);
+    border-bottom: 2px solid transparent;
 
     &::placeholder {
-      color: #AEAEAE;
+      color: #aeaeae;
     }
 
     &:focus {
-      border-color: rgba(#BA3665, .5);
+      border-color: rgba(#ba3665, 0.5);
       color: #000;
-      border-bottom: 2px solid #49A1EB;
+      border-bottom-color: #49a1eb;
     }
   }
 
   &__clear {
-    background: deployedUrl('/img/play-toolbar/cancel-grey.svg') 50% no-repeat;
+    background: deployedUrl("/img/play-toolbar/cancel-grey.svg") 50% no-repeat;
     position: absolute;
     right: 36px;
     top: 0;
     font-size: 0;
     width: 38px;
-    height: 38px;
+    height: 45px;
     padding: 0;
 
     &:hover {
-      background-image: deployedUrl('/img/play-toolbar/cancel.svg');
+      background-image: deployedUrl("/img/play-toolbar/cancel.svg");
     }
   }
 
@@ -90,7 +91,7 @@
     justify-content: center;
     height: 100%;
     padding: 0;
-    background: #E8ECF1;
+    background: #e8ecf1;
     cursor: pointer;
     position: relative;
     white-space: nowrap;
@@ -103,10 +104,10 @@
     transition: all 350ms ease;
 
     &::before {
-      content: '';
+      content: "";
       width: 18px;
       height: 18px;
-      background: deployedUrl('/img/play-toolbar/filter.svg');
+      background: deployedUrl("/img/play-toolbar/filter.svg");
       background-repeat: no-repeat;
       background-size: cover;
       display: block;
@@ -129,32 +130,32 @@
     background: #fff;
     border-radius: 3px;
     min-width: 170px;
-    border: 1px solid #EBEFF2;
+    border: 1px solid #ebeff2;
   }
 
   &__item {
     font-weight: 400;
     font-size: 14px;
     line-height: 26px;
-    color: #323C47;
+    color: #323c47;
     cursor: pointer;
     padding: 0 10px 0 20px;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-    transition: background-color .2s;
+    transition: background-color 0.2s;
 
     &:not(:last-child) {
-      border-bottom: 1px solid #EBEFF2;
+      border-bottom: 1px solid #ebeff2;
     }
 
     &:hover {
-      color: darken(#323C47, 16);
+      color: darken(#323c47, 16);
       background-color: #fafafa;
     }
 
     &_selected {
-      background: deployedUrl('/img/search/check.svg') 5px 50% no-repeat;
+      background: deployedUrl("/img/search/check.svg") 5px 50% no-repeat;
     }
   }
 }

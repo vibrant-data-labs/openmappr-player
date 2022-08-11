@@ -506,4 +506,96 @@
       }
     }
   }
+
+  &__share {
+    position: relative;
+  }
+
+  &__share-box {
+    position: absolute;
+    top: 60px;
+    right: 0;
+    background: #FDFDFD;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0px 3px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    width: 227px;
+  }
+
+  &__share-title {
+    color:#BC3364;
+    font-size: 14px;
+    margin: 14px 10px;
+    font-weight: 600;
+  }
+
+  &__share-items {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__share-item {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 48px;
+    padding: 0 16px;
+    transition: all 350ms ease;
+    border-top: 1px solid rgba(0, 0, 0, 0.03);
+    font-size: 16px;
+    color: #626263;
+
+    &:hover {
+      background: #F2F5F7;
+      color: #626263;
+    }
+
+    &:before {
+      content: '';
+      display: block;
+      width: 24px;
+      height: 24px;
+      margin-right: 10px;
+    }
+
+    &--facebook {
+      &:before {
+        background-image: deployedUrl('/img/socials/facebook.svg')
+      }
+
+      &:hover {
+        &:before {
+          background-image: deployedUrl('/img/socials/facebook-hover.svg')
+        }
+      }
+    }
+
+    &--linkedin {
+      &:before {
+        background-image: deployedUrl('/img/socials/linkedin.svg')
+      }
+
+      &:hover {
+        &:before {
+          background-image: deployedUrl('/img/socials/linkedin-hover.svg')
+        }
+      }
+    }
+
+    &--twitter {
+      &:before {
+        background-image: deployedUrl('/img/socials/twitter.svg')
+      }
+
+      &:hover {
+        &:before {
+          background-image: deployedUrl('/img/socials/twitter-hover.svg')
+        }
+      }
+    }
+  }
+
+  &__clipboard {
+    margin-bottom: 10px;
+  }
 }
