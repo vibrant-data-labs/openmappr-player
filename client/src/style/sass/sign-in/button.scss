@@ -114,12 +114,12 @@
 
     &_play-toolbar {
       display: block;
-      width: 26px;
+      width: 36px;
       height: 100%;
       padding: 0;
       font-size: 0;
       position: relative;
-      background-color: #fff;
+      background-color: #E8ECF1;
       border-radius: 2px;
       text-transform: none;
 
@@ -174,7 +174,7 @@
           }
 
           &_chevron-down::before {
-            background: #fff url('/img/search/arrow-down.svg') 50% no-repeat;
+            background: url('/img/search/angle.svg') 50% no-repeat;
           }
 
           &_cancel::before {

@@ -39,10 +39,7 @@ angular.module('common')
 
             $scope.currentExport = 'all';
             $scope.showButtons = true;
-            $scope.feedbackType = "email";
-            $scope.feedbackText = "Questions, Suggestions, Feedback? Send us your thoughts!";
-            $scope.feedbackLink = "support@openmappr.org";
-
+            
             $scope.exportCurrentImage = function() {
                 var currentExport = $scope.currentExport;
                 $rootScope.exportSelection(currentExport);
@@ -119,11 +116,12 @@ angular.module('common')
             };
 
             playerFactory.getPlayerLocally().then(function(resp) {
-                const { displayExportButton, feedback } = resp.settings;
+                const { displayExportButton, feedback, beta } = resp.settings;
                 $scope.displayExportButton = displayExportButton;
-                $scope.feedbackLink = feedback.link;
-                $scope.feedbackText = feedback.text;
-                $scope.feedbackType = feedback.type;
+                $scope.feedbackLink = feedback.link || 'support@openmappr.org';
+                $scope.feedbackText = feedback.text || 'Questions, Suggestions, Feedback? Send us your thoughts!';
+                $scope.feedbackType = feedback.type || 'email';
+                $scope.isShowBeta = beta;
 
                 const tabs = resp.player.settings.tabs || Object.keys($scope.tabs);
                 $scope.rightPanelTabs = tabs.map((el) => {
