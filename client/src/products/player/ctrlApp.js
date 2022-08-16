@@ -203,7 +203,9 @@ angular.module('player')
 
             $scope.$on(BROADCAST_MESSAGES.snapshot.loaded, function(e, data) {
                 $scope.snapInfo.activeSnap = data.snapshot;
-                const key = $scope.player.player.settings.tabs[0] || 'filter';
+                const key = ($scope.player.player.settings.tabs && $scope.player.player.settings.tabs[0]) || 'legend';
+
+                console.log('KEY', key);
                 $scope.panelUI.openPanel(tabs[key]);
             });
 
