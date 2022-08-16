@@ -2,27 +2,6 @@
 	.flex-vert-container.width-100.panel-scroll(style="overflow-x: hidden")
 		//- .header(ng-mouseenter="panelUI.summaryPanelOpen ? showLegendBtns = true : showLegendBtns = false; panelUI.summaryPanelHover = true;" ng-mouseleave="showLegendBtns = false; panelUI.summaryPanelHover = false;" ng-class="{'active': panelUI.summaryPanelOpen}")
 		.header(ng-mouseenter="panelUI.summaryPanelOpen ? showLegendBtns = true : showLegendBtns = false;" ng-mouseleave="showLegendBtns = false;")
-			.row.vert-align.main
-				.col-xs-12(ng-if="dataGroupsInfo.colorNodesBy.id !== dataGroupsInfo.clusterNodesBy.id")
-					h6.title.text-uppercase.pointable-cursor.vert-align
-							.title-space.width-100
-								h6.title.text-uppercase.truncate.vert-align
-									.title-space
-										span.inline.nowrap
-											span Clustered by:&nbsp;&nbsp;
-											span(uib-dropdown dropdown-append-to-body)
-												span(uib-dropdown-toggle auto-close="outsideClick" ng-click="keepDrawerOpen = true;")
-													span.text-link {{dataGroupsInfo.clusterNodesBy.title}}
-														i.fa.fa-angle-down
-												.uib-dropdown-menu.uib-dropdown-menu-flexing(uib-dropdown-menu)
-													.uib-dropdown-click-close(ng-click="keepDrawerOpen = false;")
-													.uib-dropdown-flex-content(style="margin-left: 25px;")
-														.uib-dropdown-triangle
-														.uib-dropdown-flex.center
-															ul.dd-list.list-unstyled(style="max-height:50vh;overflow-y:auto;")
-																li.row.vert-align.pointable-cursor(ng-repeat="item in nodeColorAttrs", ng-click="clusterByAttrUpdate(item)", style="width: auto")
-																	.col-xs-12
-																		h6.no-margin {{item.title}}
 			.row.vert-align.main																		
 				.col-xs-12
 					h6.title.text-uppercase.pointable-cursor.vert-align
@@ -69,9 +48,9 @@
 			/// Node Color Panel
 			///
 			.panel-scroll(ng-if="!ui.showingLinks && mapprSettings.nodeColorStrat != 'select' && mapprSettings.nodeColorStrat != 'fixed'", dir-kill-tooltip-on-scroll)
-				.panel-list(ng-if="!isNodeColorNumeric" ng-class="{'highlighted': ui.highlightingNodes}")
+				.panel-list( ng-class="{'highlighted': ui.highlightingNodes}")
 					.flex
-						dir-attr-renderer(render-to-type="'horizontal-bars'", attr-to-render="dataGroupsInfo.colorNodesBy", node-color-str="nodeColorStr", is-node="true", show-filter="true", disable-filter="false" theme="appUi.theme" pinned-media="pinnedMedia" gradient="true")
+						dir-attr-renderer(render-to-type="'horizontal-bars'", attr-to-render="dataGroupsInfo.clusterNodesBy", node-color-str="nodeColorStr", is-node="true", show-filter="true", disable-filter="false" theme="appUi.theme" pinned-media="pinnedMedia" gradient="true")
 
 				.panel-list(ng-if="isNodeColorNumeric && isNumericItemByColor")
 					.panel-list__numeric(ng-repeat="item in [isNumericItemByColor]")

@@ -49,6 +49,9 @@ angular.module('common')
             $scope.plotType = 'original';
             $scope.enableUndo = false;
             $scope.enableRedo = false;
+            $scope.isShowShare = false;
+            $scope.host = window.location.host;
+
             $scope.operations = {
                 list: [],
                 opened: true,
@@ -202,6 +205,11 @@ angular.module('common')
                 $scope.$broadcast(BROADCAST_MESSAGES.ip.changed);
             }
 
+            $scope.openProjectInfo = function () {
+                selectService.unselect();
+                $scope.$broadcast(BROADCAST_MESSAGES.ip.changed);
+            }
+
             $scope.getSelectedSnapshot = function () {
                 var currentSnapshot = snapshotService.getCurrentSnapshot();
                 var title = currentSnapshot.snapName;
@@ -211,20 +219,29 @@ angular.module('common')
                 return `<h3>${title}</h3>${subtitle ? '<h6>' + subtitle + '</h6>' : ''}${desc}`;
             }
             $scope.getCurrentProjectTitle = function () {
-                return _.get($scope, '$parent.player.player.settings.headerTitle') || ''
+                return _.get($scope, '$parent.player.player.settings.projectLogoTitle') || '';
             }
 
-            $scope.getLogos = function () {
-                return _.get($scope, '$parent.player.player.settings.logos').slice(0, 5) || [];
+            $scope.getCurrentLogoImage = function () {
+                return _.get($scope, '$parent.player.player.settings.projectLogoImageUrl') || null;
             }
 
             $scope.isShowMoreBtn = true;
 
-            $scope.showMoreLogos = function() {
-                $scope.getLogos = function () {
-                    return _.get($scope, '$parent.player.player.settings.logos') || [];
-                }
-                $scope.isShowMoreBtn = false;
+            $scope.toggleSharePanel = function () {
+                $scope.isShowShare = !$scope.isShowShare;
+
+                $scope.facebookLink = _.get($scope, '$parent.player.player.settings.socials.facebook')
+                $scope.linkedinLink = _.get($scope, '$parent.player.player.settings.socials.linkedin')
+                $scope.twitterLink = _.get($scope, '$parent.player.player.settings.socials.twitter')
+
+                $scope.isShareLinks = $scope.facebookLink || $scope.linkedinLink || $scope.twitterLink;
+            }
+
+            
+            $scope.copyClipboard = function () {
+                navigator.clipboard.writeText($scope.host);
+                $scope.isShowShare = false;
             }
 
             $scope.getSnapshots = function() {
@@ -407,6 +424,8 @@ angular.module('common')
                 } else {
                     updateOperation('select', false, data.searchText, data.searchAttr);
                 }
+
+                $scope.isShowShare = false;
             });
 
             $scope.$on(BROADCAST_MESSAGES.hss.subset.changed, function (e, data) {
@@ -417,6 +436,7 @@ angular.module('common')
 
             $scope.$on(BROADCAST_MESSAGES.sigma.clickStage, function () {
                 $scope.showSearch = false;
+                $scope.isShowShare = false;
             });
 
 

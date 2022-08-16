@@ -7,4 +7,30 @@
     padding: 10px 20px;
     background: #fff;
   }
+
+  &__footer-wrap {
+    text-align: center;
+    margin-bottom: 10px;
+    background: #fff;
+    padding-bottom: 30px;
+  }
+
+  &__footer {
+    display: inline-flex;
+    margin: 0 auto;
+    align-items: center;
+    padding: 4px 10px;
+    border: 1px solid #E4EAEF;
+    border-radius: 4px;
+    font-size: 14px;
+    color: rgba(97, 97, 97, 0.7);
+  }
+
+  &__footer-img {
+    margin: 0 10px;
+  }
+  
+  &__footer-link {
+    color: #5885E1;
+  }
 }

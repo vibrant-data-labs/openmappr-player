@@ -1,4 +1,3 @@
-button.right-panel-btn(ng-click="toggleRightPanel()", ng-class="{'right-panel-btn_active': beginOverlayRightPanel}")
 .focus-rigth-panel(ng-click="cancelOverlay()" ng-class="{'active': beginOverlayRightPanel}")
   .node-rigth-panel-overlay
     .animate-node-right
@@ -189,8 +188,20 @@ button.right-panel-btn(ng-click="toggleRightPanel()", ng-class="{'right-panel-bt
           .project-info(ng-if="!nodeRightInfo")
             .section__header
               h3.section__title.section__title--project {{drawerTitle}}
+              .sponsors
+                span.sponsors__title Powered by
+                ul.sponsors__list 
+                  li.sponsors__item(ng-repeat="item in sponsors")
+                    a.sponsors__link(ng-if="item.linkUrl" href="{{item.linkUrl}}", alt="{{item.linkTitle}}" target="_blank" rel="nofollow")
+                      img.sponsors__img(src="{{item.iconUrl}}")
+                    img.sponsors__img(src="{{item.iconUrl}}" ng-if="!item.linkUrl")
             .project-info__content
               div(ng-bind-html="projectInfoTitle | trustHtml")
               div(ng-bind-html="projectInfoDesc | trustHtml")
+            .project-info__footer-wrap
+              .project-info__footer(ng-if="isShownFooter") Powered by
+                a.project-info__footer-link(href="{{footerLink}}")
+                  img.project-info__footer-img(src="{{footerLogo}}")
+                  span{{footerName}}
   dir-focus-node(ng-show="false" ng-if="showFocusNode && mapprSettings.nodeFocusRenderTemplate != 'content' && nodeRightInfo" node="focusNode" img-attr="nodeImageAttr" start="nodeStartData" end="nodeEndData" duration="175" ease="" finish="finishAnimation()")
   dir-focus-node(ng-show="false" ng-if="showNeighborNode" node="neighborNode" img-attr="nodeImageAttr" start="neighborNodeStartData" end="neighborNodeEndData" duration="175" ease="" finish="finishNeighborAnimation()")

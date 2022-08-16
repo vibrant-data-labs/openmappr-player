@@ -29,8 +29,9 @@
 
     &__header  {
       display: flex;
-      padding: 12px 12px 0;
-      align-items: center;
+      flex-direction: column;
+      padding: 12px;
+      align-items: flex-start;
       width: 345px;
       background: #fff;
       z-index: 100;
