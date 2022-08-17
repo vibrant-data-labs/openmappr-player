@@ -287,6 +287,8 @@ angular.module('common')
             }
 
             $scope.selectSnapshot = function(snap) {
+                selectService.unselect();
+
                 _.each($scope.player.snapshots, function(el) {
                     el.isCurrentSnap = false;
                 });

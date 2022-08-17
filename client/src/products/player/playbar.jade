@@ -23,9 +23,9 @@
           button.clipboard__btn(ng-click="copyClipboard()")
         .details-panel__share-title(ng-if="isShareLinks") Or share it:
         .details-panel__share-items(ng-click="toggleSharePanel()")
-          a.details-panel__share-item.details-panel__share-item--facebook(ng-if="facebookLink" href="{{facebookLink}}" target="_black" rel="nofollow") Facebook
-          a.details-panel__share-item.details-panel__share-item--linkedin(ng-if="linkedinLink" href="{{linkedinLink}}" target="_black" rel="nofollow") LinkedIn
-          a.details-panel__share-item.details-panel__share-item--twitter(ng-if="twitterLink" href="{{twitterLink}}" target="_black" rel="nofollow") Twitter
+          a.details-panel__share-item.details-panel__share-item--facebook(ng-if="facebookLink" href="https://www.facebook.com/sharer.php?u={{facebookLink}}" target="_black" rel="nofollow") Facebook
+          a.details-panel__share-item.details-panel__share-item--linkedin(ng-if="linkedinLink" href="https://www.linkedin.com/sharing/share-offsite/?url={{linkedinLink}}" target="_black" rel="nofollow") LinkedIn
+          a.details-panel__share-item.details-panel__share-item--twitter(ng-if="twitterLink" href="https://twitter.com/intent/tweet?url={{twitterLink}}" target="_black" rel="nofollow") Twitter
 
     button.details-panel__button.details-panel__button--info(ng-click="openProjectInfo()")
     button.details-panel__button.details-panel__button--menu(ng-click="openRightPanel()")

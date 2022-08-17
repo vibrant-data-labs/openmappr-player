@@ -2,6 +2,19 @@
 	.flex-vert-container.width-100.panel-scroll(style="overflow-x: hidden")
 		//- .header(ng-mouseenter="panelUI.summaryPanelOpen ? showLegendBtns = true : showLegendBtns = false; panelUI.summaryPanelHover = true;" ng-mouseleave="showLegendBtns = false; panelUI.summaryPanelHover = false;" ng-class="{'active': panelUI.summaryPanelOpen}")
 		.header(ng-mouseenter="panelUI.summaryPanelOpen ? showLegendBtns = true : showLegendBtns = false;" ng-mouseleave="showLegendBtns = false;")
+			.row.vert-align.main
+				.col-xs-12(ng-if="dataGroupsInfo.colorNodesBy.id !== dataGroupsInfo.clusterNodesBy.id")
+					h6.title.text-uppercase.pointable-cursor.vert-align
+							.title-space.width-100
+								h6.title.text-uppercase.truncate.vert-align
+									.title-space
+										span.inline.nowrap
+											span Clustered by:&nbsp;&nbsp;
+											span {{dataGroupsInfo.clusterNodesBy.title}}
+														
+			
+			
+			
 			.row.vert-align.main																		
 				.col-xs-12
 					h6.title.text-uppercase.pointable-cursor.vert-align

@@ -122,14 +122,13 @@
   transition: all 255ms linear;
   font-size: 16px;
   color: #333;
-  
+
   .node-right-panel_opened & {
     transform: translateX(-345px);
   }
 
   &:hover {
     color: #333;
-    border: 1px solid rgba(0, 0, 0, 0.08);
     box-shadow: 0px 7px 5px -5px rgba(0, 0, 0, 0.2);
   }
 
