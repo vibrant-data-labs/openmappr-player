@@ -165,7 +165,10 @@ angular.module('common')
                 }
             });
 
-            $scope.$on(BROADCAST_MESSAGES.ip.changed, function(ev) {
+            $scope.$on(BROADCAST_MESSAGES.ip.changed, function(ev, isInfoPanel) {
+                if (isInfoPanel) {
+                    $scope.nodeRightInfo = null;
+                }
                 $scope.toggleRightPanel();
             });
 

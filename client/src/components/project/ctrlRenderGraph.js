@@ -207,7 +207,7 @@ angular.module('common')
 
             $scope.openProjectInfo = function () {
                 selectService.unselect();
-                $scope.$broadcast(BROADCAST_MESSAGES.ip.changed);
+                $scope.$broadcast(BROADCAST_MESSAGES.ip.changed, true);
             }
 
             $scope.getSelectedSnapshot = function () {
