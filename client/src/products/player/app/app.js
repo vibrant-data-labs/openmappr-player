@@ -238,12 +238,12 @@
                     refresh: 'nodeBrowser:refresh',
                     show: 'ip:show'
                 },
-                changed: 'changed'
+                changed: 'ip:changed'
             },
             
             // Colored By
             cb: {
-                changed: 'changed'
+                changed: 'cb:changed'
             },
 
             appStatus: {
