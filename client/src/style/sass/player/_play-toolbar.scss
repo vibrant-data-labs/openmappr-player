@@ -27,6 +27,12 @@
     border: 1px solid #CCCCCC;
     border-radius: 6px 6px 0px 0px;
     padding-right: 4px;
+    margin-bottom: 1px;
+    z-index: 1;
+
+    &--collapsed {
+      border-radius: 6px;
+    }
   }
 
   &_opened {
@@ -41,11 +47,25 @@
   }
 
   &__btn-collapse {
-    background: deployedUrl('/img/search/angle.svg') center no-repeat;
-    width: 24px;
+    width: 100%;
     height: 24px;
     padding: 0;
-    margin: 0 8px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    &:before {
+      content: '';
+      background: deployedUrl('/img/search/angle.svg') center no-repeat;
+      width: 24px;
+      height: 24px;
+      display: block;
+      margin: 0 8px;
+
+      .play-toolbar__reset-wrap--collapsed & {
+        transform: rotate(180deg);
+      }
+    }
   }
 
   &__btn-reset {
@@ -58,11 +78,13 @@
     color: #616161;
     margin-left: auto;
     padding-left: 20px;
+    white-space: nowrap;
   }
 
   &__btn-summarize {
-    padding: 9px;
-    margin-top: -57px;
+    padding: 0 14px;
+    margin-top: -38px;
+    transform: translateY(-14px)
   }
 
   &__btn-undo {
@@ -81,6 +103,26 @@
     &:hover {
       background-color: #DBE4E8;
     }
+  }
+
+  &__value {
+    background-color: #BC3364;
+    color: #fff;
+    padding: 0 5px;
+    border-radius: 50px;
+    margin: 0 3px;
+    font-weight: 400;
+    line-height: 16px;
+  }
+
+  &__total {
+    font-weight: 400;
+    line-height: 16px;
+    background-color: #6A707E;
+    color: #fff;
+    padding: 0 5px;
+    border-radius: 50px;
+    margin: 0 3px;
   }
 
   .selected,
@@ -377,6 +419,8 @@
     border-radius: 4px;
     width: 287px;
     box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+
     .button-group__item {
       height: 100%;
       border-left: 1px solid #e6e6e6;
@@ -533,7 +577,8 @@
       transform: scale(0);
       opacity: 0;
       transition: opacity 350ms ease, scale 350ms easy;
-
+      background: #E4EAEF;
+      
       .node-right-panel_opened & {
         transform: scale(1);
         opacity: 1;
