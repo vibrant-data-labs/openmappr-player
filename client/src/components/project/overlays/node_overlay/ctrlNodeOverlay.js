@@ -89,20 +89,22 @@ angular.module('common')
                 $scope.showFocusNode = false;
             };
 
-            $scope.toggleRightPanel = function() {
+            $scope.toggleRightPanel = function(val = false) {
                 $scope.drawerTitle = $scope.player.player.settings.defaultPanel;
                 $scope.projectInfoTitle = $scope.player.player.settings.modalSubtitle;
                 $scope.projectInfoDesc = $scope.player.player.settings.modalDescription;
                 $scope.sponsors = $scope.player.player.settings.sponsors || [];
                 
-                $scope.isShownFooter = $scope.player.player.settings.footer.isShown;
-                $scope.footerLogo = $scope.player.player.settings.footer.studioLogo;
-                $scope.footerName = $scope.player.player.settings.footer.studioName;
-                $scope.footerLink = $scope.player.player.settings.footer.studioUrl;
+                if ($scope.player.player.settings.footer) {
+                    $scope.isShownFooter = $scope.player.player.settings.footer.isShown;
+                    $scope.footerLogo = $scope.player.player.settings.footer.studioLogo;
+                    $scope.footerName = $scope.player.player.settings.footer.studioName;
+                    $scope.footerLink = $scope.player.player.settings.footer.studioUrl;
+                }
 
-                $scope.beginOverlayRightPanel = !$scope.beginOverlayRightPanel;
-                $scope.showOverlay = !$scope.showOverlay;
-                $scope.showFocusNode = !$scope.showFocusNode;
+                $scope.beginOverlayRightPanel = val || !$scope.beginOverlayRightPanel;
+                $scope.showOverlay = val || !$scope.showOverlay;
+                $scope.showFocusNode = val || !$scope.showFocusNode;
             }
             /*************************************
             ****** Event Listeners/Watches *******
@@ -163,8 +165,8 @@ angular.module('common')
                 }
             });
 
-            $scope.$on(BROADCAST_MESSAGES.ip.changed, function(ev) {
-                $scope.toggleRightPanel();
+            $scope.$on(BROADCAST_MESSAGES.ip.changed, function(ev, isInfoPanel) {
+                $scope.toggleRightPanel(isInfoPanel);
             });
 
             $scope.onTagLoad = function(section, $event) {

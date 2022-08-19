@@ -150,10 +150,6 @@ angular.module('common')
                     updateFiltSelBars(histoBars, nodes, attrInfo, histoData, renderCtrl);
                 });
 
-                scope.$on(BROADCAST_MESSAGES.cb.changed, function (ev, payload) {
-                    redrawHistogram(attrInfo);
-                });
-
                 scope.$on(BROADCAST_MESSAGES.hss.subset.changed, function (ev, payload) {
                     var infoMap = AttrInfoService.buildAttrInfoMap(scope.attrToRender, payload.nodes);
                     defaultAttrInfo = infoMap.infoObj;

@@ -3,7 +3,7 @@
     ng-mouseenter="overCat(item, $event)", 
 		ng-mouseleave="outCat(item)",
     ng-click="onCatClick(item, $event)")
-    .legend-icon(style="color: {{item.colorVal}}")
+    .legend-icon(style="background-color: {{item.colorVal}}")
     span.color-box__line(style="background-color: {{item.colorVal}}; width: {{calcLineWidth(item)}}%; opacity: 0.3")
     span.color-box__line(style="background-color: {{item.colorVal}}; width: {{calcSelectedLineWidth(item)}}%; opacity: 0.3")    
     div(ng-if="ui.summaryToggleOpen && (item.archetypes.length > 0 || item.bridgers.length > 0)")

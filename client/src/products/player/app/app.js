@@ -191,7 +191,8 @@
             searchFailure: 'searchFailure',
             openMediaModal: 'openMediaModal',
             customData: 'customData',
-
+            searchClose: 'searchClose',
+            
             extUserOverlay: {
                 open: 'extUserOverlay:open',
                 close: 'extUserOverlay:close'
@@ -238,12 +239,12 @@
                     refresh: 'nodeBrowser:refresh',
                     show: 'ip:show'
                 },
-                changed: 'changed'
+                changed: 'ip:changed'
             },
             
             // Colored By
             cb: {
-                changed: 'changed'
+                changed: 'cb:changed'
             },
 
             appStatus: {

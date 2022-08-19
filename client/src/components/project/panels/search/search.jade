@@ -32,7 +32,7 @@
       input.search-box__input(
         ng-show="!ui.overlayOpen"
         type="text", ng-model="globalSearch.text",
-        ng-keyup="searchFn($event)" ng-focus="searchFocus()" ng-blur="ui.showInfoIcon = false",
+        ng-keyup="searchFn($event)" ng-focus="searchFocus()" ng-blur="onBlurSearch($event)",
         placeholder="Search"
       )
 
@@ -40,7 +40,7 @@
         ng-show="ui.overlayOpen"
         type="text",
         ng-model="globalSearch.text" ng-change="highlightTextInOverlay($event)" ng-focus="ui.showInfoIcon = true"
-        ng-blur="ui.showInfoIcon = false"
+        ng-blur="onBlurSearch($event)"
         placeholder="Search"
       )
       button.search-box__clear(ng-if="globalSearch.text" ng-click="handleClearSearch()")

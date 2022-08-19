@@ -148,6 +148,11 @@
     border-radius: 4px;
     font-size: 0;
     background: #fff deployedUrl('/img/play-toolbar/target-icon.svg') no-repeat center;
+    transition: all 350ms ease;
+
+    &:hover {
+      background-color: #F2F5F8;
+    }
   }
 
   &__box {
@@ -176,6 +181,7 @@
     width: 32px;
     height: 32px;
     font-size: 0;
+    transition: all 350ms ease;
 
     &--plus {
       background: #fff deployedUrl('/img/play-toolbar/plus-icon.svg') no-repeat center;
@@ -183,6 +189,10 @@
 
     &--minus {
       background: #fff deployedUrl('/img/play-toolbar/minus-icon.svg') no-repeat center;
+    }
+
+    &:hover {
+      background-color: #F2F5F8;
     }
   }
 }

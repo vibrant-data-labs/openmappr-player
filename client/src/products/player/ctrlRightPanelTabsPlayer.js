@@ -118,12 +118,13 @@ angular.module('common')
             playerFactory.getPlayerLocally().then(function(resp) {
                 const { displayExportButton, feedback, beta } = resp.settings;
                 $scope.displayExportButton = displayExportButton;
-                $scope.feedbackLink = feedback.link || 'support@openmappr.org';
-                $scope.feedbackText = feedback.text || 'Questions, Suggestions, Feedback? Send us your thoughts!';
-                $scope.feedbackType = feedback.type || 'email';
+                $scope.feedbackLink = (feedback && feedback.link) || 'support@openmappr.org';
+                $scope.feedbackText = (feedback && feedback.text) || 'Questions, Suggestions, Feedback? Send us your thoughts!';
+                $scope.feedbackType = (feedback && feedback.type) || 'email';
                 $scope.isShowBeta = beta;
 
                 const tabs = resp.player.settings.tabs || Object.keys($scope.tabs);
+                
                 $scope.rightPanelTabs = tabs.map((el) => {
                     return $scope.tabs[el];
                 })
