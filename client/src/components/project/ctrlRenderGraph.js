@@ -50,7 +50,7 @@ angular.module('common')
             $scope.enableUndo = false;
             $scope.enableRedo = false;
             $scope.isShowShare = false;
-            $scope.host = window.location.host;
+            $scope.host = window.location.origin;
 
             $scope.operations = {
                 list: [],
@@ -201,12 +201,11 @@ angular.module('common')
                 return '';
             }
 
-            $scope.openRightPanel = function() {
+            $scope.openRightPanel = function(bool) {
                 $scope.$broadcast(BROADCAST_MESSAGES.ip.changed);
             }
 
             $scope.openProjectInfo = function () {
-                selectService.unselect();
                 $scope.$broadcast(BROADCAST_MESSAGES.ip.changed, true);
             }
 
@@ -239,7 +238,10 @@ angular.module('common')
             }
 
             
-            $scope.copyClipboard = function () {
+            $scope.copyClipboard = function (e) {
+                e.preventDefault();
+                toastr.options.positionClass = 'toast-bottom-center';
+                toastr.success('The project link has been copied to clipboard')
                 navigator.clipboard.writeText($scope.host);
                 $scope.isShowShare = false;
             }
@@ -464,7 +466,9 @@ angular.module('common')
                 $scope.enableRedo = false;
             });
 
-
+            $scope.$on(BROADCAST_MESSAGES.searchClose, function () {
+                $scope.showSearch = false;
+            });
 
 
             /*************************************

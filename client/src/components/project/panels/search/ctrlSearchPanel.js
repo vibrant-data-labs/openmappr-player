@@ -62,6 +62,13 @@ function($scope, $rootScope, $timeout, searchService, BROADCAST_MESSAGES, uiServ
         });
     };
 
+    $scope.onBlurSearch = function(ev) {
+        $scope.ui.showInfoIcon = false;
+        if (!ev.target.value) {
+            $rootScope.$broadcast(BROADCAST_MESSAGES.searchClose)
+        }
+    }
+
     $scope.showMore = function() {
         $scope.ui.numShowGroups++;
         $scope.ui.showLimit = Math.min($scope.ui.numShowGroups * ITEMS_TO_SHOW + ITEMS_TO_SHOW_INITIALLY, $scope.searchResults.length);

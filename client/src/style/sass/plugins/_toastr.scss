@@ -89,6 +89,16 @@ button.toast-close-button {
   bottom: 12px;
   left: 12px;
 }
+
+.toast-bottom-center{
+  bottom: 20px;
+  right: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 #toast-container {
   position: fixed;
   z-index: 999999;
@@ -103,24 +113,21 @@ button.toast-close-button {
 #toast-container > div {
   margin: 0 0 6px;
   padding: 8px 15px 8px 15px;
-  width: 500px;
+  max-width: 500px;
+  width: auto;
   -moz-border-radius: 0px 0px 0px 0px;
   -webkit-border-radius: 0px 0px 0px 0px;
-  border-radius: 0px 0px 0px 0px;
+  border-radius: 4px;
   background-position: 15px center;
   background-repeat: no-repeat;
-  -moz-box-shadow: 0 0 12px #999999;
-  -webkit-box-shadow: 0 0 12px #999999;
-  box-shadow: 0 0 12px #999999;
-  color: #ffffff;
+  box-shadow: 0px 3px 12px rgb(0 0 0 / 10%);
+  color: #616161;
   opacity: 0.8;
   -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=80);
   filter: alpha(opacity=80);
+  font: 400 16px/40px "Poppins";
 }
 #toast-container > :hover {
-  -moz-box-shadow: 0 0 12px #000000;
-  -webkit-box-shadow: 0 0 12px #000000;
-  box-shadow: 0 0 12px #000000;
   opacity: 1;
   -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
   filter: alpha(opacity=100);
@@ -152,7 +159,8 @@ button.toast-close-button {
   background-color: $bg_color_default;
 }
 .toast-success {
-  background-color: darken($bg_color_success, 8%);
+  background-color: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 .toast-error {
   background-color: darken($bg_color_error, 8%);

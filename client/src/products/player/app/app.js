@@ -191,7 +191,8 @@
             searchFailure: 'searchFailure',
             openMediaModal: 'openMediaModal',
             customData: 'customData',
-
+            searchClose: 'searchClose',
+            
             extUserOverlay: {
                 open: 'extUserOverlay:open',
                 close: 'extUserOverlay:close'
