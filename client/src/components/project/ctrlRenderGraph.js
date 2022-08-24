@@ -291,7 +291,8 @@ angular.module('common')
                 $scope.isSnapshotSelectorOpen = !$scope.isSnapshotSelectorOpen;
             }
 
-            $scope.selectSnapshot = function(snap) {
+            $scope.selectSnapshot = function(ev, snap) {
+                ev.stopPropagation();
                 selectService.unselect();
 
                 _.each($scope.player.snapshots, function(el) {
@@ -322,6 +323,7 @@ angular.module('common')
                 updateOperation('init');
                 $scope.operations.opened = true;
                 $scope.operations.isFirstOpened = true;
+                $scope.isShowBreadcrumbs = true;
             };
 
             $scope.resetOperation = function () {

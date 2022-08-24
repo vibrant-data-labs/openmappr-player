@@ -36,19 +36,19 @@
   //-     tooltip-placement="bottom"
   //-     tooltip-append-to-body="true")
   //-     img(src="/img/play-toolbar/plus.svg")
-.details-panel__snapshots
+.details-panel__snapshots(ng-click="toggleSnapshotSelector()")
   .row-data__content {{getSelectedSnapshotTitle() || ''}}
   .button-group__item
     button.button.button_type_play-toolbar(
       ng-class="isSnapshotSelectorOpen ? 'button_icon_cancel' : 'button_icon_chevron-down'"
-      ng-click="toggleSnapshotSelector()"
+      
       uib-tooltip="Snapshot Selector"
       tooltip-append-to-body="true"
       tooltip-placement="right"
   )
   .details-panel__extra-container(ng-if="isSnapshotSelectorOpen")
     .extra-container__content
-      .snapshot-selector__item(ng-repeat="snap in getSnapshots()", ng-attr-id="{{ snap.snapName }}" ng-click="selectSnapshot(snap)", ng-class="{ highlight: selectedSnapshot ? snap.isCurrentSnap: ($index == 0) }" uib-tooltip="{{formatSnapshotTooltip(snap)}}" tooltip-append-to-body="true" tooltip-placement="right")
+      .snapshot-selector__item(ng-repeat="snap in getSnapshots()", ng-attr-id="{{ snap.snapName }}" ng-click="selectSnapshot($event, snap)", ng-class="{ highlight: selectedSnapshot ? snap.isCurrentSnap: ($index == 0) }" uib-tooltip="{{formatSnapshotTooltip(snap)}}" tooltip-append-to-body="true" tooltip-placement="right")
         h3 {{formatSnapshotTitle(snap)}}
         h6(ng-if="snap.subtitle") {{snap.subtitle}}
         
@@ -58,12 +58,25 @@
 .play-toolbar__buttons
   .button-group_type_play-toolbar
     .play-toolbar__content(ng-if="operations.list.length > 1 && operations.opened")
-      .play-toolbar__reset-wrap 
+      .play-toolbar__reset-wrap(ng-if="isShowBreadcrumbs")
         button.play-toolbar__btn-collapse(
           ng-click="collapseBreadcrumbs()",
-          ng-class="{'button_collapse_hide': !isShowBreadcrumbs}"
+        ) Filters Applied
+        button.play-toolbar__btn.play-toolbar__btn-reset(
+          ng-click="resetFilters()",
+          ng-disabled="!(ui.activeFilterCount > 0)"
+        ) Clear All
+      .play-toolbar__reset-wrap.play-toolbar__reset-wrap--collapsed(ng-if="!isShowBreadcrumbs")
+        button.play-toolbar__btn-collapse(
+          ng-click="collapseBreadcrumbs()",
         )
-        span Filters Applied
+          span.play-toolbar__value {{operations.last().nodesCount}}
+          = ' '
+          | of
+          = ' '
+          span.play-toolbar__total {{operations.list[0].totalNodes}} 
+          b(ng-if="operations.last().type == 'select'")&nbsp;selected
+          b(ng-if="operations.last().type == 'subset'")&nbsp;subsetted
         button.play-toolbar__btn.play-toolbar__btn-reset(
           ng-click="resetFilters()",
           ng-disabled="!(ui.activeFilterCount > 0)"
