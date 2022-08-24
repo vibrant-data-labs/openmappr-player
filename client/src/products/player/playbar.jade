@@ -85,7 +85,7 @@
         section.play-toolbar-list__item(ng-repeat="operation in operations.list",
           ng-if="operation.type != 'init' && isShowBreadcrumbs"
           ng-class="{'play-toolbar-list__item_subsetted' : operation.type == 'subset', 'play-toolbar-list__item_selected': operation.type == 'select', 'play-toolbar-list__item_opened': operation.isOpened }")
-          header.play-toolbar-list__header(ng-if="operation.type == 'select' || operation.type == 'subset'", ng-click="operations.toggleOperation(operation)")
+          header.play-toolbar-list__header(ng-if="operation.type == 'select' || operation.type == 'subset'")
             span(ng-class="{'selected' : $last, 'total': !$last}") {{operation.nodesCount}}
             = ' '
             | of
