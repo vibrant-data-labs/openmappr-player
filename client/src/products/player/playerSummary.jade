@@ -15,34 +15,7 @@
 			
 			
 			
-			.row.vert-align.main																		
-				.col-xs-12
-					h6.title.text-uppercase.pointable-cursor.vert-align
-							.title-space.width-100
-								h6.title.text-uppercase.truncate.vert-align
-									.title-space
-										span.inline.nowrap
-											span Colored by:&nbsp;&nbsp;
-											span(uib-dropdown dropdown-append-to-body)
-												span(uib-dropdown-toggle auto-close="outsideClick" ng-click="keepDrawerOpen = true;")
-													span.text-link {{dataGroupsInfo.colorNodesBy.title}}
-														i.fa.fa-angle-down
-												.uib-dropdown-menu.uib-dropdown-menu-flexing(uib-dropdown-menu)
-													.uib-dropdown-click-close(ng-click="keepDrawerOpen = false;")
-													.uib-dropdown-flex-content(style="margin-left: 25px;")
-														.uib-dropdown-triangle
-														.uib-dropdown-flex.center
-															ul.dd-list.list-unstyled(style="max-height:50vh;overflow-y:auto;")
-																li.row.vert-align.pointable-cursor(ng-repeat="item in nodeColorAttrs", ng-click="colorByAttrUpdate(item)", style="width: auto")
-																	.col-xs-12
-																		h6.no-margin {{item.title}}
-
-					.btns(ng-if="mapprSettings.edgeColorStrat == 'select' || mapprSettings.edgeColorStrat == 'attr'")
-						.square-btn.small-btn(ng-if="!ui.showingLinks" uib-tooltip="View Links Summary" tooltip-placement="right" tooltip-append-to-body="true" ng-click="ui.showingLinks = true;")
-							.link-mask
-								.link-circle
-						.square-btn.small-btn.vert-align(ng-if="ui.showingLinks" uib-tooltip="View Nodes Summary" tooltip-placement="right" tooltip-append-to-body="true" ng-click="ui.showingLinks = false;")
-							i.icon-legend-dots
+			
 
 			.hidden-btns(ng-click="$event.stopPropagation()" ng-if="!isNodeColorNumeric && ui.showViewToggle")
 				h6.text-uppercase.animate-hidden-panel-btns(ng-show="(showLegendBtns && panelUI.summaryPanelOpen) || keepDrawerOpen")
@@ -64,7 +37,34 @@
 				.panel-list( ng-class="{'highlighted': ui.highlightingNodes}")
 					.flex
 						dir-attr-renderer(render-to-type="'horizontal-bars'", attr-to-render="dataGroupsInfo.clusterNodesBy", node-color-str="nodeColorStr", is-node="true", show-filter="true", disable-filter="false" theme="appUi.theme" pinned-media="pinnedMedia" gradient="true")
+				.row.vert-align.main																		
+					.col-xs-12
+						h6.title.text-uppercase.pointable-cursor.vert-align.legend-title.legend-title--bottom
+								.title-space.width-100
+									h6.title.text-uppercase.truncate.vert-align
+										.title-space
+											span.inline.nowrap
+												span Colored by:&nbsp;&nbsp;
+												span(uib-dropdown dropdown-append-to-body)
+													span(uib-dropdown-toggle auto-close="outsideClick" ng-click="keepDrawerOpen = true;")
+														span.text-link {{dataGroupsInfo.colorNodesBy.title}}
+															i.fa.fa-angle-down
+													.uib-dropdown-menu.uib-dropdown-menu-flexing(uib-dropdown-menu)
+														.uib-dropdown-click-close(ng-click="keepDrawerOpen = false;")
+														.uib-dropdown-flex-content(style="margin-left: 25px;")
+															.uib-dropdown-triangle
+															.uib-dropdown-flex.center
+																ul.dd-list.list-unstyled(style="max-height:50vh;overflow-y:auto;")
+																	li.row.vert-align.pointable-cursor(ng-repeat="item in nodeColorAttrs", ng-click="colorByAttrUpdate(item)", style="width: auto")
+																		.col-xs-12
+																			h6.no-margin {{item.title}}
 
+					.btns(ng-if="mapprSettings.edgeColorStrat == 'select' || mapprSettings.edgeColorStrat == 'attr'")
+						.square-btn.small-btn(ng-if="!ui.showingLinks" uib-tooltip="View Links Summary" tooltip-placement="right" tooltip-append-to-body="true" ng-click="ui.showingLinks = true;")
+							.link-mask
+								.link-circle
+						.square-btn.small-btn.vert-align(ng-if="ui.showingLinks" uib-tooltip="View Nodes Summary" tooltip-placement="right" tooltip-append-to-body="true" ng-click="ui.showingLinks = false;")
+							i.icon-legend-dots
 				.panel-list(ng-if="isNodeColorNumeric && isNumericItemByColor")
 					.panel-list__numeric(ng-repeat="item in [isNumericItemByColor]")
 						dir-attr-renderer(attr-to-render="item", node-color-str="nodeColorStr", is-node="true", show-filter="true", disable-filter="false" theme="appUi.theme" pinned-media="pinnedMedia" gradient="true")
