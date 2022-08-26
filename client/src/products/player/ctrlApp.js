@@ -12,7 +12,6 @@ angular.module('player')
             var timeStart = Date.now();
 
             var tabs = {
-                summary: 'filter',
                 legend: 'summary',
                 list: 'info'
             }
@@ -87,11 +86,12 @@ angular.module('player')
                 filterPanelHover: false,
                 openPanel: function(panel) {
                     this.showRightPanel = true;
-                    this.currentPanelOpen = panel;
+                    this.currentPanelOpen = tabs[panel] || panel;
                     //hide all panels
                     this.closePanels();
                     switch (panel) {
                     case 'summary':
+                    case 'legend':
                         this.summaryPanelOpen = true;
                         break;
                     case 'filter':
@@ -100,6 +100,7 @@ angular.module('player')
                         $scope.$broadcast(BROADCAST_MESSAGES.fp.filter.visibilityToggled);
                         break;
                     case 'info':
+                    case 'list':
                         this.infoPanelOpen = true;
                         break;
                     case 'slides':
@@ -203,9 +204,6 @@ angular.module('player')
 
             $scope.$on(BROADCAST_MESSAGES.snapshot.loaded, function(e, data) {
                 $scope.snapInfo.activeSnap = data.snapshot;
-                const key = ($scope.player.player.settings.tabs && $scope.player.player.settings.tabs[0]) || 'legend';
-
-                $scope.panelUI.openPanel(tabs[key]);
             });
 
             $scope.$on(BROADCAST_MESSAGES.sigma.rendered, function(e, data) {
