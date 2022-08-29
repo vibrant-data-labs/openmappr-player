@@ -225,6 +225,10 @@ angular.module('common')
                 return _.get($scope, '$parent.player.player.settings.projectLogoImageUrl') || null;
             }
 
+            $scope.getCurrentProjectUri = function () {
+                return _.get($scope, '$parent.player.player.settings.projectLogoUrl') || null;
+            }
+
             $scope.isShowMoreBtn = true;
 
             $scope.toggleSharePanel = function () {
@@ -240,7 +244,6 @@ angular.module('common')
             
             $scope.copyClipboard = function (e) {
                 e.preventDefault();
-                toastr.options.positionClass = 'toast-bottom-center';
                 toastr.success('The project link has been copied to clipboard')
                 navigator.clipboard.writeText($scope.host);
                 $scope.isShowShare = false;

@@ -90,6 +90,15 @@ button.toast-close-button {
   left: 12px;
 }
 
+.toast-top-center {
+  top: 20px;
+  right: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .toast-bottom-center{
   bottom: 20px;
   right: 0;
