@@ -898,9 +898,10 @@ angular.module('common')
                             const mapprSettings = renderCtrl.getMapprSettings();
                             const min = selectionCountsList[i].min;
                             const max = selectionCountsList[i].max;
+                            const delta = 0.001;
                             const node = _.filter(allNodes, x => {
                                 const val = isLogScale ? Math.log10(x.attr[mapprSettings.nodeColorAttr]):x.attr[mapprSettings.nodeColorAttr];
-                                return val >= min && val <= max + 0.001;
+                                return val >= min && val <= max + delta;
                             });
                             const barColor = node && node.length ? node[0].colorStr : opts.barColor;
                             globalBar.style({
