@@ -900,7 +900,7 @@ angular.module('common')
                             const max = selectionCountsList[i].max;
                             const node = _.filter(allNodes, x => {
                                 const val = isLogScale ? Math.log10(x.attr[mapprSettings.nodeColorAttr]):x.attr[mapprSettings.nodeColorAttr];
-                                return val >= min && val <= max;
+                                return val >= min && val <= max + 0.001;
                             });
                             const barColor = node && node.length ? node[0].colorStr : opts.barColor;
                             globalBar.style({

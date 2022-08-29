@@ -1192,6 +1192,10 @@
 
 .legend-title {
   padding: 20px 20px 16px 26px;
+
+  &--bottom {
+    padding-top: 0;
+  }
 }
 
 .main {
