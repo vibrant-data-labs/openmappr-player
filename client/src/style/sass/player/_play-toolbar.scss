@@ -10,7 +10,7 @@
     background: #fff;
     max-width: 328px;
     overflow: hidden;
-    width: 300px;
+    width: 310px;
     left: 482px;
     bottom: 20px;
   }
@@ -53,6 +53,7 @@
     display: flex;
     align-items: center;
     justify-content: flex-start;
+    font-family: 'Roboto';
 
     &:before {
       content: '';
@@ -75,6 +76,7 @@
     border: 1px solid rgba(0, 0, 0, 0.07);
     border-radius: 4px;
     font-size: 14px;
+    font-family: 'Roboto';
     color: #616161;
     margin-left: auto;
     padding-left: 20px;
@@ -198,7 +200,6 @@
     font-size: 14px;
     line-height: 16px;
     color: rgba(#555555, .8);
-    cursor: pointer;
     position: relative;
     border-radius: 4px;
     display: flex;
@@ -206,6 +207,10 @@
     background: #E3EAEF;
     height: 34px;
 
+    .play-toolbar-list__item_selected & {
+      background-color: #fff;
+    }
+    
     &::after {
       position: absolute;
       // content: '';
@@ -218,14 +223,6 @@
       width: 20px;
       height: 20px;
       transform: scaleY(-1);
-    }
-
-    &:hover {
-      background: darken(#fff, 4);
-
-      &::after {
-        border-color: darken(#E2E2E2, 8);
-      }
     }
 
     .button_icon_cancel {
@@ -250,7 +247,8 @@
       margin: 0 3px;
 
       &:first-child {
-        .play-toolbar-list__item_selected & {
+        .play-toolbar-list__item_selected &,
+        .play-toolbar-list__item:last-child & {
           background-color: #BC3364;
         }
       }
@@ -260,7 +258,6 @@
   &__content {
     display: none;
     visibility: visible;
-    border-top: 1px solid #CFCFCF;
     color: #939698;
     font-size: 14px;
     line-height: 16px;
@@ -417,7 +414,7 @@
     border: 1px solid #e6e6e6;
     background: white;
     border-radius: 4px;
-    width: 287px;
+    width: 310px;
     box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.1);
     z-index: 100;
 
