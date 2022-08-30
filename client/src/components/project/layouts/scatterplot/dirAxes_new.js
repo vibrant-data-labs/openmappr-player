@@ -95,9 +95,7 @@ function ($rootScope, $q, $compile, $timeout, renderGraphfactory, layoutService,
 
             if (isClustered) {
                 scope.layout.attr[axis + 'axis'] = attrId;
-            }
-
-            if (!isClustered) {
+            } else {
                 scope.layout.attr[axis] = attrId;
             }
             
