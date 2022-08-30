@@ -91,8 +91,16 @@ function ($rootScope, $q, $compile, $timeout, renderGraphfactory, layoutService,
         scope.attrs = [];
 
         function updateLayout(attrId, axis) {
-            scope.layout.attr[axis] = attrId;
+            const isClustered = scope.layout.plotType == 'clustered-scatterplot';
 
+            if (isClustered) {
+                scope.layout.attr[axis + 'axis'] = attrId;
+            }
+
+            if (!isClustered) {
+                scope.layout.attr[axis] = attrId;
+            }
+            
             rebuildAndRepositionMarkers();
             $rootScope.$broadcast(BROADCAST_MESSAGES.sigma.resize);
         }
