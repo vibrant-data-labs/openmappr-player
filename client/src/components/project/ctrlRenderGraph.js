@@ -218,7 +218,7 @@ angular.module('common')
                 return `<h3>${title}</h3>${subtitle ? '<h6>' + subtitle + '</h6>' : ''}${desc}`;
             }
             $scope.getCurrentProjectTitle = function () {
-                return _.get($scope, '$parent.player.player.settings.projectLogoTitle') || '';
+                return _.get($scope, '$parent.player.player.settings.projectLogoTitle') || _.get($scope, '$parent.player.player.settings.headerTitle') || '';
             }
 
             $scope.getCurrentLogoImage = function () {

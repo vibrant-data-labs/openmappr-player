@@ -188,7 +188,7 @@
           .project-info(ng-if="!nodeRightInfo")
             .section__header
               h3.section__title.section__title--project {{drawerTitle}}
-              .sponsors
+              .sponsors(ng-if="sponsors && sponsors.length")
                 span.sponsors__title Powered by
                 ul.sponsors__list 
                   li.sponsors__item(ng-repeat="item in sponsors")

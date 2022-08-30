@@ -1766,6 +1766,9 @@
    * @return {number}     The number value.
    */
   sigma.utils.floatColor = function(val) {
+    if (!val) {
+      val = '';
+    }
     var result = [0, 0, 0];
 
     if (val.match(/^#/)) {

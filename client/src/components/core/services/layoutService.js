@@ -898,15 +898,15 @@ function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partiti
             var clusteringStrings = ["Cluster", "Louvain", "louvain"];
             if(!Boolean(attr.selectable) && attr.selectable !== undefined) return false;
             
-            if(attr.attrType == 'color') {
-                return true;
-            }
-            // if(attr.isTag) {return false;}
-            if(attr.isTag) {return true;}
-            if( _.any(clusteringStrings, function(str) { return attr.title.indexOf(str) >= 0; })) { return true; }
-            if(attr.isNumeric && attr.bounds.max <= attr.bounds.min) { return false; }
-            if(!attr.isNumeric && (attr.attrType !== 'string' || _.size(attr.values) > maxItems)) { return false; }
-            return true;
+            // if(attr.attrType == 'color') {
+            //     return true;
+            // }
+            // // if(attr.isTag) {return false;}
+            // if(attr.isTag) {return true;}
+            // if( _.any(clusteringStrings, function(str) { return attr.title.indexOf(str) >= 0; })) { return true; }
+            // if(attr.isNumeric && attr.bounds.max <= attr.bounds.min) { return false; }
+            // if(!attr.isNumeric && (attr.attrType !== 'string' || _.size(attr.values) > maxItems)) { return false; }
+            // return true;
         }
         return _.filter(dataGraph.getNodeAttrs(), _filterAttrs);
     }

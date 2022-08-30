@@ -90,7 +90,7 @@ angular.module('common')
             };
 
             $scope.toggleRightPanel = function(val = false) {
-                $scope.drawerTitle = $scope.player.player.settings.defaultPanel;
+                $scope.drawerTitle = $scope.player.player.settings.defaultPanel || 'Map Information';
                 $scope.projectInfoTitle = $scope.player.player.settings.modalSubtitle;
                 $scope.projectInfoDesc = $scope.player.player.settings.modalDescription;
                 $scope.sponsors = $scope.player.player.settings.sponsors || [];

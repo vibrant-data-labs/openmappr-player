@@ -3,7 +3,7 @@
 		//- .header(ng-mouseenter="panelUI.summaryPanelOpen ? showLegendBtns = true : showLegendBtns = false; panelUI.summaryPanelHover = true;" ng-mouseleave="showLegendBtns = false; panelUI.summaryPanelHover = false;" ng-class="{'active': panelUI.summaryPanelOpen}")
 		.header(ng-mouseenter="panelUI.summaryPanelOpen ? showLegendBtns = true : showLegendBtns = false;" ng-mouseleave="showLegendBtns = false;")
 			.row.vert-align.main
-				.col-xs-12(ng-if="dataGroupsInfo.colorNodesBy.id !== dataGroupsInfo.clusterNodesBy.id")
+				.col-xs-12
 					h6.title.text-uppercase.vert-align
 							.title-space.width-100
 								h6.title.text-uppercase.truncate.vert-align
@@ -36,7 +36,7 @@
 			.panel-scroll(ng-if="!ui.showingLinks && mapprSettings.nodeColorStrat != 'select' && mapprSettings.nodeColorStrat != 'fixed'", dir-kill-tooltip-on-scroll)
 				.panel-list( ng-class="{'highlighted': ui.highlightingNodes}")
 					.flex
-						dir-attr-renderer(render-to-type="'horizontal-bars'", attr-to-render="dataGroupsInfo.clusterNodesBy", node-color-str="nodeColorStr", is-node="true", show-filter="true", disable-filter="false" theme="appUi.theme" pinned-media="pinnedMedia" gradient="true")
+						dir-attr-renderer(render-to-type="'horizontal-bars'", attr-to-render="dataGroupsInfo.clusterNodesBy", node-color-str="dataGroupsInfo.colorNodesBy.id == dataGroupsInfo.clusterNodesBy.id ? nodeColorStr : ''", is-node="true", show-filter="true", disable-filter="false" theme="appUi.theme" pinned-media="pinnedMedia" gradient="true")
 				.row.vert-align.main																		
 					.col-xs-12
 						h6.title.text-uppercase.pointable-cursor.vert-align.legend-title.legend-title--bottom
@@ -45,7 +45,8 @@
 										.title-space
 											span.inline.nowrap
 												span Colored by:&nbsp;&nbsp;
-												span(uib-dropdown dropdown-append-to-body)
+												span(ng-if="!nodeColorAttrs || nodeColorAttrs.length < 2") {{dataGroupsInfo.colorNodesBy.title}}
+												span(ng-if="nodeColorAttrs && nodeColorAttrs.length > 1" uib-dropdown dropdown-append-to-body)
 													span(uib-dropdown-toggle auto-close="outsideClick" ng-click="keepDrawerOpen = true;")
 														span.text-link {{dataGroupsInfo.colorNodesBy.title}}
 															i.fa.fa-angle-down
@@ -65,7 +66,7 @@
 								.link-circle
 						.square-btn.small-btn.vert-align(ng-if="ui.showingLinks" uib-tooltip="View Nodes Summary" tooltip-placement="right" tooltip-append-to-body="true" ng-click="ui.showingLinks = false;")
 							i.icon-legend-dots
-				.panel-list(ng-if="isNodeColorNumeric && isNumericItemByColor")
+				.panel-list
 					.panel-list__numeric(ng-repeat="item in [isNumericItemByColor]")
 						dir-attr-renderer(attr-to-render="item", node-color-str="nodeColorStr", is-node="true", show-filter="true", disable-filter="false" theme="appUi.theme" pinned-media="pinnedMedia" gradient="true")
 						h6.panel-list__title {{isNumericItemByColor.title}}
