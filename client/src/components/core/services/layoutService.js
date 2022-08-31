@@ -894,8 +894,8 @@ function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partiti
         // 4a) numeric and multivalued
         // 4b) or strings with less than a max number of discrete values
         function _filterAttrs (attr) {
-            var maxItems = Math.max(attr.nValues/2, MAX_COLOR_ITEMS);
-            var clusteringStrings = ["Cluster", "Louvain", "louvain"];
+            var idsToIgnore = ['OriginalColor', 'OriginalSize', 'OriginalLabel', 'linkingAttributes', 'id', 'isDirectional'];
+            if (idsToIgnore.includes(attr.id)) return false;
             if(!Boolean(attr.selectable) && attr.selectable !== undefined) return false;
             
             // if(attr.attrType == 'color') {
@@ -906,7 +906,7 @@ function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partiti
             // if( _.any(clusteringStrings, function(str) { return attr.title.indexOf(str) >= 0; })) { return true; }
             // if(attr.isNumeric && attr.bounds.max <= attr.bounds.min) { return false; }
             // if(!attr.isNumeric && (attr.attrType !== 'string' || _.size(attr.values) > maxItems)) { return false; }
-            // return true;
+            return true;
         }
         return _.filter(dataGraph.getNodeAttrs(), _filterAttrs);
     }

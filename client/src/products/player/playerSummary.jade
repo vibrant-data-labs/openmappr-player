@@ -2,7 +2,7 @@
 	.flex-vert-container.width-100.panel-scroll(style="overflow-x: hidden")
 		//- .header(ng-mouseenter="panelUI.summaryPanelOpen ? showLegendBtns = true : showLegendBtns = false; panelUI.summaryPanelHover = true;" ng-mouseleave="showLegendBtns = false; panelUI.summaryPanelHover = false;" ng-class="{'active': panelUI.summaryPanelOpen}")
 		.header(ng-mouseenter="panelUI.summaryPanelOpen ? showLegendBtns = true : showLegendBtns = false;" ng-mouseleave="showLegendBtns = false;")
-			.row.vert-align.main
+			.row.vert-align.main(ng-if="dataGroupsInfo.colorNodesBy.id != dataGroupsInfo.clusterNodesBy.id")
 				.col-xs-12
 					h6.title.text-uppercase.vert-align
 							.title-space.width-100
@@ -12,11 +12,6 @@
 											span Clustered by:&nbsp;&nbsp;
 											span {{dataGroupsInfo.clusterNodesBy.title}}
 														
-			
-			
-			
-			
-
 			.hidden-btns(ng-click="$event.stopPropagation()" ng-if="!isNodeColorNumeric && ui.showViewToggle")
 				h6.text-uppercase.animate-hidden-panel-btns(ng-show="(showLegendBtns && panelUI.summaryPanelOpen) || keepDrawerOpen")
 					.row.vert-align
@@ -34,7 +29,7 @@
 			/// Node Color Panel
 			///
 			.panel-scroll(ng-if="!ui.showingLinks && mapprSettings.nodeColorStrat != 'select' && mapprSettings.nodeColorStrat != 'fixed'", dir-kill-tooltip-on-scroll)
-				.panel-list( ng-class="{'highlighted': ui.highlightingNodes}")
+				.panel-list( ng-class="{'highlighted': ui.highlightingNodes}", ng-if="dataGroupsInfo.colorNodesBy.id != dataGroupsInfo.clusterNodesBy.id")
 					.flex
 						dir-attr-renderer(render-to-type="'horizontal-bars'", attr-to-render="dataGroupsInfo.clusterNodesBy", node-color-str="dataGroupsInfo.colorNodesBy.id == dataGroupsInfo.clusterNodesBy.id ? nodeColorStr : ''", is-node="true", show-filter="true", disable-filter="false" theme="appUi.theme" pinned-media="pinnedMedia" gradient="true")
 				.row.vert-align.main																		
@@ -44,7 +39,8 @@
 									h6.title.text-uppercase.truncate.vert-align
 										.title-space
 											span.inline.nowrap
-												span Colored by:&nbsp;&nbsp;
+												span(ng-if="dataGroupsInfo.colorNodesBy.id != dataGroupsInfo.clusterNodesBy.id") Colored by:&nbsp;&nbsp;
+												span(ng-if="dataGroupsInfo.colorNodesBy.id == dataGroupsInfo.clusterNodesBy.id") Clustered by, Colored by:&nbsp;&nbsp;
 												span(ng-if="!nodeColorAttrs || nodeColorAttrs.length < 2") {{dataGroupsInfo.colorNodesBy.title}}
 												span(ng-if="nodeColorAttrs && nodeColorAttrs.length > 1" uib-dropdown dropdown-append-to-body)
 													span(uib-dropdown-toggle auto-close="outsideClick" ng-click="keepDrawerOpen = true;")
@@ -69,7 +65,7 @@
 				.panel-list
 					.panel-list__numeric(ng-repeat="item in [isNumericItemByColor]")
 						dir-attr-renderer(attr-to-render="item", node-color-str="nodeColorStr", is-node="true", show-filter="true", disable-filter="false" theme="appUi.theme" pinned-media="pinnedMedia" gradient="true")
-						h6.panel-list__title {{isNumericItemByColor.title}}
+						h6.panel-list__title(ng-if="item.attrType == 'integer' || item.attrType == 'float' || item.attrType == 'boolean' || item.attrType == 'year' || item.attrType == 'timestamp'") {{isNumericItemByColor.title}}
 					
 				.row.vert-align.main.main--sized-by
 					.col-xs-12
