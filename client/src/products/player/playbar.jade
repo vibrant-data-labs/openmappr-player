@@ -81,130 +81,132 @@
           ng-click="resetFilters()",
           ng-disabled="!(ui.activeFilterCount > 0)"
         ) Clear All
-      .play-toolbar-list(ng-if="isShowBreadcrumbs")
-        section.play-toolbar-list__item(ng-repeat="operation in operations.list",
-          ng-if="operation.type != 'init' && isShowBreadcrumbs"
-          ng-class="{'play-toolbar-list__item_subsetted' : operation.type == 'subset', 'play-toolbar-list__item_selected': operation.type == 'select', 'play-toolbar-list__item_opened': operation.isOpened }")
-          header.play-toolbar-list__header(ng-if="operation.type == 'select' || operation.type == 'subset'")
-            span(ng-class="{'selected' : $last, 'total': !$last}") {{operation.nodesCount}}
-            = ' '
-            | of
-            = ' '
-            span.total {{operation.totalNodes}}
-            b(ng-if="operation.type == 'select'")&nbsp;selected
-            b(ng-if="operation.type == 'subset'", ng-class="{ 'span-subset': ($last || ($index == operations.list.length - 2 && operations.last().type == 'select')) }") subsetted
+      .play-toolbar-list(ng-class="{'play-toolbar-list--empty' : !ui.subsetEnabled && !isShowBreadcrumbs}")
+        div(ng-if="isShowBreadcrumbs")
+          section.play-toolbar-list__item(ng-repeat="operation in operations.list",
+            ng-if="operation.type != 'init' && isShowBreadcrumbs"
+            ng-class="{'play-toolbar-list__item_subsetted' : operation.type == 'subset', 'play-toolbar-list__item_selected': operation.type == 'select', 'play-toolbar-list__item_opened': operation.isOpened }")
+            header.play-toolbar-list__header(ng-if="operation.type == 'select' || operation.type == 'subset'")
+              span(ng-class="{'selected' : $last, 'total': !$last}") {{operation.nodesCount}}
+              = ' '
+              | of
+              = ' '
+              span.total {{operation.totalNodes}}
+              b(ng-if="operation.type == 'select'")&nbsp;selected
+              b(ng-if="operation.type == 'subset'", ng-class="{ 'span-subset': ($last || ($index == operations.list.length - 2 && operations.last().type == 'select')) }") subsetted
 
-            button(ng-if="$index == operations.list.length -1", ng-click="resetOperation()").play-toolbar__btn.play-toolbar__btn-undo Undo
+              button(ng-if="$index == operations.list.length -1", ng-click="resetOperation()").play-toolbar__btn.play-toolbar__btn-undo Undo
 
-          .play-toolbar-list__content(ng-if="(operation.searchText || operation.filters) && operation.isOpened")
-            .filter-section-wrap(ng-if="operation.searchText")
+            .play-toolbar-list__content(ng-if="(operation.searchText || operation.filters) && operation.isOpened")
+              .filter-section-wrap(ng-if="operation.searchText")
+                  dl.filter-section
+                    dt.filter-section__label
+                      | Search Results  
+                      span(ng-if="operation.searchAttr") &nbsp;{{operation.searchAttr.title}}
+                      | :
+
+                    dd.filter-section__content
+                      ul.filter-section__list
+                        li.filter-section__item
+                          span "{{operation.searchText}}"    
+              .filter-section-wrap(ng-repeat="filter in operations.filterArray(operation)", ng-if="operation.filters")
                 dl.filter-section
                   dt.filter-section__label
-                    | Search Results  
-                    span(ng-if="operation.searchAttr") &nbsp;{{operation.searchAttr.title}}
-                    | :
+                    | {{filter.attrInfo.attr.title}}:
 
                   dd.filter-section__content
-                    ul.filter-section__list
-                      li.filter-section__item
-                        span "{{operation.searchText}}"    
-            .filter-section-wrap(ng-repeat="filter in operations.filterArray(operation)", ng-if="operation.filters")
-              dl.filter-section
-                dt.filter-section__label
-                  | {{filter.attrInfo.attr.title}}:
+                    ul.filter-section__list(ng-if="!operations.isNumeric(filter.attrInfo)")
+                      li.filter-section__item(ng-repeat="val in filter.values.values")
+                        span.filter-section__divider(
+                          ng-if="filter.values.values.length > 1 && $index == filter.values.values.length -1"
+                        ) &nbsp;or&nbsp;
+                        span {{val}}
+                    ul.filter-section__list(ng-if="operations.isNumeric(filter.attrInfo)")
+                      li.filter-section__item(ng-repeat="val in filter.values")
+                        span(ng-if="filter.values.length > 1 && $index == filter.values.length -1") &nbsp;or&nbsp;
 
-                dd.filter-section__content
-                  ul.filter-section__list(ng-if="!operations.isNumeric(filter.attrInfo)")
-                    li.filter-section__item(ng-repeat="val in filter.values.values")
-                      span.filter-section__divider(
-                        ng-if="filter.values.values.length > 1 && $index == filter.values.values.length -1"
-                      ) &nbsp;or&nbsp;
-                      span {{val}}
-                  ul.filter-section__list(ng-if="operations.isNumeric(filter.attrInfo)")
-                    li.filter-section__item(ng-repeat="val in filter.values")
-                      span(ng-if="filter.values.length > 1 && $index == filter.values.length -1") &nbsp;or&nbsp;
+                        span.filter-section__item_array(
+                          ng-if="val.description == 'btw'&& (filter.attrInfo.attr.attrType != 'year' && filter.attrInfo.attr.attrType != 'timestamp')"
+                        )
+                          | between
+                          = ' '
+                          span {{val.values[0] | number:2}}
+                          = ' '
+                          span.filter-section__divider and
+                          = ' '
+                          span {{val.values[1] | number:2}}
 
-                      span.filter-section__item_array(
-                        ng-if="val.description == 'btw'&& (filter.attrInfo.attr.attrType != 'year' && filter.attrInfo.attr.attrType != 'timestamp')"
-                      )
-                        | between
-                        = ' '
-                        span {{val.values[0] | number:2}}
-                        = ' '
-                        span.filter-section__divider and
-                        = ' '
-                        span {{val.values[1] | number:2}}
+                        span.filter-section__item_array(
+                          ng-if="val.description == 'btw' && (filter.attrInfo.attr.attrType == 'year')"
+                        )
+                          | between
+                          = ' '
+                          span {{val.values[0]}}
+                          = ' '
+                          span.filter-section__divider and
+                          span {{val.values[1]}}
 
-                      span.filter-section__item_array(
-                        ng-if="val.description == 'btw' && (filter.attrInfo.attr.attrType == 'year')"
-                      )
-                        | between
-                        = ' '
-                        span {{val.values[0]}}
-                        = ' '
-                        span.filter-section__divider and
-                        span {{val.values[1]}}
+                        span.filter-section__item_array(
+                          ng-if="val.description == 'btw' && (filter.attrInfo.attr.attrType == 'timestamp')"
+                        )
+                          | between
+                          = ' '
+                          span {{operations.formatTime(val.values[0])}}
+                          = ' '
+                          span.filter-section__divider and
+                          span {{operations.formatTime(val.values[1])}}
 
-                      span.filter-section__item_array(
-                        ng-if="val.description == 'btw' && (filter.attrInfo.attr.attrType == 'timestamp')"
-                      )
-                        | between
-                        = ' '
-                        span {{operations.formatTime(val.values[0])}}
-                        = ' '
-                        span.filter-section__divider and
-                        span {{operations.formatTime(val.values[1])}}
+                        span(
+                          ng-if="val.description == 'ht' && (filter.attrInfo.attr.attrType == 'year')"
+                        )
+                          | after
+                          = ' '
+                          span {{val.values[0].toString().split('.')[0]}}
 
-                      span(
-                        ng-if="val.description == 'ht' && (filter.attrInfo.attr.attrType == 'year')"
-                      )
-                        | after
-                        = ' '
-                        span {{val.values[0].toString().split('.')[0]}}
+                        span.filter-section__item_array(
+                          ng-if="val.description == 'ht' && (filter.attrInfo.attr.attrType == 'timestamp')"
+                        )
+                          | after
+                          = ' '
+                          span {{operations.formatTime(val.values[0])}}
 
-                      span.filter-section__item_array(
-                        ng-if="val.description == 'ht' && (filter.attrInfo.attr.attrType == 'timestamp')"
-                      )
-                        | after
-                        = ' '
-                        span {{operations.formatTime(val.values[0])}}
+                        span.filter-section__item_array(
+                          ng-if="val.description == 'ht' && (filter.attrInfo.attr.attrType != 'year' && filter.attrInfo.attr.attrType != 'timestamp')"
+                        )
+                          | higher than
+                          = ' '
+                          span {{val.values[0] | number:2}}
 
-                      span.filter-section__item_array(
-                        ng-if="val.description == 'ht' && (filter.attrInfo.attr.attrType != 'year' && filter.attrInfo.attr.attrType != 'timestamp')"
-                      )
-                        | higher than
-                        = ' '
-                        span {{val.values[0] | number:2}}
+                        span.filter-section__item_array(
+                          ng-if="val.description == 'lt' && (filter.attrInfo.attr.attrType == 'year')"
+                        )
+                          | before
+                          = ' '
+                          span {{val.values[0].toString().split('.')[0]}}
 
-                      span.filter-section__item_array(
-                        ng-if="val.description == 'lt' && (filter.attrInfo.attr.attrType == 'year')"
-                      )
-                        | before
-                        = ' '
-                        span {{val.values[0].toString().split('.')[0]}}
+                        span.filter-section__item_array(
+                          ng-if="val.description == 'lt' && (filter.attrInfo.attr.attrType == 'timestamp')"
+                        )
+                          | before
+                          = ' '
+                          span {{operations.formatTime(val.values[0])}}
 
-                      span.filter-section__item_array(
-                        ng-if="val.description == 'lt' && (filter.attrInfo.attr.attrType == 'timestamp')"
-                      )
-                        | before
-                        = ' '
-                        span {{operations.formatTime(val.values[0])}}
+                        span.filter-section__item_array(
+                          ng-if="val.description == 'lt' && (filter.attrInfo.attr.attrType != 'year' && filter.attrInfo.attr.attrType != 'timestamp')"
+                        )
+                          | lower than
+                          = ' '
+                          span {{val.values[0] | number:2}}
 
-                      span.filter-section__item_array(
-                        ng-if="val.description == 'lt' && (filter.attrInfo.attr.attrType != 'year' && filter.attrInfo.attr.attrType != 'timestamp')"
-                      )
-                        | lower than
-                        = ' '
-                        span {{val.values[0] | number:2}}
-
-                      span(ng-if="val.description == 'eq'") {{val.values[0]}}
-    .play-toolbar__btn-summarize(ng-if="ui.subsetEnabled")
-      button.button_summarize(
-        ng-click="subsetFilters()",
-        uib-tooltip="Click to summarize the selected nodes in the ‘Summary’ tab"
-        tooltip-append-to-body="true"
-        tooltip-placement="right"
-      ) Summarize Selection
+                        span(ng-if="val.description == 'eq'") {{val.values[0]}}
+        .play-toolbar__btn-summarize(ng-if="ui.subsetEnabled", ng-class="{'play-toolbar__btn-summarize--collapsed': !isShowBreadcrumbs}")
+          .play-toolbar__btn-summarize-box
+            button.button_summarize(
+              ng-click="subsetFilters()",
+              uib-tooltip="Click to summarize the selected nodes in the ‘Summary’ tab"
+              tooltip-append-to-body="true"
+              tooltip-placement="right"
+            ) Summarize Selection
 .play-toolbar-bottom(
   ng-if="layout.plotType != 'list' && layout.plotType != 'grid'"
 )

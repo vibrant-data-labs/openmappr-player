@@ -94,12 +94,12 @@ angular.module('common')
                 $scope.projectInfoTitle = $scope.player.player.settings.modalSubtitle;
                 $scope.projectInfoDesc = $scope.player.player.settings.modalDescription;
                 $scope.sponsors = $scope.player.player.settings.sponsors || [];
+                $scope.sponsorsTxt = $scope.player.player.settings.sponsorsTxt || 'Powered by';
                 
                 if ($scope.player.player.settings.footer) {
-                    $scope.isShownFooter = $scope.player.player.settings.footer.isShown;
-                    $scope.footerLogo = $scope.player.player.settings.footer.studioLogo;
-                    $scope.footerName = $scope.player.player.settings.footer.studioName;
-                    $scope.footerLink = $scope.player.player.settings.footer.studioUrl;
+                    $scope.footerLogo = $scope.player.player.settings.footer.studioLogo || 'img/logos/vdl-logo.svg';
+                    $scope.footerName = $scope.player.player.settings.footer.studioName || 'Vibrant Data Labs';
+                    $scope.footerLink = $scope.player.player.settings.footer.studioUrl || 'https://www.ericberlow.com/';
                 }
 
                 $scope.beginOverlayRightPanel = val || !$scope.beginOverlayRightPanel;

@@ -95,9 +95,7 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
         $scope.dataGroupsInfo.colorNodesBy = colorAttr;
         $scope.mapprSettings.nodeColorAttr =  $scope.dataGroupsInfo.colorNodesBy.id;
 
-        if (colorAttr.isNumeric) {
-            $scope.isNumericItemByColor = colorAttr;
-        }
+        $scope.isNumericItemByColor = colorAttr;
         
         $rootScope.$broadcast(BROADCAST_MESSAGES.cb.changed, colorAttr);
 
