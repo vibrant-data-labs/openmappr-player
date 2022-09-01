@@ -395,11 +395,17 @@ angular.module('common')
                                 resultMap[nodeAttrKey] = ('"' + item.attr[nodeAttrKey].join(', ') + '"').replaceAll(/(\r\n|\n|\r)/gm, "");
                                 continue;
                             }
-                            hasSeparatorInValue = item.attr[nodeAttrKey].toString().indexOf(separator) !== -1;
-                            hasDoubleQuoteInValue = item.attr[nodeAttrKey].toString().indexOf('"') !== -1;
-                            shouldBeWrapped = hasSeparatorInValue || hasDoubleQuoteInValue;
-                            rowText = item.attr[nodeAttrKey].toString().trim().replaceAll(/(\r\n|\n|\r)/gm, "");
+                            
+                            const value = item.attr[nodeAttrKey];
 
+                            if (value) {
+                                hasSeparatorInValue = value.toString().indexOf(separator) !== -1;
+                                hasDoubleQuoteInValue = value.toString().indexOf('"') !== -1;
+                                rowText = value.toString().trim().replaceAll(/(\r\n|\n|\r)/gm, "");
+                            }
+
+                            shouldBeWrapped = hasSeparatorInValue || hasDoubleQuoteInValue;
+                            
                             if (decimalSeparator !== '.' && isNumeric(rowText) && rowText % 1 !== 0) {
                                 rowText = rowText.replace('.', decimalSeparator);
                             }
