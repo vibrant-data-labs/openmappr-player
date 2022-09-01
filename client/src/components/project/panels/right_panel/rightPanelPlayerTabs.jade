@@ -33,15 +33,16 @@
           {{feedbackText}}
 
       li.right-corner__item.right-corner__item_exports(ng-if="displayExportButton")
-        span.right-corner__link.right-corner__link_export
-        ul.right-corner__sub-link-box
-          li.right-corner__sub-link(ng-click="exportCurrentImage()"
-          data-toggle="tooltip"
-          uib-tooltip="Export as SVG"
-          tooltip-placement="top"
-          tooltip-append-to-body="true") Export Image
-          li.right-corner__sub-link(ng-click="exportCurrentData()"
-          data-toggle="tooltip"
-          uib-tooltip="Export Nodes as CSV"
-          tooltip-placement="top"
-          tooltip-append-to-body="true") Export Data
+        div.download-wrap
+          span.download Download
+          ul.download__box
+            li.download__sub-link(ng-click="exportCurrentImage()"
+            data-toggle="tooltip"
+            uib-tooltip="Export as SVG"
+            tooltip-placement="top"
+            tooltip-append-to-body="true") Export Image
+            li.download__sub-link(ng-click="exportCurrentData()"
+            data-toggle="tooltip"
+            uib-tooltip="Export Nodes as CSV"
+            tooltip-placement="top"
+            tooltip-append-to-body="true") Export Data
