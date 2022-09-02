@@ -82,7 +82,6 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
 
     $scope.vm.nodeSizeAttr = _.find($scope.nodeSizeAttrs, 'id', $scope.mapprSettings.nodeSizeAttr);
     $scope.isNumericItemByColor = _.find($scope.dataSet.attrDescriptors, 'id', $scope.mapprSettings.nodeColorAttr);
-    
     $scope.selectedNodes = [];
     $scope.totalValue = 0;
     $scope.totalSelectedValue = 0;
@@ -90,13 +89,16 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
     $scope.isShowFullDataGroupVMs = false;
     $scope.isShowMoreDesc = false;
 
+    $scope.getRenderType = function (item) {
+        return item.renderType === 'histogram' ? 'histogram' : 'horizontal-bars';
+    }
+
     $scope.colorByAttrUpdate = function colorByAttrUpdate(colorAttr){
         console.log(logPrefix + 'colorBy: ', $scope.dataGroupsInfo.colorNodesBy && $scope.dataGroupsInfo.colorNodesBy.id);
         $scope.dataGroupsInfo.colorNodesBy = colorAttr;
         $scope.mapprSettings.nodeColorAttr =  $scope.dataGroupsInfo.colorNodesBy.id;
 
         $scope.isNumericItemByColor = colorAttr;
-        
         $rootScope.$broadcast(BROADCAST_MESSAGES.cb.changed, colorAttr);
 
         var attrInfo = AttrInfoService.getNodeAttrInfoForRG().getForId($scope.mapprSettings.nodeColorAttr);

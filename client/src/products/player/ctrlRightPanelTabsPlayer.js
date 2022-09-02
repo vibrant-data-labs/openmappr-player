@@ -119,7 +119,7 @@ angular.module('common')
                 const { displayExportButton, feedback, beta } = resp.player.settings;
                 $scope.displayExportButton = displayExportButton;
                 $scope.feedbackLink = (feedback && feedback.link) || 'support@openmappr.org';
-                $scope.feedbackText = (feedback && feedback.text) || 'Questions, Suggestions, Feedback? Send us your thoughts!';
+                $scope.feedbackText = (feedback && feedback.text) || 'Contact us';
                 $scope.feedbackType = (feedback && feedback.type) || 'email';
                 $scope.isShowBeta = beta;
 

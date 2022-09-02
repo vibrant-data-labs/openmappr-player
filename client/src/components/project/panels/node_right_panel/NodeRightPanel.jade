@@ -120,7 +120,7 @@
                     dd.section-info__value {{number.value}}
               .wrap(ng-if="isShowNeighbours && ((neighs.in && neighs.in.length) || (neighs.out && neighs.out.length))")
                 section.section.section_tabs(ng-if="directLink")
-                  .tabContainer(ng-class="{'tabContainer_without-title' : !(ongoingTitle && incomingTitle)}")
+                  .tabContainer.tabContainer_pt-15(ng-class="{'tabContainer_without-title' : !(ongoingTitle && incomingTitle)}")
                     .tabVisible
                       .tab(ng-if="neighs.out && neighs.out.length")
                         button(ng-class="{active: sectionNeigh=='out'}", ng-click="activeNeigh('out')") 

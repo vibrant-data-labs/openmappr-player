@@ -64,7 +64,7 @@
 							i.icon-legend-dots
 				.panel-list
 					.panel-list__numeric(ng-repeat="item in [isNumericItemByColor]")
-						dir-attr-renderer(attr-to-render="item", node-color-str="nodeColorStr", is-node="true", show-filter="true", disable-filter="false" theme="appUi.theme" pinned-media="pinnedMedia" gradient="true")
+						dir-attr-renderer(render-to-type="getRenderType(item)" attr-to-render="item", node-color-str="nodeColorStr", is-node="true", show-filter="true", disable-filter="false" theme="appUi.theme" pinned-media="pinnedMedia" gradient="true")
 						h6.panel-list__title(ng-if="item.attrType == 'integer' || item.attrType == 'float' || item.attrType == 'boolean' || item.attrType == 'year' || item.attrType == 'timestamp'") {{isNumericItemByColor.title}}
 					
 				.row.vert-align.main.main--sized-by

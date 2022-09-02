@@ -272,6 +272,10 @@
       padding-top: 0px;
     }
 
+    &_pt-15 {
+      padding-top: 15px;
+    }
+
     &::after {
       content: '';
       pointer-events: none;
