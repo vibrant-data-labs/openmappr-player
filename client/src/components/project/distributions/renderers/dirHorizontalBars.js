@@ -334,6 +334,31 @@ angular.module('common')
                     return acc;
                 }, {});
             }
+            function getColors(layout) {
+                const nodes = [];
+                _.each(dataGraph.getAllNodes(), function (node) {
+                    var n = _.clone(node);
+                    layout.nodeT(n);
+                    nodes.push(n);
+                });
+                const colorAttr = layout.mapprSettings.nodeColorAttr;
+                return _.reduce(nodes, function(acc, cv) {
+                    const val = cv.attr[colorAttr];
+                    acc[val] = cv.colorStr;
+                    return acc;
+                }, {});  
+            }
+            function getColorMap(layout, attrInfo) {
+                if (attrInfo.attr.id === layout.mapprSettings.nodeClusterAttr) {
+                    return getClusters(layout);
+                }
+
+                if (attrInfo.attr.id === layout.mapprSettings.nodeColorAttr) {
+                    return getColors(layout);
+                }
+
+                return {};
+            }
             function genTagListData(currentSel, globalAttrInfo, filteringCatVals, defColorStr, valColorMap, sortType, sortOrder, layout) {
                 var attrInfo = globalAttrInfo;
                 var currSelFreqs = getCurrSelFreqsObj(currentSel, attrInfo.attr);
@@ -373,8 +398,8 @@ angular.module('common')
                         importance = globalFreq;
                     }
                     
-                    const clusters = getClusters(layout);
-                    const color = (clusters && clusters[catVal]) || '#cccccc';
+                    const colorMap = getColorMap(layout, attrInfo);
+                    const color = (colorMap && colorMap[catVal]) || '#cccccc';
                     var percent = maxVal/100; 
                     return {
                         val:val,

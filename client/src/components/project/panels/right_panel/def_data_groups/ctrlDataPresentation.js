@@ -73,7 +73,7 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
     function sizeByAttrUpdate(attr){
         console.log(logPrefix + 'sizeBy: ', attr.id);
         $scope.mapprSettings.nodeSizeAttr = attr.id;
-        $scope.vm.nodeSizeAttr = _.find($scope.nodeSizeAttrs, 'id', $scope.mapprSettings.nodeSizeAttr);
+        $scope.vm.nodeSizeAttr = _.find($scope.dataSet.attrDescriptors, 'id', $scope.mapprSettings.nodeSizeAttr);
     }
 
     $scope.vm = {
@@ -81,7 +81,7 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
         nodesTitle: projSettings.nodesTitle || defNodesTitle
     };
 
-    $scope.vm.nodeSizeAttr = _.find($scope.nodeSizeAttrs, 'id', $scope.mapprSettings.nodeSizeAttr);
+    $scope.vm.nodeSizeAttr = _.find($scope.dataSet.attrDescriptors, 'id', $scope.mapprSettings.nodeSizeAttr);
     $scope.isNumericItemByColor = _.find($scope.dataSet.attrDescriptors, 'id', $scope.mapprSettings.nodeColorAttr);
     $scope.selectedNodes = [];
     $scope.totalValue = 0;

@@ -71,7 +71,8 @@
 					.col-xs-12
 						h6.title.text-uppercase.vert-align.legend-title
 							span Sized by:&nbsp;&nbsp;
-								span(uib-dropdown dropdown-append-to-body)
+								span(ng-if="nodeSizeAttrs && nodeSizeAttrs.length < 2") {{vm.nodeSizeAttr.title}}
+								span(ng-if="nodeSizeAttrs && nodeSizeAttrs.length > 1" uib-dropdown dropdown-append-to-body)
 									span(uib-dropdown-toggle auto-close="outsideClick" ng-click="keepDrawerOpen = true;")
 										span.text-link {{vm.nodeSizeAttr.title}}
 											i.fa.fa-angle-down

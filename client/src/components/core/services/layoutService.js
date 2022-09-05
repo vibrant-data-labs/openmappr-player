@@ -896,16 +896,8 @@ function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partiti
         function _filterAttrs (attr) {
             var idsToIgnore = ['OriginalColor', 'OriginalSize', 'OriginalLabel', 'linkingAttributes', 'id', 'isDirectional'];
             if (idsToIgnore.includes(attr.id)) return false;
-            if(!Boolean(attr.selectable) && attr.selectable !== undefined) return false;
-            
-            // if(attr.attrType == 'color') {
-            //     return true;
-            // }
-            // // if(attr.isTag) {return false;}
-            // if(attr.isTag) {return true;}
-            // if( _.any(clusteringStrings, function(str) { return attr.title.indexOf(str) >= 0; })) { return true; }
-            // if(attr.isNumeric && attr.bounds.max <= attr.bounds.min) { return false; }
-            // if(!attr.isNumeric && (attr.attrType !== 'string' || _.size(attr.values) > maxItems)) { return false; }
+            if(!Boolean(attr.colorSelectable) && attr.colorSelectable !== undefined) return false;
+
             return true;
         }
         return _.filter(dataGraph.getNodeAttrs(), _filterAttrs);
@@ -914,6 +906,9 @@ function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partiti
     function getNodeSizeAttrs() {
         // Only Attributes which are numeric and multivalues
         function _filterAttrs (attr) {
+            // not hidden and selectable, colorSelectable, sizeSelectable
+            if (attr.sizeSelectable === undefined) return false;
+            if(!Boolean(attr.sizeSelectable) && attr.sizeSelectable !== undefined) return false;
             return !!attr.isNumeric  && attr.bounds.max >= attr.bounds.min;
         }
         return _.filter(dataGraph.getNodeAttrs(), _filterAttrs);
