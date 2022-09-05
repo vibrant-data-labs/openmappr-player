@@ -4,6 +4,9 @@
   right: 10px;
   list-style: none;
   padding: 0;
+  display: flex;
+  align-items: center;
+  flex-direction: row-reverse;
 
   &__link {
     position: relative;
@@ -53,7 +56,8 @@
   &__item {
     margin-bottom: 10px;
     text-align: right;
-
+    margin-left: 10px;
+    
     &_exports {
       position: relative;
     }
@@ -125,6 +129,7 @@
   transition: all 255ms linear;
   font-size: 16px;
   color: #333;
+  position: relative;
 
   .node-right-panel_opened & {
     transform: translateX(-345px);
