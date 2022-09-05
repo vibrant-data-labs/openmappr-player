@@ -1,7 +1,7 @@
 .legend-container.flex-transclude.width-100(ng-mouseleave="rightPanelExited();")
 	.flex-vert-container.width-100.panel-scroll(style="overflow-x: hidden")
 		//- .header(ng-mouseenter="panelUI.summaryPanelOpen ? showLegendBtns = true : showLegendBtns = false; panelUI.summaryPanelHover = true;" ng-mouseleave="showLegendBtns = false; panelUI.summaryPanelHover = false;" ng-class="{'active': panelUI.summaryPanelOpen}")
-		.header(ng-mouseenter="panelUI.summaryPanelOpen ? showLegendBtns = true : showLegendBtns = false;" ng-mouseleave="showLegendBtns = false;")
+		.header(ng-if="showClusteredBy" ng-mouseenter="panelUI.summaryPanelOpen ? showLegendBtns = true : showLegendBtns = false;" ng-mouseleave="showLegendBtns = false;")
 			.row.vert-align.main(ng-if="dataGroupsInfo.colorNodesBy.id != dataGroupsInfo.clusterNodesBy.id")
 				.col-xs-12
 					h6.title.text-uppercase.vert-align
@@ -29,7 +29,7 @@
 			/// Node Color Panel
 			///
 			.panel-scroll(ng-if="!ui.showingLinks && mapprSettings.nodeColorStrat != 'select' && mapprSettings.nodeColorStrat != 'fixed'", dir-kill-tooltip-on-scroll)
-				.panel-list( ng-class="{'highlighted': ui.highlightingNodes}", ng-if="dataGroupsInfo.colorNodesBy.id != dataGroupsInfo.clusterNodesBy.id")
+				.panel-list(ng-class="{'highlighted': ui.highlightingNodes}", ng-if="showClusteredBy && dataGroupsInfo.colorNodesBy.id != dataGroupsInfo.clusterNodesBy.id")
 					.flex
 						dir-attr-renderer(render-to-type="'horizontal-bars'", attr-to-render="dataGroupsInfo.clusterNodesBy", node-color-str="dataGroupsInfo.colorNodesBy.id == dataGroupsInfo.clusterNodesBy.id ? nodeColorStr : ''", is-node="true", show-filter="true", disable-filter="false" theme="appUi.theme" pinned-media="pinnedMedia" gradient="true")
 				.row.vert-align.main																		
@@ -39,8 +39,8 @@
 									h6.title.text-uppercase.truncate.vert-align
 										.title-space
 											span.inline.nowrap
-												span(ng-if="dataGroupsInfo.colorNodesBy.id != dataGroupsInfo.clusterNodesBy.id") Colored by:&nbsp;&nbsp;
-												span(ng-if="dataGroupsInfo.colorNodesBy.id == dataGroupsInfo.clusterNodesBy.id") Clustered by, Colored by:&nbsp;&nbsp;
+												span(ng-if="!showClusteredBy || dataGroupsInfo.colorNodesBy.id != dataGroupsInfo.clusterNodesBy.id") Colored by:&nbsp;&nbsp;
+												span(ng-if="showClusteredBy && dataGroupsInfo.colorNodesBy.id == dataGroupsInfo.clusterNodesBy.id") Clustered by, Colored by:&nbsp;&nbsp;
 												span(ng-if="!nodeColorAttrs || nodeColorAttrs.length < 2") {{dataGroupsInfo.colorNodesBy.title}}
 												span(ng-if="nodeColorAttrs && nodeColorAttrs.length > 1" uib-dropdown dropdown-append-to-body)
 													span(uib-dropdown-toggle auto-close="outsideClick" ng-click="keepDrawerOpen = true;")

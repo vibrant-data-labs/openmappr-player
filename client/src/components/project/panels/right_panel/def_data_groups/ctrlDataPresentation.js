@@ -67,6 +67,7 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
     $scope.nodeSizeAttrs = layoutService.getNodeSizeAttrs();
     $scope.nodeColorAttrs = layoutService.getNodeColorAttrs();
     $scope.MAPP_EDITOR_OPEN = $rootScope.MAPP_EDITOR_OPEN;
+    $scope.showClusteredBy = true;
 
     $scope.sizeByAttrUpdate = sizeByAttrUpdate;
     function sizeByAttrUpdate(attr){
@@ -103,6 +104,10 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
 
         var attrInfo = AttrInfoService.getNodeAttrInfoForRG().getForId($scope.mapprSettings.nodeColorAttr);
         $scope.totalValue = _(attrInfo.valuesCount).keys().map(x => attrInfo.valuesCount[x]).max();
+
+        if (!$scope.showClusteredBy) {
+            $scope.clusterByAttrUpdate(colorAttr);
+        }
     };
 
     $scope.clusterByAttrUpdate = function clusterByAttrUpdate(colorAttr){
@@ -226,7 +231,6 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
     **************************************/
 
     function initialise() {
-        console.log('ctrlDataPresentation! nodeSizeAttr', $scope.mapprSettings.nodeSizeAttr);
         if(_.any($scope.dataGroupVMs, 'editClusterName')) {
             console.info(logPrefix + 'legend in edit mode, skipping initialise.');
             return;
@@ -244,6 +248,10 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
             sortOp: '',
             sortReverse: false
         });
+
+        var snapshot = snapshotService.getCurrentSnapshot();
+        var disableClusteredBy = ['scatterplot', 'clustered-scatterplot', 'geo'];
+        $scope.showClusteredBy = !disableClusteredBy.includes(snapshot.layout.plotType);
 
         if(switchingNetwork || !dataGraph.getRawDataUnsafe()) {
             var x = $scope.$on(BROADCAST_MESSAGES.sigma.rendered, function() {
