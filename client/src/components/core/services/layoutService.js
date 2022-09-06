@@ -896,6 +896,7 @@ function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partiti
         function _filterAttrs (attr) {
             var idsToIgnore = ['OriginalColor', 'OriginalSize', 'OriginalLabel', 'linkingAttributes', 'id', 'isDirectional'];
             if (idsToIgnore.includes(attr.id)) return false;
+            if (attr.colorSelectable === undefined) return false;
             if(!Boolean(attr.colorSelectable) && attr.colorSelectable !== undefined) return false;
 
             return true;

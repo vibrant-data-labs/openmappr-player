@@ -250,7 +250,7 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
         });
 
         var snapshot = snapshotService.getCurrentSnapshot();
-        var disableClusteredBy = ['scatterplot', 'clustered-scatterplot', 'geo'];
+        var disableClusteredBy = ['scatterplot', 'geo'];
         $scope.showClusteredBy = !disableClusteredBy.includes(snapshot.layout.plotType);
 
         if(switchingNetwork || !dataGraph.getRawDataUnsafe()) {

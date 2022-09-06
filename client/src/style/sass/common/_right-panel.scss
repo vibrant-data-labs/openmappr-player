@@ -702,6 +702,7 @@
       h6 {
         margin: 0;
         padding: 10px 10px 8px;
+        padding-left: 7px;
 
         &.title {
           .text-link i {
@@ -1195,6 +1196,7 @@
 
   &--bottom {
     padding-top: 0;
+    padding-bottom: 0;
   }
 }
 
