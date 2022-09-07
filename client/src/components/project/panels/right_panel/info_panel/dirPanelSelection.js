@@ -6,8 +6,8 @@
 */
 
 angular.module('common')
-    .directive('dirPanelSelection', ['dataGraph', '$rootScope', '$filter', 'graphSelectionService', 'infoPanelService', 'AttrInfoService', 'linkService', 'graphHoverService', 'BROADCAST_MESSAGES', 'selectService', 'subsetService', 'renderGraphfactory',
-        function(dataGraph, $rootScope, $filter, graphSelectionService, infoPanelService, AttrInfoService, linkService, graphHoverService, BROADCAST_MESSAGES, selectService, subsetService, renderGraphfactory) {
+    .directive('dirPanelSelection', ['dataGraph', '$rootScope', '$filter', 'graphSelectionService', 'infoPanelService', 'AttrInfoService', 'linkService', 'graphHoverService', 'BROADCAST_MESSAGES', 'selectService', 'subsetService', 'renderGraphfactory', 'playerFactory',
+        function(dataGraph, $rootScope, $filter, graphSelectionService, infoPanelService, AttrInfoService, linkService, graphHoverService, BROADCAST_MESSAGES, selectService, subsetService, renderGraphfactory, playerFactory) {
             'use strict';
 
             /*************************************
@@ -47,18 +47,27 @@ angular.module('common')
                 
                 var hasSelection = selectService.getSelectedNodes() && selectService.getSelectedNodes().length;
                 var hasSubset = subsetService.currentSubset() && subsetService.currentSubset().length;
+                $scope.leftCornerInfoText = 'nodes';
+
+                playerFactory.getPlayerLocally().then(function(resp) {
+                    const { leftCornerInfoText } = resp.player.settings;
+
+                    if (leftCornerInfoText) {
+                        $scope.leftCornerInfoText = leftCornerInfoText;
+                    }
+                })
 
                 if (hasSubset && hasSelection) {
-                    $scope.nodesStatus = `of ${$scope.selInfo.nodesTotal} nodes`;
+                    $scope.nodesStatus = `of ${$scope.selInfo.nodesTotal} ${$scope.leftCornerInfoText}`;
                     $scope.linksStatus = `of ${$scope.selInfo.linksTotal} links`;
                 } else if (hasSubset) {
-                    $scope.nodesStatus = 'nodes subset';
+                    $scope.nodesStatus = `${$scope.leftCornerInfoText} subset`;
                     $scope.linksStatus = 'links subset';
                 } else if(hasSelection) {
-                    $scope.nodesStatus = `of ${$scope.selInfo.nodesTotal} nodes`;
+                    $scope.nodesStatus = `of ${$scope.selInfo.nodesTotal} ${$scope.leftCornerInfoText}`;
                     $scope.linksStatus = `of ${$scope.selInfo.linksTotal} links`;
                 } else {
-                    $scope.nodesStatus = 'nodes';
+                    $scope.nodesStatus = `${$scope.leftCornerInfoText}`;
                     $scope.linksStatus = 'links';
                 }
 
@@ -116,13 +125,13 @@ angular.module('common')
                     }
 
                     if (data.filtersCount > 0) {
-                        $scope.nodesStatus = `of ${$filter('number')($scope.selInfo.nodesTotal)} nodes`;
+                        $scope.nodesStatus = `of ${$filter('number')($scope.selInfo.nodesTotal)} ${$scope.leftCornerInfoText}`;
                         $scope.linksStatus = `of ${$filter('number')($scope.selInfo.linksTotal)} links`;
                     } else if (data.isSubsetted) {
-                        $scope.nodesStatus = 'nodes subset';
+                        $scope.nodesStatus = `${$scope.leftCornerInfoText} subset`;
                         $scope.linksStatus = 'links subset';
                     } else {
-                        $scope.nodesStatus = 'nodes';
+                        $scope.nodesStatus = `${$scope.leftCornerInfoText}`;
                         $scope.linksStatus = 'links';
                     }
 

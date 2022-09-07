@@ -230,15 +230,16 @@ angular.module('common')
             }
 
             $scope.isShowMoreBtn = true;
+            
+            $scope.socialLinks = {
+                facebook: `https://www.facebook.com/sharer.php?u=${$scope.host}`,
+                linkedin: `https://www.linkedin.com/shareArticle?mini=true&url=${$scope.host}`,
+                twitter: `https://twitter.com/intent/tweet?url=${$scope.host}`,
+            }
 
             $scope.toggleSharePanel = function () {
                 $scope.isShowShare = !$scope.isShowShare;
-
-                $scope.facebookLink = _.get($scope, '$parent.player.player.settings.socials.facebook')
-                $scope.linkedinLink = _.get($scope, '$parent.player.player.settings.socials.linkedin')
-                $scope.twitterLink = _.get($scope, '$parent.player.player.settings.socials.twitter')
-
-                $scope.isShareLinks = $scope.facebookLink || $scope.linkedinLink || $scope.twitterLink;
+                $scope.socials = _.get($scope, '$parent.player.player.settings.socials');
             }
 
             

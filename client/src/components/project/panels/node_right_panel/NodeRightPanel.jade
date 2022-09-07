@@ -191,10 +191,10 @@
               .sponsors(ng-if="sponsors && sponsors.length")
                 span.sponsors__title {{sponsorsTxt}}
                 ul.sponsors__list 
-                  li.sponsors__item(ng-repeat="item in sponsors")
+                  li.sponsors__item(ng-repeat="item in sponsors" uib-tooltip="{{item.linkTitle}}" tooltip-placement="bottom")
                     a.sponsors__link(ng-if="item.linkUrl" href="{{item.linkUrl}}", alt="{{item.linkTitle}}" target="_blank" rel="nofollow")
                       img.sponsors__img(src="{{item.iconUrl}}")
-                    img.sponsors__img(src="{{item.iconUrl}}" ng-if="!item.linkUrl")
+                    img.sponsors__img(src="{{item.iconUrl}}" ng-if="!item.linkUrl" uib-tooltip="{{item.linkTitle}}" tooltip-placement="bottom")
             .project-info__content
               div(ng-bind-html="projectInfoTitle | trustHtml")
               div(ng-bind-html="projectInfoDesc | trustHtml")
