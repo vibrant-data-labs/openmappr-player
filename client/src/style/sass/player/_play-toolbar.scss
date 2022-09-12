@@ -182,7 +182,8 @@
       margin-bottom: 4px;
     }
 
-    &_selected {
+    &_selected,
+    &:last-child {
       background: #fff;
     }
 

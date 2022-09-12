@@ -19,9 +19,7 @@
     .details-panel__share
       button.details-panel__button.details-panel__button--share(ng-click="toggleSharePanel()")
       .details-panel__share-box(ng-if="isShowShare" ng-click="toggleSharePanel()")
-        a.details-panel__share-item.details-panel__share-item--facebook(ng-if="facebookLink" ng-href="https://www.facebook.com/sharer.php?u={{facebookLink}}" target="_black" rel="nofollow")
-        a.details-panel__share-item.details-panel__share-item--linkedin(ng-if="linkedinLink" ng-href="https://www.linkedin.com/sharing/share-offsite/?url={{linkedinLink}}" target="_black" rel="nofollow")
-        a.details-panel__share-item.details-panel__share-item--twitter(ng-if="twitterLink" ng-href="https://twitter.com/intent/tweet?url={{twitterLink}}" target="_black" rel="nofollow")
+        a.details-panel__share-item(ng-repeat="item in socials" ng-href="{{socialLinks[item]}}" ng-class="'details-panel__share-item--' + item" target="_black" rel="nofollow")
         a.details-panel__share-item.details-panel__share-item--link(ng-click="copyClipboard($event)" ng-href="{{host}}" target="_black" rel="nofollow")
 
 
