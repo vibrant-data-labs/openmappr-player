@@ -188,13 +188,13 @@ function(BROADCAST_MESSAGES, playerFactory, hoverService, selectService, subsetS
 
         scope.$on(BROADCAST_MESSAGES.hss.select, function(ev, data) {
             if (data.filtersCount > 0) {
-                scope.nodesStatus = 'Nodes selected';
+                scope.nodesStatus = 'Points selected';
                 scope.linksStatus = 'Links selected';
             } else if (data.isSubsetted) {
-                scope.nodesStatus = 'Nodes subset';
+                scope.nodesStatus = 'Points subset';
                 scope.linksStatus = 'Links subset';
             } else {
-                scope.nodesStatus = 'Total nodes';
+                scope.nodesStatus = 'Total Points';
                 scope.linksStatus = 'Total links';
             }
 

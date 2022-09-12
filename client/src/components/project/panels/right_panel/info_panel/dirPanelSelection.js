@@ -47,7 +47,7 @@ angular.module('common')
                 
                 var hasSelection = selectService.getSelectedNodes() && selectService.getSelectedNodes().length;
                 var hasSubset = subsetService.currentSubset() && subsetService.currentSubset().length;
-                $scope.leftCornerInfoText = 'nodes';
+                $scope.leftCornerInfoText = 'points';
 
                 playerFactory.getPlayerLocally().then(function(resp) {
                     const { leftCornerInfoText } = resp.player.settings;

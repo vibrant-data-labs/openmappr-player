@@ -40,7 +40,7 @@ angular.module('common')
     ************ Local Data **************
     **************************************/
     var logPrefix = 'dirNetworkInfo: ';
-    var defNodesTitle = 'Nodes';
+    var defNodesTitle = 'Points';
     var minViewCount = 5;
     var nodesTitleCopy;
     var ITEMS_TO_SHOW = 100;

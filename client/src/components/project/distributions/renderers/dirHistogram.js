@@ -144,6 +144,10 @@ angular.module('common')
                     return histoData.binCount ? histoData.binCount : 18;
                 };
 
+                scope.$on(BROADCAST_MESSAGES.cb.changed, function (ev, data) {
+                    redrawHistogram(attrInfo);
+                });
+
                 scope.$on(BROADCAST_MESSAGES.hss.select, function (ev, payload) {
                     var nodes = payload.nodes;
                     updateSelectionBars(histoBars, nodes, attrInfo, histoData, mappTheme, false, histElem, renderCtrl);

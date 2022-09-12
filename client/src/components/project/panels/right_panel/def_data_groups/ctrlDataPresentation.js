@@ -18,7 +18,7 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
     var highlightLegendCategoriesThrottled = _.throttle(highlightLegendCategories, 100);
     var tempColorChangesMap = {};
     var projSettings = projFactory.getProjectSettings();
-    var defNodesTitle = 'Nodes';
+    var defNodesTitle = 'Points';
 
 
     /*************************************
