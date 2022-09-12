@@ -321,12 +321,7 @@ angular.module('common')
      * @return {Object}                  An object used to render cat listing
      */
             function getClusters (layout) {
-                const nodes = [];
-                _.each(dataGraph.getAllNodes(), function (node) {
-                    var n = _.clone(node);
-                    layout.nodeT(n);
-                    nodes.push(n);
-                });
+                const nodes = dataGraph.getRenderableGraph().graph.nodes;
                 const clusterAttr = layout.mapprSettings.nodeClusterAttr;
                 return _.reduce(nodes, function(acc, cv) {
                     const val = cv.attr[clusterAttr];
@@ -335,12 +330,7 @@ angular.module('common')
                 }, {});
             }
             function getColors(layout) {
-                const nodes = [];
-                _.each(dataGraph.getAllNodes(), function (node) {
-                    var n = _.clone(node);
-                    layout.nodeT(n);
-                    nodes.push(n);
-                });
+                const nodes = dataGraph.getRenderableGraph().graph.nodes;
                 const colorAttr = layout.mapprSettings.nodeColorAttr;
                 return _.reduce(nodes, function(acc, cv) {
                     const val = cv.attr[colorAttr];
