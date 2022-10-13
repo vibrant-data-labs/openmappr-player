@@ -191,6 +191,19 @@ angular.module('common')
                     return scope.selectedValues[attr.id] / totalValues * 100;
                 }
 
+                scope.$on(BROADCAST_MESSAGES.snapshot.changed, function(event, data) {
+                    const nodes = selectService.getSelectedNodes();
+
+                    const valuesCount = _.reduce(nodes, (acc, cv) => {
+                        const attrValue = cv.attr[scope.attrToRender.id];
+                        acc[attrValue] = acc[attrValue] ? (acc[attrValue] + 1) : 1;
+                        return acc;
+                    }, {});
+            
+                    scope.totalSelectedValue = _(valuesCount).keys().map(x => valuesCount[x]).max();
+                    scope.selectedValues = valuesCount;   
+                });
+
                 scope.$on(BROADCAST_MESSAGES.hss.select, function (ev, data) {
                     scope.isInSelection = Boolean(data.nodes.length);
                     if (!data.nodes.length) {
