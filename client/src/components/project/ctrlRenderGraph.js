@@ -51,6 +51,7 @@ angular.module('common')
             $scope.enableRedo = false;
             $scope.isShowShare = false;
             $scope.host = window.location.origin;
+            $scope.title = '';
 
             $scope.operations = {
                 list: [],
@@ -232,14 +233,16 @@ angular.module('common')
             $scope.isShowMoreBtn = true;
             
             $scope.socialLinks = {
-                facebook: `https://www.facebook.com/sharer.php?u=${$scope.host}`,
-                linkedin: `https://www.linkedin.com/shareArticle?mini=true&url=${$scope.host}`,
-                twitter: `https://twitter.com/intent/tweet?url=${$scope.host}`,
+                
             }
 
             $scope.toggleSharePanel = function () {
                 $scope.isShowShare = !$scope.isShowShare;
                 $scope.socials = _.get($scope, '$parent.player.player.settings.socials');
+                $scope.title = _.get($scope, '$parent.player.player.settings.projectLogoTitle');
+                $scope.socialLinks = {facebook: `https://www.facebook.com/sharer.php?u=${$scope.host}`,
+                linkedin: `https://www.linkedin.com/shareArticle?mini=true&url=${$scope.host}`,
+                twitter: `https://twitter.com/intent/tweet?url=${$scope.host}&text=${$scope.title}`}
             }
 
             
