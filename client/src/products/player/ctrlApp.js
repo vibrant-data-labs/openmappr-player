@@ -340,11 +340,22 @@ angular.module('player')
                     }
 
                     console.groupEnd();
+
+                    getMetaData();
                 });
 
 
 
+            function getMetaData () {
+                const { projectLogoTitle, projectLogoImageUrl } = $scope.player.player.settings;
+                const metaTitle = document.querySelector('meta[property="og:title"]');
+                const metaImage = document.querySelector('meta[property="og:image"]');
+                const metaUrl   = document.querySelector('meta[property="og:url"]');
 
+                metaTitle.content = projectLogoTitle;
+                metaImage.content = projectLogoImageUrl;
+                metaUrl.content   = window.location.origin;
+            }
 
             /*************************************
     ********* Core Functions *************
