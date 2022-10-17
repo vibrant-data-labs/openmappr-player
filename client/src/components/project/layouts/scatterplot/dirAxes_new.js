@@ -15,9 +15,10 @@ function ($rootScope, $q, $compile, $timeout, renderGraphfactory, layoutService,
             <div ng-show="yshow" class="yaxis-tit">
                 <div>
                     <h4 class="truncate no-text-transform" uib-tooltip="{{mapprSettings.yAxTooltip}}" tooltip-placement="right">
-                        <select class="resizeselect yaxis-selector" ng-if="attrs.length" ng-change="updateYLayout()" ng-model="yaxisId">
+                        <select class="resizeselect yaxis-selector" ng-if="attrs.length && attrs.length > 1" ng-change="updateYLayout()" ng-model="yaxisId">
                             <option ng-repeat="attr in attrs" ng-attr-value="attr.id" ng-selected="attr.id == yaxisId">{{attr.title}}</option>
                         </select>
+                        <span ng-if="attrs.length === 1" class="subtitle">{{attrs[0].title}}</span>
                         <span ng-if="!attrs.length" class="subtitle">{{getTitle(yaxisId)}}</span>
                     </h4>
                 </div>
@@ -27,9 +28,10 @@ function ($rootScope, $q, $compile, $timeout, renderGraphfactory, layoutService,
             <div ng-show="xshow" class="xaxis-tit">
                 <div>
                     <h4 class="truncate no-text-transform" uib-tooltip="{{mapprSettings.xAxTooltip}}" tooltip-placement="top">
-                        <select class="resizeselect xaxis-selector" ng-if="attrs.length" ng-change="updateXLayout()" ng-model="xaxisId">
+                        <select class="resizeselect xaxis-selector" ng-if="attrs.length && attrs.length > 1" ng-change="updateXLayout()" ng-model="xaxisId">
                             <option ng-repeat="attr in attrs" value="{{attr.id}}" ng-selected="attr.id == xaxisId">{{attr.title}}</option>
                         </select>
+                        <span ng-if="attrs.length === 1" class="subtitle">{{attrs[0].title}}</span>
                         <span ng-if="!attrs.length" class="subtitle">{{getTitle(xaxisId)}}</span>
                     </h4>
                 </div>
