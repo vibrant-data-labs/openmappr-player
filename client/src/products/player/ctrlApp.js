@@ -351,10 +351,23 @@ angular.module('player')
                 const metaTitle = document.querySelector('meta[property="og:title"]');
                 const metaImage = document.querySelector('meta[property="og:image"]');
                 const metaUrl   = document.querySelector('meta[property="og:url"]');
+                const title     = document.querySelector('title');
+                const favicon = document.querySelector('link[rel="icon"]');
 
                 metaTitle.content = projectLogoTitle;
                 metaImage.content = projectLogoImageUrl;
                 metaUrl.content   = window.location.origin;
+
+                if (projectLogoTitle && title) {
+                    title.innerHTML = projectLogoTitle;
+                }
+
+                if (projectLogoImageUrl && favicon) {
+                    favicon.href = projectLogoImageUrl;
+                } else {
+                    favicon.href = '/img/logos/vdl-logo.svg';
+                }
+                
             }
 
             /*************************************
