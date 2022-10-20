@@ -229,7 +229,7 @@ angular.module('common')
                     .flatten()
                     .value();
 
-                $scope.nodeDistrAttrs = [...tagAttrs, ...chartAttrs, ...barsAttrs];
+                $scope.nodeDistrAttrs = [...tagAttrs, ...barsAttrs, ...chartAttrs];
                 var nodePriorities = _($scope.nodeDistrAttrs)
                     .filter(x => x.visible)
                     .countBy(x => x.priority || 'low')
