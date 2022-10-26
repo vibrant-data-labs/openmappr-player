@@ -61,6 +61,16 @@ function(BROADCAST_MESSAGES, playerFactory, hoverService, selectService, subsetS
         scope.isShowMoreTextTooltip = false;
         scope.isShowMoreTagsTooltips = false;
         scope.PanelListInfo = null;
+        scope.handleSearch = function() {
+            if (!scope.searchQuery) {
+                scope.filteredNodes = scope.nodes;
+                return;
+            }
+            
+            scope.filteredNodes = _.filter(scope.nodes, (node) => {
+                return node.attr[scope.labelAttr].toUpperCase().indexOf(scope.searchQuery.toUpperCase()) != -1;
+            });
+        }
 
         scope.$watch('sortInfo.sortType', function() {
             if (scope.singleNode) {
@@ -79,14 +89,19 @@ function(BROADCAST_MESSAGES, playerFactory, hoverService, selectService, subsetS
         });
 
         scope.$watch('searchQuery', function() {
-            if (!scope.searchQuery) {
-                scope.filteredNodes = scope.nodes;
-                return;
+            scope.handleSearch();
+        });
+
+        scope.$on(BROADCAST_MESSAGES.tabs.changed, function(_, data) {
+            if (data === 'info') {
+                scope.handleSearch();
             }
-            
-            scope.filteredNodes = _.filter(scope.nodes, (node) => {
-                return node.attr[scope.labelAttr].toUpperCase().indexOf(scope.searchQuery.toUpperCase()) != -1;
-            });
+        });
+
+        scope.$on(BROADCAST_MESSAGES.hss.select, function() {
+            setTimeout(() => {
+                scope.handleSearch();
+            }, 100)
         });
 
         layoutService.getCurrent().then(function (layout) {
