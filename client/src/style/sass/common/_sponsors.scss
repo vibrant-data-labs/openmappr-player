@@ -1,6 +1,6 @@
 .sponsors {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   padding-left: 8px;
 
   &__title {
@@ -12,11 +12,16 @@
     display: flex;
     padding: 0;
     list-style: none;
-    margin: 0;
+    margin: 0 0 10px;
+    transition: all 500ms ease;
+
+    &--mbn {
+      margin-bottom: 0;
+    }
   }
 
   &__item {
-    width: 18px;
+    flex: 0 0 18px;
     height: 18px;
     margin: 0 6px;
     display: block;
@@ -43,5 +48,49 @@
   &__img {
     max-width: 100%;
     object-fit: contain ;
+  }
+
+  &__list-carousel {
+    position: relative;
+  }
+
+  &__list-carousel-box {
+    width: 240px;
+    overflow: hidden;
+    position: relative;
+    padding: 4px 0;
+  }
+
+  &__list-carousel-controls {
+    position: absolute;
+    left: 0;
+    right: 0;
+  }
+
+  &__list-carousel-btn-left {
+    width: 20px;
+    height: 18px;
+    position: absolute;
+    left: -14px;
+    top: 4px;
+    background: #fbfbfb deployedUrl('/img/tab-more.svg') 50% no-repeat;
+    transform: rotate(180deg);
+
+    &:disabled {
+      opacity: 0.3;
+    }
+  }
+
+  &__list-carousel-btn-right {
+    width: 20px;
+    height: 18px;
+    position: absolute;
+    right: -14px;
+    top: 4px;
+    background: #fbfbfb deployedUrl('/img/tab-more.svg') 50% no-repeat;
+    
+    &:disabled {
+      opacity: 0.3;
+    }
   }
 }
