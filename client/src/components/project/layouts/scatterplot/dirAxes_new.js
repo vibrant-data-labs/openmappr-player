@@ -235,16 +235,25 @@ function ($rootScope, $q, $compile, $timeout, renderGraphfactory, layoutService,
             _.each(dataGraph.getNodeAttrs(), function(attr) {
                 if(AttrInfoService.isDistrAttr(attr, infoObj.getForId(attr.id)) && attr.isNumeric && attr.visible ) {
                     if (attr.axis == 'all') {
-                        scope.attrsX.push(attr);
-                        scope.attrsY.push(attr);
+                        if (!scope.attrsX.find(item => item.id === attr.id)) {
+                            scope.attrsX.push(attr);
+                        }
+
+                        if (!scope.attrsY.find(item => item.id === attr.id)) {
+                            scope.attrsY.push(attr);
+                        }
                     }
 
                     if (attr.axis === 'x' || attr.id === snapshot.layout.xaxis) {
-                        scope.attrsX.push(attr);
+                        if (!scope.attrsX.find(item => item.id === attr.id)) {
+                            scope.attrsX.push(attr);
+                        }
                     }
 
                     if (attr.axis === 'y' || attr.id === snapshot.layout.yaxis) {
-                        scope.attrsY.push(attr);
+                        if (!scope.attrsY.find(item => item.id === attr.id)) {
+                            scope.attrsY.push(attr);
+                        }
                     }
                 }
             });
