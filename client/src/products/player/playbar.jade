@@ -5,9 +5,9 @@
   .details-panel__left
     .details-panel__project-title
       span.details-panel__project-logo(ng-if="getCurrentLogoImage() && !getCurrentProjectUri()")
-        img(src="{{getCurrentLogoImage()}}")
+        img(ng-src="{{getCurrentLogoImage()}}")
       a.details-panel__project-logo(ng-if="getCurrentLogoImage() && getCurrentProjectUri()", ng-href="{{getCurrentProjectUri()}}" target="_black" rel="nofollow")
-        img(src="{{getCurrentLogoImage()}}")
+        img(ng-src="{{getCurrentLogoImage()}}")
       span.details-panel__title{{getCurrentProjectTitle()}}
   .details-panel__controls
     button.details-panel__button.details-panel__button--search(ng-class="{'active': showSearch}", ng-click="searchToggle()")
