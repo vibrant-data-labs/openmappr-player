@@ -347,6 +347,9 @@
 
             selPanel: {
                 refreshRenderer: 'selPanel:refreshRenderer'
+            },
+            tabs: {
+                changed: 'tabs:changed'
             }
         })
 

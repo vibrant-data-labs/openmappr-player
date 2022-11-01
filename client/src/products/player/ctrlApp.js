@@ -89,6 +89,8 @@ angular.module('player')
                     this.currentPanelOpen = tabs[panel] || panel;
                     //hide all panels
                     this.closePanels();
+                    $scope.$broadcast(BROADCAST_MESSAGES.tabs.changed, panel);
+
                     switch (panel) {
                     case 'summary':
                     case 'legend':

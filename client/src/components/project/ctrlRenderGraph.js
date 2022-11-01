@@ -425,10 +425,6 @@ angular.module('common')
                 $scope.ui.activeFilterCount = data.filtersCount + (data.isSubsetted ? 1 : 0) + (data.filtersCount == 0 && data.selectionCount > 0 ? 1 : 0);
                 $scope.ui.subsetEnabled = data.selectionCount > 0;
 
-                if (data.nodes.length == 1) {
-                    $scope.showSearch = false;
-                }
-
                 if (!data.nodes.length && $scope.operations.last().type == 'select') {
                     removeOperation();
                 } else if ($scope.operations.last().type == 'select') {
@@ -448,7 +444,9 @@ angular.module('common')
             })
 
             $scope.$on(BROADCAST_MESSAGES.sigma.clickStage, function () {
-                $scope.showSearch = false;
+                if (!$scope.value.text) {
+                    $scope.showSearch = false;
+                }
                 $scope.isShowShare = false;
             });
 
