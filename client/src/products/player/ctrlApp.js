@@ -358,7 +358,9 @@ angular.module('player')
 
                 metaTitle.content = projectLogoTitle;
                 metaImage.content = projectLogoImageUrl;
-                metaUrl.content   = window.location.origin;
+                if (metaUrl) {
+                    metaUrl.content = window.location.origin;
+                }
 
                 if (projectLogoTitle && title) {
                     title.innerHTML = projectLogoTitle;

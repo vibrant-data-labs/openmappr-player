@@ -112,8 +112,8 @@ angular.module('common')
                 $scope.drawerTitle = $scope.player.player.settings.defaultPanel || 'Map Information';
                 $scope.projectInfoTitle = $scope.player.player.settings.modalSubtitle;
                 $scope.projectInfoDesc = $scope.player.player.settings.modalDescription;
-                $scope.sponsorsRow1 = $scope.player.player.settings.sponsors.slice(0, 8) || [];
-                $scope.sponsorsRow2 = $scope.player.player.settings.sponsors.slice(8) || [];
+                $scope.sponsorsRow1 = ($scope.player.player.settings.sponsors || []).slice(0, 8);
+                $scope.sponsorsRow2 = ($scope.player.player.settings.sponsors || []).slice(8);
                 $scope.carouselMax = $scope.sponsorsRow2.length - 8;
 
                 $scope.sponsorsTxt = $scope.player.player.settings.sponsorsTxt || 'Powered by';
