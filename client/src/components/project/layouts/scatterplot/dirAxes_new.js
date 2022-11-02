@@ -1,6 +1,6 @@
 angular.module('common')
-.directive('drawaxis', ['$rootScope', '$q', '$compile', '$timeout', 'renderGraphfactory', 'layoutService','leafletData','dataGraph', 'AttrInfoService', 'BROADCAST_MESSAGES', 'zoomService',
-function ($rootScope, $q, $compile, $timeout, renderGraphfactory, layoutService, leafletData, dataGraph, AttrInfoService, BROADCAST_MESSAGES, zoomService) {
+.directive('drawaxis', ['$rootScope', '$q', '$compile', '$timeout', 'renderGraphfactory', 'layoutService','leafletData','dataGraph', 'AttrInfoService', 'BROADCAST_MESSAGES', 'zoomService', 'snapshotService',
+function ($rootScope, $q, $compile, $timeout, renderGraphfactory, layoutService, leafletData, dataGraph, AttrInfoService, BROADCAST_MESSAGES, zoomService, snapshotService) {
     'use strict';
 
     /*************************************
@@ -15,10 +15,10 @@ function ($rootScope, $q, $compile, $timeout, renderGraphfactory, layoutService,
             <div ng-show="yshow" class="yaxis-tit">
                 <div>
                     <h4 class="truncate no-text-transform" uib-tooltip="{{mapprSettings.yAxTooltip}}" tooltip-placement="right">
-                        <select class="resizeselect yaxis-selector" ng-if="attrs.length" ng-change="updateYLayout()" ng-model="yaxisId">
-                            <option ng-repeat="attr in attrs" ng-attr-value="attr.id" ng-selected="attr.id == yaxisId">{{attr.title}}</option>
+                        <select class="resizeselect yaxis-selector" ng-if="attrsY.length > 1" ng-change="updateYLayout()" ng-model="yaxisId">
+                            <option ng-repeat="attr in attrsY" ng-attr-value="attr.id" ng-selected="attr.id == yaxisId">{{attr.title}}</option>
                         </select>
-                        <span ng-if="!attrs.length" class="subtitle">{{getTitle(yaxisId)}}</span>
+                        <span ng-if="attrsY.length === 1" class="subtitle">{{getTitle(yaxisId)}}</span>
                     </h4>
                 </div>
             </div>
@@ -27,10 +27,10 @@ function ($rootScope, $q, $compile, $timeout, renderGraphfactory, layoutService,
             <div ng-show="xshow" class="xaxis-tit">
                 <div>
                     <h4 class="truncate no-text-transform" uib-tooltip="{{mapprSettings.xAxTooltip}}" tooltip-placement="top">
-                        <select class="resizeselect xaxis-selector" ng-if="attrs.length" ng-change="updateXLayout()" ng-model="xaxisId">
-                            <option ng-repeat="attr in attrs" value="{{attr.id}}" ng-selected="attr.id == xaxisId">{{attr.title}}</option>
+                        <select class="resizeselect xaxis-selector" ng-if="attrsX.length > 1" ng-change="updateXLayout()" ng-model="xaxisId">
+                            <option ng-repeat="attr in attrsX" value="{{attr.id}}" ng-selected="attr.id == xaxisId">{{attr.title}}</option>
                         </select>
-                        <span ng-if="!attrs.length" class="subtitle">{{getTitle(xaxisId)}}</span>
+                        <span ng-if="attrsX.length === 1" class="subtitle">{{getTitle(xaxisId)}}</span>
                     </h4>
                 </div>
             </div>
@@ -89,6 +89,8 @@ function ($rootScope, $q, $compile, $timeout, renderGraphfactory, layoutService,
         scope.xAxisTitle = '';
         scope.yAxisTitle = '';
         scope.attrs = [];
+        scope.attrsX = [];
+        scope.attrsY = [];
 
         function updateLayout(attrId, axis) {
             const isClustered = scope.layout.plotType == 'clustered-scatterplot';
@@ -225,9 +227,32 @@ function ($rootScope, $q, $compile, $timeout, renderGraphfactory, layoutService,
             }
             
             scope.attrs = [];
+            scope.attrsX = [];
+            scope.attrsY = [];
+
+            const snapshot = snapshotService.getCurrentSnapshot();
+
             _.each(dataGraph.getNodeAttrs(), function(attr) {
-                if(AttrInfoService.isDistrAttr(attr, infoObj.getForId(attr.id)) && attr.isNumeric && attr.visible && (attr.axis == 'all' || attr.axis == axis)) {
-                    scope.attrs.push(attr);
+                if (attr.axis == 'all') {
+                    if (!scope.attrsX.find(item => item.id === attr.id)) {
+                        scope.attrsX.push(attr);
+                    }
+
+                    if (!scope.attrsY.find(item => item.id === attr.id)) {
+                        scope.attrsY.push(attr);
+                    }
+                }
+
+                if (attr.axis === 'x' || attr.id === snapshot.layout.xaxis) {
+                    if (!scope.attrsX.find(item => item.id === attr.id)) {
+                        scope.attrsX.push(attr);
+                    }
+                }
+
+                if (attr.axis === 'y' || attr.id === snapshot.layout.yaxis) {
+                    if (!scope.attrsY.find(item => item.id === attr.id)) {
+                        scope.attrsY.push(attr);
+                    }
                 }
             });
 

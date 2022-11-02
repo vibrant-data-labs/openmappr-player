@@ -61,6 +61,9 @@ angular.module('common')
             $scope.onSectionLeave = onSectionLeave;
             $scope.onSectionSelect = onSectionSelect;
 
+            $scope.carouselIndex = 0;
+            $scope.carouselMax = 0;
+
             $scope.removeNeighborLine = function () {
                 //kill line
                 $scope.showNeighborLine = false;
@@ -80,6 +83,22 @@ angular.module('common')
                 }
             };
 
+            $scope.getCarouselStyle = function() {
+                return {
+                    'transform': `translateX(${-(30 * $scope.carouselIndex)}px)`
+                }
+            }
+
+            $scope.handleCarousel = function(value) {
+                if (value === 'right' && $scope.carouselIndex + 1 <= $scope.carouselMax) {
+                    $scope.carouselIndex += 1; 
+                }
+
+                if (value === 'left' && $scope.carouselIndex - 1 >= 0) {
+                    $scope.carouselIndex -= 1; 
+                }
+            }
+
             $scope.attrRenderClicked = function () {
                 $scope.cancelOverlay(true);
             };
@@ -93,7 +112,10 @@ angular.module('common')
                 $scope.drawerTitle = $scope.player.player.settings.defaultPanel || 'Map Information';
                 $scope.projectInfoTitle = $scope.player.player.settings.modalSubtitle;
                 $scope.projectInfoDesc = $scope.player.player.settings.modalDescription;
-                $scope.sponsors = $scope.player.player.settings.sponsors || [];
+                $scope.sponsorsRow1 = ($scope.player.player.settings.sponsors || []).slice(0, 8);
+                $scope.sponsorsRow2 = ($scope.player.player.settings.sponsors || []).slice(8);
+                $scope.carouselMax = $scope.sponsorsRow2.length - 8;
+
                 $scope.sponsorsTxt = $scope.player.player.settings.sponsorsTxt || 'Powered by';
                 
                 if ($scope.player.player.settings.footer) {

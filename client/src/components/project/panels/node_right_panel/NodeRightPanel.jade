@@ -137,11 +137,11 @@
                           .img-user
                               div.img(
                                 ng-if="!link.imageShow || !link.image"
-                                style="background: {{link.colorStr}}; border-color: {{darken(link.color)}}"
+                                ng-style="background: {{link.colorStr}}; border-color: {{darken(link.color)}}"
                               )
                               div.img(
                                 ng-if="link.imageShow && link.image"
-                                style="background-image: url({{link.image}}); border-color: {{darken(link.color)}}"
+                                ng-style="background-image: url({{link.image}}); border-color: {{darken(link.color)}}"
                               )
                           .info-user
                               p(uib-tooltip="{{link.name}}" tooltip-placement="top")
@@ -156,7 +156,7 @@
                               )
                               div.img(
                                 ng-if="link.imageShow && link.image"
-                                style="background-image: url({{link.image}}); border-color: {{darken(link.color)}}"
+                                ng-style="background-image: url({{link.image}}); border-color: {{darken(link.color)}}"
                               )
                           .info-user
                               p(uib-tooltip="{{link.name}}" tooltip-placement="top")
@@ -179,7 +179,7 @@
                               )
                               div.img(
                                 ng-if="link.imageShow && link.image"
-                                style="background-image: url({{link.image}}); border-color: {{darken(link.color)}}"
+                                ng-style="background-image: url({{link.image}}); border-color: {{darken(link.color)}}"
                               )
                           .info-user
                               p(uib-tooltip="{{link.name}}" tooltip-placement="top")
@@ -188,20 +188,36 @@
           .project-info(ng-if="!nodeRightInfo")
             .section__header
               h3.section__title.section__title--project {{drawerTitle}}
-              .sponsors(ng-if="sponsors && sponsors.length")
+              .sponsors(ng-if="sponsorsRow1 && sponsorsRow1.length")
                 span.sponsors__title {{sponsorsTxt}}
-                ul.sponsors__list 
-                  li.sponsors__item(ng-repeat="item in sponsors" uib-tooltip="{{item.linkTitle}}" tooltip-placement="bottom")
-                    a.sponsors__link(ng-if="item.linkUrl" href="{{item.linkUrl}}", alt="{{item.linkTitle}}" target="_blank" rel="nofollow")
-                      img.sponsors__img(src="{{item.iconUrl}}")
-                    img.sponsors__img(src="{{item.iconUrl}}" ng-if="!item.linkUrl" uib-tooltip="{{item.linkTitle}}" tooltip-placement="bottom")
+                div 
+                  ul.sponsors__list
+                    li.sponsors__item(ng-repeat="item in sponsorsRow1" uib-tooltip="{{item.linkTitle}}" tooltip-placement="bottom")
+                      a.sponsors__link(ng-if="item.linkUrl" href="{{item.linkUrl}}", alt="{{item.linkTitle}}" target="_blank" rel="nofollow")
+                        img.sponsors__img(ng-src="{{item.iconUrl}}")
+                      img.sponsors__img(ng-src="{{item.iconUrl}}" ng-if="!item.linkUrl" uib-tooltip="{{item.linkTitle}}" tooltip-placement="bottom")
+                  ul.sponsors__list(ng-if="sponsorsRow2.length && sponsorsRow2.length <= 8")
+                    li.sponsors__item(ng-repeat="item in sponsorsRow2" uib-tooltip="{{item.linkTitle}}" tooltip-placement="bottom")
+                      a.sponsors__link(ng-if="item.linkUrl" href="{{item.linkUrl}}", alt="{{item.linkTitle}}" target="_blank" rel="nofollow")
+                        img.sponsors__img(ng-src="{{item.iconUrl}}")
+                      img.sponsors__img(ng-src="{{item.iconUrl}}" ng-if="!item.linkUrl" uib-tooltip="{{item.linkTitle}}" tooltip-placement="bottom")
+                  .sponsors__list-carousel(ng-if="sponsorsRow2.length && sponsorsRow2.length > 8")
+                    .sponsors__list-carousel-controls
+                      button.sponsors__list-carousel-btn-left(ng-click="handleCarousel('left')" ng-disabled="!carouselIndex")
+                      button.sponsors__list-carousel-btn-right(ng-click="handleCarousel('right')" ng-disabled="carouselIndex === carouselMax")
+                    .sponsors__list-carousel-box
+                      ul.sponsors__list.sponsors__list--mbn(ng-style="getCarouselStyle()")
+                        li.sponsors__item(ng-repeat="item in sponsorsRow2" uib-tooltip="{{item.linkTitle}}" tooltip-placement="bottom")
+                          a.sponsors__link(ng-if="item.linkUrl" href="{{item.linkUrl}}", alt="{{item.linkTitle}}" target="_blank" rel="nofollow")
+                            img.sponsors__img(ng-src="{{item.iconUrl}}")
+                          img.sponsors__img(ng-src="{{item.iconUrl}}" ng-if="!item.linkUrl" uib-tooltip="{{item.linkTitle}}" tooltip-placement="bottom")
             .project-info__content
               div(ng-bind-html="projectInfoTitle | trustHtml")
               div(ng-bind-html="projectInfoDesc | trustHtml")
             .project-info__footer-wrap
               .project-info__footer Powered by
                 a.project-info__footer-link(href="{{footerLink}}" target="_blank" rel="nofollow")
-                  img.project-info__footer-img(src="{{footerLogo}}")
+                  img.project-info__footer-img(ng-src="{{footerLogo}}")
                   {{footerName}}
   dir-focus-node(ng-show="false" ng-if="showFocusNode && mapprSettings.nodeFocusRenderTemplate != 'content' && nodeRightInfo" node="focusNode" img-attr="nodeImageAttr" start="nodeStartData" end="nodeEndData" duration="175" ease="" finish="finishAnimation()")
   dir-focus-node(ng-show="false" ng-if="showNeighborNode" node="neighborNode" img-attr="nodeImageAttr" start="neighborNodeStartData" end="neighborNodeEndData" duration="175" ease="" finish="finishNeighborAnimation()")
