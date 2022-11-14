@@ -137,11 +137,11 @@
                           .img-user
                               div.img(
                                 ng-if="!link.imageShow || !link.image"
-                                ng-style="background: {{link.colorStr}}; border-color: {{darken(link.color)}}"
+                                ng-style="{'background': link.colorStr, 'border-color': darken(link.color)}"
                               )
                               div.img(
                                 ng-if="link.imageShow && link.image"
-                                ng-style="background-image: url({{link.image}}); border-color: {{darken(link.color)}}"
+                                ng-style="{'background-image': 'url({{link.image}})', 'border-color': darken(link.color)}"
                               )
                           .info-user
                               p(uib-tooltip="{{link.name}}" tooltip-placement="top")
@@ -152,11 +152,11 @@
                           .img-user
                               div.img(
                                 ng-if="!link.imageShow || !link.image"
-                                style="background: {{link.colorStr}}; border-color: {{darken(link.color)}}"
+                                style="{'background': link.colorStr, 'border-color': darken(link.color)}"
                               )
                               div.img(
                                 ng-if="link.imageShow && link.image"
-                                ng-style="background-image: url({{link.image}}); border-color: {{darken(link.color)}}"
+                                ng-style="{'background-image': 'url({{link.image}})', 'border-color': darken(link.color)}"
                               )
                           .info-user
                               p(uib-tooltip="{{link.name}}" tooltip-placement="top")
