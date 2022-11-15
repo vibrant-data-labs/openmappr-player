@@ -369,7 +369,7 @@ angular.module('player')
                 if (projectLogoImageUrl && favicon) {
                     favicon.href = projectLogoImageUrl;
                 } else {
-                    favicon.href = '/img/logos/vdl-logo.svg';
+                    favicon.href = '#{player_prefix_index_source}/img/logos/vdl-logo.svg';
                 }
                 
             }
