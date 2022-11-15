@@ -297,7 +297,7 @@ angular.module('common')
 
             $scope.selectSnapshot = function(ev, snap) {
                 ev.stopPropagation();
-                selectService.unselect();
+                // selectService.unselect();
 
                 _.each($scope.player.snapshots, function(el) {
                     el.isCurrentSnap = false;
