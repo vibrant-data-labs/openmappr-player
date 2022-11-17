@@ -11,6 +11,7 @@ function($q, $http, dataGraph, cfpLoadingBar) {
     *************** API ******************
     **************************************/
     this.searchNodes = searchNodes;
+    this._workerUrl = '';
     this._activeSearch = undefined;
     this._searchReject = undefined;
 
@@ -50,11 +51,15 @@ function($q, $http, dataGraph, cfpLoadingBar) {
             if (typeof Worker === 'function') {
                 if (this._activeSearch) {
                     this._searchReject();
-                    this._activeSearch.terminate();
-                    this._activeSearch = undefined;
                 }
 
-                this._activeSearch = new Worker('#{player_prefix_index_source}/js/worker/searchWorker.js');
+                if (!this._activeSearch) {
+                    const url ='#{player_prefix_index_source}/js/worker/searchWorker.js';
+                    const content = `importScripts( "${ url }" );`;
+                    this._workerUrl = URL.createObjectURL( new Blob( [ content ], { type: "text/javascript" } ) );
+                    this._activeSearch = new Worker(this._workerUrl);
+                }
+
                 this._activeSearch.postMessage([allNodes, filterAttrIds, text]);
 
                 var searchResolve = null;
@@ -68,7 +73,6 @@ function($q, $http, dataGraph, cfpLoadingBar) {
                     console.log('Search took ' + (end - start) + ' ms');
                     cfpLoadingBar.complete();
                     searchResolve(e.data);
-                    this._activeSearch.terminate();
                 };
 
                 return result;
