@@ -110,6 +110,16 @@ html(lang='en', data-ng-app='hcApp' style="background: #{backgroundColor}" )
 		// @endif
 
 	body#app.nav-min(data-custom-background, data-off-canvas-nav style="background: #{backgroundColor}" class="#{colorTheme}-theme side-menu-compressed")
+		
+		// @if includeAnalytics=true
+		script(async src="https://www.googletagmanager.com/gtag/js?id=#{gtag_id}")
+		script.
+			window.dataLayer = window.dataLayer || [];
+			function gtag(){dataLayer.push(arguments);}
+			gtag('js', new Date());
+
+			gtag('config', '#{gtag_id}');
+		// @endif
 		div
 			div.view-container(ng-init="playerInfo = #{playerLoadInfo}")
 				div#content(style="background: #{backgroundColor}" data-ng-view='ng-view', data-close-min-nav='data-close-min-nav')

@@ -897,6 +897,7 @@ module.exports = function(grunt) {
 			context: {
 				compiled : true,
 				production: false,
+				includeAnalytics: Boolean(mapping.gtag)
 			}
 		},
 		files: [{
@@ -923,7 +924,8 @@ module.exports = function(grunt) {
 			pretty: true,
 			data: {
 				player_prefix_index: server_prefix_dev,
-				player_prefix_index_source: mapping.sourceUrl
+				player_prefix_index_source: mapping.sourceUrl,
+				gtag_id: mapping.gtag
 			}
 		},
 		files: [{
@@ -948,7 +950,8 @@ module.exports = function(grunt) {
 			pretty: true,
 			data: {
 				player_prefix_index: view_path_dev,
-				player_prefix_index_source: ''
+				player_prefix_index_source: '',
+				gtag_id: mapping.gtag
 			}
 		},
 		files: [{
@@ -970,7 +973,10 @@ module.exports = function(grunt) {
 	addTask('copy', 'dev_jade', {
 		options: {
 			process: function (content, srcpath) {
-		        return content.replace(/#{player_prefix_index_source}/g, mapping.sourceUrl).replace(/#{player_prefix_index}/g, server_prefix_dev);
+		        return content
+					.replace(/#{player_prefix_index_source}/g, mapping.sourceUrl)
+					.replace(/#{player_prefix_index}/g, server_prefix_dev)
+					.replace(/#{gtag_id}/, mapping.gtag);
 		    }
 		},
 		files: [
@@ -989,7 +995,10 @@ module.exports = function(grunt) {
 	addTask('copy', 'dev_jade_local', {
 		options: {
 			process: function (content, srcpath) {
-		        return content.replace(/#{player_prefix_index_source}/g, '').replace(/#{player_prefix_index}/g, view_path_dev);
+		        return content
+					.replace(/#{player_prefix_index_source}/g, '')
+					.replace(/#{player_prefix_index}/g, view_path_dev)
+					.replace(/#{gtag_id}/, mapping.gtag);
 		    }
 		},
 		files: [
