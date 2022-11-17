@@ -288,6 +288,9 @@ module.exports = function(grunt) {
 				"client/src/products/player/auth/ctrlSurveyEmailAuth.js",
 				"client/src/components/core/services/clusterService.js",
 			];
+			obj[dev_build_dir + '/js/worker.min.js'] = [
+				"client/src/worker/searchWorker.js",
+			]
 			return obj;
 		}())
 	});
@@ -810,7 +813,8 @@ module.exports = function(grunt) {
 			cwd: 'client/src/',
 			src: [	'components/**/*.js',
 					'products/player/**/*.js',
-					'products/sources/**/*.js'
+					'products/sources/**/*.js',
+					'worker/*.js',
 				],
 			dest: dev_build_dir + '/js/'
 		}]
@@ -829,7 +833,8 @@ module.exports = function(grunt) {
 			cwd: 'client/src/',
 			src: [	'components/**/*.js',
 					'products/player/**/*.js',
-					'products/sources/**/*.js'
+					'products/sources/**/*.js',
+					'worker/*.js',
 				],
 			dest: dev_build_dir + '/js/'
 		}]

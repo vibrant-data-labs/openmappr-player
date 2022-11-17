@@ -240,7 +240,6 @@ function($scope, $rootScope, $timeout, searchService, BROADCAST_MESSAGES, uiServ
         .catch(function(error) {
             $scope.searchResults = [];
             $scope.ui.searchHelperText = 'Found None';
-            $scope.ui.processingQuery = false;
 
             switch(error) {
             case 'noMatch':

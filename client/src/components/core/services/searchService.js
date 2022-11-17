@@ -11,6 +11,8 @@ function($q, $http, dataGraph, cfpLoadingBar) {
     *************** API ******************
     **************************************/
     this.searchNodes = searchNodes;
+    this._activeSearch = undefined;
+    this._searchReject = undefined;
 
 
     /*************************************
@@ -24,6 +26,7 @@ function($q, $http, dataGraph, cfpLoadingBar) {
     **************************************/
 
     function searchNodes(text, dataSetRef, filterAttrIds, searchAlg){
+        
         if(!filterAttrIds) {
             console.warn(logPrefix + 'filter attr Ids not passed, using empty arr');
             filterAttrIds = [];
@@ -31,7 +34,7 @@ function($q, $http, dataGraph, cfpLoadingBar) {
         if(!_.isArray(filterAttrIds)) {
             throw new Error('Array expected for attr Ids');
         }
-
+        
         if (!searchAlg) {
             searchAlg = 'naive';
         }
@@ -44,6 +47,33 @@ function($q, $http, dataGraph, cfpLoadingBar) {
 
         // NAIVE SEARCH
         if (searchAlg === 'matchSorter') {
+            if (typeof Worker === 'function') {
+                if (this._activeSearch) {
+                    this._searchReject();
+                    this._activeSearch.terminate();
+                    this._activeSearch = undefined;
+                }
+
+                this._activeSearch = new Worker('#{player_prefix_index_source}/js/worker/searchWorker.js');
+                this._activeSearch.postMessage([allNodes, filterAttrIds, text]);
+
+                var searchResolve = null;
+                var result = new Promise((resolve, reject) => {
+                    searchResolve = resolve;
+                    this._searchReject = reject;
+                });
+
+                this._activeSearch.onmessage = (e) => {
+                    var end = performance.now();
+                    console.log('Search took ' + (end - start) + ' ms');
+                    cfpLoadingBar.complete();
+                    searchResolve(e.data);
+                    this._activeSearch.terminate();
+                };
+
+                return result;
+            }
+
             return new Promise(resolve => {
                 var data = matchSorter(allNodes, text, {
                     keys: filterAttrIds.map(r => 'attr.' + r),
