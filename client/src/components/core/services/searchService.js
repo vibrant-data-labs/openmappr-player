@@ -51,6 +51,8 @@ function($q, $http, dataGraph, cfpLoadingBar) {
             if (typeof Worker === 'function') {
                 if (this._activeSearch) {
                     this._searchReject();
+                    this._activeSearch.terminate();
+                    this._activeSearch = undefined;
                 }
 
                 if (!this._activeSearch) {
