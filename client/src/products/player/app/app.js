@@ -79,30 +79,16 @@
         'angular-intro'
     ])
 
-        .config(['$routeProvider', '$locationProvider', '$httpProvider', function ($routeProvider, $locationProvider, $httpProvider) {
+    .config(['$routeProvider', '$locationProvider', '$httpProvider', function ($routeProvider, $locationProvider, $httpProvider) {
 
+        $routeProvider.when('*',                           {templateUrl:   '#{player_prefix_index}/player/player.html'});
+        $routeProvider.otherwise({templateUrl:   '#{player_prefix_index}/player/player.html'});
 
-            //player
-            $routeProvider.when('/',                           {templateUrl:   '#{player_prefix_index}/player/player.html'});
-            // $routeProvider.when('/play/:urlStr',                        {templateUrl:   '#{player_prefix_index}/player/player.html'});
-            // $routeProvider.when('/play/:urlStr/compare',                 {templateUrl:   '#{player_prefix_index}/player/player.html'});
-            // $routeProvider.when('/play/:urlStr/select',                 {templateUrl:   '#{player_prefix_index}/player/player.html'});
-
-            // $routeProvider.when('/play/auth/:urlStr',                   {templateUrl:   '#{player_prefix_index}/player/playerBlank.html'});
-
-            //404
-            $routeProvider.when('/404',                                 {templateUrl:   '#{player_prefix_index}/partials/404'});
-            //otherwise
-            // $routeProvider.otherwise(                                   {redirectTo:    '/user-projects'});
-
-
-            $locationProvider.html5Mode({
-                enabled: true,
-                requireBase: false
-            });
-
-
-            //initialize get if not there
+        $locationProvider.html5Mode({
+            enabled: true,
+            requireBase: false
+        });
+        //initialize get if not there
             if (!$httpProvider.defaults.headers.get) {
                 $httpProvider.defaults.headers.get = {};
             }
