@@ -243,13 +243,16 @@ function ($rootScope, $q, $compile, $timeout, renderGraphfactory, layoutService,
                     }
                 }
 
-                if (attr.axis === 'x' || attr.id === snapshot.layout.xaxis || attr.id === snapshot.layout.clusterXAttr) {
+                const settingsX = isClustered ? snapshot.layout.clusterXAttr : snapshot.layout.xaxis;
+                const settingsY = isClustered ? snapshot.layout.clusterYAttr : snapshot.layout.yaxis;
+
+                if (attr.axis === 'x' || attr.id === settingsX) {
                     if (!scope.attrsX.find(item => item.id === attr.id)) {
                         scope.attrsX.push(attr);
                     }
                 }
 
-                if (attr.axis === 'y' || attr.id === snapshot.layout.yaxis || attr.id === snapshot.layout.clusterYAttr) {
+                if (attr.axis === 'y' || attr.id === settingsY) {
                     if (!scope.attrsY.find(item => item.id === attr.id)) {
                         scope.attrsY.push(attr);
                     }
