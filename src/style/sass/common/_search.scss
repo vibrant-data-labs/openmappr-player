@@ -1,0 +1,293 @@
+//
+// Search Component
+// Style for search input component in header of player and app
+
+.search-list {
+    height: 30px;
+}
+
+.search {
+    color: $gray;
+    cursor: pointer;
+    font-size: 15px;
+    height: 30px;
+    line-height: 1;
+    min-width: 28px;
+    pointer-events: auto;
+    position: relative;
+
+    .square-btn {
+        padding: 0 8px;
+
+        &.small-btn {
+            padding: 2px 6px;
+        }
+    }
+
+    .uib-dropdown {
+        margin-right: 0;
+        border: none;
+        border-right: 1px solid #ccc;
+        padding-top: 2px;
+
+        h4 {
+            font-size: 15px;
+            max-width: 150px;
+        }
+    }
+
+    .form-control {
+        @include transition(all, .2s);
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        color: $text-color;
+        cursor: text;
+        display: inline-block;
+        font-size: 15px;
+        line-height: 1;
+        margin: -1px 0 0;
+        padding: 0 0 0 5px;
+        white-space: normal;
+        width: 346px;
+
+
+        &::-webkit-input-placeholder,
+        &:-moz-placeholder,
+        &::-moz-placeholder,
+        &:-ms-input-placeholder {
+            color: $gray;
+        }
+    }
+
+    .fa-search {
+        top: 5px;
+        position: absolute;
+        right: 7px;
+    }
+
+    .fa-info-circle {
+        margin-top: 5px;
+        position: absolute;
+        right: 36px;
+    }
+
+}
+
+.search-input {
+  width: calc(100% - 90px);
+  
+    .square-btn {
+        padding-top: 0;
+
+        &:hover {
+          color: inherit;
+        }
+    }
+}
+
+.search-results {
+    background: $body-bg;
+    color: $text-color;
+    float: right;
+    margin: 0;
+    min-width: 246px;
+    overflow: visible;
+    position: absolute;
+    right: 0;
+    top: 44px;
+    width: 100%;
+    padding: 20px;
+    border: 1px solid #EBEFF2;
+    height: max-content;
+    max-height: 50vh;
+    
+    &__header,
+    &__list,
+    &__footer{
+        z-index: 10;
+    }
+
+    &__header {
+        margin-bottom: 16px;
+
+        span {
+            font: 500 12px/18px 'Poppins';
+            color: rgba(0, 0, 0, .38);
+            text-transform: uppercase;
+            display: inline-block;
+        }
+    }
+
+    &__footer {
+        margin-top: 10px;
+
+        .more {
+            font: 13px/20px 'Poppins';
+            color: #BC3364;
+            cursor: pointer;
+            display: inline-block;
+
+            &:hover {
+                color: darken(#BC3364, 16);
+            }
+        }
+    }
+
+    &__list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        overflow-y: auto;
+    }
+
+    &__list-item {
+        &:not(:last-child) {
+            margin-bottom: 10px;
+        }
+
+        &:hover .search-results-item__sublabel {
+            .highlight-list {
+                opacity: 1;
+            }
+        }
+    }
+
+    .search-results-item {
+        display: flex;
+        align-items: center;
+
+        &__color {
+            min-width: 16px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            margin-right: 14px;
+        }
+
+        &__label {
+            color: #192A3E;
+            font: 400 12px/20px 'Poppins';
+        }
+
+        &__sublabel {
+            font: 400 12px/20px 'Poppins';
+
+            .highlight-list {
+                opacity: 0;
+                @include transition(opacity 0.2s linear);
+            }
+        }
+    }
+
+    .show-more {
+      border-top: 1px solid $border-color;
+      margin: 10px -20px 0;
+      padding-top: 8px;
+    }
+
+    .search-results-list {
+        position: relative;
+        z-index: 1;
+    }
+
+    .uib-dropdown-flex-content {
+        background: transparent;
+        border: 0;
+        min-width: 245px;
+        padding-bottom: 40px;
+    }
+
+    .uib-dropdown-menu {
+        li:hover {
+            background-color: transparent;
+        }
+    }
+
+    h6,
+    .h6 {
+        font-size: 11px;
+    }
+
+    .big-circle {
+        background: $text-muted;
+        border-radius: 100%;
+        height: 17px;
+        width: 17px;
+    }
+
+    .panel-scroll {
+        background: $body-bg;
+        max-height: 500px;
+        max-height: 75vh;
+        overflow: auto;
+    }
+
+    .panel-list {
+        padding: 0;
+
+        .panel-item {
+            @include transition(all .3s ease-out);
+            @include user-select(text);
+            border-bottom: 1px solid $border-color;
+            opacity: 1;
+            padding: 0 20px;
+
+            &:last-child {
+                border: 0;
+            }
+
+            &:hover {
+                background-color: $body-bg;
+                color: $text-color;
+            }
+        }
+    }
+
+    .more-btn {
+        color: $text-color;
+
+        &:hover {
+            color: $active-color;
+        }
+    }
+}
+
+.search-results-cover {
+    bottom: 0;
+    left: 0;
+    position: fixed;
+    right: 0;
+    top: 0;
+}
+
+
+.tooltip {
+    .highlight-list {
+        list-style: none;
+        padding: 0;
+        text-align: left;
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        em {
+            color: $active-color;
+        }
+    }
+
+}
+
+.header.simple {
+    .search {
+    }
+
+    .search-results {
+        min-width: 381px;
+
+        .uib-dropdown-flex-content {
+            min-width: 379px;
+        }
+    }
+}

@@ -1,0 +1,375 @@
+//
+// Header Styling
+// Styling for the header that is specific to the app and not player
+
+.top-header {
+    @include box-shadow(0 1px 2px $shadow-color-light);
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 100;
+
+    @media (min-width: $screen-sm) {
+        height: $header-bar-height;
+        left: 220px;
+    }
+
+    .proj-logo {
+        margin-right: 10px;
+    }
+
+    .uib-dropdown-menu {
+        ul {
+            padding: 0;
+        }
+    }
+
+    .menu-nav {
+        a {
+            background: $text-color;
+            border-radius: 100%;
+            color: $text-color-dark;
+            font-size: 9px;
+            height: 30px;
+            width: 30px;
+
+            &:hover {
+                background: lighten($text-color, 10%);
+            }
+        }
+
+        i {
+            line-height: 0;
+            margin: auto;
+        }
+    }
+
+    .org-item {
+        .action-btn {
+            visibility: hidden;
+        }
+
+        &:hover {
+            .action-btn {
+                visibility: visible;
+            }
+
+            .action-btn-revers {
+                visibility: hidden;
+            }
+        }
+    }
+
+    .top-nav {
+        background-color: $body-bg;
+        border-bottom: 1px solid $border-color;
+        height: 40px;
+        padding: 0 5px;
+        width: 100%;
+
+
+        .list-unstyled {
+            margin: 0;
+        }
+
+        .left-menu {
+            height: 38px;
+            left: 3px;
+            position: absolute;
+            right: 325px;
+        }
+
+        .search {
+            position: absolute;
+            right: 0;
+            top: 4px;
+        }
+
+        .search-sort {
+            position: absolute;
+            right: -20px;
+            top: 10px;
+        }
+
+        .power-btn {
+            margin: 4px 30px;
+        }
+
+        .circle-btn {
+            font-size: 13px;
+            height: 30px;
+            width: 30px;
+
+            .fa {
+                display: block;
+                margin: 3px auto;
+            }
+
+            .h5 {
+                color: $text-color;
+                font-size: 14px;
+                left: 0;
+                position: absolute;
+                text-transform: uppercase;
+                top: 7px;
+                width: 100%;
+            }
+
+            .plus {
+                font-size: 16px;
+                margin: 0 2px 0 -5px;
+            }
+        }
+
+        .batch-btn {
+            color: $text-muted;
+            margin: 0 5px;
+
+            &:last-child {
+                margin-right: 10px;
+            }
+        }
+
+
+        // Top horizontal menu bar
+        // Bimal's Work
+        // .menuWrapper {
+        //     ul{
+        //         margin: 0;
+        //         padding: 0;
+        //     }
+        //
+        //     li{
+        //         padding: 10px 10px;
+        //         white-space: nowrap;
+        //     }
+        //
+        //     > ul{
+        //
+        //         > li{
+        //             position: relative;
+        //             cursor: pointer;
+        //             display: inline-block;
+        //             border: 1px solid #aaa; /* Removable */
+        //             // border-radius: 5px; /* Removable */
+        //             margin-right: 10px; /* Removable */
+        //             background-color: rgba(100, 100, 100, 0.68);
+        //
+        //             span{
+        //                 margin-left: 5px;
+        //             }
+        //
+        //             ul{
+        //                 position: absolute;
+        //                 left: 0;
+        //                 top: 100%;
+        //                 opacity: 0;
+        //                 visibility: hidden;
+        //                 padding-top: 2px;
+        //                 border: 1px solid #aaa;
+        //                 // border-radius: 5px;
+        //
+        //
+        //                 > li{
+        //                     cursor: pointer;
+        //                     margin-bottom: 1px;
+        //                     // border-radius: 5px;
+        //                     background-color: rgba(100, 100, 100, 0.68);
+        //
+        //                     &:hover{
+        //                         background: #ddd;
+        //                     }
+        //                 }
+        //             }
+        //
+        //             &:hover{
+        //                 ul{
+        //                     opacity: 1;
+        //                     visibility: visible;
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
+        //
+
+        //
+        .nav-left,
+        .nav-right {
+            font-size: 16px;
+            line-height: 22px;
+
+            > li {
+                float: left;
+
+                &.nav-profile {
+
+                    .list-group-item {
+                        padding: 0;
+                    }
+                }
+
+                a {
+                    &:hover,
+                    &:focus {
+                        text-decoration: none;
+                    }
+                }
+
+                > .btn-group > a,
+                > a {
+                    border-radius: 100%;
+                    color: $body-bg;
+                    display: block;
+                    margin: 19px 35px 9px;
+                    padding: 1px;
+
+                }
+            }
+        }
+
+        .breadcrumb {
+            li {
+                a,
+                > span {
+                    display: block;
+                    margin: 20px;
+                }
+            }
+
+            .icon-project {
+                display: inline-block;
+                font-size: 48px;
+                margin-top: 0;
+            }
+
+            .uib-dropdown {
+                > span {
+                    font-size: 35px;
+                }
+
+                .h5 {
+                    color: $text-color;
+                    font-size: 17px;
+                    left: 0;
+                    position: absolute;
+                    text-align: center;
+                    text-transform: uppercase;
+                    top: 17px;
+                    width: 100%;
+                }
+            }
+        }
+
+        //
+        .nav-right {
+            height: 100%;
+            padding: 0;
+
+            > li {
+                margin-left: 7px;
+            }
+
+            img {
+                border: 0;
+                border-radius: 100%;
+            }
+        }
+
+        &.minimum {
+            height: 0;
+
+            .menu-nav {
+                background: transparent;
+
+                h6 {
+                    display: none;
+                }
+            }
+
+
+            .proj-name {
+                color: $text-color;
+                left: 60px;
+                position: absolute;
+                top: 10px;
+                white-space: nowrap;
+
+                h4 {
+                    padding-left: 25px;
+                    padding-top: 5px;
+                }
+
+                > ul {
+                    left: 0;
+                    padding-left: 30px;
+                    position: absolute;
+                    top: 10px;
+                }
+
+            }
+
+            .back-btn {
+                background-color: $panel-bg-dark;
+                border-radius: 100%;
+                color: $text-color-dark;
+                font-size: 23px;
+                height: 35px;
+                padding: 5px;
+                width: 35px;
+
+                &:hover {
+                    color: $gray-light;
+                }
+            }
+
+
+            // .uib-dropdown-menu.panel .list-group {
+            //     margin-top:60px;
+            // }
+            //
+            // .uib-dropdown-menu.panel .list-group-item {
+            //     background-color: $body-bg;
+            //     color: $text-color;
+            // }
+            //
+            // .uib-dropdown-menu.panel .list-group-item:hover {
+            //     background-color: $gray-light;
+            // }
+
+            // .breadcrumb li.menu-nav .circle-o {
+            //     color: $gray;
+            //     border-color: $panel-border;
+            // }
+
+            // .uib-dropdown-menu ul > li > a:hover, .uib-dropdown-menu ul > li > a:focus {
+            //     background-color: #fff;
+            // }
+        }
+    }
+
+    //
+    // .langs {
+    //     .list-langs {
+    //         a {
+    //             position: relative;
+    //             padding: 8px 20px 8px 57px;
+    //
+    //             .flag {
+    //                 position: absolute;
+    //                 top: 7px;
+    //                 left: 15px;
+    //             }
+    //         }
+    //     }
+    // }
+    //
+    //
+    // .panel .row.drop-item a {
+    //     margin: 10px 0 0 0;
+    //     padding: 0;
+    // }
+
+
+}

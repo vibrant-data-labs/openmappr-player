@@ -1,0 +1,18 @@
+/* line 2, ../../sass/sign-in/form-field.scss */
+.form-field__input {
+  width: 100%;
+  display: block;
+  padding: 11px 12px;
+  border-radius: 4px;
+  border: 2px solid #EBEFF2;
+  transition: border-color .2s;
+  font-size: 15px;
+}
+/* line 11, ../../sass/sign-in/form-field.scss */
+.form-field__input:hover {
+  border-color: #d2dbe2;
+}
+/* line 15, ../../sass/sign-in/form-field.scss */
+.form-field__input:focus, .form-field__input:active {
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.08);
+}

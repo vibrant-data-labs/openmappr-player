@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="18px" viewBox="0 0 16 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 64 (93537) - https://sketch.com -->
+    <title>database-solid</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Page-ver.-3" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Mappr-Slides" transform="translate(-20.000000, -443.000000)" fill="#FFFFFF" fill-rule="nonzero">
+            <g id="Slide-bar" transform="translate(-1.000000, 0.000000)">
+                <g id="Menu" transform="translate(0.000000, 80.000000)">
+                    <g id="Group-6" transform="translate(1.000000, 352.000000)">
+                        <g id="database-solid" transform="translate(20.000000, 11.000000)">
+                            <path d="M15.75,2.57143359 L15.75,4.17856641 C15.75,5.59487109 12.222668,6.75 7.875,6.75 C3.52733203,6.75 0,5.59487109 0,4.17856641 L0,2.57143359 C0,1.15512891 3.52733203,0 7.875,0 C12.222668,0 15.75,1.15512891 15.75,2.57143359 Z M15.75,6.1875 L15.75,9.80356641 C15.75,11.2198711 12.222668,12.375 7.875,12.375 C3.52733203,12.375 0,11.2198711 0,9.80356641 L0,6.1875 C1.69189453,7.35268359 4.7885625,7.89510938 7.875,7.89510938 C10.9614375,7.89510938 14.0580703,7.35268359 15.75,6.1875 Z M15.75,11.8125 L15.75,15.4285664 C15.75,16.8448711 12.222668,18 7.875,18 C3.52733203,18 0,16.8448711 0,15.4285664 L0,11.8125 C1.69189453,12.9776836 4.7885625,13.5201094 7.875,13.5201094 C10.9614375,13.5201094 14.0580703,12.9776836 15.75,11.8125 Z" id="Shape"></path>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,14 @@
+/* line 1, ../../sass/sign-in/logo.scss */
+.logo {
+  display: block;
+}
+/* line 5, ../../sass/sign-in/logo.scss */
+.logo_type_sign-in {
+  margin: auto;
+  width: 98px;
+}
+/* line 11, ../../sass/sign-in/logo.scss */
+.logo__image {
+  display: block;
+  max-width: 100%;
+}

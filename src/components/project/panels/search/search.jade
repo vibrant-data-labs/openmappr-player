@@ -1,0 +1,128 @@
+.search.search-box
+  //.square-btn.no-background.text-center.uib-dropdown.pull-left.vert-align(uib-dropdown dropdown-append-to-body)
+    div.vert-align(uib-dropdown-toggle auto-close="outsideClick")
+      h4.no-margin.pull-left.truncate {{ui.attrFilterText}}&nbsp;
+      i.fa.fa-caret-down
+    .uib-dropdown-menu.uib-dropdown-menu-flexing(uib-dropdown-menu)
+      .uib-dropdown-click-close
+      .uib-dropdown-flex-content(style="margin-left: 50px;")
+        .uib-dropdown-flex.right
+          ul.list-unstyled.dd-list
+            //- ng-repeat here
+            li.row.vert-align
+              .col-xs-2
+                .tag-checkbox(ng-click="$event.stopPropagation();")
+                  input(id="attr-select-all" type="checkbox", ng-disabled="ui.disableAllChkbx", ng-model="ui.allAttrsSelected")
+                  label(for="attr-select-all")
+              .col-xs-9
+                //- Attribute title here
+                h6.no-margin All
+            li.row.vert-align(ng-repeat="attrVM in filterAttrVMs")
+              .col-xs-2
+                .tag-checkbox(ng-click="$event.stopPropagation();")
+                  input(id="attr-select-{{::$index}}" type="checkbox" ng-model="attrVM.checked", ng-change="attrToggled(attrVM);")
+                  label(for="attr-select-{{::$index}}")
+              .col-xs-10
+                //- Attribute title here
+                h6.no-margin.truncate {{::attrVM.title}}
+                  span &nbsp;&nbsp;&nbsp;
+                    i.fa.fa-info-circle(ng-if="::attrVM.metadata.descr" uib-tooltip="{{::attrVM.metadata.descr}}" tooltip-placement="right" tooltip-append-to-body="true")
+  .search-box__input-wrap
+    .search-input
+      input.search-box__input(
+        ng-show="!ui.overlayOpen"
+        type="text", ng-model="globalSearch.text",
+        ng-keyup="searchFn($event)" ng-focus="searchFocus()" ng-blur="onBlurSearch($event)",
+        placeholder="Search"
+      )
+
+      input.search-box__input(
+        ng-show="ui.overlayOpen"
+        type="text",
+        ng-model="globalSearch.text" ng-change="highlightTextInOverlay($event)" ng-focus="ui.showInfoIcon = true"
+        ng-blur="onBlurSearch($event)"
+        placeholder="Search"
+      )
+      button.search-box__clear(ng-if="globalSearch.text" ng-click="handleClearSearch()")
+    .search-box__dropdown.search-dropdown(ng-class="{ 'search-dropdown_opened': searchDropdownVisible}")
+      span.search-dropdown__button(role="button" ng-click="toggleSearchDropdown()") 
+      //{{selectedSearchValue.length > 0 ? selectedSearchValueStr : 'All'}}
+
+      ul.search-dropdown__list
+        li.search-dropdown__item(
+          ng-click="toggleSearchItem(null)" ng-class="{ 'search-dropdown__item_selected': selectedSearchValue.length === 0 }"
+        ) All
+        li.search-dropdown__item(
+          ng-click="toggleSearchItem(attrVM)"
+          ng-repeat="attrVM in filterAttrVMs"
+          ng-class="{ 'search-dropdown__item_selected': isAttrSelected(attrVM) }"
+        ) {{attrVM.title}}
+
+    
+
+    //- button.search-box__close(ng-click="searchToggle()") Close
+  //- show and hide for results
+  .search-results.uib-dropdown-menu-flexing(ng-show="showSearchResults")
+    .search-results-cover(ng-click="hideSearchResults();")
+
+    .search-results__header
+      span(ng-show="!ui.processingQuery") {{ui.searchHelperText}}&nbsp;&nbsp;
+      span(ng-show="ui.processingQuery") searching...
+
+      .square-btn.small-btn.pull-right(ng-if="MAPP_EDITOR_OPEN && searchResults.length > 0" uib-dropdown dropdown-append-to-body)
+        .vert-align(uib-dropdown-toggle auto-close="outsideClick")
+          h6.no-margin Add to Group&nbsp;
+          i.fa.fa-caret-down
+        .uib-dropdown-menu.uib-dropdown-menu-flexing(uib-dropdown-menu)
+          .uib-dropdown-click-close
+          .uib-dropdown-flex-content
+            .uib-dropdown-flex
+              ul.list-unstyled.dd-list.nowrap
+                li.row.vert-align.pointable-cursor(ng-repeat="selVM in selectionSetVMs", ng-click="addDatapointsToGroup(selVM); $event.stopPropagation();")
+                  .col-xs-3
+                    h6.no-margin {{selVM.dpIDs.length}}
+                  .col-xs-9
+                    h6.no-margin {{selVM.selName}}
+                li.row.vert-align.pointable-cursor(ng-click="createNewSelection(); $event.stopPropagation();")
+                  .col-xs-3
+                  .col-xs-9
+                    h6.no-margin New Group
+
+
+
+
+      .square-btn.small-btn.pull-right(ng-if="searchResults.length > 0" ng-click="selectAllNodes(); $event.stopPropagation();")
+        h6 Select&nbsp;All
+      .square-btn.small-btn.pull-right(ng-if="ui.numShowGroups > 0" ng-click="showLess();")
+        h6 Show&nbsp;less
+
+    ul.search-results__list
+      li.search-results__list-item(
+        ng-repeat="node in searchResults | limitTo: ui.showLimit track by node.id"
+        ng-click="selectNode(node); $event.stopPropagation();"
+        ng-mouseenter="hoverNode(node, $event); $event.stopPropagation();"
+        ng-mouseleave="leaveNode(node); $event.stopPropagation();"
+      )
+        .search-results-item
+          span.search-results-item__color(style="background:{{node.colorStr}};")
+          span.search-results-item__label {{node.attr[ui.nodeLabelAttr]}}
+        span.search-results-item__sublabel(ng-if="isNodeDescShown(node)" ng-bind-html="getSearchHighlights(node)")
+
+    .search-results__footer
+      span.more(ng-click='showMore()' ng-if="searchResults && searchResults.length > ui.showLimit") Show more results
+
+        //- .header
+        //- 	h6.title.text-uppercase.pointable-cursor.vert-align.no-margin
+        //- 		//description of what found
+        //- 		span {{searchResults.length}} Nodes found for ...
+        //- .panel-scroll.flex-fill
+        //- 	.panel-list
+        //- 		.panel-item
+        //- 			.row.vert-align
+        //- 				.col-xs-1
+        //- 					.legend-icon
+        //- 						i.fa-1-3x.icon-legend-dots
+        //- 				.col-xs-10
+        //- 					h6 {{node.attr.DataPointLabel}}
+        //- 				//- .col-xs-9
+        //- 				//- 	h6.less-gutter Searched Value

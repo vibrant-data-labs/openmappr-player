@@ -1,0 +1,171 @@
+//
+// Left Drawer Nav Stying
+// styling for the left drawer navigation
+
+
+#nav-container {
+    background-color: $nav-bg;
+    bottom: 0;
+    left: 0;
+    padding: 0;
+    position: absolute;
+    top: 0;
+    width: 220px;
+    z-index: 11;
+
+    ul {
+        list-style: none;
+        padding-left: 0;
+    }
+}
+
+#nav-wrapper {
+    border-right: 2px solid $nav-border;
+    height: 100%;
+    width: 100%;
+}
+
+#nav {
+    padding: 0;
+
+    >li>a>i,
+    >li>a>.nav-icon {
+        display: inline;
+        line-height: 1;
+        margin-right: 6px;
+    }
+
+    a {
+        color: $text-color-dark;
+
+        &:hover {
+            text-decoration: none;
+        }
+    }
+
+    >li {
+        font-weight: bold;
+        margin: 0;
+        position: relative;
+        text-align: left;
+
+        &.open,
+        &.active,
+        &:hover {
+            > a {
+                background-color: $nav-link-active-bg;
+
+                > i {
+                    &:before {
+                        color: $text-color-dark;
+                    }
+                    .icon-bg {
+                        left: 0;
+                    }
+                }
+            }
+        }
+
+        &:first-child {
+            > a {
+                border-top: 0;
+            }
+        }
+
+        > a {
+            @include transition( all .2s ease-in-out);
+            border-bottom: 1px solid $nav-border;
+            display: block;
+            height: 50px;
+            padding: 15px;
+            position: relative;
+
+            > i {
+                border-right: 1px solid $nav-border;
+                display: block;
+                float: left;
+                height: 50px;
+                line-height: 50px;
+                margin: -15px 10px -15px -15px;
+                position: relative;
+                text-align: center;
+                width: 50px;
+
+                &:before {
+                    position: relative;
+                    z-index: 1;
+                }
+
+                .icon-bg {
+                    @include transition(left .2s ease-in-out);
+                    bottom: 0;
+                    left: -47px;
+                    position: absolute;
+                    top: 0;
+                    width: 100%;
+                    z-index: 0;
+                }
+            }
+
+            > .badge {
+                position: absolute;
+                right: 5px;
+                top: 16px;
+            }
+        }
+
+
+        > .icon-has-ul {
+            position: absolute;
+            right: 15px;
+            top: 20px;
+        }
+    }
+
+    // sub menu
+    ul {
+        background-color: $sub-nav-bg;
+        display: none;
+
+        a {
+            font-size: 13px;
+        }
+
+        li {
+            padding: 0;
+            position: relative;
+
+            &:hover,
+            &.active {
+                a {
+                    background-color: darken($sub-nav-bg, 5%);
+                }
+            }
+
+            &:last-child > a {
+                border-bottom: 0;
+            }
+
+            > a {
+                @include transition( all .2s ease-in-out);
+                display: block;
+                padding: 13px 0 13px 25px;
+                position: relative;
+
+                &:first-child {
+                    border-top: 0;
+                }
+
+                .fa-caret-right {
+                    margin-right: 25px;
+                }
+
+                > .badge {
+                    position: absolute;
+                    right: 5px;
+                    top: 12px;
+                }
+            }
+        }
+    }
+}

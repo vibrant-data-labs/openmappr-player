@@ -1,0 +1,12 @@
+div(ng-if="!dateValid")
+	h3.no-margin Invalid Date
+div.date-time(ng-if="dateValid")
+	div.date(ng-if="month && day && year")
+		h7.month(style="color:{{nodeColorStr}}") {{month}}
+		div(style="margin-top:-10px;")
+			h1.day.no-margin(style="color:{{nodeColorStr}}") {{day}}
+			div.year-time
+				h7.year.no-margin(style="color:{{nodeColorStr}}") {{year}}
+				h3.time(ng-if="time") {{time}}
+	div.time(ng-if="!month")
+		h1.no-margin {{time}}

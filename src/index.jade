@@ -1,0 +1,41 @@
+doctype html
+html(lang='en', data-ng-app='hcApp' style="background: #{backgroundColor}" )
+	head
+		meta(charset='utf-8')
+		link(rel="icon"  href="'#{player_prefix_index_source}/img/logos/vdl-logo.svg'")
+		meta(name="viewport", content="initial-scale=.7, user-scalable=no, minimal-ui")
+		meta(name="apple-mobile-web-app-capable" content="yes")
+		meta(property="fb:app_id", content="1389717224632761")
+		meta(name="twitter:card", content="summary")
+		meta(property="og:image", content="#{snapshotImg}")
+		meta(property="og:title", content="openmappr | network exploration tool")
+		meta(property="og:url", content="")
+		meta(property="og:description", content="#{playerTitle}")
+		meta(name="robots", content="noindex")
+		title openmappr | #{playerTitle}
+		meta(name="description", content="#{playerTitle}")
+		link(rel="stylesheet", href="#{player_prefix_index_source}/css/mappr-icons/style.css")
+		link(href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css", rel="stylesheet")
+		link(href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet")
+		link(href="https://fonts.googleapis.com/css?family=Roboto:300,500" rel="stylesheet")
+		link(href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet")
+
+		link(rel='stylesheet', href='#{player_prefix_index_source}/css/vendor.css')
+
+		script.
+			window.MP_APP = {};
+			window.DATA_PATH = '#{playerDataPath}';
+
+		link(rel='stylesheet', href='#{player_prefix_index_source}/css/player.debug.css')
+
+	body#app.nav-min(data-custom-background, data-off-canvas-nav style="background: #{backgroundColor}" class="#{colorTheme}-theme side-menu-compressed")
+
+		div
+			div.view-container
+				div#content(style="background: #{backgroundColor}" data-ng-view='ng-view', data-close-min-nav='data-close-min-nav')
+
+		div#svg-renderarea.hidden
+		div(ng-include=" '#{player_prefix_index}/components/project/distributions/renderers/renderTemplates.html' ")
+
+		script(src='#{player_prefix_index_source}/js/player/vendor.js')
+		script(src="#{player_prefix_index_source}/js/player.min.js")

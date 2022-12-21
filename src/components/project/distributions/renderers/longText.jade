@@ -1,0 +1,5 @@
+.long-text(ng-class="{'small-text':(isSmall == 'true')}" ng-click="showOverlay = !showOverlay")
+    .overlay.animate-fade.vert-align(ng-if="showOverlay")
+        span.close-btn.text-ultralight &times;
+        p(ng-bind-html="longText")
+    p(ng-bind-html="longText")

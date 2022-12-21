@@ -1,0 +1,48 @@
+.media-embed.text-left(ng-class="{'small-media':(isSmall == 'true')}")
+	.overlay.animate-fade.vert-align(ng-if="activeEmbed || activeImg" ng-click="killActiveEmbed();")
+		span.close-btn.text-ultralight &times;
+		.media
+			div.text-center(ng-if="activeEmbed" ng-bind-html="activeEmbed")
+			.img-container.vert-align(ng-if="activeImg")
+				img(ng-src="{{activeImg}}")
+			.descr
+				p(ng-if="activeDescription") {{activeDescription}}
+			div.tags(ng-if="activeTags && activeTags.length > 0 && activeTags[0]")
+				.h6.tag(ng-repeat="tag in activeTags") {{tag}}
+	.accelerate.animate-fade(ng-if="media.embedlyJson")
+		div(ng-if="(media.embedSafe && isPinnable) || isPinned === 'true'")
+			.pin-btn(ng-if="isPinned !== 'true'" ng-click="pinMedia(url, nodeColorStr)" uib-tooltip="Play while continuing to explore." tooltip-placement="top" tooltip-append-to-body="true")
+				i.fa.fa-thumb-tack
+			.close-btn(ng-if="isPinned === 'true'" ng-click="unpinMedia()")
+				i.fa.fa-close
+			
+		div(ng-if="media.embedSafe" ng-click="setActiveEmbed(media.embedlyJson);")
+			div(ng-if="isSmall == 'true'" )
+				.img(style="background-image:url({{media.embedlyJson.thumbnail_url}});")
+				//- div.icon
+				//- 	i.fa.fa-play.fa-4x(ng-if="media.embedlyJson.type == 'video' || media.embedlyJson.type == 'rich'")
+			.media-bkgrnd(ng-if="isSmall != 'true'" )
+				.embed(ng-bind-html="media.embedSafe")
+				p.descr.text-small(ng-if="(media.description || media.embedlyJson.description) && isPinned !== 'true'") {{media.description || media.embedlyJson.description}}
+		a.link(ng-class="{'full-width':media.fullWidth}" ng-if="media.embedlyJson.type == 'link' " target="_blank" href="{{media.embedlyJson.url}}")
+			div(ng-if="isSmall != 'true'")
+				img.thumb(ng-src="{{media.embedlyJson.thumbnail_url}}")
+				h5.title(style="color:{{nodeColorStr}}") {{media.embedlyJson.title}}
+				p.descr.wrap.text-small {{media.description || media.embedlyJson.description}}
+				.clearfix
+			div(ng-if="isSmall == 'true'")
+				.img(style="background-image:url({{media.embedlyJson.thumbnail_url}});")
+				//- div.icon
+				//- 	i.fa.fa-external-link-square.fa-4x
+		div(ng-if="media.embedlyJson.type == 'photo' " ng-click="setActiveEmbed(media.embedlyJson)")
+			img(ng-if="isSmall != 'true'" ng-src="{{media.embedlyJson.url}}")
+			.img.accelerate.contain(ng-if="isSmall == 'true'" style="background-image:url({{media.embedlyJson.url}});")
+			p.descr(ng-if="media.description") {{media.description}}
+	div.animate-fade(ng-if="!media.embedlyJson")
+		div(ng-if="media.embedSafe")
+			.embed(ng-bind-html="media.embedSafe")
+			p.descr.text-small(ng-if="media.description && isPinned !== 'true'") {{media.description}}
+		//- div(ng-if="!media.embedSafe")
+		//- 	.embed {{media.embed}}
+	div.tags(ng-if="media.tags && media.tags.length > 0 && media.tags[0]  && isPinned !== 'true'")
+		.h6.tag(ng-repeat="tag in media.tags") {{tag}}

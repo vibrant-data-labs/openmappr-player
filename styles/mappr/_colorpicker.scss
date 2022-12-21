@@ -1,0 +1,91 @@
+//
+// Color Picker Styling
+// Styles for the color picker in the style panel for choosing colors
+
+.color-picker {
+    padding: 10px 10px 30px;
+
+    .color-gradient {
+        border: 1px solid $border-color;
+        height: 25px;
+        width: 100%;
+    }
+
+    .color-arrow {
+        border-top: 1px solid $border-color;
+        margin-bottom: -17px;
+        margin-top: 13px;
+        width: 100%;
+    }
+
+    .stops {
+        position: relative;
+        width: 100%;
+
+        &.tall {
+            input {
+                height: 32px;
+            }
+        }
+    }
+
+    .stop {
+        display: inline-block;
+        position: absolute;
+        top: 0;
+
+        input {
+            background: transparent;
+            border: 0;
+            height: 19px;
+            margin: 0 0 0 -7px;
+            padding: 0;
+            width: 14px;
+
+            &:before {
+                display: none;
+            }
+        }
+
+        label {
+            font-size: 10px;
+            margin-left: -25px;
+            position: absolute;
+            text-align: center;
+            top: 17px;
+            width: 50px;
+        }
+
+
+        &:first-child {
+            label {
+                margin-left: -12px;
+                text-align: left;
+            }
+        }
+
+        &:last-child {
+            label {
+                margin-left: -50px;
+                text-align: right;
+            }
+        }
+    }
+
+    // li.stop input:before {
+    //     display: none; //switching the caret off
+    //     content: "";
+    //     position: absolute;
+    //     top: -1px;
+    //     width: 0;
+    //     height: 0;
+    //     border-left: 5px solid transparent;
+    //     border-right: 5px solid transparent;
+    //     border-bottom: 5px solid #2f2f2f;
+    //     font-size: 0;
+    //     line-height: 0;
+    //     left: -5px;
+    // }
+
+
+}

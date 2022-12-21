@@ -1,0 +1,7 @@
+		link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css')
+		link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.css')
+		link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.css')
+		link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/angular-loading-bar/0.9.0/loading-bar.min.css')
+		link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.8.1/spectrum.min.css')
+		link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/angular-wizard/1.1.1/angular-wizard.min.css')
+		link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/intro.js/2.9.3/introjs.min.css')

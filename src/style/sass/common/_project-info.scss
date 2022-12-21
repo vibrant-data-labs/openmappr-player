@@ -1,0 +1,41 @@
+.project-info {
+  background: #fff;
+  color: #616161;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  &__content {
+    padding: 10px 20px;
+    background: #fff;
+  }
+
+  &__footer-wrap {
+    text-align: center;
+    margin-bottom: 10px;
+    background: #fff;
+    padding: 0 10px 10px;
+    margin-top: auto;
+  }
+
+  &__footer {
+    display: inline-flex;
+    margin: 0 auto;
+    align-items: center;
+    padding: 4px 10px;
+    border: 1px solid #e4eaef;
+    border-radius: 4px;
+    font-size: 14px;
+    color: rgba(97, 97, 97, 0.7);
+    white-space: nowrap;
+  }
+
+  &__footer-img {
+    margin: 0 10px;
+    max-height: 20px;
+  }
+
+  &__footer-link {
+    color: #5885e1;
+  }
+}
