@@ -1,5 +1,5 @@
 import angular from 'angular';
-import '../player.jade';
+
 (function() {
     'use strict';
 

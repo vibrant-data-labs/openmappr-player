@@ -1,9 +1,11 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const HtmlWebpackPugPlugin = require('html-webpack-pug-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const { CleanPlugin } = require('webpack');
 const mapping = require('./mapping.json');
 const glob = require('glob')
+const sass = require('sass');
 
 const getReplaceLoader = (search, replace) => ({
     loader: 'string-replace-loader',
@@ -15,10 +17,15 @@ const getReplaceLoader = (search, replace) => ({
 
 const isProduction = process.env.NODE_ENV === 'production';
 
-const outputMapping = {
+const jsOutputMapping = {
     'player': '/js/[name].min.js',
     'vendor': '/js/player/[name].js',
     'worker': '/js/worker/searchWorker.js',
+}
+
+const cssOutputMapping = {
+    'vendor': '/css/vendor.css',
+    'player': '/css/player.debug.css',
 }
 
 const jadeReplacer = [
@@ -39,7 +46,8 @@ const jadeTemplateFiles = glob.sync('./src/**/!(index).jade').map(name => {
     return new HtmlWebpackPlugin({
         template: `${name}`,
         filename: outputName,
-        chunks: ['player']
+        chunks: ['player'],
+        inject: false,
     })
 });
 
@@ -79,16 +87,20 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, 'build'),
         filename: (pathData) => {
-            return outputMapping[pathData.chunk.name] ?? '/libs/[name].js';
+            return jsOutputMapping[pathData.chunk.name] ?? '/libs/[name].js';
         },
     },
     optimization: {
         runtimeChunk: 'single',
+        minimize: isProduction,
+        minimizer: [
+            new CssMinimizerPlugin(),
+        ]
     },
     module: {
         rules: [
             {
-                test: /\.js|\.jade$/,
+                test: /\.js|\.jade|\.(s?)css$/,
                 use: [
                     getReplaceLoader(/#{player_prefix_index_source}/g, isProduction ? mapping.sourceUrl : ''),
                     getReplaceLoader(/#{player_prefix_index}/g, isProduction ? `${mapping.sourceUrl}/partials` : '/partials'),
@@ -107,9 +119,54 @@ module.exports = {
             },
             {
                 test: /\.jade$/,
+                use: {
+                    loader: 'jade-loader',
+                    options: {
+                        locals: {
+                            player_prefix_index_source: isProduction ? mapping.sourceUrl : '',
+                            player_prefix_index: isProduction ? `${mapping.sourceUrl}/partials` : '/partials',
+                            gtag_id: mapping.gtag,
+                            playerTitle: 'network visualization',
+                            backgroundColor: '#fff',
+                            colorTheme: 'light',
+                        },
+                    }
+                }
+            },
+            {
+                test: /\.css$/,
                 use: [
-                    'jade-loader'
+                    MiniCssExtractPlugin.loader,
+                    { loader: "css-loader" }
                 ]
+            },
+            {
+                test: /\.scss$/,
+                use: [
+                    MiniCssExtractPlugin.loader,
+                    { loader: "css-loader" },
+                    {
+                        loader: "sass-loader",
+                        options: {
+                            sassOptions: {
+                                functions: {
+                                    'deployedUrl($path)': function (path) {
+                                        const deployedUrl = isProduction ? mapping.sourceUrl : '';
+                                        return new sass.types.String('url(' + deployedUrl + path.getValue() + ')');
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ]
+            },
+            {
+                test: /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
+                loader: 'file-loader',
+            },
+            {
+                test: /\.(png|jpg)$/,
+                use: "file-loader",
             }
         ]
     },
@@ -122,8 +179,21 @@ module.exports = {
         }),
         new HtmlWebpackPlugin({
             template: "./src/index.jade",
-            inject: false
+            inject: false,
+            templateParameters: {
+                player_prefix_index_source: isProduction ? mapping.sourceUrl : '',
+                player_prefix_index: isProduction ? `${mapping.sourceUrl}/partials` : '/partials',
+                gtag_id: mapping.gtag,
+                playerTitle: 'network visualization',
+                backgroundColor: '#fff',
+                colorTheme: 'light',
+            },
         }),
         ...jadeTemplateFiles,
+        new MiniCssExtractPlugin({
+            filename: (pathData) => {
+                return cssOutputMapping[pathData.chunk.name] ?? 'css/[name].min.css';
+            }
+        }),
     ]
 }
