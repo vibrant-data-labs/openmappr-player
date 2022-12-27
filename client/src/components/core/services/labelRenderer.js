@@ -75,12 +75,6 @@ function($q, renderGraphfactory, hoverService) {
         var txt;
         if(node.isGroup) {
             txt = node.title;
-        } else if( node.inHover || node.inHoverNeighbor ) {
-            var hoverlabelAttr = settings('labelHoverAttr') || labelAttr;
-            txt = node.attr[hoverlabelAttr] ? node.attr[hoverlabelAttr] : "";
-        } else if(node.isSelected || node.isSelectedNeighbour) {
-            var selLabelAttr = settings('labelClickAttr') || labelAttr;
-            txt = node.attr[selLabelAttr] ? node.attr[selLabelAttr] : "";
         } else {
             txt = node.attr[labelAttr] ? node.attr[labelAttr] : "";
         }
