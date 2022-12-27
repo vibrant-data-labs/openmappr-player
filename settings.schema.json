@@ -1,0 +1,952 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "definitions": {
+        "hexcolor": {
+            "type": "string",
+            "pattern": "^(#|0x)(?:[a-f0-9]{3}|[a-f0-9]{6})\\b|(rgb|hsl)a?\\([^\\)]*\\)$"
+        },
+        "coloritem": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "col": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "col"
+            ]
+        }
+    },
+    "additionalProperties": false,
+    "properties": {
+        "dataset": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "ref": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "ref"
+            ]
+        },
+        "settings": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "theme": {
+                    "type": "string",
+                    "enum": [
+                        "light"
+                    ]
+                },
+                "backgroundColor": {
+                    "$ref": "#/definitions/hexcolor"
+                },
+                "labelColor": {
+                    "$ref": "#/definitions/hexcolor"
+                },
+                "labelOutlineColor": {
+                    "$ref": "#/definitions/hexcolor"
+                },
+                "selectionData": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                        "genCount": {
+                            "type": "number"
+                        },
+                        "selections": {
+                            "type": "array",
+                            "items": {}
+                        }
+                    },
+                    "required": [
+                        "genCount",
+                        "selections"
+                    ]
+                },
+                "lastViewedSnap": {
+                    "type": "string"
+                },
+                "layouts": {
+                    "type": "object"
+                }
+            },
+            "required": [
+                "theme",
+                "backgroundColor",
+                "labelColor",
+                "labelOutlineColor",
+                "selectionData",
+                "lastViewedSnap",
+                "layouts"
+            ]
+        },
+        "player": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "settings": {
+                    "type": "object",
+                    "properties": {
+                        "fontClass": {
+                            "type": "string"
+                        },
+                        "showModal": {
+                            "type": "boolean"
+                        },
+                        "simpleSplash": {
+                            "type": "boolean"
+                        },
+                        "showHeader": {
+                            "type": "boolean"
+                        },
+                        "headerType": {
+                            "type": "string"
+                        },
+                        "shareTitle": {
+                            "type": "string"
+                        },
+                        "shareTitleCompare": {
+                            "type": "string"
+                        },
+                        "shareTitleSelect": {
+                            "type": "string"
+                        },
+                        "shareEnableSelect": {
+                            "type": "boolean"
+                        },
+                        "showExportBtn": {
+                            "type": "boolean"
+                        },
+                        "facebookShare": {
+                            "type": "boolean"
+                        },
+                        "twitterShare": {
+                            "type": "boolean"
+                        },
+                        "colorTheme": {
+                            "type": "string"
+                        },
+                        "showPanels": {
+                            "type": "boolean"
+                        },
+                        "showSearch": {
+                            "type": "boolean"
+                        },
+                        "showTimeline": {
+                            "type": "boolean"
+                        },
+                        "showSnapDescrs": {
+                            "type": "boolean"
+                        },
+                        "infoClickToParent": {
+                            "type": "boolean"
+                        },
+                        "showSnapTooltips": {
+                            "type": "boolean"
+                        },
+                        "panelLayoutType": {
+                            "type": "string"
+                        },
+                        "autoPlay": {
+                            "type": "boolean"
+                        },
+                        "snapTransition": {
+                            "type": "string"
+                        },
+                        "snapDuration": {
+                            "type": "number"
+                        },
+                        "timelineType": {
+                            "type": "string"
+                        },
+                        "totalDuration": {
+                            "type": "number"
+                        },
+                        "headerTitle": {
+                            "type": "string"
+                        },
+                        "headerImageUrl": {
+                            "type": "string"
+                        },
+                        "headerHtml": {
+                            "type": "string"
+                        },
+                        "highlightColor": {
+                            "type": "string"
+                        },
+                        "modalDescription": {
+                            "type": "string"
+                        },
+                        "modalBackground": {
+                            "type": "string"
+                        },
+                        "modalLogo": {
+                            "type": "string"
+                        },
+                        "modalSubtitle": {
+                            "type": "string"
+                        },
+                        "searchAlg": {
+                            "type": "string"
+                        },
+                        "modalTitle": {
+                            "type": "string"
+                        },
+                        "modalIntroHtml": {
+                            "type": "string"
+                        },
+                        "allowJoin": {
+                            "type": "boolean"
+                        },
+                        "displayTooltipCard": {
+                            "type": "boolean"
+                        },
+                        "startPage": {
+                            "type": "string"
+                        },
+                        "showStartInfo": {
+                            "type": "boolean"
+                        },
+                        "defaultPanel": {
+                            "type": "string"
+                        },
+                        "sponsors": {
+                            "type": "array",
+                            "items": [
+                                {
+                                    "type": "object",
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "iconUrl": {
+                                            "type": "string"
+                                        },
+                                        "linkUrl": {
+                                            "type": "string"
+                                        },
+                                        "linkTitle": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "iconUrl",
+                                        "linkUrl",
+                                        "linkTitle"
+                                    ]
+                                }
+                            ]
+                        },
+                        "projectLogoTitle": {
+                            "type": "string"
+                        },
+                        "projectLogoUrl": {
+                            "type": [
+                                "null",
+                                "string"
+                            ]
+                        },
+                        "sharingLogoUrl": {
+                            "type": [
+                                "null",
+                                "string"
+                            ]
+                        },
+                        "displayExportButton": {
+                            "type": "boolean"
+                        },
+                        "beta": {
+                            "type": "boolean"
+                        },
+                        "sponsorsTxt": {
+                            "type": ["null", "string"]
+                        },
+                        "feedback": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                                "type": {
+                                    "type": "string",
+                                    "enum": [
+                                        "email",
+                                        "link"
+                                    ]
+                                },
+                                "link": {
+                                    "type": "string"
+                                },
+                                "text": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "type",
+                                "link",
+                                "text"
+                            ]
+                        },
+                        "footer": {
+                            "type": [
+                                "null",
+                                "object"
+                            ]
+                        },
+                        "socials": {
+                            "type": "array",
+                            "items": [
+                                {
+                                    "type": "string",
+                                    "enum": [
+                                        "linkedin",
+                                        "twitter",
+                                        "facebook"
+                                    ]
+                                }
+                            ]
+                        },
+                        "projectLogoImageUrl": {
+                            "type": [
+                                "null",
+                                "string"
+                            ]
+                        },
+                        "sharingImageUrl": {
+                            "type": [
+                                "null",
+                                "string"
+                            ]
+                        }
+                    },
+                    "required": [
+                        "fontClass",
+                        "showModal",
+                        "simpleSplash",
+                        "showHeader",
+                        "headerType",
+                        "shareTitle",
+                        "shareTitleCompare",
+                        "shareTitleSelect",
+                        "shareEnableSelect",
+                        "showExportBtn",
+                        "facebookShare",
+                        "twitterShare",
+                        "colorTheme",
+                        "showPanels",
+                        "showSearch",
+                        "showTimeline",
+                        "showSnapDescrs",
+                        "infoClickToParent",
+                        "showSnapTooltips",
+                        "panelLayoutType",
+                        "autoPlay",
+                        "snapTransition",
+                        "snapDuration",
+                        "timelineType",
+                        "totalDuration",
+                        "headerTitle",
+                        "headerImageUrl",
+                        "headerHtml",
+                        "highlightColor",
+                        "modalDescription",
+                        "modalBackground",
+                        "modalLogo",
+                        "modalSubtitle",
+                        "searchAlg",
+                        "modalTitle",
+                        "modalIntroHtml",
+                        "allowJoin",
+                        "displayTooltipCard",
+                        "startPage",
+                        "showStartInfo",
+                        "defaultPanel",
+                        "sponsors",
+                        "projectLogoTitle",
+                        "displayExportButton",
+                        "beta",
+                        "feedback",
+                        "socials"
+                    ]
+                }
+            },
+            "required": [
+                "settings"
+            ]
+        },
+        "snapshots": {
+            "type": "array",
+            "items": [
+                {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                        "id": {
+                            "type": "string"
+                        },
+                        "descr": {
+                            "type": "string"
+                        },
+                        "snapName": {
+                            "type": "string"
+                        },
+                        "subtitle": {
+                            "type": "string"
+                        },
+                        "summaryImg": {
+                            "type": [
+                                "null",
+                                "string"
+                            ]
+                        },
+                        "isEnabled": {
+                            "type": "boolean"
+                        },
+                        "isDeleted": {
+                            "type": "boolean"
+                        },
+                        "camera": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                                "normalizeCoords": {
+                                    "type": "boolean"
+                                },
+                                "r": {
+                                    "type": "number"
+                                },
+                                "x": {
+                                    "type": "number"
+                                },
+                                "y": {
+                                    "type": "number"
+                                }
+                            },
+                            "required": [
+                                "normalizeCoords",
+                                "r",
+                                "x",
+                                "y"
+                            ]
+                        },
+                        "layout": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                                "plotType": {
+                                    "enum": ["original", "scatterplot", "clustered-scatterplot", "geo"]
+                                },
+                                "xaxis": {
+                                    "type": ["null", "string"]
+                                },
+                                "yaxis": {
+                                    "type": ["null", "string"]
+                                },
+                                "nodeXAttr": {
+                                    "type": ["null", "string"]
+                                },
+                                "nodeYAttr": {
+                                    "type": ["null", "string"]
+                                },
+                                "clusterXAttr": {
+                                    "type": ["null", "string"]
+                                },
+                                "clusterYAttr": {
+                                    "type": ["null", "string"]
+                                },
+                                "settings": {
+                                    "type": "object",
+                                    "properties": {
+                                        "drawNodes": {
+                                            "type": "boolean"
+                                        },
+                                        "borderRatio": {
+                                            "type": "number"
+                                        },
+                                        "bigOnTop": {
+                                            "type": "boolean"
+                                        },
+                                        "nodeImageShow": {
+                                            "type": "boolean"
+                                        },
+                                        "nodeImageAttr": {
+                                            "type": [
+                                                "null",
+                                                "string"
+                                            ]
+                                        },
+                                        "nodeUnselectedOpacity": {
+                                            "type": "number"
+                                        },
+                                        "nodeHighlightRatio": {
+                                            "type": "number"
+                                        },
+                                        "nodeHighlightBorderOffset": {
+                                            "type": "number"
+                                        },
+                                        "nodeHighlightBorderWidth": {
+                                            "type": "number"
+                                        },
+                                        "nodeSelectionRatio": {
+                                            "type": "number"
+                                        },
+                                        "nodeSelectionBorderOffset": {
+                                            "type": "number"
+                                        },
+                                        "nodeSelectionBorderWidth": {
+                                            "type": "number"
+                                        },
+                                        "nodeSelectionDegree": {
+                                            "type": "number"
+                                        },
+                                        "isShowSelectedNodeTab": {
+                                            "type": "boolean"
+                                        },
+                                        "selectedNodeCommonTitle": {
+                                            "type": "string"
+                                        },
+                                        "selectedNodeIncomingTitle": {
+                                            "type": "string"
+                                        },
+                                        "selectedNodeOutgoingTitle": {
+                                            "type": "string"
+                                        },
+                                        "neighbourListHoverDegree": {
+                                            "type": "number"
+                                        },
+                                        "nodePopSize": {
+                                            "type": "number"
+                                        },
+                                        "nodePopImageShow": {
+                                            "type": "boolean"
+                                        },
+                                        "nodePopImageAttr": {
+                                            "type": [
+                                                "null",
+                                                "string"
+                                            ]
+                                        },
+                                        "nodePopShow": {
+                                            "type": "boolean"
+                                        },
+                                        "nodePopDelay": {
+                                            "type": "number"
+                                        },
+                                        "nodePopRepositionNeighbors": {
+                                            "type": "boolean"
+                                        },
+                                        "drawEdges": {
+                                            "type": "boolean"
+                                        },
+                                        "edgeDirectional": {
+                                            "type": "boolean"
+                                        },
+                                        "edgeTaper": {
+                                            "type": "boolean"
+                                        },
+                                        "edgeTaperScale": {
+                                            "type": "number"
+                                        },
+                                        "edgeSaturation": {
+                                            "type": "number"
+                                        },
+                                        "edgeUnselectedOpacity": {
+                                            "type": "number"
+                                        },
+                                        "edgeDirectionalRender": {
+                                            "type": "string"
+                                        },
+                                        "drawLabels": {
+                                            "type": "boolean"
+                                        },
+                                        "drawGroupLabels": {
+                                            "type": "boolean"
+                                        },
+                                        "labelColor": {
+                                            "type": "string"
+                                        },
+                                        "labelOutlineColor": {
+                                            "type": "string"
+                                        },
+                                        "labelSize": {
+                                            "type": "string"
+                                        },
+                                        "labelScale": {
+                                            "type": "number"
+                                        },
+                                        "labelSizeRatio": {
+                                            "type": "number"
+                                        },
+                                        "defaultLabelSize": {
+                                            "type": "number"
+                                        },
+                                        "minLabelSize": {
+                                            "type": "number"
+                                        },
+                                        "maxLabelSize": {
+                                            "type": "number"
+                                        },
+                                        "labelThreshold": {
+                                            "type": "number"
+                                        },
+                                        "labelMaxCount": {
+                                            "type": "number"
+                                        },
+                                        "labelDefaultShow": {
+                                            "type": "boolean"
+                                        },
+                                        "labelAttr": {
+                                            "type": "string"
+                                        },
+                                        "labelHoverAttr": {
+                                            "type": "string"
+                                        },
+                                        "labelDegree": {
+                                            "type": "number"
+                                        },
+                                        "labelOpacity": {
+                                            "type": "number"
+                                        },
+                                        "labelUnselectedOpacity": {
+                                            "type": "number"
+                                        },
+                                        "zoomLock": {
+                                            "type": "boolean"
+                                        },
+                                        "panLock": {
+                                            "type": "boolean"
+                                        },
+                                        "maxZoomLevel": {
+                                            "type": "number"
+                                        },
+                                        "minZoomLevel": {
+                                            "type": "number"
+                                        },
+                                        "savedZoomLevel": {
+                                            "type": "number"
+                                        },
+                                        "zoomingRatio": {
+                                            "type": "number"
+                                        },
+                                        "mouseZoomDuration": {
+                                            "type": "number"
+                                        },
+                                        "xAxShow": {
+                                            "type": "boolean"
+                                        },
+                                        "yAxShow": {
+                                            "type": "boolean"
+                                        },
+                                        "xAxTickShow": {
+                                            "type": "boolean"
+                                        },
+                                        "yAxTickShow": {
+                                            "type": "boolean"
+                                        },
+                                        "xAxLabel": {
+                                            "type": "string"
+                                        },
+                                        "yAxLabel": {
+                                            "type": "string"
+                                        },
+                                        "xAxTooltip": {
+                                            "type": "string"
+                                        },
+                                        "yAxTooltip": {
+                                            "type": "string"
+                                        },
+                                        "invertX": {
+                                            "type": "boolean"
+                                        },
+                                        "invertY": {
+                                            "type": "boolean"
+                                        },
+                                        "scatterAspect": {
+                                            "type": "number"
+                                        },
+                                        "mapboxMapID": {
+                                            "type": "string"
+                                        },
+                                        "nodeSizeStrat": {
+                                            "type": "string"
+                                        },
+                                        "nodeSizeAttr": {
+                                            "type": "string"
+                                        },
+                                        "nodeSizeScaleStrategy": {
+                                            "type": "string"
+                                        },
+                                        "nodeSizeScaleInvert": {
+                                            "type": "boolean"
+                                        },
+                                        "nodeSizeDefaultValue": {
+                                            "type": "number"
+                                        },
+                                        "nodeSizeMin": {
+                                            "type": "number"
+                                        },
+                                        "nodeSizeMax": {
+                                            "type": "number"
+                                        },
+                                        "nodeSizeMultiplier": {
+                                            "type": "number"
+                                        },
+                                        "nodeColorStrat": {
+                                            "type": "string"
+                                        },
+                                        "nodeColorAttr": {
+                                            "type": "string"
+                                        },
+                                        "nodeColorScaleStrategy": {
+                                            "type": "string"
+                                        },
+                                        "nodeColorScaleInvert": {
+                                            "type": "boolean"
+                                        },
+                                        "nodeColorScaleExponent": {
+                                            "type": "number"
+                                        },
+                                        "nodeColorScaleBase": {
+                                            "type": "number"
+                                        },
+                                        "nodeColorDefaultValue": {
+                                            "type": "string"
+                                        },
+                                        "nodeColorNumericScalerType": {
+                                            "type": "string"
+                                        },
+                                        "nodeColorCycleCategoryColors": {
+                                            "type": "boolean"
+                                        },
+                                        "nodeColorPaletteNumeric": {
+                                            "type": "array",
+                                            "items": [
+                                                {
+                                                    "$ref": "#/definitions/coloritem"
+                                                }
+                                            ]
+                                        },
+                                        "nodeColorPaletteOrdinal": {
+                                            "type": "array",
+                                            "items": [
+                                                {
+                                                    "$ref": "#/definitions/coloritem"
+                                                }
+                                            ]
+                                        },
+                                        "edgeSizeStrat": {
+                                            "type": "string"
+                                        },
+                                        "edgeSizeAttr": {
+                                            "type": "string"
+                                        },
+                                        "edgeSizeScaleStrategy": {
+                                            "type": "string"
+                                        },
+                                        "edgeSizeScaleInvert": {
+                                            "type": "boolean"
+                                        },
+                                        "edgeSizeDefaultValue": {
+                                            "type": "number"
+                                        },
+                                        "edgeSizeMin": {
+                                            "type": "number"
+                                        },
+                                        "edgeSizeMax": {
+                                            "type": "number"
+                                        },
+                                        "edgeSizeMultiplier": {
+                                            "type": "number"
+                                        },
+                                        "edgeColorStrat": {
+                                            "type": "string"
+                                        },
+                                        "edgeColorAttr": {
+                                            "type": "string"
+                                        },
+                                        "edgeColorScaleStrategy": {
+                                            "type": "string"
+                                        },
+                                        "edgeColorScaleInvert": {
+                                            "type": "boolean"
+                                        },
+                                        "edgeColorScaleExponent": {
+                                            "type": "number"
+                                        },
+                                        "edgeColorScaleBase": {
+                                            "type": "number"
+                                        },
+                                        "edgeColorDefaultValue": {
+                                            "type": "string"
+                                        },
+                                        "edgeColorCycleCategoryColors": {
+                                            "type": "boolean"
+                                        },
+                                        "edgeColorPaletteNumeric": {
+                                            "type": "array",
+                                            "items": [
+                                                {
+                                                    "$ref": "#/definitions/coloritem"
+                                                }
+                                            ]
+                                        },
+                                        "edgeColorPaletteOrdinal": {
+                                            "type": "array",
+                                            "items": [
+                                                {
+                                                    "$ref": "#/definitions/coloritem"
+                                                }
+                                            ]
+                                        },
+                                        "nodeClusterAttr": {
+                                            "type": "string"
+                                        },
+                                        "drawClustersCircle": {
+                                            "type": "boolean"
+                                        },
+                                        "isGeo": {
+                                            "type": "boolean"
+                                        },
+                                        "edgeCurvature": {
+                                            "type": ["null", "number"]
+                                        }
+                                    },
+                                    "required": [
+                                        "drawNodes",
+                                        "borderRatio",
+                                        "bigOnTop",
+                                        "nodeImageShow",
+                                        "nodeUnselectedOpacity",
+                                        "nodeHighlightRatio",
+                                        "nodeHighlightBorderOffset",
+                                        "nodeHighlightBorderWidth",
+                                        "nodeSelectionRatio",
+                                        "nodeSelectionBorderOffset",
+                                        "nodeSelectionBorderWidth",
+                                        "nodeSelectionDegree",
+                                        "isShowSelectedNodeTab",
+                                        "selectedNodeCommonTitle",
+                                        "selectedNodeIncomingTitle",
+                                        "selectedNodeOutgoingTitle",
+                                        "neighbourListHoverDegree",
+                                        "nodePopSize",
+                                        "nodePopImageShow",
+                                        "nodePopShow",
+                                        "nodePopDelay",
+                                        "nodePopRepositionNeighbors",
+                                        "drawEdges",
+                                        "edgeDirectional",
+                                        "edgeTaper",
+                                        "edgeTaperScale",
+                                        "edgeSaturation",
+                                        "edgeUnselectedOpacity",
+                                        "edgeDirectionalRender",
+                                        "drawLabels",
+                                        "drawGroupLabels",
+                                        "labelColor",
+                                        "labelOutlineColor",
+                                        "labelSize",
+                                        "labelScale",
+                                        "labelSizeRatio",
+                                        "defaultLabelSize",
+                                        "minLabelSize",
+                                        "maxLabelSize",
+                                        "labelThreshold",
+                                        "labelMaxCount",
+                                        "labelDefaultShow",
+                                        "labelAttr",
+                                        "labelHoverAttr",
+                                        "labelDegree",
+                                        "labelOpacity",
+                                        "labelUnselectedOpacity",
+                                        "zoomLock",
+                                        "panLock",
+                                        "maxZoomLevel",
+                                        "minZoomLevel",
+                                        "savedZoomLevel",
+                                        "zoomingRatio",
+                                        "mouseZoomDuration",
+                                        "xAxShow",
+                                        "yAxShow",
+                                        "xAxTickShow",
+                                        "yAxTickShow",
+                                        "xAxLabel",
+                                        "yAxLabel",
+                                        "xAxTooltip",
+                                        "yAxTooltip",
+                                        "invertX",
+                                        "invertY",
+                                        "scatterAspect",
+                                        "mapboxMapID",
+                                        "nodeSizeStrat",
+                                        "nodeSizeAttr",
+                                        "nodeSizeScaleStrategy",
+                                        "nodeSizeScaleInvert",
+                                        "nodeSizeDefaultValue",
+                                        "nodeSizeMin",
+                                        "nodeSizeMax",
+                                        "nodeSizeMultiplier",
+                                        "nodeColorStrat",
+                                        "nodeColorAttr",
+                                        "nodeColorScaleStrategy",
+                                        "nodeColorScaleInvert",
+                                        "nodeColorScaleExponent",
+                                        "nodeColorScaleBase",
+                                        "nodeColorDefaultValue",
+                                        "nodeColorNumericScalerType",
+                                        "nodeColorCycleCategoryColors",
+                                        "nodeColorPaletteNumeric",
+                                        "nodeColorPaletteOrdinal",
+                                        "edgeSizeStrat",
+                                        "edgeSizeAttr",
+                                        "edgeSizeScaleStrategy",
+                                        "edgeSizeScaleInvert",
+                                        "edgeSizeDefaultValue",
+                                        "edgeSizeMin",
+                                        "edgeSizeMax",
+                                        "edgeSizeMultiplier",
+                                        "edgeColorStrat",
+                                        "edgeColorAttr",
+                                        "edgeColorScaleStrategy",
+                                        "edgeColorScaleInvert",
+                                        "edgeColorScaleExponent",
+                                        "edgeColorScaleBase",
+                                        "edgeColorDefaultValue",
+                                        "edgeColorCycleCategoryColors",
+                                        "edgeColorPaletteNumeric",
+                                        "edgeColorPaletteOrdinal",
+                                        "nodeClusterAttr",
+                                        "drawClustersCircle",
+                                        "isGeo"
+                                    ]
+                                }
+                            },
+                            "required": [
+                                "plotType",
+                                "settings"
+                            ]
+                        }
+                    },
+                    "required": [
+                        "id",
+                        "descr",
+                        "snapName",
+                        "subtitle",
+                        "isEnabled",
+                        "isDeleted",
+                        "camera",
+                        "layout"
+                    ]
+                }
+            ]
+        }
+    },
+    "required": [
+        "dataset",
+        "settings",
+        "player",
+        "snapshots"
+    ]
+}
