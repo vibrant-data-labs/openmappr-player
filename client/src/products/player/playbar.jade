@@ -197,14 +197,29 @@
                           span {{val.values[0] | number:2}}
 
                         span(ng-if="val.description == 'eq'") {{val.values[0]}}
-        .play-toolbar__btn-summarize(ng-if="ui.subsetEnabled", ng-class="{'play-toolbar__btn-summarize--collapsed': !isShowBreadcrumbs}")
-          .play-toolbar__btn-summarize-box
-            button.button_summarize(
-              ng-click="subsetFilters()",
-              uib-tooltip="Click to summarize the selected nodes in the ‘Summary’ tab"
-              tooltip-append-to-body="true"
-              tooltip-placement="right"
-            ) Summarize Selection
+        .play-toolbar__btn-container
+          .play-toolbar__btn-summarize(ng-if="ui.subsetEnabled", ng-class="{'play-toolbar__btn-summarize--collapsed': !isShowBreadcrumbs}")
+            .play-toolbar__btn-summarize-box
+              button.button_summarize(
+                ng-click="subsetFilters()",
+                uib-tooltip="Click to summarize the selected nodes in the ‘Summary’ tab"
+                tooltip-append-to-body="true"
+                tooltip-placement="right"
+              ) Summarize Selection
+          .play-toolbar__btn-share
+            .play-toolbar__btn-share-box
+              button.button_share(
+                ng-click="toggleSelectionShare()",
+                uib-tooltip="Click to share the current selection"
+                tooltip-append-to-body="true"
+                tooltip-placement="right"
+              ) {{ ui.subsetEnabled ? '' : 'Share Subset' }}
+                span.icon__share
+
+          .play-toolbar__share-popup(ng-if="isSelectionShareOpen")
+            .share-popup__container
+              input(type="text")
+              span.icon__share
 .play-toolbar-bottom(
   ng-if="layout.plotType != 'list' && layout.plotType != 'grid'"
 )

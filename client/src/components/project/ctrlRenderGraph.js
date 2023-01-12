@@ -395,6 +395,10 @@ angular.module('common')
                 }
             };
 
+            $scope.toggleSelectionShare = function toggleSelectionShare() {
+                $scope.isSelectionShareOpen = !$scope.isSelectionShareOpen;
+            }
+
             $scope.undoFilters = function undoFilters() {
                 $scope.$broadcast(BROADCAST_MESSAGES.fp.filter.undo);
             };
