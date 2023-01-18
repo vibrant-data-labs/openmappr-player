@@ -42,6 +42,10 @@
 												span(ng-if="!isShowClusteredBy || dataGroupsInfo.colorNodesBy.id != dataGroupsInfo.clusterNodesBy.id") Colored by:&nbsp;&nbsp;
 												span(ng-if="isShowClusteredBy && dataGroupsInfo.colorNodesBy.id == dataGroupsInfo.clusterNodesBy.id") Clustered by, Colored by:&nbsp;&nbsp;
 												span(ng-if="!nodeColorAttrs || nodeColorAttrs.length < 2") {{dataGroupsInfo.colorNodesBy.title}}
+												span.card__tooltip.tooltip__colored-by(ng-if="(!nodeColorAttrs || nodeColorAttrs.length < 2) && dataGroupsInfo.colorNodesBy.tooltip"
+													uib-tooltip="{{dataGroupsInfo.colorNodesBy.tooltip}}",
+													tooltip-placement="right", 
+													tooltip-append-to-body="true")
 												span(ng-if="nodeColorAttrs && nodeColorAttrs.length > 1" uib-dropdown dropdown-append-to-body)
 													span(uib-dropdown-toggle auto-close="outsideClick" ng-click="keepDrawerOpen = true;")
 														span.text-link {{dataGroupsInfo.colorNodesBy.title}}
@@ -96,12 +100,13 @@
 
 							h6.no-margin.text-center.title(
 								ng-if="vm.nodeSizeAttr.attrType == 'integer' || vm.nodeSizeAttr.attrType == 'float' || vm.nodeSizeAttr.attrType == 'boolean' || vm.nodeSizeAttr.attrType == 'year' || vm.nodeSizeAttr.attrType == 'timestamp'"
-								uib-tooltip="{{vm.nodeSizeAttr.metadata.descr || vm.nodeSizeAttr.title}}"
-								tooltip-placement='right'
-								tooltip-append-to-body="true"
 							)
 								span {{vm.nodeSizeAttr.title}}
 								span(ng-show="vm.nodeSizeAttr.principalVal") :&nbsp;{{vm.nodeSizeAttr.principalVal}}
+								span.card__tooltip.tooltip__histogram(ng-if="vm.nodeSizeAttr.tooltip"
+										uib-tooltip="{{vm.nodeSizeAttr.tooltip}}",
+										tooltip-placement="right", 
+										tooltip-append-to-body="true")
 					//- .col-xs-4
 					//- 	span
 					//- 		button.square-btn.small-btn.panel-btn(type="button", ng-click="clearSelections();") Reset

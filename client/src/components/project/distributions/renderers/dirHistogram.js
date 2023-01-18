@@ -9,9 +9,7 @@ angular.module('common')
             var dirDefn = {
                 restrict: 'AE',
                 require: '?^dirAttrRenderer',
-                template: '<div class="histogram" ng-mouseleave="outBar()" ng-mousemove="overBar($event)">' +
-                    '<div class="tooltip-positioner" uib-tooltip="{{tooltipText}}" tooltip-append-to-body="true" tooltip-is-open="openTooltip"></div>' +
-                    '</div>' +
+                template: '<div class="histogram">' +
                     '<dir-range-filter ng-if="showFilter" ng-class="{disableFilter: disableFilter}" attr="attrInfo" log="isLogScale"></dir-range-filter>' +
                     `<div ng-show="hasLogScale" class="log-scale-toggle">
                         <input type="checkbox" ng-change="toggleLogScale()" ng-model="isLogScale"/>
