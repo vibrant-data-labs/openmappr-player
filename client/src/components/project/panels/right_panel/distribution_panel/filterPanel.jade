@@ -116,9 +116,6 @@
 
 						h6.no-margin.text-center.title(
 							ng-if="attr.attrType == 'integer' || attr.attrType == 'float' || attr.attrType == 'boolean' || attr.attrType == 'year' || attr.attrType == 'timestamp'"
-							uib-tooltip="{{attr.metadata.descr || attr.title}}"
-							tooltip-placement='right'
-							tooltip-append-to-body="true"
 						)
 							span {{::attr.title}}
 							span(ng-show="attr.principalVal") :&nbsp;{{attr.principalVal}}

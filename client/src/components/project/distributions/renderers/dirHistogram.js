@@ -6,15 +6,23 @@ angular.module('common')
             /*************************************
             ******** Directive description *******
             **************************************/
+
             var dirDefn = {
                 restrict: 'AE',
                 require: '?^dirAttrRenderer',
-                template: '<div class="histogram">' +
-                    '<dir-range-filter ng-if="showFilter" ng-class="{disableFilter: disableFilter}" attr="attrInfo" log="isLogScale"></dir-range-filter>' +
-                    `<div ng-show="hasLogScale" class="log-scale-toggle">
+                template: `
+                    <div class="histogram"></div>
+                    <dir-range-filter
+                        ng-if="showFilter"
+                        ng-class="{disableFilter: disableFilter}"
+                        attr="attrInfo"
+                        log="isLogScale">
+                    </dir-range-filter>
+                    <div ng-show="hasLogScale" class="log-scale-toggle">
                         <input type="checkbox" ng-change="toggleLogScale()" ng-model="isLogScale"/>
                         <label>log</label>
-                    </div>`,
+                    </div>
+                `,
                 link: postLinkFn
             };
 
@@ -25,10 +33,8 @@ angular.module('common')
             window.mappr.stats.distr = window.mappr.stats.distr || {};
 
             var logPrefix = '[dirHistogram] ';
-            // var _log = window.console.log.bind(window.console);
             var _log = _.noop;
 
-            var tooltipText;
 
             var defaultOpts = {
                 marginTop: 10,
@@ -83,7 +89,7 @@ angular.module('common')
                 scope.attrInfo = defaultAttrInfo;
                 isLogScaleById[scope.attrToRender.id] = false;
                 scope.isLogScale = false;
-                var histElem = element[0].childNodes[0];
+                var histElem = element[0].querySelector('.histogram');
                 var tooltip = element.find(".d3-tip");
 
                 //for dark or node detail theme
@@ -198,24 +204,6 @@ angular.module('common')
                     redrawHistogram(attrInfo);
                 }
 
-                scope.outBar = function () {
-                    $timeout(function () {
-                        scope.openTooltip = false;
-                    }, 101);
-                };
-
-                scope.overBar = function (event) {
-                    scope.tooltipText = tooltipText;
-                    element.find('.tooltip-positioner').css({
-                        top: event.offsetY - 20,
-                        left: event.offsetX
-                    });
-                    scope.openTooltip = false;
-                    $timeout(function () {
-                        scope.openTooltip = true;
-                    }, 100);
-                };
-
                 function redrawHistogram(attrInfo, nodes) {
                     animateRemoval(histElem, histoData);
 
@@ -281,26 +269,6 @@ angular.module('common')
                 barElem.style({
                     fill: color
                 });
-            }
-
-            function setTooltipText(data, isNumeric, xAxisType, binType) {
-                if (!isNumeric) {
-                    tooltipText = data.label;
-                }
-                else {
-                    if (binType == 'int_unique') {
-                        tooltipText = window.mappr.utils.numericString(data[0]);
-                    }
-                    else if (binType == 'int_variable') {
-                        tooltipText = window.mappr.utils.numericString(data.x) + ' - ' + window.mappr.utils.numericString(data.x + data.dx - 1);
-                    }
-                    else if (xAxisType === 'dateTime') {
-                        tooltipText = formatTimestamp(data.x, 'YYYY/MM/DD') + ' - ' + formatTimestamp(data.x + data.dx, 'YYYY/MM/DD');
-                    }
-                    else {
-                        tooltipText = window.mappr.utils.numericString(data.x) + ' - ' + window.mappr.utils.numericString(data.x + data.dx);
-                    }
-                }
             }
 
             function formatTimestamp(val, format) {
@@ -418,12 +386,13 @@ angular.module('common')
             function getSelectionColor(nodes, opts, selectionColor, isColorAttr) {
                 if (_.keys(_.indexBy(nodes, 'colorStr')).length === 1) {
                     return nodes[0].colorStr;
-                } else if (isColorAttr) {
+                }
+
+                if (isColorAttr) {
                     return selectionColor || opts.selectionDefaultColor;
                 }
-                else {
-                    return opts.selectionDefaultColor;
-                }
+
+                return opts.selectionDefaultColor;
             }
 
             function getDomain(attrInfo, isNumeric, binType, intVarData) {
@@ -431,13 +400,11 @@ angular.module('common')
                     if (binType == 'int_variable' || binType == 'int_unique') {
                         return [intVarData.roundMinVal, intVarData.roundMaxVal];
                     }
-                    else {
-                        return [attrInfo.bounds.min, attrInfo.bounds.max];
-                    }
+
+                    return [attrInfo.bounds.min, attrInfo.bounds.max];
                 }
-                else {
-                    return _.map(attrInfo.values, function (val) { return val.toString(); }).reverse();
-                }
+
+                return _.map(attrInfo.values, function (val) { return val.toString(); }).reverse();
             }
 
             function generateD3Data(attrInfo, binCount, isNumeric, x, binThresholds, binType) {
@@ -787,8 +754,6 @@ angular.module('common')
                             hoverService.hoverNodes({ attr: attrInfo.attr.id, min: segment.x, max: _.last(segment) });
                         }
                     }
-                    // showTooltip.call(this, tooltip, segment, barWidth, yAxisWidth, isOrdinal, histoData.isNodeFocus, i);
-                    setTooltipText(segment, !isOrdinal, histoData.xAxisType, binType);
                 }
 
                 function onBarUnHover(segment) {
