@@ -415,7 +415,7 @@
       }
 
     &::before {
-      content: deployedUrl('/img/filter-panel/question-mark.svg');
+      content: deployedUrl('/img/filter-panel/info.svg');
       filter:  invert(27%) sepia(89%) saturate(3072%) hue-rotate(322deg) brightness(80%) contrast(80%);
     }
   }
