@@ -340,7 +340,10 @@ angular.module('common')
             // #####
 
             $scope.updatePlotType = function (plotType) {
-                $scope.plotType = plotType || 'original';
+                $scope.plotType = 'original';
+                $timeout(function() {
+                    $scope.plotType = plotType || 'original';
+                }, 100);
             };
 
             $scope.resetFilters = function () {

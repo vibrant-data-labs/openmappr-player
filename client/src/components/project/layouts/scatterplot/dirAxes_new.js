@@ -48,33 +48,6 @@ function ($rootScope, $q, $compile, $timeout, renderGraphfactory, layoutService,
     };
 
     /*************************************
-    ************ Local Data **************
-    **************************************/
-    // timestamp formats. if max element changing is
-    // var timestampFormats = {
-    //     "ms": "ss:SS",
-    //     "seconds": "mm:ss",
-    //     "minutes": "HH:mm:ss",
-    //     "hours": "ddd HH:mm:ss",
-    //     "days": "MMM DD, HH:mm",
-    //     "months": "MMM DD YY, HH:mm",
-    //     "years": "MMM DD YYYY",
-    //     "default" : window.moment.defaultFormat
-    // };
-
-    // var formatAxis = {
-    //     x : timestampFormats["default"],
-    //     y : timestampFormats["default"]
-    // };
-
-
-    /*************************************
-    ******** Controller Function *********
-    **************************************/
-
-
-
-    /*************************************
     ******** Post Link Function *********
     **************************************/
     function postLinkFn(scope, element) {
