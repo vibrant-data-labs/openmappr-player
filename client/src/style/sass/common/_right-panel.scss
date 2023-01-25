@@ -1208,3 +1208,9 @@
     padding-bottom: 15px;
   }
 }
+
+.colored-by__container:hover {
+  .card__tooltip {
+    opacity: 1;
+  }
+}

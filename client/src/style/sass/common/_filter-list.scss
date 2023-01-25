@@ -21,6 +21,12 @@
     &:not(:last-child) {
       margin-bottom: 10px;
     }
+
+    &:hover {
+      .card__tooltip {
+        opacity: 1;
+      }
+    }
   }
 }
 
@@ -394,29 +400,42 @@
     cursor: pointer;
   }
 
+  &:hover {
+    .card__tooltip {
+      display: block;
+      opacity: 1;
+    }
+  }
+
   &__tooltip {
     margin-left: .5em;
-    width: 20px;
-    height: 20px;
-    display: block;
+    width: 24px;
+    height: 24px;
+    display: none;
 
     &.tooltip {
         &__colored-by {
           position: relative;
           display: inline;
+          opacity: 0;
           top: 0.2em;
         }
     
         &__histogram {
           position: relative;
-          display: inline;
           top: 0.4em;
+          display: inline;
+          opacity: 0;
+        }
+
+        &__scatterplot {
+          opacity: 0;
+          display: inline-block;
         }
       }
 
     &::before {
-      content: deployedUrl('/img/filter-panel/info.svg');
-      filter:  invert(27%) sepia(89%) saturate(3072%) hue-rotate(322deg) brightness(80%) contrast(80%);
+      content: deployedUrl('/img/play-toolbar/info-information-circle.svg');
     }
   }
 }

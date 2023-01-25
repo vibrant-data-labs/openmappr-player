@@ -256,6 +256,20 @@
         }
     }
 
+    .axis-title {
+        h4 {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+
+            &:hover {
+                .card__tooltip {
+                    opacity: 1;
+                }
+            }
+        }
+    }
+
     .subtitle {
         font-size: 14px;
     }
