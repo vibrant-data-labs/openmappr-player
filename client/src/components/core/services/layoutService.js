@@ -187,7 +187,7 @@ function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partiti
                 break;
             case 'log'         :
                 scaler = d3.scale.log().base(+mapprVals.ScaleBase); // log is handled differently. seen `if`
-                if(domain[0] < 1 && domain[1] > 1) {
+                if(domain[0] < 1 && domain[1] >= 1) {
                     shiftInputVal = true;
                     shiftInputValBy = (-1 * domain[0]) + 1;
 
@@ -314,14 +314,14 @@ function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partiti
     var colorStr = window.mappr.utils.colorStr;
         // limitValue = window.mappr.utils.limitValue;
 
-    var marginRt = 40, marginLeft = 40, marginTop = 80, marginBtm = 40, scatterplotMarginBtm = 200;
+    var marginRt = 40, marginLeft = 40, marginTop = 0, marginBtm = 40, scatterplotMarginBtm = 200;
     var offsetX = (marginRt - marginLeft)/2;
     var offsetY = (marginTop - marginBtm)/2;
     this.offsetX = offsetX;
     this.offsetY = offsetY;
     this.marginX = (marginRt + marginLeft);
     this.marginY = (marginTop + marginBtm);
-    var scatterplotOffsetY = (marginTop - scatterplotMarginBtm)/2; // giant axis at bottom
+    var scatterplotOffsetY = (marginTop + 80 - scatterplotMarginBtm)/2; // giant axis at bottom
     this.scatterplotOffsetY = scatterplotOffsetY;
 
     var MAX_COLOR_ITEMS = 50;

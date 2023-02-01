@@ -18,8 +18,8 @@
     .xaxis-bkgrnd {
         background: $axis-bkgrnd;
         border-top: 1px solid $panel-border;
-        bottom: 2em;
-        height: 100px;
+        bottom: 0;
+        height: calc(100px + 2em);
         left: 100px;
         right: 0;
         position: absolute;

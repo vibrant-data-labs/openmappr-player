@@ -401,38 +401,35 @@ function ($scope, $q, $timeout, eventBridgeFactory, leafletData, layoutService, 
     }
 
 
+    function onGeoLayoutLoaded(graphData, layout) {
+        var removeListener = $scope.$on('leafletDirectiveMap.viewreset', function () {
+            removeListener();
+            buildRenderGraph(graphData, layout).then(function (graph) {
+                $scope.$broadcast(BROADCAST_MESSAGES.renderGraph.loaded, graph);
+            });
+        });
+    }
+
+    function onCommonLayoutLoaded(graphData, layout) {
+        buildRenderGraph(graphData, layout).then(function (graph) {
+            $scope.$broadcast(BROADCAST_MESSAGES.renderGraph.loaded, graph);
+            zoomService.zoomReset();
+        });        
+    }
+
     function onLayoutLoaded(event, layout, isNew) {
         console.group('[layoutCtrl.$on event %s]', event.name);
-        if(isNew) {
+        if (isNew) {
             dataGraph.clearRenderGraph();
         }
         var graphData = dataGraph.getRawDataUnsafe();
-        var onGraphP = null;
 
-        if(layout.isGeo) {
-            // check if a viewrest is going to happen
-            if(layout.setting('savedZoomLevel') !== layout.map.getZoom() ) { // ||
-                // layout.camera.x.toFixed(4) !== mapCenter.lat.toFixed(4) ||
-                // layout.camera.y.toFixed(4) !== mapCenter.lng.toFixed(4)) {
-                var x = $scope.$on('leafletDirectiveMap.viewreset', function() {
-                    x();
-                    onGraphP = buildRenderGraph(graphData, layout);
-                    onGraphP.then(function(graph) {
-                        $scope.$broadcast(BROADCAST_MESSAGES.renderGraph.loaded, graph);
-                    });
-                });
-            } else { // no viewreset, just load
-                onGraphP = buildRenderGraph(graphData, layout);
-                onGraphP.then(function(graph) {
-                    $scope.$broadcast(BROADCAST_MESSAGES.renderGraph.loaded, graph);
-                });
-            }
+        if (layout.isGeo) {
+            onGeoLayoutLoaded(graphData, layout);
         } else {
-            onGraphP = buildRenderGraph(graphData, layout);
-            onGraphP.then(function(graph) {
-                $scope.$broadcast(BROADCAST_MESSAGES.renderGraph.loaded, graph);
-            });
+            onCommonLayoutLoaded(graphData, layout);
         }
+
         console.groupEnd();
     }
 
@@ -463,7 +460,6 @@ function ($scope, $q, $timeout, eventBridgeFactory, leafletData, layoutService, 
      * @return {[type]}        [description]
      */
     function setupLayout (layout) {
-        console.log("SETUP LAYOUT CALLED");
         layout.setup();
         layoutService.setCurrent(layout);
         $scope.layout = layout;

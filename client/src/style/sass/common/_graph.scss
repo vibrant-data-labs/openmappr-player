@@ -84,11 +84,11 @@
 
     // rest
     .graph-container {
-        height: 100%;
         left: $main-content-left;
         position: absolute;
-        top: 0;
+        top: 80px;
         right: 0;
+        bottom: 0;
     }
 
     .selects-container {
