@@ -89,6 +89,10 @@
         top: 80px;
         right: 0;
         bottom: 0;
+
+        &.geo-container {
+            top: 0;
+        }
     }
 
     .selects-container {
