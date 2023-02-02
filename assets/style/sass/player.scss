@@ -4,8 +4,6 @@
 $bootstrap-sass-asset-helper: false !default;
 $icon-font-path: if($bootstrap-sass-asset-helper, "bootstrap/", "../../../node_modules/bootstrap-sass/assets/fonts/bootstrap/") !default;
 @import '../../../node_modules/bootstrap-sass/assets/stylesheets/bootstrap';
-// @import 'bootstrap/assets/stylesheets/bootstrap';
-// @import 'compass/css3';
 
 @import 'plugins/leaflet';
 

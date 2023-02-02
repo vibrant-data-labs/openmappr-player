@@ -21,6 +21,12 @@
     &:not(:last-child) {
       margin-bottom: 10px;
     }
+
+    &:hover {
+      .card__tooltip {
+        opacity: 1;
+      }
+    }
   }
 }
 
@@ -329,6 +335,7 @@
     display: flex;
     flex: 1;
     align-items: center;
+    max-width: 95%;
   }
 
   &_collapsed {
@@ -391,5 +398,44 @@
     text-overflow: ellipsis;
     display: inline-flex;
     cursor: pointer;
+  }
+
+  &:hover {
+    .card__tooltip {
+      display: block;
+      opacity: 1;
+    }
+  }
+
+  &__tooltip {
+    margin-left: .5em;
+    width: 24px;
+    height: 24px;
+    display: none;
+
+    &.tooltip {
+        &__colored-by {
+          position: relative;
+          display: inline;
+          opacity: 0;
+          top: 0.2em;
+        }
+    
+        &__histogram {
+          position: relative;
+          top: 0.4em;
+          display: inline;
+          opacity: 0;
+        }
+
+        &__scatterplot {
+          opacity: 0;
+          display: inline-block;
+        }
+      }
+
+    &::before {
+      content: deployedUrl('/img/play-toolbar/info-information-circle.svg');
+    }
   }
 }

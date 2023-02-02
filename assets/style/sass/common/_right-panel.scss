@@ -415,7 +415,8 @@
     overflow: hidden;
 
     .panel-scroll {
-      overflow: auto;
+      overflow-y: visible;
+      overflow-x: hidden;
       width: 100%;
       margin-top: 3px;
     }
@@ -1205,5 +1206,11 @@
     border-bottom: 1px solid $panel-border;
     box-shadow: 0 2px 2px $shadow-color-light;
     padding-bottom: 15px;
+  }
+}
+
+.colored-by__container:hover {
+  .card__tooltip {
+    opacity: 1;
   }
 }
