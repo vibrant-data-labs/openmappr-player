@@ -56,7 +56,8 @@ function($q, $http, dataGraph, cfpLoadingBar) {
                 }
 
                 if (!this._activeSearch) {
-                    const url ='#{player_prefix_index_source}/js/worker/searchWorker.js';
+                    const host = '#{player_prefix_index_source}' || window.location.href.replace(/\/[^\/]*$/, '');
+                    const url = host + '/js/worker/searchWorker.js';
                     const content = `importScripts( "${ url }" );`;
                     this._workerUrl = URL.createObjectURL( new Blob( [ content ], { type: "text/javascript" } ) );
                     this._activeSearch = new Worker(this._workerUrl);
