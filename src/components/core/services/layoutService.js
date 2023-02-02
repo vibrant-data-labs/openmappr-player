@@ -187,7 +187,7 @@ function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partiti
                 break;
             case 'log'         :
                 scaler = d3.scale.log().base(+mapprVals.ScaleBase); // log is handled differently. seen `if`
-                if(domain[0] < 1 && domain[1] > 1) {
+                if(domain[0] < 1 && domain[1] >= 1) {
                     shiftInputVal = true;
                     shiftInputValBy = (-1 * domain[0]) + 1;
 
@@ -209,7 +209,7 @@ function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partiti
 
             if(this.isColor) {
                 var interpolator = interpolatorForScaler[mapprVals.NumericScalerType];
-                range = _.map(_.map(mapprVals.PaletteNumeric, 'col'), function(col) { return window.color.rgb(col); });
+                range = _.map(_.map(mapprVals.PaletteNumeric, 'col'), function(col) { return d3.rgb(col); });
                 scaler
                 .range(range)
                 .interpolate(interpolator)
@@ -272,7 +272,7 @@ function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partiti
                 }
                 var color = palette[idx].col;
                 if( desat > 0 ) {
-                    var hsl = window.color.hsl(color);
+                    var hsl = d3.hsl(color);
                     while( desat-- > 0 ) {
                         hsl.s *= 0.6;
                     }
@@ -314,14 +314,14 @@ function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partiti
     var colorStr = window.mappr.utils.colorStr;
         // limitValue = window.mappr.utils.limitValue;
 
-    var marginRt = 40, marginLeft = 40, marginTop = 80, marginBtm = 40, scatterplotMarginBtm = 200;
+    var marginRt = 40, marginLeft = 40, marginTop = 0, marginBtm = 40, scatterplotMarginBtm = 200;
     var offsetX = (marginRt - marginLeft)/2;
     var offsetY = (marginTop - marginBtm)/2;
     this.offsetX = offsetX;
     this.offsetY = offsetY;
     this.marginX = (marginRt + marginLeft);
     this.marginY = (marginTop + marginBtm);
-    var scatterplotOffsetY = (marginTop - scatterplotMarginBtm)/2; // giant axis at bottom
+    var scatterplotOffsetY = (marginTop + 80 - scatterplotMarginBtm)/2; // giant axis at bottom
     this.scatterplotOffsetY = scatterplotOffsetY;
 
     var MAX_COLOR_ITEMS = 50;
@@ -352,14 +352,14 @@ function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partiti
 
     // scaler factory
     var interpolatorForScaler = {
-        'RGB'            : window.color.interpolateRgb,
-        'HSL'            : window.color.interpolateHsl,
-        'HSL Long'       : window.color.interpolateHslLong,
-        'LAB'            : window.color.interpolateLab,
-        'HCL'            : window.color.interpolateHcl,
-        'HCL Long'       : window.color.interpolateHclLong,
-        'Cubehelix'      : window.color.interpolateCubehelix,
-        'Cubehelix Long' : window.color.interpolateCubehelixLong
+        'RGB'            : d3.interpolateRgb,
+        'HSL'            : d3.interpolateHsl,
+        'HSL Long'       : d3.interpolateHslLong,
+        'LAB'            : d3.interpolateLab,
+        'HCL'            : d3.interpolateHcl,
+        'HCL Long'       : d3.interpolateHclLong,
+        'Cubehelix'      : d3.interpolateCubehelix,
+        'Cubehelix Long' : d3.interpolateCubehelixLong
     };
 
     //The current layout
@@ -1697,13 +1697,15 @@ function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partiti
         // Until it is not there, this won't function
         this.isBuild = false;
 
-        var defaultAttr = {};
-        defaultAttr.x = 'Latitude';
-        defaultAttr.y = 'Longitude';
+        var defaultAttr = {
+            x: 'Latitude',
+            y: 'Longitude'
+        };
 
-        this.attr = {};
-        this.attr.x = this.getRawLayoutData().xaxis || defaultAttr.x;
-        this.attr.y = this.getRawLayoutData().yaxis || defaultAttr.y;
+        this.attr = {
+            x: this.getRawLayoutData().xaxis || defaultAttr.x,
+            y: this.getRawLayoutData().yaxis || defaultAttr.y
+        };
 
         this.setMap = function setMap (map) {
             this.map = map;

@@ -126,12 +126,12 @@ function($q, $rootScope, $timeout, dataGraph, layoutService, renderGraphfactory,
         sigmaReset = function sigmaReset (newCam) {
             var pos = {};
             var cam = renderer.camera;
-            var newRatio;
-            if (['scatterplot', 'clustered-scatterplot'].includes(layoutService.getCurrentIfExists().plotType)) {
-                newRatio = 1.5;
-            } else {
-                newRatio = newCam.ratio;
+            const ratioMap = {
+                'scatterplot': newCam.ratio,
+                'clustered-scatterplot': 1.5,
             }
+
+            const newRatio = ratioMap[layoutService.getCurrentIfExists().plotType] || (newCam.ratio * 1.125);            
             var ratio = newRatio / cam.ratio;
             var eventType = 'zoomReset';
             var rg = dataGraph.getRenderableGraph();
@@ -218,9 +218,7 @@ function($q, $rootScope, $timeout, dataGraph, layoutService, renderGraphfactory,
         sigmaZoom(-1);
     }
     function sigmaZoomReset() {
-        console.timeStamp('zoomReset');
         sigmaReset(layoutService.getCurrentIfExists().defCamera);
-        console.log('Zoom reset!');
     }
 
     function sigmaZoomToNodes(nodes) {

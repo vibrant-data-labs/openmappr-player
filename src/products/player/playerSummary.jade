@@ -1,68 +1,66 @@
 .legend-container.flex-transclude.width-100(ng-mouseleave="rightPanelExited();")
 	.flex-vert-container.width-100.panel-scroll(style="overflow-x: hidden")
-		//- .header(ng-mouseenter="panelUI.summaryPanelOpen ? showLegendBtns = true : showLegendBtns = false; panelUI.summaryPanelHover = true;" ng-mouseleave="showLegendBtns = false; panelUI.summaryPanelHover = false;" ng-class="{'active': panelUI.summaryPanelOpen}")
-		.header(ng-if="isShowClusteredBy" ng-mouseenter="panelUI.summaryPanelOpen ? showLegendBtns = true : showLegendBtns = false;" ng-mouseleave="showLegendBtns = false;")
-			.row.vert-align.main(ng-if="dataGroupsInfo.colorNodesBy.id != dataGroupsInfo.clusterNodesBy.id")
-				.col-xs-12
-					h6.title.text-uppercase.vert-align
-							.title-space.width-100
-								h6.title.text-uppercase.truncate.vert-align
-									.title-space
-										span.inline.nowrap
-											span Clustered by:&nbsp;&nbsp;
-											span {{dataGroupsInfo.clusterNodesBy.title}}
-														
-			.hidden-btns(ng-click="$event.stopPropagation()" ng-if="!isNodeColorNumeric && ui.showViewToggle")
-				h6.text-uppercase.animate-hidden-panel-btns(ng-show="(showLegendBtns && panelUI.summaryPanelOpen) || keepDrawerOpen")
-					.row.vert-align
-						.col-xs-7.nowrap.vert-align
-						.col-xs-5.nowrap(ng-if="ui.showViewToggle")
-							span.text-link
-								span(ng-if="!ui.summaryToggleOpen" ng-click="ui.summaryToggleOpen = true;")
-									i.fa.fa-caret-right.fa-fw
-									span Expanded View
-								span(ng-if="ui.summaryToggleOpen" ng-click="ui.summaryToggleOpen = false;")
-									i.fa.fa-caret-down.fa-fw
-									span Compact View
+		.colored-by__container
+			//- .header(ng-mouseenter="panelUI.summaryPanelOpen ? showLegendBtns = true : showLegendBtns = false; panelUI.summaryPanelHover = true;" ng-mouseleave="showLegendBtns = false; panelUI.summaryPanelHover = false;" ng-class="{'active': panelUI.summaryPanelOpen}")
+			.header(ng-if="isShowClusteredBy" ng-mouseenter="panelUI.summaryPanelOpen ? showLegendBtns = true : showLegendBtns = false;" ng-mouseleave="showLegendBtns = false;")
+				.row.vert-align.main(ng-if="dataGroupsInfo.colorNodesBy.id != dataGroupsInfo.clusterNodesBy.id")
+					.col-xs-12
+						h6.title.text-uppercase.vert-align
+								.title-space.width-100
+									h6.title.text-uppercase.truncate.vert-align
+										.title-space
+											span.inline.nowrap
+												span Clustered by:&nbsp;&nbsp;
+												span {{dataGroupsInfo.clusterNodesBy.title}}
+												span.card__tooltip.tooltip__colored-by(ng-if="dataGroupsInfo.clusterNodesBy.tooltip"
+													uib-tooltip="{{dataGroupsInfo.clusterNodesBy.tooltip}}",
+													tooltip-placement="right", 
+													tooltip-append-to-body="true")											
+															
+			.panel-list(ng-class="{'highlighted': ui.highlightingNodes}", ng-if="isShowClusteredBy && dataGroupsInfo.colorNodesBy.id != dataGroupsInfo.clusterNodesBy.id")
+				.flex
+					dir-attr-renderer(render-to-type="'horizontal-bars'", attr-to-render="dataGroupsInfo.clusterNodesBy", node-color-str="dataGroupsInfo.colorNodesBy.id == dataGroupsInfo.clusterNodesBy.id ? nodeColorStr : ''", is-node="true", show-filter="true", disable-filter="false" theme="appUi.theme" pinned-media="pinnedMedia" gradient="true")
 		.list-content.flex-fill
 			///
 			/// Node Color Panel
 			///
 			.panel-scroll(ng-if="!ui.showingLinks && mapprSettings.nodeColorStrat != 'select' && mapprSettings.nodeColorStrat != 'fixed'", dir-kill-tooltip-on-scroll)
-				.panel-list(ng-class="{'highlighted': ui.highlightingNodes}", ng-if="isShowClusteredBy && dataGroupsInfo.colorNodesBy.id != dataGroupsInfo.clusterNodesBy.id")
-					.flex
-						dir-attr-renderer(render-to-type="'horizontal-bars'", attr-to-render="dataGroupsInfo.clusterNodesBy", node-color-str="dataGroupsInfo.colorNodesBy.id == dataGroupsInfo.clusterNodesBy.id ? nodeColorStr : ''", is-node="true", show-filter="true", disable-filter="false" theme="appUi.theme" pinned-media="pinnedMedia" gradient="true")
-				.row.vert-align.main																		
-					.col-xs-12
-						h6.title.text-uppercase.pointable-cursor.vert-align.legend-title.legend-title--bottom
-								.title-space.width-100
-									h6.title.text-uppercase.truncate.vert-align
-										.title-space
-											span.inline.nowrap
-												span(ng-if="!isShowClusteredBy || dataGroupsInfo.colorNodesBy.id != dataGroupsInfo.clusterNodesBy.id") Colored by:&nbsp;&nbsp;
-												span(ng-if="isShowClusteredBy && dataGroupsInfo.colorNodesBy.id == dataGroupsInfo.clusterNodesBy.id") Clustered by, Colored by:&nbsp;&nbsp;
-												span(ng-if="!nodeColorAttrs || nodeColorAttrs.length < 2") {{dataGroupsInfo.colorNodesBy.title}}
-												span(ng-if="nodeColorAttrs && nodeColorAttrs.length > 1" uib-dropdown dropdown-append-to-body)
-													span(uib-dropdown-toggle auto-close="outsideClick" ng-click="keepDrawerOpen = true;")
-														span.text-link {{dataGroupsInfo.colorNodesBy.title}}
-															i.fa.fa-angle-down
-													.uib-dropdown-menu.uib-dropdown-menu-flexing(uib-dropdown-menu)
-														.uib-dropdown-click-close(ng-click="keepDrawerOpen = false;")
-														.uib-dropdown-flex-content(style="margin-left: 25px;")
-															.uib-dropdown-triangle
-															.uib-dropdown-flex.center
-																ul.dd-list.list-unstyled(style="max-height:50vh;overflow-y:auto;")
-																	li.row.vert-align.pointable-cursor(ng-repeat="item in nodeColorAttrs", ng-click="colorByAttrUpdate(item)", style="width: auto")
-																		.col-xs-12
-																			h6.no-margin {{item.title}}
+				.colored-by__container
+					.row.vert-align.main
+						.col-xs-12
+							h6.title.text-uppercase.pointable-cursor.vert-align.legend-title.legend-title--bottom
+									.title-space.width-100
+										h6.title.text-uppercase.truncate.vert-align
+											.title-space
+												span.inline.nowrap
+													span(ng-if="!isShowClusteredBy || dataGroupsInfo.colorNodesBy.id != dataGroupsInfo.clusterNodesBy.id") Colored by:&nbsp;&nbsp;
+													span(ng-if="isShowClusteredBy && dataGroupsInfo.colorNodesBy.id == dataGroupsInfo.clusterNodesBy.id") Clustered by, Colored by:&nbsp;&nbsp;
+													span(ng-if="!nodeColorAttrs || nodeColorAttrs.length < 2") {{dataGroupsInfo.colorNodesBy.title}}
+													span.card__tooltip.tooltip__colored-by(ng-if="(!nodeColorAttrs || nodeColorAttrs.length < 2) && dataGroupsInfo.colorNodesBy.tooltip"
+														uib-tooltip="{{dataGroupsInfo.colorNodesBy.tooltip}}",
+														tooltip-placement="right", 
+														tooltip-append-to-body="true")
+													span(ng-if="nodeColorAttrs && nodeColorAttrs.length > 1" uib-dropdown dropdown-append-to-body)
+														span(uib-dropdown-toggle auto-close="outsideClick" ng-click="keepDrawerOpen = true;")
+															span.text-link {{dataGroupsInfo.colorNodesBy.title}}
+																i.fa.fa-angle-down
+														.uib-dropdown-menu.uib-dropdown-menu-flexing(uib-dropdown-menu)
+															.uib-dropdown-click-close(ng-click="keepDrawerOpen = false;")
+															.uib-dropdown-flex-content(style="margin-left: 25px;")
+																.uib-dropdown-triangle
+																.uib-dropdown-flex.center
+																	ul.dd-list.list-unstyled(style="max-height:50vh;overflow-y:auto;")
+																		li.row.vert-align.pointable-cursor(ng-repeat="item in nodeColorAttrs", ng-click="colorByAttrUpdate(item)", style="width: auto")
+																			.col-xs-12
+																				h6.no-margin {{item.title}}
 
-					.btns(ng-if="mapprSettings.edgeColorStrat == 'select' || mapprSettings.edgeColorStrat == 'attr'")
-						.square-btn.small-btn(ng-if="!ui.showingLinks" uib-tooltip="View Links Summary" tooltip-placement="right" tooltip-append-to-body="true" ng-click="ui.showingLinks = true;")
-							.link-mask
-								.link-circle
-						.square-btn.small-btn.vert-align(ng-if="ui.showingLinks" uib-tooltip="View Nodes Summary" tooltip-placement="right" tooltip-append-to-body="true" ng-click="ui.showingLinks = false;")
-							i.icon-legend-dots
-				.panel-list
+						.btns(ng-if="mapprSettings.edgeColorStrat == 'select' || mapprSettings.edgeColorStrat == 'attr'")
+							.square-btn.small-btn(ng-if="!ui.showingLinks" uib-tooltip="View Links Summary" tooltip-placement="right" tooltip-append-to-body="true" ng-click="ui.showingLinks = true;")
+								.link-mask
+									.link-circle
+							.square-btn.small-btn.vert-align(ng-if="ui.showingLinks" uib-tooltip="View Nodes Summary" tooltip-placement="right" tooltip-append-to-body="true" ng-click="ui.showingLinks = false;")
+								i.icon-legend-dots
+					.panel-list
 					.panel-list__numeric(ng-repeat="item in [isNumericItemByColor]")
 						dir-attr-renderer(render-to-type="getRenderType(item)" attr-to-render="item", node-color-str="nodeColorStr", is-node="true", show-filter="true", disable-filter="false" theme="appUi.theme" pinned-media="pinnedMedia" gradient="true")
 						h6.panel-list__title(ng-if="item.attrType == 'integer' || item.attrType == 'float' || item.attrType == 'boolean' || item.attrType == 'year' || item.attrType == 'timestamp'") {{isNumericItemByColor.title}}
@@ -96,12 +94,13 @@
 
 							h6.no-margin.text-center.title(
 								ng-if="vm.nodeSizeAttr.attrType == 'integer' || vm.nodeSizeAttr.attrType == 'float' || vm.nodeSizeAttr.attrType == 'boolean' || vm.nodeSizeAttr.attrType == 'year' || vm.nodeSizeAttr.attrType == 'timestamp'"
-								uib-tooltip="{{vm.nodeSizeAttr.metadata.descr || vm.nodeSizeAttr.title}}"
-								tooltip-placement='right'
-								tooltip-append-to-body="true"
 							)
 								span {{vm.nodeSizeAttr.title}}
 								span(ng-show="vm.nodeSizeAttr.principalVal") :&nbsp;{{vm.nodeSizeAttr.principalVal}}
+								span.card__tooltip.tooltip__histogram(ng-if="vm.nodeSizeAttr.tooltip"
+										uib-tooltip="{{vm.nodeSizeAttr.tooltip}}",
+										tooltip-placement="right", 
+										tooltip-append-to-body="true")
 					//- .col-xs-4
 					//- 	span
 					//- 		button.square-btn.small-btn.panel-btn(type="button", ng-click="clearSelections();") Reset

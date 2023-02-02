@@ -556,6 +556,9 @@ angular.module('common')
                         binIdx = 0;
                     }
                     var bin = binSizes[binIdx];
+                    if (Number.isNaN(binIdx)) {
+                        continue;
+                    }
                     var count = bin.count += 1;
                     if( count > maxCount ) {
                         maxCount = count;

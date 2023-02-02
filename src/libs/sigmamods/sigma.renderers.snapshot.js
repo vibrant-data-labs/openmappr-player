@@ -38,7 +38,7 @@
             false, false, false, false, 0, null);
 
         anchor.dispatchEvent(event);
-        delete anchor;
+        // delete anchor;
     }
 
     // Main function

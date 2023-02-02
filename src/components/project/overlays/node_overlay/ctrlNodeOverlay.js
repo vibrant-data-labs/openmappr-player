@@ -875,13 +875,14 @@ angular.module('common')
 
             function getLinkIcon(url) {
                 if (url.includes('facebook.com')) return 'https://image.flaticon.com/icons/svg/733/733549.svg';
-                if (url.includes('twitter.com')) return 'https://image.flaticon.com/icons/svg/2111/2111688.svg';
+                if (url.includes('twitter.com')) return '#{player_prefix_index_source}/img/twitter.svg';
                 if (url.includes('linkedin.com')) return '#{player_prefix_index_source}/img/linkedin.svg'
                 if (url.includes('crunchbase.com')) return '#{player_prefix_index_source}/img/crunchbase.svg';
                 if (url.includes('ted.com')) return 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/TED_three_letter_logo.svg/1024px-TED_three_letter_logo.svg.png';
                 if (url.includes('candid.org') || url.includes('guidestar.org')) return '#{player_prefix_index_source}/img/Candid_Icon.jpg';
                 if (url.includes('youtube.com')) return '#{player_prefix_index_source}/img/youtube.svg';
                 if (url.includes('vimeo.com')) return '#{player_prefix_index_source}/img/vimeo.svg';
+                if (url.includes('instagram.com')) return '#{player_prefix_index_source}/img/instagram.svg';
                 return 'https://image.flaticon.com/icons/svg/455/455691.svg'
             }
 
@@ -895,6 +896,7 @@ angular.module('common')
                 if (url.includes('guidestar.org')) return 'Guidestar.org';
                 if (url.includes('youtube.com')) return 'Youtube.com';
                 if (url.includes('vimeo.com')) return 'Vimeo.com';
+                if (url.includes('instagram.com')) return 'Instagram.com';
                 
                 if (!url.startsWith('http')) {
                     url = 'https://' + url;
@@ -920,6 +922,7 @@ angular.module('common')
                 else if (url.includes('guidestar.org')) result['guidestar'] = true;
                 else if (url.includes('youtube.com')) result['youtube.com'] = true;
                 else if (url.includes('vimeo.com')) result['vimeo'] = true;
+                else if (url.includes('instagram.com')) result['instagram'] = true;
                 else result['website'] = true;
 
                 return result;

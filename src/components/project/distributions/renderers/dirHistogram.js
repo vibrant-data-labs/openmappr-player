@@ -6,17 +6,23 @@ angular.module('common')
             /*************************************
             ******** Directive description *******
             **************************************/
+
             var dirDefn = {
                 restrict: 'AE',
                 require: '?^dirAttrRenderer',
-                template: '<div class="histogram" ng-mouseleave="outBar()" ng-mousemove="overBar($event)">' +
-                    '<div class="tooltip-positioner" uib-tooltip="{{tooltipText}}" tooltip-append-to-body="true" tooltip-is-open="openTooltip"></div>' +
-                    '</div>' +
-                    '<dir-range-filter ng-if="showFilter" ng-class="{disableFilter: disableFilter}" attr="attrInfo" log="isLogScale"></dir-range-filter>' +
-                    `<div ng-show="hasLogScale" class="log-scale-toggle">
+                template: `
+                    <div class="histogram"></div>
+                    <dir-range-filter
+                        ng-if="showFilter"
+                        ng-class="{disableFilter: disableFilter}"
+                        attr="attrInfo"
+                        log="isLogScale">
+                    </dir-range-filter>
+                    <div ng-show="hasLogScale" class="log-scale-toggle">
                         <input type="checkbox" ng-change="toggleLogScale()" ng-model="isLogScale"/>
                         <label>log</label>
-                    </div>`,
+                    </div>
+                `,
                 link: postLinkFn
             };
 
@@ -27,10 +33,6 @@ angular.module('common')
             window.mappr.stats.distr = window.mappr.stats.distr || {};
 
             var logPrefix = '[dirHistogram] ';
-            // var _log = window.console.log.bind(window.console);
-            var _log = _.noop;
-
-            var tooltipText;
 
             var defaultOpts = {
                 marginTop: 10,
@@ -38,7 +40,6 @@ angular.module('common')
                 catMarginBottom: 75,
                 marginLeft: 30,
                 marginRight: 10,
-                // barColor: '#555555',
                 barColor: '#D8D8D8',
                 barColorAfterSelection: '#D8D8D8',
                 strokeColor: '#000',
@@ -77,25 +78,15 @@ angular.module('common')
             function postLinkFn(scope, element, attrs, renderCtrl) {
                 var histoBars; // Ref for histo svg bars
                 var mappTheme = projFactory.getProjectSettings().theme || 'light';
-                var attrInfo;
                 var defaultAttrInfo = _.cloneDeep(AttrInfoService.getNodeAttrInfoForRG().getForId(scope.attrToRender.id));
                 var logAttrInfo = _.cloneDeep(AttrInfoService.getNodeAttrInfoForRG().getForLogId(scope.attrToRender.id));
                 scope.hasLogScale = !!logAttrInfo;
-                attrInfo = defaultAttrInfo;
+                var attrInfo = defaultAttrInfo;
                 scope.attrInfo = defaultAttrInfo;
                 isLogScaleById[scope.attrToRender.id] = false;
                 scope.isLogScale = false;
-                var histElem = element[0].childNodes[0];
+                var histElem = element[0].querySelector('.histogram');
                 var tooltip = element.find(".d3-tip");
-
-                //for dark or node detail theme
-                if (scope.isNodeFocus || mappTheme == 'dark') {
-                    defaultOpts.barColor = '#555';
-                    defaultOpts.strokeColor = '#ccc';
-                    defaultOpts.textColor = '#ccc';
-                    defaultOpts.clickColor = '#c4c4c4';
-                    defaultOpts.highlightColor = '#999';
-                }
 
                 var histoData = {
                     selectedNodes: [],
@@ -113,14 +104,12 @@ angular.module('common')
                     intVarData: {},
                     binType: getBinType(attrInfo),
                     xAxisType: (function () {
-                        var attrType = attrInfo.attr.attrType;
-                        if (attrType == 'timestamp') { return 'dateTime'; }
-                        else if (attrType == 'year') { return 'year'; }
-                        else { return 'default'; }
+                        return {
+                            'timestamp': 'dateTime',
+                            'year': 'year'
+                        }[attrInfo.attr.attrType] || 'default';
                     }()),
-                    yAxisType: (function () {
-                        return 'default';
-                    }())
+                    yAxisType: "default"
                 };
 
                 if (histoData.xAxisType == 'dateTime') {
@@ -135,8 +124,6 @@ angular.module('common')
                     histoData.opts.histHeight = histoData.opts.categoricalHeight;
                     histoData.opts.marginBottom = histoData.opts.catMarginBottom;
                 }
-
-                var hasInitialSelection = false; // To check if initial selection is in place before updating current selection.
 
                 // Override dirAttrRenderer's controller's getBinCount function
                 // Histogram uses dynamic number of bins which may or may not be different than attrInfo.nBins
@@ -200,24 +187,6 @@ angular.module('common')
                     redrawHistogram(attrInfo);
                 }
 
-                scope.outBar = function () {
-                    $timeout(function () {
-                        scope.openTooltip = false;
-                    }, 101);
-                };
-
-                scope.overBar = function (event) {
-                    scope.tooltipText = tooltipText;
-                    element.find('.tooltip-positioner').css({
-                        top: event.offsetY - 20,
-                        left: event.offsetX
-                    });
-                    scope.openTooltip = false;
-                    $timeout(function () {
-                        scope.openTooltip = true;
-                    }, 100);
-                };
-
                 function redrawHistogram(attrInfo, nodes) {
                     animateRemoval(histElem, histoData);
 
@@ -244,32 +213,28 @@ angular.module('common')
             var floatFormatter = d3.format(",.2f");
 
             function getBinType(attrInfo) {
-                if (attrInfo.isNumeric) {
-                    if (attrInfo.isInteger || attrInfo.attr.attrType == 'year') {
-                        if (attrInfo.nBins < defaultOpts.binCount
-                            && _.every(attrInfo.bins, function (bin) { return bin.max === bin.min; })) {
-                            return 'int_unique'; // 1 value per bin
-                        }
-                        else {
-                            return 'int_variable'; // Multiple values per bin
-                        }
-                    }
-                    else {
-                        return 'default'; // Float values
-                    }
+                if (!attrInfo.isNumeric) {
+                    return "categorical";
                 }
-                else {
-                    return 'categorical'; // Categorical values
+
+                if (!attrInfo.isInteger && attrInfo.attr.attrType != 'year') {
+                    return "default";
                 }
+
+                if (attrInfo.nBins < defaultOpts.binCount
+                    && _.every(attrInfo.bins, function (bin) { return bin.max === bin.min; })) {
+                    return 'int_unique'; // 1 value per bin
+                }
+
+                return 'int_variable'; // Multiple values per bin
             }
 
             function sanitizeYPosn(y, histoHeight, opts) {
                 if (histoHeight - y >= opts.minSelectionHeight) {
                     return y;
                 }
-                else {
-                    return histoHeight - opts.minSelectionHeight;
-                }
+
+                return histoHeight - opts.minSelectionHeight;
             }
 
             function resetAllBarsColor(elem, opts) {
@@ -285,61 +250,43 @@ angular.module('common')
                 });
             }
 
-            function setTooltipText(data, isNumeric, xAxisType, binType) {
-                if (!isNumeric) {
-                    tooltipText = data.label;
-                }
-                else {
-                    if (binType == 'int_unique') {
-                        tooltipText = window.mappr.utils.numericString(data[0]);
-                    }
-                    else if (binType == 'int_variable') {
-                        tooltipText = window.mappr.utils.numericString(data.x) + ' - ' + window.mappr.utils.numericString(data.x + data.dx - 1);
-                    }
-                    else if (xAxisType === 'dateTime') {
-                        tooltipText = formatTimestamp(data.x, 'YYYY/MM/DD') + ' - ' + formatTimestamp(data.x + data.dx, 'YYYY/MM/DD');
-                    }
-                    else {
-                        tooltipText = window.mappr.utils.numericString(data.x) + ' - ' + window.mappr.utils.numericString(data.x + data.dx);
-                    }
-                }
-            }
-
             function formatTimestamp(val, format) {
                 if (!window.moment(val).isValid()) throw new Error('Invalid timestamp!');
                 return window.moment.unix(val).format(format);
             }
 
             function suggestBinCount(attrInfo, binType, opts) {
-                var binCount;
                 if (binType == 'int_unique') {
-                    binCount = attrInfo.nBins;
+                    return attrInfo.nBins;
                 }
-                else if (binType == 'categorical') {
-                    binCount = attrInfo.values.length;
+                if (binType == 'categorical') {
+                    return attrInfo.values.length;
                 }
-                else {
-                    binCount = opts.binCount;
-                }
-                return binCount;
+
+                return opts.binCount;
             }
 
             function getSelectionValuesMap(nodes, attrId) {
-                var result = {};
-
-                _.each(nodes, function (node) {
+                var result = nodes.reduce((acc, node) => {
                     var nodeVal = node.attr[attrId];
-                    if (result[nodeVal] == null) {
-                        result[nodeVal] = {
-                            count: 1,
-                            nodeIds: [node.id]
+                    if (acc[nodeVal] == null) {
+                        return {
+                            ...acc,
+                            [nodeVal]: {
+                                count: 1,
+                                nodeIds: [node.id]
+                            }
                         };
                     }
-                    else {
-                        result[nodeVal].count++;
-                        result[nodeVal].nodeIds.push(node.id);
+
+                    return {
+                        ...acc,
+                        [nodeVal]: {
+                            count: acc[nodeVal].count + 1,
+                            nodeIds: [...acc[nodeVal].nodeIds, node.id]
+                        }
                     }
-                });
+                }, {});
 
                 return result;
             }
@@ -400,18 +347,8 @@ angular.module('common')
                     return acc;
                 }, 0);
 
-
-                // var totalMax = _.reduce(Object.keys(totalResult), function (acc, cv) {
-                //     var elem = totalResult[cv];
-                //     if (acc < elem.count) acc = elem.count;
-
-                //     return acc;
-                // }, 0);
-
-                // var totalCount = subsetService.subsetNodes && subsetService.subsetNodes.length ? subsetService.subsetNodes.length : dataGraph.getAllNodes().length;
                 _.each(histoRangeList, function (r) {
                     r.selectionCount = max > 0 ? (r.selectionCount / max * maxTickValue) : r.selectionCount;
-                    // result[r].totalCount = totalCount
                 });
 
                 return histoRangeList;
@@ -420,12 +357,13 @@ angular.module('common')
             function getSelectionColor(nodes, opts, selectionColor, isColorAttr) {
                 if (_.keys(_.indexBy(nodes, 'colorStr')).length === 1) {
                     return nodes[0].colorStr;
-                } else if (isColorAttr) {
+                }
+
+                if (isColorAttr) {
                     return selectionColor || opts.selectionDefaultColor;
                 }
-                else {
-                    return opts.selectionDefaultColor;
-                }
+
+                return opts.selectionDefaultColor;
             }
 
             function getDomain(attrInfo, isNumeric, binType, intVarData) {
@@ -433,13 +371,11 @@ angular.module('common')
                     if (binType == 'int_variable' || binType == 'int_unique') {
                         return [intVarData.roundMinVal, intVarData.roundMaxVal];
                     }
-                    else {
-                        return [attrInfo.bounds.min, attrInfo.bounds.max];
-                    }
+
+                    return [attrInfo.bounds.min, attrInfo.bounds.max];
                 }
-                else {
-                    return _.map(attrInfo.values, function (val) { return val.toString(); }).reverse();
-                }
+
+                return _.map(attrInfo.values, function (val) { return val.toString(); }).reverse();
             }
 
             function generateD3Data(attrInfo, binCount, isNumeric, x, binThresholds, binType) {
@@ -450,47 +386,43 @@ angular.module('common')
                         return d3.layout.histogram()
                             .bins(binThresholds)(values);
                     }
-                    else {
-                        return d3.layout.histogram()
-                            .bins(binCount)(values);
-                    }
+
+                    return d3.layout.histogram()
+                        .bins(binCount)(values);
                 }
-                else if (attrInfo.isYear) {
+                
+                if (attrInfo.isYear) {
                     return d3.layout.histogram()
                         .bins(x.ticks(binCount))(values);
                 }
-                else {
-                    return _.reduce(values, function (res, val) {
-                        res.push({
+
+                return _.reduce(values, function (res, val) {
+                    return [
+                        ...res,
+                        {
                             y: valuesCount[val],
                             label: val
-                        });
-                        return res;
-                    }, []);
-                }
+                        }
+                    ];
+                }, []);
             }
 
             function generateXScale(attrInfo, width, isNumeric, binType, intVarData) {
-                var scale;
                 if (isNumeric) {
-                    scale = d3.scale.linear()
+                    return d3.scale.linear()
                         .domain(getDomain(attrInfo, isNumeric, binType, intVarData))
                         .range([0, width]);
                 }
-                else {
-                    scale = d3.scale.ordinal()
-                        .domain(getDomain(attrInfo, isNumeric))
-                        .rangeBands([0, width]);
-                }
-                return scale;
+
+                return d3.scale.ordinal()
+                    .domain(getDomain(attrInfo, isNumeric))
+                    .rangeBands([0, width]);
             }
 
             function generateYScale(attrInfo, height, data) {
-                var scale;
-                scale = d3.scale.linear()
+                return d3.scale.linear()
                     .domain([0, d3.max(data, function (d) { return d.y; })])
                     .range([height, 0]);
-                return scale;
             }
 
             function formatNumber(val) {
@@ -498,18 +430,15 @@ angular.module('common')
                 if ((val % 1 !== 0)) {
                     return floatFormatter(val);
                 }
-                else {
-                    return SIFormatter(val);
-                }
+                return SIFormatter(val);
             }
 
             function getBarXPosn(d, i, binType, barWidth) {
                 if (binType == 'int_unique') {
                     return -1 * (barWidth / 2);
                 }
-                else {
-                    return 1;
-                }
+
+                return 1;
             }
 
             function getBinThresholds(attrInfo, opts, histoData) {
@@ -583,20 +512,17 @@ angular.module('common')
 
             function createGlobalDistribution(histElem, tooltip, attrInfo, renderCtrl, histoData, nodes) {
                 var isOrdinal = histoData.isOrdinal = !attrInfo.isNumeric;
-                _log(logPrefix + 'Rendering attr: ', attrInfo.attr.title);
-                _log(logPrefix + 'AttrInfo: ', attrInfo);
 
                 histoData.selectedNodes = nodes || renderCtrl.getSelectedNodes();
                 var binCount, binThresholds = [];
                 var selectionValuesMap;
                 var opts = histoData.opts;
                 var binType = histoData.binType;
-                _log(logPrefix + 'HISTO SELECTION VALUES MAP: ', selectionValuesMap);
 
                 // A formatter for counts.
                 // var formatCount = d3.format(",.0f");
                 var yAxisWidth, barWidth, width, height,
-                    containerWidth = 370; //histElem.clientWidth
+                    containerWidth = 370;
 
                 if (binType == 'int_variable' || binType == 'int_unique') {
                     binThresholds = getBinThresholds(attrInfo, opts, histoData);
@@ -615,12 +541,9 @@ angular.module('common')
                 height = histoData.height = opts.histHeight - opts.marginTop - opts.marginBottom;
                 barWidth = histoData.barWidth = (width - 20) / binCount - 2 * opts.barPadding;
 
-
                 // Generate histogram data
                 var x = histoData.xScaleFunc = generateXScale(attrInfo, width - 20, !isOrdinal, binType, histoData.intVarData);
                 var data = histoData.d3Data = generateD3Data(attrInfo, binCount, !isOrdinal, x, binThresholds, binType);
-                _log(logPrefix + 'histo d3 data: ', data);
-
 
                 var y = histoData.yScaleFunc = generateYScale(attrInfo, height, data);
 
@@ -768,7 +691,6 @@ angular.module('common')
                     .call(yAxis);
 
                 function onBarHover(segment, i) {
-                    _log(logPrefix + 'hovering over segment - ', segment);
                     var targetElem = d3.select(d3.event.target);
                     if (!yAxisWidth) {
                         yAxisWidth = svg.select('.yaxis').node().getBBox().width;
@@ -789,19 +711,13 @@ angular.module('common')
                             hoverService.hoverNodes({ attr: attrInfo.attr.id, min: segment.x, max: _.last(segment) });
                         }
                     }
-                    // showTooltip.call(this, tooltip, segment, barWidth, yAxisWidth, isOrdinal, histoData.isNodeFocus, i);
-                    setTooltipText(segment, !isOrdinal, histoData.xAxisType, binType);
                 }
 
                 function onBarUnHover(segment) {
-                    _log(segment);
-                    // hideTooltip(tooltip);
                     hoverService.unhover();
                 }
 
                 function onBarClick(segment, i) {
-                    _log(logPrefix + 'selecting segment - ', segment);
-                    var targetElem = d3.select(d3.event.target);
                     resetAllBarsColor(bar.selectAll('rect').filter(function () {
                         return d3.select(this).attr('data-selection') != 'true';
                     }), opts);
@@ -835,8 +751,6 @@ angular.module('common')
             }
 
             function updateSelectionBars(bar, selectedNodes, attrInfo, histoData, mappTheme, showClusterNodes, histElem, renderCtrl,isLogScale) {
-
-                _log(logPrefix + 'rebuilding selections');
                 var principalNode = null;
                 var binType = histoData.binType;
 
@@ -852,8 +766,6 @@ angular.module('common')
                 var opts = histoData.opts;
                 var selectionValuesMap = getSelectionValuesMap(selectedNodes, attrInfo.attr.id);
                 var selectionCountsList = histoData.selectionCountsList = mapSelectionToBars(attrInfo.attr.id, selectionValuesMap, histoData.d3Data, !histoData.isOrdinal, attrInfo);
-                _log(logPrefix + 'selection values map data: ', selectionValuesMap);
-                _log(logPrefix + 'selection counts list: ', selectionCountsList);
                 var isColorBy = renderCtrl.getMapprSettings().nodeColorAttr == attrInfo.attr.id;
                 var nodeClusterColor = isColorBy && attrInfo.isNumeric ? getNodeClusterColor(selectedNodes, attrInfo.attr.id) : undefined;
                 var selectionColor = getSelectionColor(selectedNodes, opts, nodeClusterColor, isColorBy);
@@ -911,15 +823,11 @@ angular.module('common')
                             globalBar.style({
                                 fill: barColor,
                                 'shape-rendering': 'crispEdges'
-                                // stroke: opts.strokeColor,
-                                // 'stroke-width': opts.strokeWidth
                             });
                         } else {
                             globalBar.style({
                                 fill: globalBarFillColor,
                                 'shape-rendering': 'crispEdges'
-                                // stroke: opts.strokeColor,
-                                // 'stroke-width': opts.strokeWidth
                             });
                         }
                     })
@@ -959,7 +867,6 @@ angular.module('common')
                             .attr("x", function () { return getBarXPosn(d, i, binType, histoData.barWidth); })
                             .style({
                                 fill: selectionColor
-                                // fill: getSelectionColor(selectedNodes, selectionCountsList[i].nodeIds)
                             });
                     }
                     else {
@@ -986,12 +893,9 @@ angular.module('common')
             }
 
             function updateFiltSelBars(bar, selectedNodes, attrInfo, histoData, renderCtrl) {
-                _log(logPrefix + 'rebuilding selections');
                 var opts = histoData.opts;
                 var selectionValuesMap = getSelectionValuesMap(selectedNodes, attrInfo.attr.id);
                 var filtSelectionCountsList = mapSelectionToBars(attrInfo.attr.id, selectionValuesMap, histoData.d3Data, !histoData.isOrdinal, attrInfo);
-                _log(logPrefix + 'filtered selection values map data: ', selectionValuesMap);
-                _log(logPrefix + 'filtered selection counts list: ', filtSelectionCountsList);
                 var isColorBy = renderCtrl.getMapprSettings().nodeColorAttr == attrInfo.attr.id;
                 var nodeClusterColor = isColorBy && attrInfo.isNumeric ? getNodeClusterColor(selectedNodes, attrInfo.attr.id) : undefined;
                 var selectionColor = getSelectionColor(selectedNodes, opts, nodeClusterColor, isColorBy);

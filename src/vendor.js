@@ -16,13 +16,12 @@ import './libs/fuzzysort';
 import './libs/removeAccents';
 import './libs/matchSorter';
 
-import '../styles/morris.js/morris.css';
-import '../styles/toastr.js/toastr.min.css';
-import 'leaflet/dist/leaflet.css';
-import '../styles/angular-loading-bar/loading-bar.min.css';
-import '../styles/spectrum/spectrum.min.css';
-import '../styles/angular-wizard/angular-wizard.min.css';
-import '../styles/intro.js/introjs.min.css';
+import '../assets/style/morris.js/morris.css';
+import '../assets/style/toastr.js/toastr.min.css';
+import '../assets/style/angular-loading-bar/loading-bar.min.css';
+import '../assets/style/spectrum/spectrum.min.css';
+import '../assets/style/angular-wizard/angular-wizard.min.css';
+import '../assets/style/intro.js/introjs.min.css';
 
 //licenses
 require('./libs/licenseList.js');

@@ -654,7 +654,7 @@
 
   this.sigma = sigma;
 
-}).call(this);
+}).call(window);
 
 /**
  * conrad.js is a tiny JavaScript jobs scheduler,
@@ -1639,7 +1639,7 @@
     exports.conrad = conrad;
   }
   global.conrad = conrad;
-})(this);
+})(window);
 
 ;(function(undefined) {
   'use strict';
@@ -2232,7 +2232,7 @@
       a20 * b02 + a21 * b12 + a22 * b22
     ];
   };
-}).call(this);
+}).call(window);
 
 ;(function(global) {
   'use strict';
@@ -2537,7 +2537,7 @@
 
   // Export the previously designed settings:
   sigma.settings = sigma.utils.extend(sigma.settings || {}, settings);
-}).call(this);
+}).call(window);
 
 ;(function() {
   'use strict';
@@ -2742,7 +2742,7 @@
     exports.dispatcher = dispatcher;
   } else
     this.dispatcher = dispatcher;
-}).call(this);
+}).call(window);
 
 ;(function() {
   'use strict';
@@ -2857,7 +2857,7 @@
     exports.configurable = configurable;
   } else
     this.configurable = configurable;
-}).call(this);
+}).call(window);
 
 ;(function(undefined) {
   'use strict';
@@ -3709,7 +3709,7 @@
     exports.graph = graph;
   } else
     this.graph = graph;
-}).call(this);
+}).call(window);
 
 ;(function(undefined) {
   'use strict';
@@ -3948,7 +3948,7 @@
       )
     };
   };
-}).call(this);
+}).call(window);
 
 ;(function(undefined) {
   'use strict';
@@ -4624,7 +4624,7 @@
     exports.quad = quad;
   } else
     this.quad = quad;
-}).call(this);
+}).call(window);
 
 ;(function(undefined) {
   'use strict';
@@ -5011,7 +5011,7 @@
       }
     }
   };
-}).call(this);
+}).call(window);
 
 ;(function(undefined) {
   'use strict';
@@ -5440,7 +5440,7 @@
       }
     }
   };
-}).call(this);
+}).call(window);
 
 ;(function(undefined) {
   'use strict';
@@ -5856,7 +5856,7 @@
   sigma.utils.pkg('sigma.canvas.nodes');
   sigma.utils.pkg('sigma.canvas.edges');
   sigma.utils.pkg('sigma.canvas.labels');
-}).call(this);
+}).call(window);
 
 ;(function(undefined) {
   'use strict';
@@ -6536,7 +6536,7 @@
    * node, the renderer and a settings function.
    */
   sigma.utils.pkg('sigma.canvas.labels');
-}).call(this);
+}).call(window);
 
 ;(function(global) {
   'use strict';
@@ -7776,7 +7776,7 @@
       Math.round(node[prefix + 'y'] + fontSize / 3)
     );
   };
-}).call(this);
+}).call(window);
 
 ;(function(undefined) {
   'use strict';
@@ -7883,7 +7883,7 @@
       );
     }
   };
-}).call(this);
+}).call(window);
 
 ;(function() {
   'use strict';
@@ -8375,7 +8375,7 @@
       maxY: maxY
     };
   };
-}).call(this);
+}).call(window);
 
 ;(function(undefined) {
   'use strict';
@@ -8411,7 +8411,7 @@
     for (i = 0, l = a.length; i < l; i++)
       a[i][writePrefix + 'size'] = a[i][readPrefix + 'size'];
   };
-}).call(this);
+}).call(window);
 
 ;(function(undefined) {
   'use strict';
@@ -8651,7 +8651,7 @@
 
     return false;
   };
-}).call(this);
+}).call(window);
 
 ;(function(undefined) {
   'use strict';
@@ -8898,7 +8898,7 @@
     for (i = 0, l = this.captors.length; i < l; i++)
       bindCaptor(this.captors[i]);
   };
-}).call(this);
+}).call(window);
 
 ;(function(undefined) {
   'use strict';
@@ -8985,4 +8985,4 @@
 
     }
   };
-}).call(this);
+}).call(window);

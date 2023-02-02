@@ -199,8 +199,14 @@ angular.module('common')
                         acc[attrValue] = acc[attrValue] ? (acc[attrValue] + 1) : 1;
                         return acc;
                     }, {});
+
+                    if (!nodes.length) {
+                        scope.totalSelectedValue = 0;
+
+                    } else {
+                        scope.totalSelectedValue = _(valuesCount).keys().map(x => valuesCount[x]).max();
+                    }
             
-                    scope.totalSelectedValue = _(valuesCount).keys().map(x => valuesCount[x]).max();
                     scope.selectedValues = valuesCount;   
                 });
 

@@ -12,25 +12,37 @@ function ($rootScope, $q, $compile, $timeout, renderGraphfactory, layoutService,
         // WARN: there is a hardcode of 50 offset for both top and left in the drawMarker to counter CSS margins.
         //
         `<div id="axes" class="axis-container">
-            <div ng-show="yshow" class="yaxis-tit">
+            <div ng-show="yshow" class="axis-title yaxis-tit">
                 <div>
                     <h4 class="truncate no-text-transform" uib-tooltip="{{mapprSettings.yAxTooltip}}" tooltip-placement="right">
                         <select class="resizeselect yaxis-selector" ng-if="attrsY.length > 1" ng-change="updateYLayout()" ng-model="yaxisId">
                             <option ng-repeat="attr in attrsY" ng-attr-value="attr.id" ng-selected="attr.id == yaxisId">{{attr.title}}</option>
                         </select>
                         <span ng-if="attrsY.length === 1" class="subtitle">{{getTitle(yaxisId)}}</span>
+                        <span
+                            class="card__tooltip tooltip__scatterplot"
+                            ng-if="yaxisAttr.tooltip"
+                            uib-tooltip="{{yaxisAttr.tooltip}}"
+                            tooltip-placement="right"
+                            tooltip-append-to-body="true"></span>
                     </h4>
                 </div>
             </div>
             <div ng-show="yshow" class="yaxis-bkgrnd"></div>
             <div ng-show="yshow && mapprSettings.yAxTickShow" class="yaxis"></div>
-            <div ng-show="xshow" class="xaxis-tit">
+            <div ng-show="xshow" class="axis-title xaxis-tit">
                 <div>
                     <h4 class="truncate no-text-transform" uib-tooltip="{{mapprSettings.xAxTooltip}}" tooltip-placement="top">
                         <select class="resizeselect xaxis-selector" ng-if="attrsX.length > 1" ng-change="updateXLayout()" ng-model="xaxisId">
                             <option ng-repeat="attr in attrsX" value="{{attr.id}}" ng-selected="attr.id == xaxisId">{{attr.title}}</option>
                         </select>
                         <span ng-if="attrsX.length === 1" class="subtitle">{{getTitle(xaxisId)}}</span>
+                        <span
+                            class="card__tooltip tooltip__scatterplot"
+                            ng-if="xaxisAttr.tooltip"
+                            uib-tooltip="{{xaxisAttr.tooltip}}"
+                            tooltip-placement="right"
+                            tooltip-append-to-body="true"></span>
                     </h4>
                 </div>
             </div>
@@ -46,33 +58,6 @@ function ($rootScope, $q, $compile, $timeout, renderGraphfactory, layoutService,
         scope: true,
         link: postLinkFn
     };
-
-    /*************************************
-    ************ Local Data **************
-    **************************************/
-    // timestamp formats. if max element changing is
-    // var timestampFormats = {
-    //     "ms": "ss:SS",
-    //     "seconds": "mm:ss",
-    //     "minutes": "HH:mm:ss",
-    //     "hours": "ddd HH:mm:ss",
-    //     "days": "MMM DD, HH:mm",
-    //     "months": "MMM DD YY, HH:mm",
-    //     "years": "MMM DD YYYY",
-    //     "default" : window.moment.defaultFormat
-    // };
-
-    // var formatAxis = {
-    //     x : timestampFormats["default"],
-    //     y : timestampFormats["default"]
-    // };
-
-
-    /*************************************
-    ******** Controller Function *********
-    **************************************/
-
-
 
     /*************************************
     ******** Post Link Function *********
@@ -222,8 +207,10 @@ function ($rootScope, $q, $compile, $timeout, renderGraphfactory, layoutService,
             var isClustered = scope.layout.plotType == 'clustered-scatterplot';
             if (!isClustered) {
                 scope[axis + 'axisId'] = scope.layout.attr[axis];
+                scope[axis + 'axisAttr'] = dataGraph.getNodeAttrs().find(item => item.id === scope[axis + 'axisId']);
             } else if (isClustered) {
                 scope[axis + 'axisId'] = scope.layout.attr[axis + 'axis'];
+                scope[axis + 'axisAttr'] = dataGraph.getNodeAttrs().find(item => item.id === scope[axis + 'axisId']);
             }
             
             scope.attrs = [];
@@ -243,13 +230,16 @@ function ($rootScope, $q, $compile, $timeout, renderGraphfactory, layoutService,
                     }
                 }
 
-                if (attr.axis === 'x' || attr.id === snapshot.layout.xaxis || attr.id === snapshot.layout.clusterXAttr) {
+                const settingsX = isClustered ? snapshot.layout.clusterXAttr : snapshot.layout.xaxis;
+                const settingsY = isClustered ? snapshot.layout.clusterYAttr : snapshot.layout.yaxis;
+
+                if (attr.axis === 'x' || attr.id === settingsX) {
                     if (!scope.attrsX.find(item => item.id === attr.id)) {
                         scope.attrsX.push(attr);
                     }
                 }
 
-                if (attr.axis === 'y' || attr.id === snapshot.layout.yaxis || attr.id === snapshot.layout.clusterYAttr) {
+                if (attr.axis === 'y' || attr.id === settingsY) {
                     if (!scope.attrsY.find(item => item.id === attr.id)) {
                         scope.attrsY.push(attr);
                     }

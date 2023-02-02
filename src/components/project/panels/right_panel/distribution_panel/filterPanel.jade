@@ -22,11 +22,11 @@
 						section.card.card_type_filter(data-attr="{{attr.id}}", ng-class="{'card__chart' : attr.attrType == 'integer' || attr.attrType == 'float' || attr.attrType == 'boolean' || attr.attrType == 'year' || attr.attrType == 'timestamp' }")
 							header.card__header(uib-tooltip="{{::attr.metadata.descr}}" tooltip-placement='right' tooltip-append-to-body="true")
 								.card__head-wrap(ng-if="attr.attrType != 'integer' && attr.attrType != 'float' && attr.attrType != 'boolean' && attr.attrType != 'year' && attr.attrType != 'timestamp'")
-									h2.card__title(dir-elem-ready="onAttrHeaderLoad(attr, $event)"
-										uib-tooltip="{{attr.headerPopupText}}", 
-															tooltip-placement="right", 
-															tooltip-append-to-body="true"
-										) {{::attr.title}}
+									h2.card__title(dir-elem-ready="onAttrHeaderLoad(attr, $event)") {{::attr.title}}
+									span.card__tooltip(ng-if="attr.tooltip"
+										uib-tooltip="{{attr.tooltip}}",
+										tooltip-placement="right", 
+										tooltip-append-to-body="true")
 
 									button.card__action-sort(
 										ng-if="isShowSortButton(attr)",
@@ -59,12 +59,13 @@
 
 						h6.no-margin.text-center.title(
 							ng-if="attr.attrType == 'integer' || attr.attrType == 'float' || attr.attrType == 'boolean' || attr.attrType == 'year' || attr.attrType == 'timestamp'"
-							uib-tooltip="{{attr.metadata.descr || attr.title}}"
-							tooltip-placement='right'
-							tooltip-append-to-body="true"
 						)
 							span {{::attr.title}}
 							span(ng-show="attr.principalVal") :&nbsp;{{attr.principalVal}}
+							span.card__tooltip.tooltip__histogram(ng-if="attr.tooltip"
+									uib-tooltip="{{attr.tooltip}}",
+									tooltip-placement="right", 
+									tooltip-append-to-body="true")
 			.filter-list-category(ng-if="hasPriority")
 				div.filter-list-category__head(ng-class="{'filter-list-category_open' : isShowAdditionalCategory}", ng-click='showAdditionCat()')
 					h5.filter-list-category__title Advanced Filters
@@ -78,11 +79,11 @@
 						section.card.card_type_filter(data-attr="{{attr.id}}", ng-class="{'card__chart' : attr.attrType == 'integer' || attr.attrType == 'float' || attr.attrType == 'boolean' || attr.attrType == 'year' || attr.attrType == 'timestamp' }")
 							header.card__header(uib-tooltip="{{::attr.metadata.descr}}" tooltip-placement='right' tooltip-append-to-body="true")
 								.card__head-wrap(ng-if="attr.attrType != 'integer' && attr.attrType != 'float' && attr.attrType != 'boolean' && attr.attrType != 'year' && attr.attrType != 'timestamp'")
-									h2.card__title(dir-elem-ready="onAttrHeaderLoad(attr, $event)"
-										uib-tooltip="{{attr.headerPopupText}}", 
-															tooltip-placement="right", 
-															tooltip-append-to-body="true"
-										) {{::attr.title}}
+									h2.card__title(dir-elem-ready="onAttrHeaderLoad(attr, $event)") {{::attr.title}}
+									span.card__tooltip(ng-if="attr.tooltip"
+										uib-tooltip="{{attr.tooltip}}",
+										tooltip-placement="right", 
+										tooltip-append-to-body="true")
 
 									button.card__action-sort(
 										ng-if="isShowSortButton(attr)",
@@ -115,9 +116,10 @@
 
 						h6.no-margin.text-center.title(
 							ng-if="attr.attrType == 'integer' || attr.attrType == 'float' || attr.attrType == 'boolean' || attr.attrType == 'year' || attr.attrType == 'timestamp'"
-							uib-tooltip="{{attr.metadata.descr || attr.title}}"
-							tooltip-placement='right'
-							tooltip-append-to-body="true"
 						)
 							span {{::attr.title}}
 							span(ng-show="attr.principalVal") :&nbsp;{{attr.principalVal}}
+							span.card__tooltip.tooltip__histogram(ng-if="attr.tooltip"
+									uib-tooltip="{{attr.tooltip}}",
+									tooltip-placement="right", 
+									tooltip-append-to-body="true")

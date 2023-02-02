@@ -40,13 +40,6 @@ angular.module('player')
 
             };
 
-            $scope.playerInfo = {
-                isPublicPlayer: true,
-                playerBuildVer: "v14.15.4",
-                directAccess: true,
-                isFinal: false
-            }
-
             $scope.pinnedMedia = {
                 isMediaPinned: false,
                 nodeValue: null,
@@ -268,92 +261,76 @@ angular.module('player')
                 });
             }
 
-            getPlayerData();
+            (async function () {
+                await getPlayerData();
 
-            // Player doc && dataset loaded
-            loadPlayerData.promise
-                .then(function (dataset) {
+                const dataset = await loadPlayerData.promise;
 
-                    // Remove disabled snaps
-                    $scope.player.snapshots = _.filter($scope.player.snapshots, function (snap) {
-                        return snap.isEnabled === false ? false : true;
-                    });
-                    if (!$scope.player.snapshots || (angular.isArray($scope.player.snapshots) && $scope.player.snapshots.length < 1)) {
-                        throw new Error('No enabled snapshots');
-                    }
-
-                    // Set project settings in projFactory
-                    projFactory.setProjSettingsForPlayer($scope.player.projSettings || {});
-
-                    //MODAL
-                    //if($scope.player.settings.showModal){
-                    $scope.hasModal = true;
-                    $scope.panelUI.openPanel($scope.player.player.settings.startPage || 'modal');
-                    if (!$window.localStorage.modal)
-                        $timeout(function () {
-                            ngIntroService.setOptions(
-                                {
-                                    steps: [
-                                        {
-                                            element: '#firstLoad',
-                                            intro: 'First Load just says Welcome to Mappr + a 250 wd max introduction'
-                                        }
-                                    ]
-                                }
-                            );
-                            //ngIntroService.start();
-                        }, 100);
-                    //}
-
-                    //info btn triggering event in parent
-                    if ($scope.player.settings.infoClickToParent) {
-                        //trigger event letting parent know info btn clicked
-                        window.parent.postMessage({
-                            infoBtnClicked: true
-                        }, $scope.player.settings.infoClickParentHost);
-                    }
-
-                    // $scope.infoBtnClick = function() {
-                    //     if($scope.hasModal) {
-                    //         $scope.player.settings.showModal = true;
-                    //     } else {
-                    //         window.parent.postMessage({
-                    //             triggerInfoBtn: true
-                    //         }, $scope.player.settings.infoClickParentHost);
-                    //     }
-                    // };
-
-                    //HEADER
-                    if ($scope.player.settings.showHeader) {
-                        $scope.headerHtml = $sce.trustAsHtml($scope.player.settings.headerHtml || "<div></div>"); //have to user $sce to get style attributes to work
-                        $scope.headerTitle = $sce.trustAsHtml($scope.player.settings.headerTitle || "<div></div>");
-                    } else {
-                        $scope.headerHtml = null;
-                    }
-
-                    //COLORTHEME
-                    $scope.colorTheme = $scope.player.settings.colorTheme || 'light';
-                    loadSuccess(dataset);
-                }).then(function () {
-                    $scope.$broadcast(BROADCAST_MESSAGES.player.load);
-
-
-
-                    if ($scope.player.isEditable === true) {
-                        var x = $scope.$on(BROADCAST_MESSAGES.sigma.rendered, function () {
-                            openNodeOverlayForUser();
-                            x();
-                        });
-
-                        listenForDsOrNwChange();
-                    }
-
-                    console.groupEnd();
-
-                    getMetaData();
+                $scope.player.snapshots = _.filter($scope.player.snapshots, function (snap) {
+                    return snap.isEnabled === false ? false : true;
                 });
+                if (!$scope.player.snapshots || (angular.isArray($scope.player.snapshots) && $scope.player.snapshots.length < 1)) {
+                    throw new Error('No enabled snapshots');
+                }
 
+                // Set project settings in projFactory
+                projFactory.setProjSettingsForPlayer($scope.player.projSettings || {});
 
+                //MODAL
+                //if($scope.player.settings.showModal){
+                $scope.hasModal = true;
+                $scope.panelUI.openPanel($scope.player.player.settings.startPage || 'modal');
+                if (!$window.localStorage.modal)
+                    $timeout(function () {
+                        ngIntroService.setOptions(
+                            {
+                                steps: [
+                                    {
+                                        element: '#firstLoad',
+                                        intro: 'First Load just says Welcome to Mappr + a 250 wd max introduction'
+                                    }
+                                ]
+                            }
+                        );
+                        //ngIntroService.start();
+                    }, 100);
+                //}
+
+                //info btn triggering event in parent
+                if ($scope.player.settings.infoClickToParent) {
+                    //trigger event letting parent know info btn clicked
+                    window.parent.postMessage({
+                        infoBtnClicked: true
+                    }, $scope.player.settings.infoClickParentHost);
+                }
+
+                //HEADER
+                if ($scope.player.settings.showHeader) {
+                    $scope.headerHtml = $sce.trustAsHtml($scope.player.settings.headerHtml || "<div></div>"); //have to user $sce to get style attributes to work
+                    $scope.headerTitle = $sce.trustAsHtml($scope.player.settings.headerTitle || "<div></div>");
+                } else {
+                    $scope.headerHtml = null;
+                }
+
+                //COLORTHEME
+                $scope.colorTheme = $scope.player.settings.colorTheme || 'light';
+                loadSuccess(dataset);
+
+                $scope.$broadcast(BROADCAST_MESSAGES.player.load);
+
+                if ($scope.player.isEditable === true) {
+                    var x = $scope.$on(BROADCAST_MESSAGES.sigma.rendered, function () {
+                        openNodeOverlayForUser();
+                        x();
+                    });
+
+                    listenForDsOrNwChange();
+                }
+
+                console.groupEnd();
+
+                getMetaData();
+            })();
 
             function getMetaData() {
                 const { projectLogoTitle, projectLogoImageUrl } = $scope.player.player.settings;
@@ -500,61 +477,12 @@ angular.module('player')
             }
 
             function getPlayerData() {
-                if ($scope.playerInfo) {
-                    if ($scope.playerInfo.isPublicPlayer) {
-                        if ($scope.playerInfo.isFinal) {
-                            loadPlayerDataFromS3();
-                        }
-                        else {
-                            fetchPlayer(false);
-                        }
-                    }
-                    else {
-                        // Private player
-                        if ($scope.playerInfo.directAccess) {
-                            // Direct access via URL which has access key
-                            fetchPlayer(true);
-                        }
-                        else {
-                            openAuthModal();
-                        }
-                    }
-
-                }
-                else {
-                    throw new Error('Player Load Info not available');
-                }
-
-            }
-
-            function loadPlayerDataFromS3() {
-                var bucketUrl = 'https://s3-us-west-2.amazonaws.com/mappr-final-players/';
-                var playerUrl = bucketUrl + $scope.playerUrlStr + '/';
-                var plObjP = playerFactory.loadPlayerFromS3(playerUrl);
-                var dsP = dataService.loadDatasetFromS3(playerUrl);
-                var nwP = networkService.loadNetworksFromS3(playerUrl);
-
-                $q.all([plObjP, dsP, nwP])
-                    .then(function (dataArr) {
-                        var ds = dataArr[1];
-                        $scope.player = dataArr[0];
-                        if (!$scope.player.dataset) {
-                            $scope.player.dataset = {
-                                ref: ds.id,
-                                sourceInfo: ds.sourceInfo,
-                                dateModified: ds.dateModified
-                            };
-                        }
-                        loadPlayerData.resolve(dataArr[1]);
-                    })
-                    .catch(function (err) {
-                        console.error("Error in fetching Player: ", err);
-                    });
+                return fetchPlayer(false);
             }
 
             function fetchPlayer(sendAccessToken) {
                 $rootScope.$broadcast(BROADCAST_MESSAGES.player.loadStart);
-                playerFactory.getPlayerLocally()
+                return playerFactory.getPlayerLocally()
                     .then(function (playerDoc) {
                         console.log('[' + (Date.now() - timeStart) + '] [ctrlPlayer] player load %O', playerDoc);
                         $scope.player = playerDoc;
@@ -570,35 +498,6 @@ angular.module('player')
                         console.error("Error in fetching Player: ", err);
                     });
             }
-
-            function openAuthModal() {
-                var modalInstance = $uibModal.open({
-                    templateUrl: '#{player_prefix_index}/player/auth/playerAuthModal.html',
-                    controller: 'PlayerAuthModalCtrl',
-                    scope: $scope
-                });
-
-                //Called when modal is closed
-                modalInstance.result
-                    .then(
-                        function (data) {
-                            $scope.player = data;
-                            $q.all([
-                                dataService.fetchProjectDataSet($scope.player.org.ref, $scope.player.project.ref),
-                                networkService.fetchProjectNetworks($scope.player.org.ref, $scope.player.project.ref)
-                            ])
-                                .then(function (datasetAndNetworks) {
-                                    loadPlayerData.resolve(datasetAndNetworks[0]);
-                                });
-                        },
-                        function () {
-                            console.warn("Modal dismissed!");
-                        }
-                    ).finally(function () {
-
-                    });
-            }
-
             function loadSuccess(dataSet) {
                 $scope.dataSet = dataSet;
                 console.log('[playerCtrl.loadSuccess]LoadingData: %O', dataSet);

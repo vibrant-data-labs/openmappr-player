@@ -1,0 +1,2152 @@
+{
+    "dataset": {
+        "ref": "5e9c7c316100db001345993e"
+    },
+    "settings": {
+        "backgroundColor": "#ffffff",
+        "labelColor": "#000000",
+        "labelOutlineColor": "#ffffff",
+        "lastViewedSnap": "snal-id",
+        "layouts": {
+        },
+        "selectionData": {
+            "genCount": 0,
+            "selections": [
+            ]
+        },
+        "theme": "light"
+    },
+    "player": {
+        "settings": {
+            "neighborhoodDegree": 1,
+            "searchAlg": "matchSorter",
+            "snapDuration": 1000,
+            "timelineType": "bottom",
+            "totalDuration": 1000,
+            "headerTitle": "10 Yrs of TED Talks",
+            "headerImageUrl": "https://openmappr-images.sfo2.cdn.digitaloceanspaces.com/miscellaneous/miscellaneous/underdog_logo.png",
+            "headerHtml": "<h1>10Yrs_of_TED_Network_idfFalse_5lnks</h1>",
+            "highlightColor": "#e21186",
+            "modalDescription": "<h5><span>How to Navigate this Network:</span><br/></h5><ul><li>Click on any node to see more details about that talk and watch the video. </li><li>Click the '<b>reset</b>' button to clear any selection.</li><li>Use the <b>Snapshots</b> panel to navigate between views.</li><li>Use the <b>Filters</b> panel to select talks by any combination of traits (tags, views, event, talk duration, year published, etc).</li><li>Click the '<b>Subset</b>' button to restrict the data to the selected nodes. The <b>Filters</b> panel will then summarize that <b>subset</b>. </li><li>Use the <b>List</b> panel to see selected or subsetted talks as a sortable list - and to explore their details one by one by clicking on them.  </li></ul>",
+            "modalBackground": "https://i1.wp.com/image.pbs.org/video-assets/pbs/ted-education/83978/images/Mezzanine_126.jpg",
+            "modalLogo": "",
+            "modalSubtitle": "<h6>This is a map of every talk on TED.com published from 2007 to 2017.  Keyword tags for each talk were enhanced by searching through the full transcript of each talk for the presence of any keyword from the TED's tag list, and adding it as a tag if was not already present.  </h6><h6>Talks are linked if they have high overlap in their tags,  and they self-cluster into groups that tend to share similar *combinations* of tags. These Keyword Themes are auto-labeled by the 3 most commonly shared tags in the group. </h6>&#10;&#10;<h6>Data are from a public dataset on <a href=\"https://www.kaggle.com/rounakbanik/ted-talks/data \" target=\"_blank\">Kaggle</a>. <span>The network was generated using the open source python </span><a href=\"https://github.com/foodwebster/Tag2Network\" target=\"_blank\">'tag2network'</a><span> package, and visualized using <a href=\"http://openmappr.org\" target=\"_blank\">'openmappr'</a> - an open source network exploration tool.  <br/></span></h6><h6><p><br/></p><p><i>This visualization is not optimized for mobile viewing and works best in Chrome browsers.   </i><br/></p></h6>",
+            "modalTitle": "10 Yrs of TED",
+            "modalIntroHtml": "<h1>10Yrs_of_TED_Network_idfFalse_5lnks</h1><div>Each of the 1000 nodes in this mapp represents ...</div><div>They are linked with each other if they are similar across the following attributes</div><div>a) Attribute 1</div><div>b) Attribute 2</div><h1></h1>",
+            "allowJoin": false,
+            "shareServerPrefix": "- does not work -",
+            "snapTransition": "tween",
+            "autoPlay": false,
+            "panelLayoutType": "interactive",
+            "showSnapTooltips": false,
+            "infoClickToParent": false,
+            "showSnapDescrs": true,
+            "showTimeline": true,
+            "showSearch": true,
+            "showPanels": true,
+            "colorTheme": "light",
+            "twitterShare": false,
+            "facebookShare": false,
+            "showExportBtn": true,
+            "shareEnableSelect": false,
+            "shareTitleSelect": "- does not work -",
+            "shareTitleCompare": "- does not work -",
+            "shareTitle": "- does not work -",
+            "headerType": "simple",
+            "showHeader": true,
+            "simpleSplash": true,
+            "showModal": false,
+            "fontClass": "Roboto",
+            "startPage": "legend",
+            "showStartInfo": true,
+            "socials": [
+                "linkedin",
+                "twitter",
+                "facebook"
+            ]
+        }
+    },
+    "snapshots": [
+        {
+            "_id": "60748881dc1d280013d49879",
+            "dateModified": "2021-04-12T17:50:57.883Z",
+            "networkId": "5e9c7c326100db001345996f",
+            "embed": "",
+            "text": "",
+            "picture": "",
+            "audio": "",
+            "descr": "<p>Talks are linked if they have high overlap in their keywords. Similar talks self-cluster into <b>&#34;Keyword Themes&#34;</b> - or groups of talks that tend to co-share similar tags. These clusters are auto-labeled by the 3 most commonly shared tags in the group.  If you hover over or select a talk on the map, it's top most similar talks are also highlighted. </p><p><i>Colored by</i> - Keyword Theme</p><p><i>Sized by</i> - Total Views</p><p><i>How to Navigate this Network:</i></p><ul><li>Click on any node to see more details about that talk and watch the video. </li><li>Click the 'reset' button to clear any selection.</li><li>Use the <b>Slides</b> panel to navigate between views.</li><li>Use the <b>Filters</b> panel to select talks by any combination of traits (tags, views, event, talk duration, year published, etc).</li><li>Use the <b>Subset</b> button to restrict the data to the selected talks. The <b>Filters</b> panel will then summarize that <b>subset</b>. </li><li>Use the <b>List</b> panel to see selected talks as a sortable list - and to explore their details one by one.  </li></ul>",
+            "summaryImg": "60748881dc1d280013d49879.png",
+            "subtitle": "Clusters of talks linked by shared keywords.",
+            "snapName": "Keyword Themes",
+            "id": "snap-pgp3t7",
+            "processSelection": false,
+            "isEnabled": true,
+            "isDeleted": false,
+            "pinState": null,
+            "camera": {
+                "x": 0,
+                "y": -2242.463761264587,
+                "r": 1,
+                "normalizeCoords": true
+            },
+            "edSelState": [],
+            "ndSelState": [],
+            "layout": {
+                "xaxis": "Clustered_1_X",
+                "yaxis": "Clustered_1_Y",
+                "settings": {
+                    "version": 1.1,
+                    "drawNodes": true,
+                    "drawSelectedInHover": true,
+                    "borderRatio": 0.15,
+                    "bigOnTop": false,
+                    "nodeImageShow": true,
+                    "nodeImageAttr": "Photo",
+                    "invalidNodeColor": "rgb(250,250,250)",
+                    "nodeOpacity": 1,
+                    "nodeOpacityAttr": "OriginalSize",
+                    "nodeOpacityStrategy": "fixed",
+                    "nodeUnselectedOpacity": 0.25,
+                    "nodeColorDensityStrategy": "fixed",
+                    "nodeColorDensityAttr": "OriginalSize",
+                    "nodeColorDensity": 1,
+                    "nodeColorDensityOrder": true,
+                    "nodeHighlightRatio": 1.2,
+                    "nodeHighlightBorderOffset": 6,
+                    "nodeHighlightBorderWidth": 1,
+                    "nodeHighlightColorStrategy": "node-color-light",
+                    "nodeHighlightColor": "rgb(200,0,0)",
+                    "nodeSelectionRatio": 1.2,
+                    "nodeSelectionBorderOffset": 0,
+                    "nodeSelectionBorderWidth": 3,
+                    "nodeSelectionColorStrategy": "node-color-light",
+                    "nodeSelectionColor": "rgb(200,0,0)",
+                    "nodeSelectionDegree": 1,
+                    "nodePopSize": 2,
+                    "nodePopImageShow": true,
+                    "nodePopImageAttr": "Photo",
+                    "nodePopMenuShow": false,
+                    "nodePopMenuFuncs": [
+                        "afunc",
+                        "bfunc",
+                        "cfunc"
+                    ],
+                    "nodePopShow": false,
+                    "nodePopDelay": 1500,
+                    "nodePopTriggerContext": "hover",
+                    "nodePopReleaseContext": "hover-out",
+                    "nodePopRepositionNeighbors": false,
+                    "nodeFocusShow": true,
+                    "nodeFocusContext": "click",
+                    "nodeFocusRenderTemplate": "node-right-panel",
+                    "nodeFocusShowNeighbors": true,
+                    "nodeFocusNeighborsButton": true,
+                    "nodeFocusNeighborsBefore": null,
+                    "nodeFocusTextLength": 100,
+                    "showNodeDetailOnLoad": false,
+                    "disableAggregationLevel": 10,
+                    "disableAggregation": true,
+                    "aggregationWidth": 10,
+                    "aggregationHeight": 10,
+                    "aggNodeSizeScale": 1,
+                    "aggNodeMinSize": 6,
+                    "aggNodeMaxSize": 30,
+                    "aggNodeRenderStyle": "full-donut",
+                    "aggNodeShowCount": false,
+                    "aggNodeBackgroundColor": "#ffffff",
+                    "testSignificance": false,
+                    "drawEdges": false,
+                    "edgeCurvature": 0.6,
+                    "edgePath": true,
+                    "edgeDirectional": false,
+                    "edgeTaper": false,
+                    "edgeTaperScale": 0.5,
+                    "edgeSaturation": 1,
+                    "edgeUnselectedOpacity": 0.2,
+                    "edgeDirectionalRender": "outgoing",
+                    "drawLabels": true,
+                    "drawEdgeLabels": false,
+                    "drawGroupLabels": true,
+                    "labelColor": "#000000",
+                    "labelOutlineColor": "#ffffff",
+                    "labelSize": "proportional",
+                    "labelScale": 1,
+                    "labelSizeRatio": 0.5,
+                    "defaultLabelSize": 12,
+                    "minLabelSize": 12,
+                    "maxLabelSize": 16,
+                    "labelDisplayStrat": "topXSizeCollision",
+                    "labelThreshold": 1,
+                    "labelMaxCount": 300,
+                    "labelDefaultShow": true,
+                    "labelAttr": "OriginalLabel",
+                    "labelHoverAttr": "OriginalLabel",
+                    "labelClickAttr": "OriginalLabel",
+                    "labelDegree": 0,
+                    "labelOpacity": 1,
+                    "labelUnselectedOpacity": 0,
+                    "theme": "light",
+                    "backgroundColor": "#ffffff",
+                    "backgroundImage": "",
+                    "showBackgroundImage": false,
+                    "backgroundSize": "cover",
+                    "backgroundPosition": "50%",
+                    "zoomLock": false,
+                    "panLock": false,
+                    "pinRightPanel": true,
+                    "maxZoomLevel": 10,
+                    "minZoomLevel": -10,
+                    "savedZoomLevel": 0,
+                    "zoomingRatio": 1.7,
+                    "mouseZoomDuration": 500,
+                    "legendAutoOpen": true,
+                    "hideLegend": false,
+                    "globalLegendOn": true,
+                    "entityLegendOn": true,
+                    "legendTitle": "",
+                    "legendTitleTooltip": "",
+                    "showGlobalNodesLegend": true,
+                    "showGlobalEdgesLegend": true,
+                    "showEntityNodesLegend": true,
+                    "showEntityEdgesLegend": true,
+                    "enableLinkMapping": true,
+                    "legendSortOption": "frequency",
+                    "legendSortIsReverse": true,
+                    "xAxShow": false,
+                    "yAxShow": false,
+                    "xAxTickShow": false,
+                    "yAxTickShow": false,
+                    "xAxLabel": "",
+                    "yAxLabel": "",
+                    "xAxTooltip": "",
+                    "yAxTooltip": "",
+                    "invertX": false,
+                    "invertY": true,
+                    "scatterAspect": 0.5,
+                    "mapboxMapID": "vibrantdata.ioeefmpb",
+                    "nodeOnHover": "expand",
+                    "nodeOnClick": "select",
+                    "nodeOnDblClick": "select",
+                    "nodeSizeStrat": "attr",
+                    "nodeSizeAttr": "Views",
+                    "nodeSizeScaleStrategy": "log",
+                    "nodeSizeScaleInvert": false,
+                    "nodeSizeScaleExponent": 2.5,
+                    "nodeSizeScaleBase": 10,
+                    "nodeSizeNumericDomain": "from_data",
+                    "nodeSizeNumericDomainMin": 0,
+                    "nodeSizeNumericDomainMax": 100,
+                    "nodeSizeDefaultValue": 7,
+                    "nodeSizeMin": 2,
+                    "nodeSizeMax": 20,
+                    "nodeSizeMultiplier": 0.5,
+                    "nodeSizePartitionEnabled": false,
+                    "nodeSizePartitionAttr": "Cluster",
+                    "nodeColorStrat": "attr",
+                    "nodeColorAttr": "Keyword_Theme",
+                    "nodeColorScaleStrategy": "linear",
+                    "nodeColorScaleInvert": false,
+                    "nodeColorScaleExponent": 2.5,
+                    "nodeColorScaleBase": 10,
+                    "nodeColorNumericDomain": "from_data",
+                    "nodeColorNumericDomainMin": 0,
+                    "nodeColorNumericDomainMax": 100,
+                    "nodeColorDefaultValue": "rgb(200,200,200)",
+                    "nodeColorCycleCategoryColors": true,
+                    "nodeColorPaletteNumeric": [
+                        {
+                            "col": "#ee4444"
+                        },
+                        {
+                            "col": "#3399ff"
+                        }
+                    ],
+                    "nodeColorPaletteOrdinal": [
+                        {
+                            "col": "#ee4444"
+                        },
+                        {
+                            "col": "#cc6600"
+                        },
+                        {
+                            "col": "#0099ff"
+                        },
+                        {
+                            "col": "#ffcc00"
+                        },
+                        {
+                            "col": "#66cccc"
+                        },
+                        {
+                            "col": "#99cc00"
+                        },
+                        {
+                            "col": "#993399"
+                        },
+                        {
+                            "col": "#b23333"
+                        },
+                        {
+                            "col": "#994c00"
+                        },
+                        {
+                            "col": "#0073bf"
+                        },
+                        {
+                            "col": "#bf9900"
+                        },
+                        {
+                            "col": "#4c9999"
+                        },
+                        {
+                            "col": "#739900"
+                        },
+                        {
+                            "col": "#732673"
+                        }
+                    ],
+                    "nodeColorNumericScalerType": "HCL Long",
+                    "edgeSizeStrat": "attr",
+                    "edgeSizeAttr": "weight",
+                    "edgeSizeScaleStrategy": "linear",
+                    "edgeSizeScaleInvert": false,
+                    "edgeSizeScaleExponent": 2.5,
+                    "edgeSizeScaleBase": 10,
+                    "edgeSizeNumericDomain": "from_data",
+                    "edgeSizeNumericDomainMin": 0,
+                    "edgeSizeNumericDomainMax": 100,
+                    "edgeSizeDefaultValue": 0.2,
+                    "edgeSizeMin": 0.1,
+                    "edgeSizeMax": 10,
+                    "edgeSizeMultiplier": 0.4,
+                    "edgeSizePartitionEnabled": false,
+                    "edgeSizePartitionAttr": "Cluster",
+                    "edgeColorStrat": "gradient",
+                    "edgeColorAttr": "OriginalColor",
+                    "edgeColorScaleStrategy": "linear",
+                    "edgeColorScaleInvert": false,
+                    "edgeColorScaleExponent": 2.5,
+                    "edgeColorScaleBase": 10,
+                    "edgeColorNumericDomain": "from_data",
+                    "edgeColorNumericDomainMin": 0,
+                    "edgeColorNumericDomainMax": 100,
+                    "edgeColorDefaultValue": "rgb(200,200,200)",
+                    "edgeColorCycleCategoryColors": true,
+                    "edgeColorPaletteNumeric": [
+                        {
+                            "col": "#ee4444"
+                        },
+                        {
+                            "col": "#3399ff"
+                        }
+                    ],
+                    "edgeColorPaletteOrdinal": [
+                        {
+                            "col": "#ee4444"
+                        },
+                        {
+                            "col": "#cc6600"
+                        },
+                        {
+                            "col": "#0099ff"
+                        },
+                        {
+                            "col": "#ffcc00"
+                        },
+                        {
+                            "col": "#66cccc"
+                        },
+                        {
+                            "col": "#99cc00"
+                        },
+                        {
+                            "col": "#993399"
+                        },
+                        {
+                            "col": "#b23333"
+                        },
+                        {
+                            "col": "#994c00"
+                        },
+                        {
+                            "col": "#0073bf"
+                        },
+                        {
+                            "col": "#bf9900"
+                        },
+                        {
+                            "col": "#4c9999"
+                        },
+                        {
+                            "col": "#739900"
+                        },
+                        {
+                            "col": "#732673"
+                        }
+                    ],
+                    "edgeColorNumericScalerType": "HCL Long",
+                    "isGeo": false,
+                    "layoutId": "layout_3"
+                },
+                "y_scaler_exponent": 2,
+                "y_scaler_base": 2,
+                "y_scaler_type": "linear",
+                "x_scaler_exponent": 2,
+                "x_scaler_base": 2,
+                "x_scaler_type": "linear",
+                "listCompareIds": [],
+                "listColSizes": [
+                    300
+                ],
+                "listSortReverseAr": [],
+                "listSortAttrAr": [
+                    "Keyword_Theme"
+                ],
+                "listSortReverse": false,
+                "listAttrs": [
+                    "Keyword_Theme"
+                ],
+                "plotType": "athena_layout_clustered"
+            },
+            "pinnedAttrs": [],
+            "author": {
+                "ref": "5a6f9c2003f1625904ac137e"
+            },
+            "type": "network"
+        },
+        {
+            "_id": "5f39bbc0e7d98b0013dc810f",
+            "dateModified": "2020-08-16T23:05:36.388Z",
+            "networkId": "5e9c7c326100db001345996f",
+            "embed": "",
+            "text": "",
+            "picture": "",
+            "audio": "",
+            "descr": "<p>Talks are sorted horizontally by date published and vertically by &#34;popularity&#34;. Since some topics (e.g. pop psychology or business leadership) are more inherently more popular than others (e.g. physics), the views of each talk are indexed relative to the median views of its keyword theme. Talks above the zero line had more views than expected relative to the typical talk of its keyword theme. If you hover on or select a talk, the links display other talks with the most similar keywords. If you hover over Keyword Theme in the <b>Legend</b>, or any tags in the <b>Filters</b>, you can see the popularity trends for that theme or tag over time. </p><p><br/></p><p><i>Colored by:  </i>Keyword Theme</p><p><i>Sized by: </i>Total Views</p>",
+            "summaryImg": "5f39bbc0e7d98b0013dc810f.png",
+            "subtitle": "See which talks were most popular in a given year.",
+            "snapName": "Popularity vs Time",
+            "id": "snap-ip44xj",
+            "processSelection": false,
+            "isEnabled": true,
+            "isDeleted": false,
+            "pinState": null,
+            "camera": {
+                "r": 1.6082030281605153,
+                "y": 4.7494382075005666,
+                "x": -26.889269411243436,
+                "normalizeCoords": true
+            },
+            "edSelState": [],
+            "ndSelState": [],
+            "layout": {
+                "settings": {
+                    "layoutId": "layout_11",
+                    "isGeo": false,
+                    "yaxis": "OriginalY",
+                    "xaxis": "OriginalX",
+                    "edgeColorNumericScalerType": "HCL Long",
+                    "edgeColorPaletteOrdinal": [
+                        {
+                            "col": "#ee4444"
+                        },
+                        {
+                            "col": "#cc6600"
+                        },
+                        {
+                            "col": "#0099ff"
+                        },
+                        {
+                            "col": "#ffcc00"
+                        },
+                        {
+                            "col": "#66cccc"
+                        },
+                        {
+                            "col": "#99cc00"
+                        },
+                        {
+                            "col": "#993399"
+                        },
+                        {
+                            "col": "#b23333"
+                        },
+                        {
+                            "col": "#994c00"
+                        },
+                        {
+                            "col": "#0073bf"
+                        },
+                        {
+                            "col": "#bf9900"
+                        },
+                        {
+                            "col": "#4c9999"
+                        },
+                        {
+                            "col": "#739900"
+                        },
+                        {
+                            "col": "#732673"
+                        }
+                    ],
+                    "edgeColorPaletteNumeric": [
+                        {
+                            "col": "#ee4444"
+                        },
+                        {
+                            "col": "#3399ff"
+                        }
+                    ],
+                    "edgeColorCycleCategoryColors": true,
+                    "edgeColorDefaultValue": "rgb(200,200,200)",
+                    "edgeColorNumericDomainMax": 100,
+                    "edgeColorNumericDomainMin": 0,
+                    "edgeColorNumericDomain": "from_data",
+                    "edgeColorScaleBase": 10,
+                    "edgeColorScaleExponent": 2.5,
+                    "edgeColorScaleInvert": false,
+                    "edgeColorScaleStrategy": "linear",
+                    "edgeColorAttr": "OriginalColor",
+                    "edgeColorStrat": "gradient",
+                    "edgeSizePartitionAttr": "Cluster",
+                    "edgeSizePartitionEnabled": false,
+                    "edgeSizeMultiplier": 0.4,
+                    "edgeSizeMax": 10,
+                    "edgeSizeMin": 0.1,
+                    "edgeSizeDefaultValue": 0.2,
+                    "edgeSizeNumericDomainMax": 100,
+                    "edgeSizeNumericDomainMin": 0,
+                    "edgeSizeNumericDomain": "from_data",
+                    "edgeSizeScaleBase": 10,
+                    "edgeSizeScaleExponent": 2.5,
+                    "edgeSizeScaleInvert": false,
+                    "edgeSizeScaleStrategy": "linear",
+                    "edgeSizeAttr": "weight",
+                    "edgeSizeStrat": "attr",
+                    "nodeColorNumericScalerType": "HCL Long",
+                    "nodeColorPaletteOrdinal": [
+                        {
+                            "col": "#ee4444"
+                        },
+                        {
+                            "col": "#cc6600"
+                        },
+                        {
+                            "col": "#0099ff"
+                        },
+                        {
+                            "col": "#ffcc00"
+                        },
+                        {
+                            "col": "#66cccc"
+                        },
+                        {
+                            "col": "#99cc00"
+                        },
+                        {
+                            "col": "#993399"
+                        },
+                        {
+                            "col": "#b23333"
+                        },
+                        {
+                            "col": "#994c00"
+                        },
+                        {
+                            "col": "#0073bf"
+                        },
+                        {
+                            "col": "#bf9900"
+                        },
+                        {
+                            "col": "#4c9999"
+                        },
+                        {
+                            "col": "#739900"
+                        },
+                        {
+                            "col": "#732673"
+                        }
+                    ],
+                    "nodeColorPaletteNumeric": [
+                        {
+                            "col": "#ee4444"
+                        },
+                        {
+                            "col": "#3399ff"
+                        }
+                    ],
+                    "nodeColorCycleCategoryColors": true,
+                    "nodeColorDefaultValue": "rgb(200,200,200)",
+                    "nodeColorNumericDomainMax": 100,
+                    "nodeColorNumericDomainMin": 0,
+                    "nodeColorNumericDomain": "from_data",
+                    "nodeColorScaleBase": 10,
+                    "nodeColorScaleExponent": 2.5,
+                    "nodeColorScaleInvert": false,
+                    "nodeColorScaleStrategy": "linear",
+                    "nodeColorAttr": "Keyword_Theme",
+                    "nodeColorStrat": "attr",
+                    "nodeSizePartitionAttr": "Cluster",
+                    "nodeSizePartitionEnabled": false,
+                    "nodeSizeMultiplier": 0.6,
+                    "nodeSizeMax": 20,
+                    "nodeSizeMin": 2,
+                    "nodeSizeDefaultValue": 7,
+                    "nodeSizeNumericDomainMax": 100,
+                    "nodeSizeNumericDomainMin": 0,
+                    "nodeSizeNumericDomain": "from_data",
+                    "nodeSizeScaleBase": 10,
+                    "nodeSizeScaleExponent": 2.5,
+                    "nodeSizeScaleInvert": false,
+                    "nodeSizeScaleStrategy": "log",
+                    "nodeSizeAttr": "Views",
+                    "nodeSizeStrat": "attr",
+                    "nodeOnDblClick": "select",
+                    "nodeOnClick": "select",
+                    "nodeOnHover": "expand",
+                    "mapboxMapID": "vibrantdata.ioeefmpb",
+                    "scatterAspect": 0.7,
+                    "invertY": true,
+                    "invertX": false,
+                    "yAxTooltip": "",
+                    "xAxTooltip": "",
+                    "yAxLabel": "",
+                    "xAxLabel": "",
+                    "yAxTickShow": true,
+                    "xAxTickShow": true,
+                    "yAxShow": true,
+                    "xAxShow": true,
+                    "legendSortIsReverse": true,
+                    "legendSortOption": "frequency",
+                    "enableLinkMapping": true,
+                    "showEntityEdgesLegend": true,
+                    "showEntityNodesLegend": true,
+                    "showGlobalEdgesLegend": true,
+                    "showGlobalNodesLegend": true,
+                    "legendTitleTooltip": "",
+                    "legendTitle": "",
+                    "entityLegendOn": true,
+                    "globalLegendOn": true,
+                    "hideLegend": false,
+                    "legendAutoOpen": true,
+                    "mouseZoomDuration": 500,
+                    "zoomingRatio": 1.7,
+                    "savedZoomLevel": 0,
+                    "minZoomLevel": -10,
+                    "maxZoomLevel": 10,
+                    "pinRightPanel": true,
+                    "panLock": false,
+                    "zoomLock": false,
+                    "backgroundPosition": "50%",
+                    "backgroundSize": "cover",
+                    "showBackgroundImage": false,
+                    "backgroundImage": "",
+                    "backgroundColor": "#ffffff",
+                    "theme": "light",
+                    "labelUnselectedOpacity": 0,
+                    "labelOpacity": 1,
+                    "labelDegree": 0,
+                    "labelClickAttr": "OriginalLabel",
+                    "labelHoverAttr": "OriginalLabel",
+                    "labelAttr": "OriginalLabel",
+                    "labelDefaultShow": true,
+                    "labelMaxCount": 300,
+                    "labelThreshold": 1,
+                    "labelDisplayStrat": "topXSizeCollision",
+                    "maxLabelSize": 16,
+                    "minLabelSize": 12,
+                    "defaultLabelSize": 12,
+                    "labelSizeRatio": 0.5,
+                    "labelScale": 1,
+                    "labelSize": "proportional",
+                    "labelOutlineColor": "#ffffff",
+                    "labelColor": "#000000",
+                    "drawGroupLabels": false,
+                    "drawEdgeLabels": false,
+                    "drawLabels": true,
+                    "edgeDirectionalRender": "outgoing",
+                    "edgeUnselectedOpacity": 0.2,
+                    "edgeSaturation": 1,
+                    "edgeTaperScale": 0.5,
+                    "edgeTaper": false,
+                    "edgeDirectional": false,
+                    "edgePath": true,
+                    "edgeCurvature": 0.6,
+                    "drawEdges": false,
+                    "testSignificance": false,
+                    "aggNodeBackgroundColor": "#ffffff",
+                    "aggNodeShowCount": false,
+                    "aggNodeRenderStyle": "full-donut",
+                    "aggNodeMaxSize": 30,
+                    "aggNodeMinSize": 6,
+                    "aggNodeSizeScale": 1,
+                    "aggregationHeight": 10,
+                    "aggregationWidth": 10,
+                    "disableAggregation": true,
+                    "disableAggregationLevel": 10,
+                    "showNodeDetailOnLoad": false,
+                    "nodeFocusTextLength": 100,
+                    "nodeFocusNeighborsBefore": null,
+                    "nodeFocusNeighborsButton": true,
+                    "nodeFocusShowNeighbors": true,
+                    "nodeFocusRenderTemplate": "node-right-panel",
+                    "nodeFocusContext": "click",
+                    "nodeFocusShow": true,
+                    "nodePopRepositionNeighbors": false,
+                    "nodePopReleaseContext": "hover-out",
+                    "nodePopTriggerContext": "hover",
+                    "nodePopDelay": 1500,
+                    "nodePopShow": false,
+                    "nodePopMenuFuncs": [
+                        "afunc",
+                        "bfunc",
+                        "cfunc"
+                    ],
+                    "nodePopMenuShow": false,
+                    "nodePopImageAttr": "Photo",
+                    "nodePopImageShow": true,
+                    "nodePopSize": 2,
+                    "nodeSelectionDegree": 1,
+                    "nodeSelectionColor": "rgb(200,0,0)",
+                    "nodeSelectionColorStrategy": "node-color-light",
+                    "nodeSelectionBorderWidth": 3,
+                    "nodeSelectionBorderOffset": 0,
+                    "nodeSelectionRatio": 1.2,
+                    "nodeHighlightColor": "rgb(200,0,0)",
+                    "nodeHighlightColorStrategy": "node-color-light",
+                    "nodeHighlightBorderWidth": 1,
+                    "nodeHighlightBorderOffset": 6,
+                    "nodeHighlightRatio": 1.2,
+                    "nodeColorDensityOrder": true,
+                    "nodeColorDensity": 1,
+                    "nodeColorDensityAttr": "OriginalSize",
+                    "nodeColorDensityStrategy": "fixed",
+                    "nodeUnselectedOpacity": 0.25,
+                    "nodeOpacityStrategy": "fixed",
+                    "nodeOpacityAttr": "OriginalSize",
+                    "nodeOpacity": 1,
+                    "invalidNodeColor": "rgb(250,250,250)",
+                    "nodeImageAttr": "Photo",
+                    "nodeImageShow": true,
+                    "bigOnTop": false,
+                    "borderRatio": 0.15,
+                    "drawSelectedInHover": true,
+                    "drawNodes": true,
+                    "version": 1.1
+                },
+                "yaxis": "Views Relative to Theme Avg",
+                "xaxis": "Published Date",
+                "y_scaler_exponent": 2,
+                "y_scaler_base": 10,
+                "y_scaler_type": "linear",
+                "x_scaler_exponent": 2,
+                "x_scaler_base": 10,
+                "x_scaler_type": "linear",
+                "listCompareIds": [],
+                "listColSizes": [],
+                "listSortReverseAr": [],
+                "listSortAttrAr": [],
+                "listSortReverse": false,
+                "listAttrs": [],
+                "plotType": "scatterplot"
+            },
+            "pinnedAttrs": [],
+            "author": {
+                "ref": "5a6f9c2003f1625904ac137e"
+            },
+            "type": "network"
+        },
+        {
+            "_id": "603120b13106350013fa3d94",
+            "dateModified": "2021-02-20T14:46:09.941Z",
+            "networkId": "5e9c7c326100db001345996f",
+            "embed": "",
+            "text": "",
+            "picture": "",
+            "audio": "",
+            "descr": "Talks are sorted vertically by &#34;Popularity&#34; (an index of total views relative to the median for each Keyword Theme) - and horizontally by the total number of Comments (a measure of active public engagement).  Talks in the lower right have unusually high comment engagement relative to what you would expect for a talk with that number of views, which suggests they may be about a controversial topic.   <div><br/><ul><li>Large nodes in the upper right had both very many views for their topic <i>and</i> high engagement relative to the views.  </li><li>Small nodes in the lower right had fewer total views but unusually high engagement via comments.  </li></ul><p><i>Colored by:</i>  Keyword Theme</p><p><i>Sized by: </i>Total Views</p></div>",
+            "summaryImg": "603120b13106350013fa3d94",
+            "subtitle": "Find the most controversial talks.",
+            "snapName": "Engagement vs Popularity",
+            "id": "snap-dhgsu5",
+            "processSelection": false,
+            "isEnabled": true,
+            "isDeleted": false,
+            "pinState": null,
+            "camera": {
+                "r": 1.5,
+                "y": 42.608695652173914,
+                "x": 0,
+                "normalizeCoords": true
+            },
+            "edSelState": [],
+            "ndSelState": [],
+            "layout": {
+                "settings": {
+                    "isGeo": false,
+                    "layoutId": "layout_839",
+                    "yaxis": "OriginalY",
+                    "xaxis": "OriginalX",
+                    "edgeColorNumericScalerType": "HCL Long",
+                    "edgeColorPaletteOrdinal": [
+                        {
+                            "col": "#ee4444"
+                        },
+                        {
+                            "col": "#cc6600"
+                        },
+                        {
+                            "col": "#0099ff"
+                        },
+                        {
+                            "col": "#ffcc00"
+                        },
+                        {
+                            "col": "#66cccc"
+                        },
+                        {
+                            "col": "#99cc00"
+                        },
+                        {
+                            "col": "#993399"
+                        },
+                        {
+                            "col": "#b23333"
+                        },
+                        {
+                            "col": "#994c00"
+                        },
+                        {
+                            "col": "#0073bf"
+                        },
+                        {
+                            "col": "#bf9900"
+                        },
+                        {
+                            "col": "#4c9999"
+                        },
+                        {
+                            "col": "#739900"
+                        },
+                        {
+                            "col": "#732673"
+                        }
+                    ],
+                    "edgeColorPaletteNumeric": [
+                        {
+                            "col": "#ee4444"
+                        },
+                        {
+                            "col": "#3399ff"
+                        }
+                    ],
+                    "edgeColorCycleCategoryColors": true,
+                    "edgeColorDefaultValue": "rgb(200,200,200)",
+                    "edgeColorNumericDomainMax": 100,
+                    "edgeColorNumericDomainMin": 0,
+                    "edgeColorNumericDomain": "from_data",
+                    "edgeColorScaleBase": 10,
+                    "edgeColorScaleExponent": 2.5,
+                    "edgeColorScaleInvert": false,
+                    "edgeColorScaleStrategy": "linear",
+                    "edgeColorAttr": "OriginalColor",
+                    "edgeColorStrat": "gradient",
+                    "edgeSizePartitionAttr": "Cluster",
+                    "edgeSizePartitionEnabled": false,
+                    "edgeSizeMultiplier": 0.4,
+                    "edgeSizeMax": 10,
+                    "edgeSizeMin": 0.1,
+                    "edgeSizeDefaultValue": 0.2,
+                    "edgeSizeNumericDomainMax": 100,
+                    "edgeSizeNumericDomainMin": 0,
+                    "edgeSizeNumericDomain": "from_data",
+                    "edgeSizeScaleBase": 10,
+                    "edgeSizeScaleExponent": 2.5,
+                    "edgeSizeScaleInvert": false,
+                    "edgeSizeScaleStrategy": "linear",
+                    "edgeSizeAttr": "weight",
+                    "edgeSizeStrat": "attr",
+                    "nodeColorNumericScalerType": "HCL Long",
+                    "nodeColorPaletteOrdinal": [
+                        {
+                            "col": "#ee4444"
+                        },
+                        {
+                            "col": "#cc6600"
+                        },
+                        {
+                            "col": "#0099ff"
+                        },
+                        {
+                            "col": "#ffcc00"
+                        },
+                        {
+                            "col": "#66cccc"
+                        },
+                        {
+                            "col": "#99cc00"
+                        },
+                        {
+                            "col": "#993399"
+                        },
+                        {
+                            "col": "#b23333"
+                        },
+                        {
+                            "col": "#994c00"
+                        },
+                        {
+                            "col": "#0073bf"
+                        },
+                        {
+                            "col": "#bf9900"
+                        },
+                        {
+                            "col": "#4c9999"
+                        },
+                        {
+                            "col": "#739900"
+                        },
+                        {
+                            "col": "#732673"
+                        }
+                    ],
+                    "nodeColorPaletteNumeric": [
+                        {
+                            "col": "#ee4444"
+                        },
+                        {
+                            "col": "#3399ff"
+                        }
+                    ],
+                    "nodeColorCycleCategoryColors": true,
+                    "nodeColorDefaultValue": "rgb(200,200,200)",
+                    "nodeColorNumericDomainMax": 100,
+                    "nodeColorNumericDomainMin": 0,
+                    "nodeColorNumericDomain": "from_data",
+                    "nodeColorScaleBase": 10,
+                    "nodeColorScaleExponent": 2.5,
+                    "nodeColorScaleInvert": false,
+                    "nodeColorScaleStrategy": "linear",
+                    "nodeColorAttr": "Keyword_Theme",
+                    "nodeColorStrat": "attr",
+                    "nodeSizePartitionAttr": "Cluster",
+                    "nodeSizePartitionEnabled": false,
+                    "nodeSizeMultiplier": 0.6,
+                    "nodeSizeMax": 20,
+                    "nodeSizeMin": 2,
+                    "nodeSizeDefaultValue": 7,
+                    "nodeSizeNumericDomainMax": 100,
+                    "nodeSizeNumericDomainMin": 0,
+                    "nodeSizeNumericDomain": "from_data",
+                    "nodeSizeScaleBase": 10,
+                    "nodeSizeScaleExponent": 2.5,
+                    "nodeSizeScaleInvert": false,
+                    "nodeSizeScaleStrategy": "log",
+                    "nodeSizeAttr": "Views",
+                    "nodeSizeStrat": "attr",
+                    "nodeOnDblClick": "select",
+                    "nodeOnClick": "select",
+                    "nodeOnHover": "expand",
+                    "mapboxMapID": "vibrantdata.ioeefmpb",
+                    "scatterAspect": 0.7,
+                    "invertY": true,
+                    "invertX": false,
+                    "yAxTooltip": "",
+                    "xAxTooltip": "",
+                    "yAxLabel": "",
+                    "xAxLabel": "",
+                    "yAxTickShow": true,
+                    "xAxTickShow": true,
+                    "yAxShow": true,
+                    "xAxShow": true,
+                    "legendSortIsReverse": true,
+                    "legendSortOption": "frequency",
+                    "enableLinkMapping": true,
+                    "showEntityEdgesLegend": true,
+                    "showEntityNodesLegend": true,
+                    "showGlobalEdgesLegend": true,
+                    "showGlobalNodesLegend": true,
+                    "legendTitleTooltip": "",
+                    "legendTitle": "",
+                    "entityLegendOn": true,
+                    "globalLegendOn": true,
+                    "hideLegend": false,
+                    "legendAutoOpen": true,
+                    "mouseZoomDuration": 500,
+                    "zoomingRatio": 1.7,
+                    "savedZoomLevel": 0,
+                    "minZoomLevel": -10,
+                    "maxZoomLevel": 10,
+                    "pinRightPanel": true,
+                    "panLock": false,
+                    "zoomLock": false,
+                    "backgroundPosition": "50%",
+                    "backgroundSize": "cover",
+                    "showBackgroundImage": false,
+                    "backgroundImage": "",
+                    "backgroundColor": "#ffffff",
+                    "theme": "light",
+                    "labelUnselectedOpacity": 0,
+                    "labelOpacity": 1,
+                    "labelDegree": 0,
+                    "labelClickAttr": "OriginalLabel",
+                    "labelHoverAttr": "OriginalLabel",
+                    "labelAttr": "OriginalLabel",
+                    "labelDefaultShow": true,
+                    "labelMaxCount": 300,
+                    "labelThreshold": 1,
+                    "labelDisplayStrat": "topXSizeCollision",
+                    "maxLabelSize": 16,
+                    "minLabelSize": 12,
+                    "defaultLabelSize": 12,
+                    "labelSizeRatio": 0.5,
+                    "labelScale": 1,
+                    "labelSize": "proportional",
+                    "labelOutlineColor": "#ffffff",
+                    "labelColor": "#000000",
+                    "drawGroupLabels": false,
+                    "drawEdgeLabels": false,
+                    "drawLabels": true,
+                    "edgeDirectionalRender": "outgoing",
+                    "edgeUnselectedOpacity": 0.2,
+                    "edgeSaturation": 1,
+                    "edgeTaperScale": 0.5,
+                    "edgeTaper": false,
+                    "edgeDirectional": false,
+                    "edgePath": true,
+                    "edgeCurvature": 0.6,
+                    "drawEdges": false,
+                    "testSignificance": false,
+                    "aggNodeBackgroundColor": "#ffffff",
+                    "aggNodeShowCount": false,
+                    "aggNodeRenderStyle": "full-donut",
+                    "aggNodeMaxSize": 30,
+                    "aggNodeMinSize": 6,
+                    "aggNodeSizeScale": 1,
+                    "aggregationHeight": 10,
+                    "aggregationWidth": 10,
+                    "disableAggregation": true,
+                    "disableAggregationLevel": 10,
+                    "showNodeDetailOnLoad": false,
+                    "nodeFocusTextLength": 100,
+                    "nodeFocusNeighborsBefore": null,
+                    "nodeFocusNeighborsButton": true,
+                    "nodeFocusShowNeighbors": true,
+                    "nodeFocusRenderTemplate": "node-right-panel",
+                    "nodeFocusContext": "click",
+                    "nodeFocusShow": true,
+                    "nodePopRepositionNeighbors": false,
+                    "nodePopReleaseContext": "hover-out",
+                    "nodePopTriggerContext": "hover",
+                    "nodePopDelay": 1500,
+                    "nodePopShow": false,
+                    "nodePopMenuFuncs": [
+                        "afunc",
+                        "bfunc",
+                        "cfunc"
+                    ],
+                    "nodePopMenuShow": false,
+                    "nodePopImageAttr": "Photo",
+                    "nodePopImageShow": true,
+                    "nodePopSize": 2,
+                    "nodeSelectionDegree": 1,
+                    "nodeSelectionColor": "rgb(200,0,0)",
+                    "nodeSelectionColorStrategy": "node-color-light",
+                    "nodeSelectionBorderWidth": 3,
+                    "nodeSelectionBorderOffset": 0,
+                    "nodeSelectionRatio": 1.2,
+                    "nodeHighlightColor": "rgb(200,0,0)",
+                    "nodeHighlightColorStrategy": "node-color-light",
+                    "nodeHighlightBorderWidth": 1,
+                    "nodeHighlightBorderOffset": 6,
+                    "nodeHighlightRatio": 1.2,
+                    "nodeColorDensityOrder": true,
+                    "nodeColorDensity": 1,
+                    "nodeColorDensityAttr": "OriginalSize",
+                    "nodeColorDensityStrategy": "fixed",
+                    "nodeUnselectedOpacity": 0.25,
+                    "nodeOpacityStrategy": "fixed",
+                    "nodeOpacityAttr": "OriginalSize",
+                    "nodeOpacity": 1,
+                    "invalidNodeColor": "rgb(250,250,250)",
+                    "nodeImageAttr": "Photo",
+                    "nodeImageShow": true,
+                    "bigOnTop": false,
+                    "borderRatio": 0.15,
+                    "drawSelectedInHover": true,
+                    "drawNodes": true,
+                    "version": 1.1
+                },
+                "yaxis": "Views Relative to Theme Avg",
+                "xaxis": "Comments (log10)",
+                "y_scaler_exponent": 2,
+                "y_scaler_base": 10,
+                "y_scaler_type": "linear",
+                "x_scaler_exponent": 2,
+                "x_scaler_base": 10,
+                "x_scaler_type": "linear",
+                "listCompareIds": [],
+                "listColSizes": [],
+                "listSortReverseAr": [],
+                "listSortAttrAr": [],
+                "listSortReverse": false,
+                "listAttrs": [],
+                "plotType": "scatterplot"
+            },
+            "pinnedAttrs": [],
+            "author": {
+                "ref": "5a6f9c2003f1625904ac137e"
+            },
+            "type": "network"
+        },
+        {
+            "_id": "5fb4081539e4cc00147e072c",
+            "dateModified": "2020-11-17T17:27:49.918Z",
+            "networkId": "5e9c7c326100db001345996f",
+            "embed": "",
+            "text": "",
+            "picture": "",
+            "audio": "",
+            "descr": "<p>[This is an example of the 'grid' layout] - It makes the data representation more similar to TED.com or youtube.</p><p>The hover, select, subset functionality of this view does not work very well. But it's here for testing and ideas on how to make it better.  </p><p><br/></p>",
+            "summaryImg": null,
+            "subtitle": "",
+            "snapName": "Thumbnail View",
+            "id": "snap-zb62w3",
+            "processSelection": false,
+            "isEnabled": false,
+            "isDeleted": false,
+            "pinState": null,
+            "camera": {
+                "r": 1,
+                "y": -21893.147957848953,
+                "x": 0,
+                "normalizeCoords": true
+            },
+            "edSelState": [],
+            "ndSelState": [],
+            "layout": {
+                "settings": {
+                    "layoutId": "layout_69",
+                    "isGeo": false,
+                    "yaxis": "OriginalY",
+                    "xaxis": "OriginalX",
+                    "edgeColorNumericScalerType": "HCL Long",
+                    "edgeColorPaletteOrdinal": [
+                        {
+                            "col": "#ee4444"
+                        },
+                        {
+                            "col": "#cc6600"
+                        },
+                        {
+                            "col": "#0099ff"
+                        },
+                        {
+                            "col": "#ffcc00"
+                        },
+                        {
+                            "col": "#66cccc"
+                        },
+                        {
+                            "col": "#99cc00"
+                        },
+                        {
+                            "col": "#993399"
+                        },
+                        {
+                            "col": "#b23333"
+                        },
+                        {
+                            "col": "#994c00"
+                        },
+                        {
+                            "col": "#0073bf"
+                        },
+                        {
+                            "col": "#bf9900"
+                        },
+                        {
+                            "col": "#4c9999"
+                        },
+                        {
+                            "col": "#739900"
+                        },
+                        {
+                            "col": "#732673"
+                        }
+                    ],
+                    "edgeColorPaletteNumeric": [
+                        {
+                            "col": "#ee4444"
+                        },
+                        {
+                            "col": "#3399ff"
+                        }
+                    ],
+                    "edgeColorCycleCategoryColors": true,
+                    "edgeColorDefaultValue": "rgb(200,200,200)",
+                    "edgeColorNumericDomainMax": 100,
+                    "edgeColorNumericDomainMin": 0,
+                    "edgeColorNumericDomain": "from_data",
+                    "edgeColorScaleBase": 10,
+                    "edgeColorScaleExponent": 2.5,
+                    "edgeColorScaleInvert": false,
+                    "edgeColorScaleStrategy": "linear",
+                    "edgeColorAttr": "OriginalColor",
+                    "edgeColorStrat": "gradient",
+                    "edgeSizePartitionAttr": "Cluster",
+                    "edgeSizePartitionEnabled": false,
+                    "edgeSizeMultiplier": 0.2,
+                    "edgeSizeMax": 10,
+                    "edgeSizeMin": 0.1,
+                    "edgeSizeDefaultValue": 0.2,
+                    "edgeSizeNumericDomainMax": 100,
+                    "edgeSizeNumericDomainMin": 0,
+                    "edgeSizeNumericDomain": "from_data",
+                    "edgeSizeScaleBase": 10,
+                    "edgeSizeScaleExponent": 2.5,
+                    "edgeSizeScaleInvert": false,
+                    "edgeSizeScaleStrategy": "linear",
+                    "edgeSizeAttr": "weight",
+                    "edgeSizeStrat": "attr",
+                    "nodeColorNumericScalerType": "HCL Long",
+                    "nodeColorPaletteOrdinal": [
+                        {
+                            "col": "#ee4444"
+                        },
+                        {
+                            "col": "#cc6600"
+                        },
+                        {
+                            "col": "#0099ff"
+                        },
+                        {
+                            "col": "#ffcc00"
+                        },
+                        {
+                            "col": "#66cccc"
+                        },
+                        {
+                            "col": "#99cc00"
+                        },
+                        {
+                            "col": "#993399"
+                        },
+                        {
+                            "col": "#b23333"
+                        },
+                        {
+                            "col": "#994c00"
+                        },
+                        {
+                            "col": "#0073bf"
+                        },
+                        {
+                            "col": "#bf9900"
+                        },
+                        {
+                            "col": "#4c9999"
+                        },
+                        {
+                            "col": "#739900"
+                        },
+                        {
+                            "col": "#732673"
+                        }
+                    ],
+                    "nodeColorPaletteNumeric": [
+                        {
+                            "col": "#ee4444"
+                        },
+                        {
+                            "col": "#3399ff"
+                        }
+                    ],
+                    "nodeColorCycleCategoryColors": true,
+                    "nodeColorDefaultValue": "rgb(200,200,200)",
+                    "nodeColorNumericDomainMax": 100,
+                    "nodeColorNumericDomainMin": 0,
+                    "nodeColorNumericDomain": "from_data",
+                    "nodeColorScaleBase": 10,
+                    "nodeColorScaleExponent": 2.5,
+                    "nodeColorScaleInvert": false,
+                    "nodeColorScaleStrategy": "linear",
+                    "nodeColorAttr": "Keyword_Theme",
+                    "nodeColorStrat": "attr",
+                    "nodeSizePartitionAttr": "Cluster",
+                    "nodeSizePartitionEnabled": false,
+                    "nodeSizeMultiplier": 0.6,
+                    "nodeSizeMax": 20,
+                    "nodeSizeMin": 2,
+                    "nodeSizeDefaultValue": 7,
+                    "nodeSizeNumericDomainMax": 100,
+                    "nodeSizeNumericDomainMin": 0,
+                    "nodeSizeNumericDomain": "from_data",
+                    "nodeSizeScaleBase": 10,
+                    "nodeSizeScaleExponent": 2.5,
+                    "nodeSizeScaleInvert": false,
+                    "nodeSizeScaleStrategy": "linear",
+                    "nodeSizeAttr": "Engagement_Index",
+                    "nodeSizeStrat": "attr",
+                    "nodeOnDblClick": "select",
+                    "nodeOnClick": "select",
+                    "nodeOnHover": "expand",
+                    "mapboxMapID": "vibrantdata.ioeefmpb",
+                    "scatterAspect": 0.7,
+                    "invertY": true,
+                    "invertX": false,
+                    "yAxTooltip": "",
+                    "xAxTooltip": "",
+                    "yAxLabel": "",
+                    "xAxLabel": "",
+                    "yAxTickShow": true,
+                    "xAxTickShow": true,
+                    "yAxShow": true,
+                    "xAxShow": true,
+                    "legendSortIsReverse": true,
+                    "legendSortOption": "frequency",
+                    "enableLinkMapping": true,
+                    "showEntityEdgesLegend": true,
+                    "showEntityNodesLegend": true,
+                    "showGlobalEdgesLegend": true,
+                    "showGlobalNodesLegend": true,
+                    "legendTitleTooltip": "",
+                    "legendTitle": "",
+                    "entityLegendOn": true,
+                    "globalLegendOn": true,
+                    "hideLegend": false,
+                    "legendAutoOpen": true,
+                    "mouseZoomDuration": 500,
+                    "zoomingRatio": 1.7,
+                    "savedZoomLevel": 0,
+                    "minZoomLevel": -10,
+                    "maxZoomLevel": 10,
+                    "pinRightPanel": true,
+                    "panLock": false,
+                    "zoomLock": false,
+                    "backgroundPosition": "50%",
+                    "backgroundSize": "cover",
+                    "showBackgroundImage": false,
+                    "backgroundImage": "",
+                    "backgroundColor": "#ffffff",
+                    "theme": "light",
+                    "labelUnselectedOpacity": 0,
+                    "labelOpacity": 1,
+                    "labelDegree": 0,
+                    "labelClickAttr": "OriginalLabel",
+                    "labelHoverAttr": "OriginalLabel",
+                    "labelAttr": "OriginalLabel",
+                    "labelDefaultShow": true,
+                    "labelMaxCount": 300,
+                    "labelThreshold": 1,
+                    "labelDisplayStrat": "topXSizeCollision",
+                    "maxLabelSize": 16,
+                    "minLabelSize": 12,
+                    "defaultLabelSize": 12,
+                    "labelSizeRatio": 0.5,
+                    "labelScale": 1,
+                    "labelSize": "proportional",
+                    "labelOutlineColor": "#ffffff",
+                    "labelColor": "#000000",
+                    "drawGroupLabels": false,
+                    "drawEdgeLabels": false,
+                    "drawLabels": true,
+                    "edgeDirectionalRender": "outgoing",
+                    "edgeUnselectedOpacity": 0.2,
+                    "edgeSaturation": 1,
+                    "edgeTaperScale": 0.5,
+                    "edgeTaper": false,
+                    "edgeDirectional": false,
+                    "edgePath": true,
+                    "edgeCurvature": 0,
+                    "drawEdges": false,
+                    "testSignificance": false,
+                    "aggNodeBackgroundColor": "#ffffff",
+                    "aggNodeShowCount": false,
+                    "aggNodeRenderStyle": "full-donut",
+                    "aggNodeMaxSize": 30,
+                    "aggNodeMinSize": 6,
+                    "aggNodeSizeScale": 1,
+                    "aggregationHeight": 10,
+                    "aggregationWidth": 10,
+                    "disableAggregation": true,
+                    "disableAggregationLevel": 10,
+                    "showNodeDetailOnLoad": false,
+                    "nodeFocusNeighborsBefore": null,
+                    "nodeFocusNeighborsButton": true,
+                    "nodeFocusShowNeighbors": true,
+                    "nodeFocusRenderTemplate": "node-right-panel",
+                    "nodeFocusContext": "click",
+                    "nodeFocusShow": true,
+                    "nodePopRepositionNeighbors": false,
+                    "nodePopReleaseContext": "hover-out",
+                    "nodePopTriggerContext": "hover",
+                    "nodePopDelay": 1500,
+                    "nodePopShow": false,
+                    "nodePopMenuFuncs": [
+                        "afunc",
+                        "bfunc",
+                        "cfunc"
+                    ],
+                    "nodePopMenuShow": false,
+                    "nodePopImageAttr": "Photo",
+                    "nodePopImageShow": true,
+                    "nodePopSize": 2,
+                    "nodeSelectionDegree": 1,
+                    "nodeSelectionColor": "rgb(200,0,0)",
+                    "nodeSelectionColorStrategy": "node-color-light",
+                    "nodeSelectionBorderWidth": 3,
+                    "nodeSelectionBorderOffset": 0,
+                    "nodeSelectionRatio": 1.2,
+                    "nodeHighlightColor": "rgb(200,0,0)",
+                    "nodeHighlightColorStrategy": "node-color-light",
+                    "nodeHighlightBorderWidth": 1,
+                    "nodeHighlightBorderOffset": 6,
+                    "nodeHighlightRatio": 1.2,
+                    "nodeColorDensityOrder": true,
+                    "nodeColorDensity": 1,
+                    "nodeColorDensityAttr": "OriginalSize",
+                    "nodeColorDensityStrategy": "fixed",
+                    "nodeUnselectedOpacity": 0.25,
+                    "nodeOpacityStrategy": "fixed",
+                    "nodeOpacityAttr": "OriginalSize",
+                    "nodeOpacity": 1,
+                    "invalidNodeColor": "rgb(250,250,250)",
+                    "nodeImageAttr": "Photo",
+                    "nodeImageShow": true,
+                    "bigOnTop": false,
+                    "borderRatio": 0.15,
+                    "drawSelectedInHover": true,
+                    "drawNodes": true,
+                    "version": 1.1
+                },
+                "gridSortAttr": "OriginalLabel",
+                "gridAttr": "Video",
+                "yaxis": "OriginalY",
+                "xaxis": "OriginalX",
+                "y_scaler_exponent": 2,
+                "y_scaler_base": 2,
+                "y_scaler_type": "linear",
+                "x_scaler_exponent": 2,
+                "x_scaler_base": 2,
+                "x_scaler_type": "linear",
+                "listCompareIds": [],
+                "listColSizes": [
+                    300
+                ],
+                "listSortReverseAr": [],
+                "listSortAttrAr": [
+                    "Keyword_Theme"
+                ],
+                "listSortReverse": false,
+                "listAttrs": [
+                    "Keyword_Theme"
+                ],
+                "plotType": "grid"
+            },
+            "pinnedAttrs": [],
+            "author": {
+                "ref": "5a6f9c2003f1625904ac137e"
+            },
+            "type": "network"
+        },
+        {
+            "_id": "5f1a27b99fda690013e67f64",
+            "dateModified": "2020-07-24T00:13:45.419Z",
+            "networkId": "5e9c7c326100db001345996f",
+            "embed": "",
+            "text": "",
+            "picture": "",
+            "audio": "",
+            "descr": "<p><b>Network</b> - default\n\n<p><b>Attributes used to create network</b> - \n\n<p><b>Node color attribute</b> - Keyword_Theme\n\n<p><b>Node size attribute</b> - Engagement_Index\n\n",
+            "snapName": "default - cluster9",
+            "id": "snap-vc0lpn",
+            "processSelection": false,
+            "isEnabled": false,
+            "isDeleted": false,
+            "pinState": null,
+            "camera": {
+                "x": 0,
+                "y": -21893.147957848953,
+                "r": 1,
+                "normalizeCoords": true
+            },
+            "edSelState": [],
+            "ndSelState": [],
+            "layout": {
+                "xaxis": "OriginalX",
+                "yaxis": "OriginalY",
+                "gridAttr": "Photo",
+                "gridSortAttr": "OriginalLabel",
+                "settings": {
+                    "layoutId": "layout_565",
+                    "isGeo": false,
+                    "yaxis": "OriginalY",
+                    "xaxis": "OriginalX",
+                    "edgeColorNumericScalerType": "HCL Long",
+                    "edgeColorPaletteOrdinal": [
+                        {
+                            "col": "#ee4444"
+                        },
+                        {
+                            "col": "#cc6600"
+                        },
+                        {
+                            "col": "#0099ff"
+                        },
+                        {
+                            "col": "#ffcc00"
+                        },
+                        {
+                            "col": "#66cccc"
+                        },
+                        {
+                            "col": "#99cc00"
+                        },
+                        {
+                            "col": "#993399"
+                        },
+                        {
+                            "col": "#b23333"
+                        },
+                        {
+                            "col": "#994c00"
+                        },
+                        {
+                            "col": "#0073bf"
+                        },
+                        {
+                            "col": "#bf9900"
+                        },
+                        {
+                            "col": "#4c9999"
+                        },
+                        {
+                            "col": "#739900"
+                        },
+                        {
+                            "col": "#732673"
+                        }
+                    ],
+                    "edgeColorPaletteNumeric": [
+                        {
+                            "col": "#ee4444"
+                        },
+                        {
+                            "col": "#3399ff"
+                        }
+                    ],
+                    "edgeColorCycleCategoryColors": true,
+                    "edgeColorDefaultValue": "rgb(200,200,200)",
+                    "edgeColorNumericDomainMax": 100,
+                    "edgeColorNumericDomainMin": 0,
+                    "edgeColorNumericDomain": "from_data",
+                    "edgeColorScaleBase": 10,
+                    "edgeColorScaleExponent": 2.5,
+                    "edgeColorScaleInvert": false,
+                    "edgeColorScaleStrategy": "linear",
+                    "edgeColorAttr": "OriginalColor",
+                    "edgeColorStrat": "gradient",
+                    "edgeSizePartitionAttr": "Cluster",
+                    "edgeSizePartitionEnabled": false,
+                    "edgeSizeMultiplier": 0.2,
+                    "edgeSizeMax": 10,
+                    "edgeSizeMin": 0.1,
+                    "edgeSizeDefaultValue": 0.2,
+                    "edgeSizeNumericDomainMax": 100,
+                    "edgeSizeNumericDomainMin": 0,
+                    "edgeSizeNumericDomain": "from_data",
+                    "edgeSizeScaleBase": 10,
+                    "edgeSizeScaleExponent": 2.5,
+                    "edgeSizeScaleInvert": false,
+                    "edgeSizeScaleStrategy": "linear",
+                    "edgeSizeAttr": "weight",
+                    "edgeSizeStrat": "attr",
+                    "nodeColorNumericScalerType": "HCL Long",
+                    "nodeColorPaletteOrdinal": [
+                        {
+                            "col": "#ee4444"
+                        },
+                        {
+                            "col": "#cc6600"
+                        },
+                        {
+                            "col": "#0099ff"
+                        },
+                        {
+                            "col": "#ffcc00"
+                        },
+                        {
+                            "col": "#66cccc"
+                        },
+                        {
+                            "col": "#99cc00"
+                        },
+                        {
+                            "col": "#993399"
+                        },
+                        {
+                            "col": "#b23333"
+                        },
+                        {
+                            "col": "#994c00"
+                        },
+                        {
+                            "col": "#0073bf"
+                        },
+                        {
+                            "col": "#bf9900"
+                        },
+                        {
+                            "col": "#4c9999"
+                        },
+                        {
+                            "col": "#739900"
+                        },
+                        {
+                            "col": "#732673"
+                        }
+                    ],
+                    "nodeColorPaletteNumeric": [
+                        {
+                            "col": "#ee4444"
+                        },
+                        {
+                            "col": "#3399ff"
+                        }
+                    ],
+                    "nodeColorCycleCategoryColors": true,
+                    "nodeColorDefaultValue": "rgb(200,200,200)",
+                    "nodeColorNumericDomainMax": 100,
+                    "nodeColorNumericDomainMin": 0,
+                    "nodeColorNumericDomain": "from_data",
+                    "nodeColorScaleBase": 10,
+                    "nodeColorScaleExponent": 2.5,
+                    "nodeColorScaleInvert": false,
+                    "nodeColorScaleStrategy": "linear",
+                    "nodeColorAttr": "Keyword_Theme",
+                    "nodeColorStrat": "attr",
+                    "nodeSizePartitionAttr": "Cluster",
+                    "nodeSizePartitionEnabled": false,
+                    "nodeSizeMultiplier": 0.6,
+                    "nodeSizeMax": 20,
+                    "nodeSizeMin": 2,
+                    "nodeSizeDefaultValue": 7,
+                    "nodeSizeNumericDomainMax": 100,
+                    "nodeSizeNumericDomainMin": 0,
+                    "nodeSizeNumericDomain": "from_data",
+                    "nodeSizeScaleBase": 10,
+                    "nodeSizeScaleExponent": 2.5,
+                    "nodeSizeScaleInvert": false,
+                    "nodeSizeScaleStrategy": "linear",
+                    "nodeSizeAttr": "Engagement_Index",
+                    "nodeSizeStrat": "attr",
+                    "nodeOnDblClick": "select",
+                    "nodeOnClick": "select",
+                    "nodeOnHover": "expand",
+                    "mapboxMapID": "vibrantdata.ioeefmpb",
+                    "scatterAspect": 0.7,
+                    "invertY": true,
+                    "invertX": false,
+                    "yAxTooltip": "",
+                    "xAxTooltip": "",
+                    "yAxLabel": "",
+                    "xAxLabel": "",
+                    "yAxTickShow": true,
+                    "xAxTickShow": true,
+                    "yAxShow": true,
+                    "xAxShow": true,
+                    "legendSortIsReverse": true,
+                    "legendSortOption": "frequency",
+                    "enableLinkMapping": true,
+                    "showEntityEdgesLegend": true,
+                    "showEntityNodesLegend": true,
+                    "showGlobalEdgesLegend": true,
+                    "showGlobalNodesLegend": true,
+                    "legendTitleTooltip": "",
+                    "legendTitle": "",
+                    "entityLegendOn": true,
+                    "globalLegendOn": true,
+                    "hideLegend": false,
+                    "legendAutoOpen": true,
+                    "mouseZoomDuration": 500,
+                    "zoomingRatio": 1.7,
+                    "savedZoomLevel": 0,
+                    "minZoomLevel": -10,
+                    "maxZoomLevel": 10,
+                    "pinRightPanel": true,
+                    "panLock": false,
+                    "zoomLock": false,
+                    "backgroundPosition": "50%",
+                    "backgroundSize": "cover",
+                    "showBackgroundImage": false,
+                    "backgroundImage": "",
+                    "backgroundColor": "#ffffff",
+                    "theme": "light",
+                    "labelUnselectedOpacity": 0,
+                    "labelOpacity": 1,
+                    "labelDegree": 0,
+                    "labelClickAttr": "OriginalLabel",
+                    "labelHoverAttr": "OriginalLabel",
+                    "labelAttr": "OriginalLabel",
+                    "labelDefaultShow": true,
+                    "labelMaxCount": 300,
+                    "labelThreshold": 1,
+                    "labelDisplayStrat": "topXSizeCollision",
+                    "maxLabelSize": 16,
+                    "minLabelSize": 12,
+                    "defaultLabelSize": 12,
+                    "labelSizeRatio": 0.5,
+                    "labelScale": 1,
+                    "labelSize": "proportional",
+                    "labelOutlineColor": "#ffffff",
+                    "labelColor": "#000000",
+                    "drawGroupLabels": false,
+                    "drawEdgeLabels": false,
+                    "drawLabels": true,
+                    "edgeDirectionalRender": "outgoing",
+                    "edgeUnselectedOpacity": 0.2,
+                    "edgeSaturation": 1,
+                    "edgeTaperScale": 0.5,
+                    "edgeTaper": false,
+                    "edgeDirectional": false,
+                    "edgePath": true,
+                    "edgeCurvature": 0,
+                    "drawEdges": false,
+                    "testSignificance": false,
+                    "aggNodeBackgroundColor": "#ffffff",
+                    "aggNodeShowCount": false,
+                    "aggNodeRenderStyle": "full-donut",
+                    "aggNodeMaxSize": 30,
+                    "aggNodeMinSize": 6,
+                    "aggNodeSizeScale": 1,
+                    "aggregationHeight": 10,
+                    "aggregationWidth": 10,
+                    "disableAggregation": true,
+                    "disableAggregationLevel": 10,
+                    "showNodeDetailOnLoad": false,
+                    "nodeFocusTextLength": 100,
+                    "nodeFocusNeighborsBefore": null,
+                    "nodeFocusNeighborsButton": true,
+                    "nodeFocusShowNeighbors": true,
+                    "nodeFocusRenderTemplate": "node-right-panel",
+                    "nodeFocusContext": "click",
+                    "nodeFocusShow": true,
+                    "nodePopRepositionNeighbors": false,
+                    "nodePopReleaseContext": "hover-out",
+                    "nodePopTriggerContext": "hover",
+                    "nodePopDelay": 1500,
+                    "nodePopShow": false,
+                    "nodePopMenuFuncs": [
+                        "afunc",
+                        "bfunc",
+                        "cfunc"
+                    ],
+                    "nodePopMenuShow": false,
+                    "nodePopImageAttr": "Photo",
+                    "nodePopImageShow": true,
+                    "nodePopSize": 2,
+                    "nodeSelectionDegree": 1,
+                    "nodeSelectionColor": "rgb(200,0,0)",
+                    "nodeSelectionColorStrategy": "node-color-light",
+                    "nodeSelectionBorderWidth": 3,
+                    "nodeSelectionBorderOffset": 0,
+                    "nodeSelectionRatio": 1.2,
+                    "nodeHighlightColor": "rgb(200,0,0)",
+                    "nodeHighlightColorStrategy": "node-color-light",
+                    "nodeHighlightBorderWidth": 1,
+                    "nodeHighlightBorderOffset": 6,
+                    "nodeHighlightRatio": 1.2,
+                    "nodeColorDensityOrder": true,
+                    "nodeColorDensity": 1,
+                    "nodeColorDensityAttr": "OriginalSize",
+                    "nodeColorDensityStrategy": "fixed",
+                    "nodeUnselectedOpacity": 0.25,
+                    "nodeOpacityStrategy": "fixed",
+                    "nodeOpacityAttr": "OriginalSize",
+                    "nodeOpacity": 1,
+                    "invalidNodeColor": "rgb(250,250,250)",
+                    "nodeImageAttr": "Photo",
+                    "nodeImageShow": true,
+                    "bigOnTop": false,
+                    "borderRatio": 0.15,
+                    "drawSelectedInHover": true,
+                    "drawNodes": true,
+                    "version": 1.1
+                },
+                "y_scaler_exponent": 2,
+                "y_scaler_base": 2,
+                "y_scaler_type": "linear",
+                "x_scaler_exponent": 2,
+                "x_scaler_base": 2,
+                "x_scaler_type": "linear",
+                "listCompareIds": [],
+                "listColSizes": [
+                    300
+                ],
+                "listSortReverseAr": [],
+                "listSortAttrAr": [
+                    "Keyword_Theme"
+                ],
+                "listSortReverse": false,
+                "listAttrs": [
+                    "Keyword_Theme"
+                ],
+                "plotType": "grid"
+            },
+            "pinnedAttrs": [],
+            "author": {
+                "ref": "5a6f9c2003f1625904ac137e"
+            },
+            "type": "network"
+        },
+        {
+            "_id": "5f2421c3d5aedf0013586082",
+            "dateModified": "2020-07-31T13:50:59.185Z",
+            "networkId": "5e9c7c326100db001345996f",
+            "embed": "",
+            "text": "",
+            "picture": "",
+            "audio": "",
+            "descr": "<p>Talks are sorted horizontally by date published and vertically by &#34;popularity&#34;. Since some topics (e.g. pop psychology or business leadership) are more inherently more popular than others (e.g. physics), the views of each talk are indexed relative to the median views of its keyword theme. Talks above the zero line had more views than expected relative to the typical talk of its keyword theme. If you hover on or select a talk, the links display other talks with the most similar keywords. If you hover over Keyword Theme in the <b>Legend</b>, or any tags in the <b>Filters</b>, you can see the popularity trends for that theme or tag over time. </p><p><br/></p><p><i>Colored by:  </i>Keyword Theme</p><p><i>Sized by: </i>Total Views</p>",
+            "summaryImg": "5f2421c3d5aedf0013586082.png",
+            "subtitle": "",
+            "snapName": "Popularity vs Time",
+            "id": "snap-tki8q4",
+            "processSelection": false,
+            "isEnabled": false,
+            "isDeleted": false,
+            "pinState": null,
+            "camera": {
+                "x": -16.11183756015334,
+                "y": -17.097877511124562,
+                "r": 1.7039160608749573,
+                "normalizeCoords": true
+            },
+            "edSelState": [],
+            "ndSelState": [],
+            "layout": {
+                "xaxis": "Published Date",
+                "yaxis": "Views Relative to Theme Avg",
+                "settings": {
+                    "version": 1.1,
+                    "drawNodes": true,
+                    "drawSelectedInHover": true,
+                    "borderRatio": 0.15,
+                    "bigOnTop": false,
+                    "nodeImageShow": true,
+                    "nodeImageAttr": "Photo",
+                    "invalidNodeColor": "rgb(250,250,250)",
+                    "nodeOpacity": 1,
+                    "nodeOpacityAttr": "OriginalSize",
+                    "nodeOpacityStrategy": "fixed",
+                    "nodeUnselectedOpacity": 0.25,
+                    "nodeColorDensityStrategy": "fixed",
+                    "nodeColorDensityAttr": "OriginalSize",
+                    "nodeColorDensity": 1,
+                    "nodeColorDensityOrder": true,
+                    "nodeHighlightRatio": 1.2,
+                    "nodeHighlightBorderOffset": 6,
+                    "nodeHighlightBorderWidth": 1,
+                    "nodeHighlightColorStrategy": "node-color-light",
+                    "nodeHighlightColor": "rgb(200,0,0)",
+                    "nodeSelectionRatio": 1.2,
+                    "nodeSelectionBorderOffset": 0,
+                    "nodeSelectionBorderWidth": 3,
+                    "nodeSelectionColorStrategy": "node-color-light",
+                    "nodeSelectionColor": "rgb(200,0,0)",
+                    "nodeSelectionDegree": 1,
+                    "nodePopSize": 2,
+                    "nodePopImageShow": true,
+                    "nodePopImageAttr": "Photo",
+                    "nodePopMenuShow": false,
+                    "nodePopMenuFuncs": [
+                        "afunc",
+                        "bfunc",
+                        "cfunc"
+                    ],
+                    "nodePopShow": false,
+                    "nodePopDelay": 1500,
+                    "nodePopTriggerContext": "hover",
+                    "nodePopReleaseContext": "hover-out",
+                    "nodePopRepositionNeighbors": false,
+                    "nodeFocusShow": true,
+                    "nodeFocusContext": "click",
+                    "nodeFocusRenderTemplate": "node-right-panel",
+                    "nodeFocusShowNeighbors": true,
+                    "nodeFocusNeighborsButton": true,
+                    "nodeFocusNeighborsBefore": null,
+                    "nodeFocusTextLength": 100,
+                    "showNodeDetailOnLoad": false,
+                    "disableAggregationLevel": 10,
+                    "disableAggregation": true,
+                    "aggregationWidth": 10,
+                    "aggregationHeight": 10,
+                    "aggNodeSizeScale": 1,
+                    "aggNodeMinSize": 6,
+                    "aggNodeMaxSize": 30,
+                    "aggNodeRenderStyle": "full-donut",
+                    "aggNodeShowCount": false,
+                    "aggNodeBackgroundColor": "#ffffff",
+                    "testSignificance": false,
+                    "drawEdges": false,
+                    "edgeCurvature": 0.6,
+                    "edgePath": true,
+                    "edgeDirectional": false,
+                    "edgeTaper": false,
+                    "edgeTaperScale": 0.5,
+                    "edgeSaturation": 1,
+                    "edgeUnselectedOpacity": 0.2,
+                    "edgeDirectionalRender": "outgoing",
+                    "drawLabels": true,
+                    "drawEdgeLabels": false,
+                    "drawGroupLabels": false,
+                    "labelColor": "#000000",
+                    "labelOutlineColor": "#ffffff",
+                    "labelSize": "proportional",
+                    "labelScale": 1,
+                    "labelSizeRatio": 0.5,
+                    "defaultLabelSize": 12,
+                    "minLabelSize": 12,
+                    "maxLabelSize": 16,
+                    "labelDisplayStrat": "topXSizeCollision",
+                    "labelThreshold": 1,
+                    "labelMaxCount": 300,
+                    "labelDefaultShow": true,
+                    "labelAttr": "OriginalLabel",
+                    "labelHoverAttr": "OriginalLabel",
+                    "labelClickAttr": "OriginalLabel",
+                    "labelDegree": 0,
+                    "labelOpacity": 1,
+                    "labelUnselectedOpacity": 0,
+                    "theme": "light",
+                    "backgroundColor": "#ffffff",
+                    "backgroundImage": "",
+                    "showBackgroundImage": false,
+                    "backgroundSize": "cover",
+                    "backgroundPosition": "50%",
+                    "zoomLock": false,
+                    "panLock": false,
+                    "pinRightPanel": true,
+                    "maxZoomLevel": 10,
+                    "minZoomLevel": -10,
+                    "savedZoomLevel": 0,
+                    "zoomingRatio": 1.7,
+                    "mouseZoomDuration": 500,
+                    "legendAutoOpen": true,
+                    "hideLegend": false,
+                    "globalLegendOn": true,
+                    "entityLegendOn": true,
+                    "legendTitle": "",
+                    "legendTitleTooltip": "",
+                    "showGlobalNodesLegend": true,
+                    "showGlobalEdgesLegend": true,
+                    "showEntityNodesLegend": true,
+                    "showEntityEdgesLegend": true,
+                    "enableLinkMapping": true,
+                    "legendSortOption": "frequency",
+                    "legendSortIsReverse": true,
+                    "xAxShow": true,
+                    "yAxShow": true,
+                    "xAxTickShow": true,
+                    "yAxTickShow": true,
+                    "xAxLabel": "",
+                    "yAxLabel": "",
+                    "xAxTooltip": "",
+                    "yAxTooltip": "",
+                    "invertX": false,
+                    "invertY": true,
+                    "scatterAspect": 0.7,
+                    "mapboxMapID": "vibrantdata.ioeefmpb",
+                    "nodeOnHover": "expand",
+                    "nodeOnClick": "select",
+                    "nodeOnDblClick": "select",
+                    "nodeSizeStrat": "attr",
+                    "nodeSizeAttr": "Views",
+                    "nodeSizeScaleStrategy": "log",
+                    "nodeSizeScaleInvert": false,
+                    "nodeSizeScaleExponent": 2.5,
+                    "nodeSizeScaleBase": 10,
+                    "nodeSizeNumericDomain": "from_data",
+                    "nodeSizeNumericDomainMin": 0,
+                    "nodeSizeNumericDomainMax": 100,
+                    "nodeSizeDefaultValue": 7,
+                    "nodeSizeMin": 4,
+                    "nodeSizeMax": 20,
+                    "nodeSizeMultiplier": 0.7,
+                    "nodeSizePartitionEnabled": false,
+                    "nodeSizePartitionAttr": "Cluster",
+                    "nodeColorStrat": "attr",
+                    "nodeColorAttr": "Keyword_Theme",
+                    "nodeColorScaleStrategy": "linear",
+                    "nodeColorScaleInvert": false,
+                    "nodeColorScaleExponent": 2.5,
+                    "nodeColorScaleBase": 10,
+                    "nodeColorNumericDomain": "from_data",
+                    "nodeColorNumericDomainMin": 0,
+                    "nodeColorNumericDomainMax": 100,
+                    "nodeColorDefaultValue": "rgb(200,200,200)",
+                    "nodeColorCycleCategoryColors": true,
+                    "nodeColorPaletteNumeric": [
+                        {
+                            "col": "#ee4444"
+                        },
+                        {
+                            "col": "#3399ff"
+                        }
+                    ],
+                    "nodeColorPaletteOrdinal": [
+                        {
+                            "col": "#ee4444"
+                        },
+                        {
+                            "col": "#cc6600"
+                        },
+                        {
+                            "col": "#0099ff"
+                        },
+                        {
+                            "col": "#ffcc00"
+                        },
+                        {
+                            "col": "#66cccc"
+                        },
+                        {
+                            "col": "#99cc00"
+                        },
+                        {
+                            "col": "#993399"
+                        },
+                        {
+                            "col": "#b23333"
+                        },
+                        {
+                            "col": "#994c00"
+                        },
+                        {
+                            "col": "#0073bf"
+                        },
+                        {
+                            "col": "#bf9900"
+                        },
+                        {
+                            "col": "#4c9999"
+                        },
+                        {
+                            "col": "#739900"
+                        },
+                        {
+                            "col": "#732673"
+                        }
+                    ],
+                    "nodeColorNumericScalerType": "HCL Long",
+                    "edgeSizeStrat": "attr",
+                    "edgeSizeAttr": "weight",
+                    "edgeSizeScaleStrategy": "linear",
+                    "edgeSizeScaleInvert": false,
+                    "edgeSizeScaleExponent": 2.5,
+                    "edgeSizeScaleBase": 10,
+                    "edgeSizeNumericDomain": "from_data",
+                    "edgeSizeNumericDomainMin": 0,
+                    "edgeSizeNumericDomainMax": 100,
+                    "edgeSizeDefaultValue": 0.2,
+                    "edgeSizeMin": 0.1,
+                    "edgeSizeMax": 10,
+                    "edgeSizeMultiplier": 0.4,
+                    "edgeSizePartitionEnabled": false,
+                    "edgeSizePartitionAttr": "Cluster",
+                    "edgeColorStrat": "gradient",
+                    "edgeColorAttr": "OriginalColor",
+                    "edgeColorScaleStrategy": "linear",
+                    "edgeColorScaleInvert": false,
+                    "edgeColorScaleExponent": 2.5,
+                    "edgeColorScaleBase": 10,
+                    "edgeColorNumericDomain": "from_data",
+                    "edgeColorNumericDomainMin": 0,
+                    "edgeColorNumericDomainMax": 100,
+                    "edgeColorDefaultValue": "rgb(200,200,200)",
+                    "edgeColorCycleCategoryColors": true,
+                    "edgeColorPaletteNumeric": [
+                        {
+                            "col": "#ee4444"
+                        },
+                        {
+                            "col": "#3399ff"
+                        }
+                    ],
+                    "edgeColorPaletteOrdinal": [
+                        {
+                            "col": "#ee4444"
+                        },
+                        {
+                            "col": "#cc6600"
+                        },
+                        {
+                            "col": "#0099ff"
+                        },
+                        {
+                            "col": "#ffcc00"
+                        },
+                        {
+                            "col": "#66cccc"
+                        },
+                        {
+                            "col": "#99cc00"
+                        },
+                        {
+                            "col": "#993399"
+                        },
+                        {
+                            "col": "#b23333"
+                        },
+                        {
+                            "col": "#994c00"
+                        },
+                        {
+                            "col": "#0073bf"
+                        },
+                        {
+                            "col": "#bf9900"
+                        },
+                        {
+                            "col": "#4c9999"
+                        },
+                        {
+                            "col": "#739900"
+                        },
+                        {
+                            "col": "#732673"
+                        }
+                    ],
+                    "edgeColorNumericScalerType": "HCL Long",
+                    "xaxis": "OriginalX",
+                    "yaxis": "OriginalY",
+                    "isGeo": false,
+                    "layoutId": "layout_12"
+                },
+                "y_scaler_exponent": 2,
+                "y_scaler_base": 10,
+                "y_scaler_type": "linear",
+                "x_scaler_exponent": 2,
+                "x_scaler_base": 10,
+                "x_scaler_type": "linear",
+                "listCompareIds": [],
+                "listColSizes": [],
+                "listSortReverseAr": [],
+                "listSortAttrAr": [],
+                "listSortReverse": false,
+                "listAttrs": [],
+                "plotType": "scatterplot"
+            },
+            "pinnedAttrs": [],
+            "author": {
+                "ref": "5a6f9c2003f1625904ac137e"
+            },
+            "type": "network"
+        }
+    ]
+}

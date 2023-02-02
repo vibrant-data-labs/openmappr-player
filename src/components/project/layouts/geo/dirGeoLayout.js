@@ -47,10 +47,11 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
         // still see it as "moved".
         this._resetStateTimeout = setTimeout(L.Util.bind(this._resetState, this), 0);
     
-        var point = this._map.mouseEventToContainerPoint(e);
+        var point = this._map.mouseEventToLayerPoint(e);
+        
         var bounds = new L.LatLngBounds(
-            this._map.containerPointToLatLng(this._startLayerPoint),
-            this._map.containerPointToLatLng(point)
+            this._map.layerPointToLatLng(this._startLayerPoint),
+            this._map.layerPointToLatLng(point)
         );
 
         if (typeof onBoxZoomEnd === 'function') {

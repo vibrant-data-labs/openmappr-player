@@ -2,6 +2,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 const { CleanPlugin } = require('webpack');
 const mapping = require('./mapping.json');
 const glob = require('glob')
@@ -38,6 +39,16 @@ const jadeReplacer = [
     }
 ]
 
+const templateParameters = {
+    player_prefix_index_source: isProduction ? mapping.sourceUrl : '',
+    player_prefix_index: isProduction ? `${mapping.sourceUrl}/partials` : '/partials',
+    gtag_id: mapping.gtag,
+    playerTitle: 'network visualization',
+    backgroundColor: '#fff',
+    colorTheme: 'light',
+    playerDataPath: 'data/'
+};
+
 const jadeTemplateFiles = glob.sync('./src/**/!(index).jade').map(name => {
     const outputName = jadeReplacer
         .reduce((acc, cv) => acc.replace(cv.pathPrefix, cv.replaceWith), name)
@@ -48,10 +59,12 @@ const jadeTemplateFiles = glob.sync('./src/**/!(index).jade').map(name => {
         filename: outputName,
         chunks: ['player'],
         inject: false,
+        templateParameters,
     })
 });
 
 const extraChunks = [
+    'jquery',
     'angular',
     'angular-loading-bar',
     'angular-touch',
@@ -69,12 +82,9 @@ const extraChunks = [
 
 module.exports = {
     mode: isProduction ? 'production' : 'development',
-    devtool: isProduction ? 'source-map' : 'eval-cheap-module-source-map',
+    devtool: isProduction ? 'source-map' : 'eval-cheap-source-map',
     entry: {
-        player: {
-            import: './src/player.js',
-            dependOn: extraChunks,
-        },
+        player: './src/player.js',
         vendor: './src/vendor.js',
         worker: './src/worker/searchWorker.js',
         ...extraChunks.reduce((acc, cur) => {
@@ -89,13 +99,6 @@ module.exports = {
         filename: (pathData) => {
             return jsOutputMapping[pathData.chunk.name] ?? '/libs/[name].js';
         },
-    },
-    optimization: {
-        runtimeChunk: 'single',
-        minimize: isProduction,
-        minimizer: [
-            new CssMinimizerPlugin(),
-        ]
     },
     module: {
         rules: [
@@ -137,14 +140,21 @@ module.exports = {
                 test: /\.css$/,
                 use: [
                     MiniCssExtractPlugin.loader,
-                    { loader: "css-loader" }
+                    {
+                        loader: "css-loader",
+                        options: {
+                            modules: false
+                        }
+                    }
                 ]
             },
             {
                 test: /\.scss$/,
+                type: 'asset/resource',
+                generator: {
+                    filename: 'css/player.debug.css',
+                },
                 use: [
-                    MiniCssExtractPlugin.loader,
-                    { loader: "css-loader" },
                     {
                         loader: "sass-loader",
                         options: {
@@ -162,13 +172,26 @@ module.exports = {
             },
             {
                 test: /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
-                loader: 'file-loader',
+                type: 'asset/resource',
             },
             {
                 test: /\.(png|jpg)$/,
-                use: "file-loader",
+                type: 'asset/resource',
             }
         ]
+    },
+    devServer: {
+        static: {
+            directory: path.join(__dirname, 'build'),
+        },
+        hot: true,
+        compress: true,
+        client: {
+            overlay: {
+                warnings: false,
+            },
+        },
+        port: 9090,
     },
     plugins: [
         new CleanPlugin({
@@ -180,14 +203,7 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: "./src/index.jade",
             inject: false,
-            templateParameters: {
-                player_prefix_index_source: isProduction ? mapping.sourceUrl : '',
-                player_prefix_index: isProduction ? `${mapping.sourceUrl}/partials` : '/partials',
-                gtag_id: mapping.gtag,
-                playerTitle: 'network visualization',
-                backgroundColor: '#fff',
-                colorTheme: 'light',
-            },
+            templateParameters,
         }),
         ...jadeTemplateFiles,
         new MiniCssExtractPlugin({
@@ -195,5 +211,13 @@ module.exports = {
                 return cssOutputMapping[pathData.chunk.name] ?? 'css/[name].min.css';
             }
         }),
+        new CopyPlugin({
+            patterns: [
+                { from: 'assets/style/css/mappr-icons/style.css', to: 'css/mappr-icons/style.css' },
+                { from: 'assets/fonts', to: 'fonts' },
+                { from: 'assets/img', to: 'img' },
+                { from: 'assets/data', to: 'data' },
+            ]
+        })
     ]
 }
