@@ -1,4 +1,0 @@
-.scroll-overlay-anchors(ng-class="{'active': activateOrbit}" ng-if="anchorAttrs.length != 0" style="border-color: {{nodeColorStr}};")
-	.circles.clockspin
-		.circle.anticlockspin(ng-repeat="attr in anchorAttrs" data-id="{{attr.id}}" uib-tooltip="{{attr.title}}" tooltip-append-to-body="true" ng-click="scrollToAttr(attr);" ng-style="getAttrCircleStyle(attr);" ng-mouseenter="setHoverColor($event);" ng-mouseleave="clearHoverColor($event, attr.id);")
-			i(ng-class="getAttrIconClass(attr)")
