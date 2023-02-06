@@ -117,7 +117,7 @@ angular.module('hcApp', [
         }
     ])
 
-    .config(function ($sceDelegateProvider) {
+    .config(['$sceDelegateProvider', function ($sceDelegateProvider) {
         $sceDelegateProvider.resourceUrlWhitelist([
             // Allow same origin resource loads.
             'self',
@@ -126,14 +126,14 @@ angular.module('hcApp', [
             'http://d1vk2agkq7tezn.cloudfront.net/**',
             '#{player_prefix_index_source}/**'
         ]);
-    })
+    }])
 
     //Hack for logging all broadcast/emit messages
-    .config(function ($provide) {
+    .config(['$provide', function ($provide) {
 
         //Log only for non-production environments
         if (!_.contains(document.location.host.split('.'), 'mappr')) {
-            $provide.decorator('$rootScope', function ($delegate) {
+            $provide.decorator('$rootScope', ["$delegate" ,function ($delegate) {
                 var Scope = $delegate.constructor,
                     origBroadcast = Scope.prototype.$broadcast,
                     origEmit = Scope.prototype.$emit;
@@ -153,14 +153,14 @@ angular.module('hcApp', [
                 };
 
                 return $delegate;
-            });
+            }]);
         }
 
-    })
+    }])
 
-    .config(function ($animateProvider) {
+    .config(['$animateProvider', function ($animateProvider) {
         $animateProvider.classNameFilter(/^((?!(no-animate)).)*$/);
-    })
+    }])
 
     .constant('BROADCAST_MESSAGES', {
         overNodes: 'overNodes',

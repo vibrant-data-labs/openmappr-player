@@ -1,5 +1,5 @@
 angular.module('common')
-    .directive('dirElemReady', function ($parse, $timeout) {
+    .directive('dirElemReady', ["$parse", "$timeout", function ($parse, $timeout) {
         return {
             restrict: 'A',
             link: function ($scope, elem, attrs) {
@@ -12,4 +12,4 @@ angular.module('common')
                 });
             }
         }
-    })
+    }])

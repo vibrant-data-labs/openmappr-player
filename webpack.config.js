@@ -2,6 +2,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+const TerserPlugin = require("terser-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 const { CleanPlugin } = require('webpack');
 const mapping = require('./mapping.json');
@@ -63,22 +64,41 @@ const jadeTemplateFiles = glob.sync('./src/**/!(index).jade').map(name => {
     })
 });
 
-const extraChunks = [
-    'jquery',
-    'angular',
-    'angular-loading-bar',
-    'angular-touch',
-    'angular-route',
-    'angular-sanitize',
-    'angular-animate',
-    'angular-cookies',
-    'angular-ui-bootstrap',
-    'angular-simple-logger',
-    'angular-scroll',
-    'ng-device-detector',
-    'angular-audio',
-    'angular-vs-repeat',
-    'angular-intro.js']
+const externalLibs = {
+    'libs/es5-shim.min.js': './node_modules/es5-shim/es5-shim.min.js',
+    'libs/jquery.min.js': './node_modules/jquery/dist/jquery.min.js',
+    'libs/jquery-ui.min.js': './node_modules/jquery-ui/dist/jquery-ui.min.js',
+    'libs/angular.min.js': './node_modules/angular/angular.min.js',
+    'libs/angular-resource.min.js': './node_modules/angular-resource/angular-resource.min.js',
+    'libs/angular-cookies.min.js': './node_modules/angular-cookies/angular-cookies.min.js',
+    'libs/angular-sanitize.min.js': './node_modules/angular-sanitize/angular-sanitize.min.js',
+    'libs/angular-scroll.min.js': './node_modules/angular-scroll/angular-scroll.min.js',
+    'libs/angular-route.min.js': './node_modules/angular-route/angular-route.min.js',
+    'libs/angular-animate.min.js': './node_modules/angular-animate/angular-animate.min.js',
+    'libs/angular-touch.min.js': './node_modules/angular-touch/angular-touch.min.js',
+    'libs/angular-simple-logger.min.js': './node_modules/angular-simple-logger/dist/angular-simple-logger.min.js',
+    'libs/angular-ui-bootstrap.min.js': './node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js',
+    'libs/angular-vs-repeat.min.js': './node_modules/angular-vs-repeat/src/angular-vs-repeat.min.js',
+    'libs/json3.min.js': './node_modules/json3/lib/json3.min.js',
+    'libs/lodash.min.js': './node_modules/lodash/index.js',
+    'libs/leaflet.js': './node_modules/leaflet/dist/leaflet.js',
+    'libs/angular-leaflet-directive.min.js': './node_modules/angular-leaflet-directive/dist/angular-leaflet-directive.min.js',
+    'libs/angular-loading-bar.min.js': './node_modules/angular-loading-bar/build/loading-bar.min.js',
+    'libs/d3.min.js': './node_modules/d3/d3.min.js',
+    'libs/snap.svg-min.js': './node_modules/snapsvg/dist/snap.svg-min.js',
+    'libs/ng-infinite-scroll.min.js': './node_modules/ng-infinite-scroll/build/ng-infinite-scroll.min.js',
+    'libs/re-tree.min.js': './node_modules/re-tree/re-tree.min.js',
+    'libs/slider.min.js': './node_modules/angular-ui-slider/src/slider.js',
+    'libs/ng-device-detector.min.js': './node_modules/ng-device-detector/ng-device-detector.min.js',
+    'libs/bootstrap-notify.min.js': './node_modules/bootstrap-notify/bootstrap-notify.min.js',
+    'libs/toastr.min.js': './node_modules/toastr/build/toastr.min.js',
+    'libs/moment.min.js': './node_modules/moment/min/moment.min.js',
+    'libs/twix.min.js': './node_modules/twix/dist/twix.min.js',
+    'libs/angular.audio.js': './node_modules/angular-audio/app/angular.audio.js',
+    'libs/intro.min.js': './node_modules/intro.js/minified/intro.min.js',
+    'libs/angular-intro.js': './node_modules/angular-intro.js/build/angular-intro.min.js',
+    'libs/html2canvas.min.js': './node_modules/html2canvas/dist/html2canvas.min.js',
+}
 
 module.exports = {
     mode: isProduction ? 'production' : 'development',
@@ -87,12 +107,6 @@ module.exports = {
         player: './src/player.js',
         vendor: './src/vendor.js',
         worker: './src/worker/searchWorker.js',
-        ...extraChunks.reduce((acc, cur) => {
-            return {
-                ...acc,
-                [cur]: cur,
-            }
-        }, {}),
     },
     output: {
         path: path.resolve(__dirname, 'build'),
@@ -180,6 +194,18 @@ module.exports = {
             }
         ]
     },
+    optimization: {
+        minimize: true,
+        minimizer: [
+            new CssMinimizerPlugin(),
+            new TerserPlugin({
+                test: /\.js(\?.*)?$/i,
+            })
+            // ...(isProduction ? [new TerserPlugin({
+            //     test: /\.js(\?.*)?$/i,
+            // })] : []),
+        ]
+    },
     devServer: {
         static: {
             directory: path.join(__dirname, 'build'),
@@ -217,6 +243,7 @@ module.exports = {
                 { from: 'assets/fonts', to: 'fonts' },
                 { from: 'assets/img', to: 'img' },
                 { from: 'assets/data', to: 'data' },
+                ...Object.keys(externalLibs).map((key) => ({ from: externalLibs[key], to: key }))
             ]
         })
     ]
