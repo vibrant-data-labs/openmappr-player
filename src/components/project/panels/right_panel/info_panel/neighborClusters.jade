@@ -1,0 +1,21 @@
+.info-item(ng-if="neighborGroups.length != 0")
+	ul.list-unstyled.panel-list
+		li.panel-item.list-item.no-hover
+			.row.vert-align
+				.col-xs-2
+				.col-xs-8
+					h6.less-gutter Neighbouring Groups:
+				.col-xs-2.pointable-cursor
+					
+		li.panel-item.list-item.pointable-cursor.no-animate(ng-repeat="neighbor in neighborGroups" ng-click="selectGroup(neighbor)" ng-mouseenter="hoverGroup(neighbor, $event);" ng-mouseleave="unHoverGroup(neighbor, $event);")
+			.row.vert-align
+				.col-xs-2
+					.big-circle(style="background: {{neighbor.colorStr}};")
+				.col-xs-8
+					h6.less-gutter.truncate(uib-tooltip="{{neighbor.label}}" tooltip-placement="right" tooltip-append-to-body="true") {{neighbor.name}}
+				.col-xs-2
+		li.panel-item.list-item.pointable-cursor.no-animate(ng-if="neighborGroups.length === 0")
+			.row.vert-align
+				.col-xs-2
+				.col-xs-10
+					h6 No connected groups

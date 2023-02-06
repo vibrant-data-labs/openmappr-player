@@ -1,8 +1,0 @@
-.user(ng-repeat="link in links", style="cursor:pointer;", ng-mouseover="onHover(link)", ng-mouseleave="onHoverOut()", ng-click="onNeighborClick(link)")
-    .img-user
-        img(ng-if="!ui.imageShow", src="https://ui-avatars.com/api/?rounded=true&color=FFFFFF&bold=true&size=42&name={{link.name.name}}&background={{link.colorStr}}")
-        div(ng-if="ui.imageShow", style="cursor:pointer; background: url({{link.linkNodeImage}}); width: 45px; height: 45px; border-radius: 50%; background-size: cover; background-position: center;")
-    .info-user
-        p(uib-tooltip="{{link.name.name}}" tooltip-placement="top")
-            h6 {{link.name.name}}
-        p {{link.name.description}}

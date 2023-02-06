@@ -1,0 +1,424 @@
+//
+// CSS Animations
+// List of animations for use throughout the player and app
+
+// keyframes mixin
+@mixin keyframes($name) {
+    @-webkit-keyframes #{$name} {
+        @content;
+    }
+    @-moz-keyframes #{$name} {
+        @content;
+    }
+    @-o-keyframes #{$name} {
+        @content;
+    }
+    @keyframes #{$name} {
+        @content;
+    }
+}
+
+@mixin animation($animation) {
+    -webkit-animation: $animation;
+    -moz-animation: $animation;
+    -o-animation: $animation;
+    animation: $animation;
+}
+
+//animate-fade
+@include keyframes(fade-enter) {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+@include keyframes(fade-leave) {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+.animate-fade,
+.animate-fade.ng-enter {
+    @include animation(0.7s fade-enter);
+}
+.animate-fade.ng-leave,
+.animate-fade.ng-hide-add {
+    display: none;
+}
+
+
+//animate down opening
+@include keyframes(open-down-enter) {
+    0% {
+        max-height: 0;
+    }
+
+    100% {
+        max-height: 2000px;
+        max-height: 100vh;
+    }
+}
+
+//animate down opening
+@include keyframes(open-down-leave) {
+
+    0% {
+        max-height: 2000px;
+        max-height: 100vh;
+    }
+
+    100% {
+        max-height: 0;
+    }
+}
+
+// .animate-open-down.ng-enter {
+//     @include animation(.8s open-down-enter);
+// }
+// .animate-open-down.ng-leave {
+//     @include animation(.8s open-down-leave);
+// }
+//
+// .animate-open-down-show.ng-hide-remove {
+//     transition: 0.8s linear max-height;
+//     max-height: 0;
+// }
+// .animate-open-down-show.ng-hide-remove-active {
+//     max-height: 100vh;
+// }
+// .animate-open-down-show.ng-hide-add {
+//     transition: 0.8s linear max-height;
+//     max-height: 100vh;
+// }
+// .animate-open-down-show.ng-hide-add-active {
+//     max-height: 0;
+// }
+
+.animate-hidden-panel-btns {
+    box-sizing: border-box;
+}
+
+.animate-hidden-panel-btns.ng-hide-remove {
+    transition: 0.1s linear all 0.5s;
+    height: 0;
+    padding: 0 10px !important;
+}
+.animate-hidden-panel-btns.ng-hide-remove-active {
+    height: 30px;
+    padding: 8px 10px;
+}
+.animate-hidden-panel-btns.ng-hide-add {
+    transition: 0.1s linear all 0.5s;
+    height: 30px;
+    padding: 8px 10px;
+}
+.animate-hidden-panel-btns.ng-hide-add-active {
+    height: 0;
+    padding: 0 10px !important;
+}
+
+
+
+// left slide
+@include keyframes(slideInLeft) {
+    0% {
+        opacity:0;
+        transform: translate(100%, 0);
+    }
+
+    100% {
+        opacity:1;
+        transform: translate(0, 0);
+    }
+}
+@include keyframes(slideInLeftNoFade) {
+    0% {
+        transform: translate(100%, 0);
+    }
+
+    100% {
+        transform: translate(0, 0);
+    }
+}
+
+@include keyframes(slideOverLeft) {
+    0% {
+        transform: translate(0, 0);
+    }
+
+    100% {
+        transform: translate(-100%, 0);
+    }
+}
+
+
+@include keyframes(slideInRightNoFade) {
+    0% {
+        transform: translate(-100%, 0);
+    }
+
+    100% {
+        transform: translate(0, 0);
+    }
+}
+@include keyframes (slideOutLeft) {
+
+    0% {
+        opacity:1;
+        transform: translate(0, 0);
+    }
+
+
+    100% {
+        opacity:0;
+        transform: translate(100%, 0);
+    }
+}
+@include keyframes (slideOutLeftFade) {
+    0% {
+        opacity:1
+    }
+
+    100% {
+        opacity:0;
+    }
+}
+
+
+.animate-node-right,
+.animate-node-right.ng-enter {
+    @include animation(225ms slideInLeft);
+}
+.animate-node-right.ng-leave,
+.animate-node-right.ng-hide-add {
+    display: none;
+}
+
+.animate-to-left,
+.animate-to-left.ng-enter
+.animate-to-left-fade-out,
+.animate-to-left-fade-out.ng-enter {
+    @include animation(.3s slideInLeft ease-out);
+}
+
+
+.animate-to-left-no-fade-in,
+.animate-to-left-no-fade-in.ng-enter {
+    @include animation(.3s slideInLeftNoFade ease-out);
+}
+
+
+.animate-to-right-no-fade-in,
+.animate-to-right-no-fade-in.ng-enter {
+    @include animation(.3s slideInRightNoFade ease-out .1s);
+}
+
+.animate-to-left-no-fade-in.ng-leave,
+.animate-to-left-no-fade-in.ng-hide-add {
+    display: none;
+
+}
+
+.animate-to-left.ng-leave,
+.animate-to-left.ng-hide-add {
+    @include animation(.3s slideOutLeft ease-out);
+
+}
+
+.animate-to-left-fade-out.ng-leave {
+    @include animation(.7s slideOutLeftFade ease-out .5s);
+
+}
+
+
+// top slide
+@include keyframes(slideInFromBottom) {
+    0% {
+        transform: translate(0, 100%);
+    }
+
+    100% {
+        transform: translate(0, 0);
+    }
+}
+@include keyframes(slideOutToTop) {
+    0% {
+        transform: translate(0, 0);
+    }
+
+    100% {
+        transform: translate(0, -100%);
+    }
+}
+
+
+@include keyframes(slideInFromTop) {
+    0% {
+        transform: translate(0, -100%);
+    }
+
+    100% {
+        transform: translate(0, 0);
+    }
+}
+
+@include keyframes(slideOutToBottom) {
+    0% {
+        transform: translate(0, 0);
+    }
+
+    100% {
+        transform: translate(0, 100%);
+    }
+}
+
+
+
+.animate-from-bottom,
+.animate-from-bottom.ng-enter {
+  @include animation(1s slideInFromBottom ease-out);
+}
+
+.animate-from-bottom.ng-leave,
+.animate-from-bottom.ng-hide-add {
+    @include animation(1s slideOutToTop ease-out);
+
+}
+
+.animate-from-top,
+.animate-from-top.ng-enter {
+  @include animation(1s slideInFromTop ease-out);
+}
+
+.animate-from-top.ng-leave,
+.animate-from-top.ng-hide-add {
+    @include animation(1s slideOutToBottom ease-out);
+
+}
+
+
+
+@include keyframes(openToRight) {
+    0% {
+      width: 0;
+    }
+
+    100% {
+      width: 100%;
+    }
+}
+
+@include keyframes(closeFromRight) {
+    0% {
+      width: 100%;
+    }
+
+    100% {
+      width: 0;
+    }
+}
+
+
+
+.animate-open-right,
+.animate-open-right.ng-enter {
+  transform-origin: 0 0;
+  @include animation(.3s openToRight ease-out);
+}
+
+.animate-open-right.ng-leave,
+.animate-open-right.ng-hide-add {
+  transform-origin: 0 0;
+    @include animation(.1s closeFromRight ease-out);
+
+}
+
+//for player loader
+@keyframes a {
+    50% {
+        top: 0;
+        left: -40px;
+    }
+    100% {
+        top: 0;
+        left: -40px;
+    }
+}
+@keyframes b {
+    50% {
+        top: -40px;
+        left: -40px;
+    }
+    100% {
+        top: -40px;
+        left: -40px;
+    }
+}
+@keyframes c {
+    50% {
+        top: -40px;
+        left: 0;
+    }
+    100% {
+        top: -40px;
+        left: 0;
+    }
+}
+@keyframes d {
+    50% {
+        top: 40px;
+        left: -40px;
+    }
+    100% {
+        top: 40px;
+        left: -40px;
+    }
+}
+@keyframes f {
+    50% {
+        top: -40px;
+        left: 40px;
+    }
+    100% {
+        top: -40px;
+        left: 40px;
+    }
+}
+@keyframes g {
+    50% {
+        top: 40px;
+        left: 0;
+    }
+    100% {
+        top: 40px;
+        left: 0;
+    }
+}
+@keyframes h {
+    50% {
+        top: 40px;
+        left: 40px;
+    }
+    100% {
+        top: 40px;
+        left: 40px;
+    }
+}
+@keyframes i {
+    50% {
+        top: 0;
+        left: 40px;
+    }
+    100% {
+        top: 0;
+        left: 40px;
+    }
+}

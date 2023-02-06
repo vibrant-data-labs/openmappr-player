@@ -1,8 +1,0 @@
-.cat-list.h6.tag-cloud(ng-if="selNodesCount === 0 || (selNodesCount > 0 && catListData.highlightedCats.length > 0)")
-	.cat-item(ng-repeat="catData in catListData.data | limitTo: distrData.numShownCats track by catData.id")
-		.vert-align.cat-text-container
-			div(ng-click="onCatClick(catData, $event);")
-				.cat-text.h6.no-margin.truncate {{::catData.text}}
-		//- .cat-percent.text-right.h6.no-margin {{::catData.globalpercent.toFixed(0)}}%
-.cat-list.h6.tag-cloud(ng-if="selNodesCount > 0 && catListData.highlightedCats.length === 0")
-	h6 No tags in group

@@ -1,0 +1,89 @@
+  
+  /* The popup form - hidden by default */
+  .form-popup {
+    max-width: 400px;
+    display: none;
+    position: fixed;
+    bottom: 50px;
+    right: 20px;
+    z-index: 9999;
+    transition: 0.1s linear all 0.5s;
+  }
+  
+  /* Add styles to the form container */
+  .form-container {
+    background-color: #296571;
+    color: #fff;
+    border-radius: 5px;
+    padding: 10px 20px 10px 10px;
+  }
+
+  .form-container p {
+    text-align: center;
+  }
+
+  .form-container input {
+    width: 100%;
+    padding: 5px;
+    background-color: #296571;
+    color: #fff;
+    border-radius: 5px;
+    border: 1px solid #fff;
+    padding: 10px;
+    margin: 5px;
+  }
+
+  .form-container textarea {
+    width: 100%;
+    padding: 3px;
+    background-color: #296571;
+    color: #fff;
+    border-radius: 5px;
+    border: 1px solid #fff;
+    padding: 5px;
+    resize: none;
+    margin: 5px;
+  }
+  
+  /* Add styles to the form container */
+  .form-container h4 {
+    color: #fff;
+    text-align: center;
+  }
+    
+  /* Set a style for the submit/login button */
+  .form-container button {
+    background-color: #BC3364;
+    color: #fff;
+    cursor: pointer;
+    width: 100%;
+    border-radius: 5px;
+    margin: 5px;
+  }
+  /* Set a style for the submit/login button */
+  .form-container button:hover {
+    background-color: #fff;
+    color: #BC3364;
+    cursor: pointer;
+    width: 100%;
+    border-radius: 5px;
+    margin: 5px;
+  }
+  
+  /* Add a red background color to the cancel button */
+  .form-container .cancel {
+    background-color: #BC3364;
+  }
+
+  .form-container ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: #fff;
+    opacity: 1; /* Firefox */
+  }
+  
+  .form-container :-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: #fff;
+  }
+  
+  .form-container ::-ms-input-placeholder { /* Microsoft Edge */
+    color: #fff;
+  }

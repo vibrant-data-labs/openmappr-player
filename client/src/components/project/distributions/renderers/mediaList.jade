@@ -1,5 +1,0 @@
-.media-list
-	ul.list-unstyled.no-margin
-		li(ng-repeat="media in jsonMedia")
-			dir-media-embed(url="media.url" embed="media.embed" description="media.description", tags="media.tags" node-color-str="{{nodeColorStr}}" is-small="{{isSmall}}" render-width="{{renderWidth}}" render-height="{{renderHeight}}" error="media.error")
-			.clearfix

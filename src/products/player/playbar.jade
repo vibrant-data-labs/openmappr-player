@@ -1,0 +1,244 @@
+.details-panel(
+  ng-if="layout.plotType != 'list' && layout.plotType != 'grid'"
+)
+  
+  .details-panel__left
+    .details-panel__project-title
+      span.details-panel__project-logo(ng-if="getCurrentLogoImage() && !getCurrentProjectUri()")
+        img(ng-src="{{getCurrentLogoImage()}}")
+      a.details-panel__project-logo(ng-if="getCurrentLogoImage() && getCurrentProjectUri()", ng-href="{{getCurrentProjectUri()}}" target="_black" rel="nofollow")
+        img(ng-src="{{getCurrentLogoImage()}}")
+      span.details-panel__title{{getCurrentProjectTitle()}}
+  .details-panel__controls
+    button.details-panel__button.details-panel__button--search(ng-class="{'active': showSearch}", ng-click="searchToggle()")
+    .playbar.play-toolbar(ng-class="{'play-toolbar_opened': showSearch}")
+      .play-toolbar__search(
+        ng-controller="SearchPanelCtrl"
+        ng-include=' "#{player_prefix_index_source}/partials/components/project/panels/search/search.html" '
+      )
+    .details-panel__share
+      button.details-panel__button.details-panel__button--share(ng-click="toggleSharePanel()")
+      .details-panel__share-box(ng-if="isShowShare" ng-click="toggleSharePanel()")
+        a.details-panel__share-item(ng-repeat="item in socials" ng-href="{{socialLinks[item]}}" ng-class="'details-panel__share-item--' + item" target="_black" rel="nofollow")
+        a.details-panel__share-item.details-panel__share-item--link(ng-click="copyClipboard($event)" ng-href="{{host}}" target="_black" rel="nofollow")
+
+
+    button.details-panel__button.details-panel__button--info(ng-click="openProjectInfo()")
+    button.details-panel__button.details-panel__button--menu(ng-click="openRightPanel()")
+  //- .details-panel__logos
+  //-   span.details-panel__logo-item(ng-repeat="logo in getLogos()")
+  //-     img(src="{{logo}}")
+  //-   button.details-panel__logo-more(ng-click="showMoreLogos()", ng-if="isShowMoreBtn && getLogos().length > 4", 
+  //-     data-toggle="tooltip" 
+  //-     uib-tooltip="Show more partners"
+  //-     tooltip-placement="bottom"
+  //-     tooltip-append-to-body="true")
+  //-     img(src="/img/play-toolbar/plus.svg")
+.details-panel__snapshots(ng-click="toggleSnapshotSelector()")
+  .row-data__content {{getSelectedSnapshotTitle() || ''}}
+  .button-group__item
+    button.button.button_type_play-toolbar(
+      ng-class="isSnapshotSelectorOpen ? 'button_icon_cancel' : 'button_icon_chevron-down'"
+      
+      uib-tooltip="Snapshot Selector"
+      tooltip-append-to-body="true"
+      tooltip-placement="right"
+  )
+  .details-panel__extra-container(ng-if="isSnapshotSelectorOpen")
+    .extra-container__content
+      .snapshot-selector__item(ng-repeat="snap in getSnapshots()", ng-attr-id="{{ snap.snapName }}" ng-click="selectSnapshot($event, snap)", ng-class="{ highlight: selectedSnapshot ? snap.isCurrentSnap: ($index == 0) }" uib-tooltip="{{formatSnapshotTooltip(snap)}}" tooltip-append-to-body="true" tooltip-placement="right")
+        h3 {{formatSnapshotTitle(snap)}}
+        h6(ng-if="snap.subtitle") {{snap.subtitle}}
+        
+      //.button-group__item
+      //  button.button.button_type_play-toolbar.button_icon_help help
+
+.play-toolbar__buttons
+  .button-group_type_play-toolbar
+    .play-toolbar__content(ng-if="operations.list.length > 1 && operations.opened")
+      .play-toolbar__reset-wrap(ng-if="isShowBreadcrumbs")
+        button.play-toolbar__btn-collapse(
+          ng-click="collapseBreadcrumbs()",
+        ) Filters Applied
+        button.play-toolbar__btn.play-toolbar__btn-reset(
+          ng-click="resetFilters()",
+          ng-disabled="!(ui.activeFilterCount > 0)"
+        ) Clear All
+      .play-toolbar__reset-wrap.play-toolbar__reset-wrap--collapsed(ng-if="!isShowBreadcrumbs")
+        button.play-toolbar__btn-collapse(
+          ng-click="collapseBreadcrumbs()",
+        )
+          span.play-toolbar__value {{operations.last().nodesCount}}
+          = ' '
+          | of
+          = ' '
+          span.play-toolbar__total {{operations.list[0].totalNodes}} 
+          b(ng-if="operations.last().type == 'select'")&nbsp;selected
+          b(ng-if="operations.last().type == 'subset'")&nbsp;subsetted
+        button.play-toolbar__btn.play-toolbar__btn-reset(
+          ng-click="resetFilters()",
+          ng-disabled="!(ui.activeFilterCount > 0)"
+        ) Clear All
+      .play-toolbar-list(ng-class="{'play-toolbar-list--empty' : !ui.subsetEnabled && !isShowBreadcrumbs}")
+        div(ng-if="isShowBreadcrumbs")
+          section.play-toolbar-list__item(ng-repeat="operation in operations.list",
+            ng-if="operation.type != 'init' && isShowBreadcrumbs"
+            ng-class="{'play-toolbar-list__item_subsetted' : operation.type == 'subset', 'play-toolbar-list__item_selected': operation.type == 'select', 'play-toolbar-list__item_opened': operation.isOpened }")
+            header.play-toolbar-list__header(ng-if="operation.type == 'select' || operation.type == 'subset'")
+              span(ng-class="{'selected' : $last, 'total': !$last}") {{operation.nodesCount}}
+              = ' '
+              | of
+              = ' '
+              span.total {{operation.totalNodes}}
+              b(ng-if="operation.type == 'select'")&nbsp;selected
+              b(ng-if="operation.type == 'subset'", ng-class="{ 'span-subset': ($last || ($index == operations.list.length - 2 && operations.last().type == 'select')) }") subsetted
+
+              button(ng-if="$index == operations.list.length -1", ng-click="resetOperation()").play-toolbar__btn.play-toolbar__btn-undo Undo
+
+            .play-toolbar-list__content(ng-if="(operation.searchText || operation.filters) && operation.isOpened")
+              .filter-section-wrap(ng-if="operation.searchText")
+                  dl.filter-section
+                    dt.filter-section__label
+                      | Search Results  
+                      span(ng-if="operation.searchAttr") &nbsp;{{operation.searchAttr.title}}
+                      | :
+
+                    dd.filter-section__content
+                      ul.filter-section__list
+                        li.filter-section__item
+                          span "{{operation.searchText}}"    
+              .filter-section-wrap(ng-repeat="filter in operations.filterArray(operation)", ng-if="operation.filters")
+                dl.filter-section
+                  dt.filter-section__label
+                    | {{filter.attrInfo.attr.title}}:
+
+                  dd.filter-section__content
+                    ul.filter-section__list(ng-if="!operations.isNumeric(filter.attrInfo)")
+                      li.filter-section__item(ng-repeat="val in filter.values.values")
+                        span.filter-section__divider(
+                          ng-if="filter.values.values.length > 1 && $index == filter.values.values.length -1"
+                        ) &nbsp;or&nbsp;
+                        span {{val}}
+                    ul.filter-section__list(ng-if="operations.isNumeric(filter.attrInfo)")
+                      li.filter-section__item(ng-repeat="val in filter.values")
+                        span(ng-if="filter.values.length > 1 && $index == filter.values.length -1") &nbsp;or&nbsp;
+
+                        span.filter-section__item_array(
+                          ng-if="val.description == 'btw'&& (filter.attrInfo.attr.attrType != 'year' && filter.attrInfo.attr.attrType != 'timestamp')"
+                        )
+                          | between
+                          = ' '
+                          span {{val.values[0] | number:2}}
+                          = ' '
+                          span.filter-section__divider and
+                          = ' '
+                          span {{val.values[1] | number:2}}
+
+                        span.filter-section__item_array(
+                          ng-if="val.description == 'btw' && (filter.attrInfo.attr.attrType == 'year')"
+                        )
+                          | between
+                          = ' '
+                          span {{val.values[0]}}
+                          = ' '
+                          span.filter-section__divider and
+                          span {{val.values[1]}}
+
+                        span.filter-section__item_array(
+                          ng-if="val.description == 'btw' && (filter.attrInfo.attr.attrType == 'timestamp')"
+                        )
+                          | between
+                          = ' '
+                          span {{operations.formatTime(val.values[0])}}
+                          = ' '
+                          span.filter-section__divider and
+                          span {{operations.formatTime(val.values[1])}}
+
+                        span(
+                          ng-if="val.description == 'ht' && (filter.attrInfo.attr.attrType == 'year')"
+                        )
+                          | after
+                          = ' '
+                          span {{val.values[0].toString().split('.')[0]}}
+
+                        span.filter-section__item_array(
+                          ng-if="val.description == 'ht' && (filter.attrInfo.attr.attrType == 'timestamp')"
+                        )
+                          | after
+                          = ' '
+                          span {{operations.formatTime(val.values[0])}}
+
+                        span.filter-section__item_array(
+                          ng-if="val.description == 'ht' && (filter.attrInfo.attr.attrType != 'year' && filter.attrInfo.attr.attrType != 'timestamp')"
+                        )
+                          | higher than
+                          = ' '
+                          span {{val.values[0] | number:2}}
+
+                        span.filter-section__item_array(
+                          ng-if="val.description == 'lt' && (filter.attrInfo.attr.attrType == 'year')"
+                        )
+                          | before
+                          = ' '
+                          span {{val.values[0].toString().split('.')[0]}}
+
+                        span.filter-section__item_array(
+                          ng-if="val.description == 'lt' && (filter.attrInfo.attr.attrType == 'timestamp')"
+                        )
+                          | before
+                          = ' '
+                          span {{operations.formatTime(val.values[0])}}
+
+                        span.filter-section__item_array(
+                          ng-if="val.description == 'lt' && (filter.attrInfo.attr.attrType != 'year' && filter.attrInfo.attr.attrType != 'timestamp')"
+                        )
+                          | lower than
+                          = ' '
+                          span {{val.values[0] | number:2}}
+
+                        span(ng-if="val.description == 'eq'") {{val.values[0]}}
+        .play-toolbar__btn-container
+          .play-toolbar__btn-summarize(ng-if="ui.subsetEnabled", ng-class="{'play-toolbar__btn-summarize--collapsed': !isShowBreadcrumbs}")
+            .play-toolbar__btn-summarize-box
+              button.button_summarize(
+                ng-click="subsetFilters()",
+                uib-tooltip="Click to summarize the selected nodes in the ‘Summary’ tab"
+                tooltip-append-to-body="true"
+                tooltip-placement="right"
+              ) Summarize Selection
+          .play-toolbar__btn-share
+            .play-toolbar__btn-share-box
+              button.button_share(
+                ng-click="toggleSelectionShare()",
+                uib-tooltip="Click to share the current selection"
+                tooltip-append-to-body="true"
+                tooltip-placement="right"
+              ) {{ ui.subsetEnabled ? '' : 'Share Subset' }}
+                span.icon__share
+
+          .play-toolbar__share-popup(ng-if="isSelectionShareOpen")
+            .share-popup__container
+              input(type="text")
+              span.icon__share
+.play-toolbar-bottom(
+  ng-if="layout.plotType != 'list' && layout.plotType != 'grid'"
+)
+
+  //- LEFT AREA
+  .button-zoom
+    button.button-zoom__item(ng-click="zoomInfo.zoomExtents()") target
+    .button-zoom__box
+      button.button-zoom__box-item.button-zoom__box-item--plus(
+        ng-click="zoomInfo.zoomIn()"
+        uib-tooltip="Zoom in"
+        tooltip-append-to-body="true"
+        tooltip-placement="left"
+      ) zoom +
+      
+      button.button-zoom__box-item.button-zoom__box-item--minus(
+        ng-click="zoomInfo.zoomOut()"
+        uib-tooltip="Zoom out"
+        tooltip-append-to-body="true"
+        tooltip-placement="left"
+      ) zoom -
+

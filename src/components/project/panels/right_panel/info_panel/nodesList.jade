@@ -1,0 +1,36 @@
+.info-item.flex-fill-column
+	div.panel-list.nodes-list.panel-list--scrollable
+		.panel-list-info(ng-if="isDisplayTooltip && isShowTooltip")
+			.panel-list-info__content(ng-if="PanelListInfo")
+				.panel-list-info__head
+					.panel-list-info__photo(ng-if="PanelListInfo.photo")
+						img(ng-src="{{PanelListInfo.photo}}")
+					h4.panel-list-info__name {{PanelListInfo.name}}
+				.panel-list-info__body
+					.panel-list-info__text(ng-if="!isShowMoreTextTooltip") {{getTooltipText(PanelListInfo.description)}}
+					.panel-list-info__text(ng-if="isShowMoreTextTooltip") {{PanelListInfo.description}}
+					.panel-list-info__more(ng-if="isLongText(PanelListInfo.description)", ng-click="toggleMoreText()")
+						button.panel-list-info__more-btn Show {{ isShowMoreTextTooltip ? 'less' : 'more' }}
+					.panel-list-info__tags
+						h5.panel-list-info__tags-title Tags:
+						div(ng-if="!isShowMoreTagsTooltips")
+							span.panel-list-info__tag(ng-repeat="tag in PanelListInfo.tags | limitTo : 5") {{tag}}
+						div(ng-if="isShowMoreTagsTooltips")
+							span.panel-list-info__tag(ng-repeat="tag in PanelListInfo.tags") {{tag}}
+						.panel-list-info__more(ng-if="PanelListInfo.tags.length > 5", ng-click="toggleMoreTags()")
+							button.panel-list-info__more-btn Show {{ isShowMoreTagsTooltips ? 'less' : 'more' }}
+
+		ul.list-unstyled(ng-if="!searchQuery")
+			li.panel-item.list-item.pointable-cursor(id="item-{{node.id}}" ng-style="{'background': (node.id == singleNode.id ? getHighlightColor(node): '#fff') }" ng-class="{'highlighted':node.id == singleNode.id}" ng-repeat="node in nodes" ng-click="selectNode(node, $event)" ng-mouseenter="debounceHoverNode(node)" ng-mouseleave="unHoverNode(node.id, $event)")
+				.row.vert-align.truncate
+					.col-xs-2
+						.big-circle(style="background: {{getNodeColor(node)}};")
+					.col-xs-10
+						h6.less-gutter.list-item__title.truncate	{{node.attr[labelAttr]}}
+		ul.list-unstyled(ng-if="searchQuery")
+			li.panel-item.list-item.pointable-cursor(id="item-{{node.id}}" ng-style="{'background': (node.id == singleNode.id ? getHighlightColor(node): '#fff') }" ng-class="{'highlighted':node.id == singleNode.id}" ng-repeat="node in filteredNodes" ng-click="selectNode(node, $event)" ng-mouseenter="debounceHoverNode(node)" ng-mouseleave="unHoverNode(node.id, $event)")
+				.row.vert-align.truncate
+					.col-xs-2
+						.big-circle(style="background: {{getNodeColor(node)}};")
+					.col-xs-10
+						h6.less-gutter.list-item__title.truncate	{{node.attr[labelAttr]}}

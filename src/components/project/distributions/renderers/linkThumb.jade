@@ -1,0 +1,13 @@
+.link-thumb
+	div(ng-if="link.embedlyJson")
+		a.link(target="_blank" href="{{link.url}}")
+			img.thumb(ng-if="link.embedlyJson.thumbnail_url" ng-src="{{link.embedlyJson.thumbnail_url}}")
+			.container
+				h4.title(ng-if="link.embedlyJson.title") {{link.embedlyJson.title}}
+				p.descr.text-small(ng-if="link.description || link.embedlyJson.description") {{link.description || link.embedlyJson.description}}
+	div(ng-if="!link.embedlyJson")
+		a.link(target="_blank" href="{{link.url}}")
+			.container
+				h4.title {{link.url}}
+				.descr.text-small(ng-if="link.description") {{link.description}}
+	.clearfix
