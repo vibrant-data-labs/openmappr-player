@@ -1,38 +1,37 @@
 # OpenMappr Static 📊
 ## Prerequisites
-- grunt `npm install -g grunt-cli`
+- node > v14
 - install npm dependencies `npm install`
 
-## Configuration
-### MongoDB connection
-Replace the `dbUrl` parameter in the `server/config/local.js` to match the required MongoDB instance.
-### AWS S3 connection
-Place the valid API keys into the `server/config/s3.js`.
+## Run the project
 
-## Generating files
-Command below will build all the assets, including project-specific files and place it inside `publish` directory.
+To run the project locally, run the following command:
 
-```npm run build```
+```npm run start```
 
-To generate only project files run the following command:
+It would use the sample TED data to be used as a source of the data for the project.
 
-```npm run build:data```
+If you want to replace the data with your own, place the data into the `data` folder. The easiest way to generate the data it is to use the [Py2Mappr](https://github.com/vibrant-data-labs/py2mappr) tool.
 
-CLI will navigate you to select the required project
+## Publish the project
 
-To generate only static files run the following command:
+In order to publish the project to the S3 bucket, the AWS credentials must be configured.
 
-```npm run build:static```
+All the configuration is stored in the `.env` file. In order to run the project, you need to create the `.env` file and place the following variables inside it:
 
-## Publish to S3
-If you have configured s3 properly, run the following command to deploy all the assets from `publish` folder to S3 bucket:
+```
+AWS_ACCESS_KEY=
+AWS_SECRET_KEY=
+BUCKET=
+CLOUDFLARE_API_KEY=
+```
 
-```npm run publish```
+If it is required to purge the Cloudflare Cache after the deployment, the API key for Cloudflare must be provided, otherwise, this field can be left empty.
 
-If you want to publish only static files, run the following command:
+Once it is configured, the following command will generate all the assets and publish them to the S3 bucket:
 
-```npm run publish:player```
+```npm run publish``` 
 
-If you want to update the data only, run the following command:
+To have only the static files generated, set `NODE_ENV` to be `production` and run the `build` command:
 
-```npm run publish:map```
+```NODE_ENV=production npm run build```
