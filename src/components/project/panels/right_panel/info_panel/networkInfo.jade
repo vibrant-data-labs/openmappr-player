@@ -1,0 +1,99 @@
+div
+	.info-item(style="height:275px")
+		//network
+		.row.vert-align(ng-if="selInfo.selNodesCount == 0")
+			.col-xs-2.h6
+				i.fa-1-3x.icon-network
+			.col-xs-10
+				h6.less-gutter {{ui.networkName}}
+		.row.vert-align
+			.col-xs-2.h6
+				i.fa-1-3x.icon-legend-dots(style="color: {{selInfo.colorStr}};")
+			.col-xs-10.less-gutter
+				h6.pull-left.width-100.nowrap.vert-align.no-margin
+					span(ng-show="!ui.graphInteracted") {{generalInfo.totalNodesCount}}&nbsp;
+					span(ng-show="ui.graphInteracted") {{selInfo.selNodesCount}}&nbsp;
+					span.vert-align(ng-show="!ui.graphInteracted || (ui.graphInteracted && !selInfo.clusterVal)")
+						span.nowrap(ng-show="!ui.editNodesTitle || !MAPP_EDITOR_OPEN")
+							span {{vm.nodesTitle}}&nbsp;&nbsp;
+							button(type="button" ng-click="ui.editNodesTitle = true;", ng-show="!ui.editNodesTitle && MAPP_EDITOR_OPEN" uib-tooltip="Edit Title of Nodes")
+								i.fa.fa-pencil
+						span.nowrap.form-inline.vert-align(ng-show="ui.editNodesTitle && MAPP_EDITOR_OPEN")
+								input.h6.no-margin.form-control.small-control(type="text", ng-model="vm.nodesTitle")
+								button(type="button" ng-click="updateNodesTitle();")
+									i.fa.fa-check
+								button(type="button" ng-click="cancelNodesTitleUpdate();")
+									i.fa.fa-times
+					span(ng-show="ui.graphInteracted && selInfo.clusterVal") ({{selInfo.selPerc}}%)
+						span( ng-text-truncate="selInfo.clusterVal" ng-tt-chars-threshold="200")
+				//- h6.less-gutter(ng-show="ui.graphInteracted") ({{selInfo.selPerc.toFixed(0)}}% of population)
+		.divider
+		.row.vert-align(ng-if="generalInfo.nwAttrs.length > 0")
+			.col-xs-2
+				.link-mask
+					.link-circle
+			.col-xs-10
+				h6.less-gutter(ng-if="generalInfo.nwAttrs.length > 0")
+					span Linked by
+					span.title.pointable-cursor
+						span {{generalInfo.nwAttrs.length}} Attributes
+				h6.less-gutter(ng-if="generalInfo.nwAttrs.length == 0")
+					//- span Read from file
+		.attrs
+			.row.vert-align
+				.col-xs-2
+				.col-xs-10
+					ul
+						li.h6(ng-repeat="attr in generalInfo.nwAttrs" ng-show="$index < 5 || ui.showAllAttrs") {{attr}}
+						li.h6(ng-hide="panelUI.showAllAttrs || generalInfo.nwAttrs.length < 6" ng-click="ui.showAllAttrs = true;")
+							em.pointable-cursor more...
+		.divider
+		.divider
+	.info-item(ng-if="!generalInfo.hideArchsBridgers && topArchetypes.length != 0")
+		ul.list-unstyled.panel-list
+			li.panel-item.list-item.no-hover
+				.row.vert-align.pointable-cursor(ng-click="selectNodes(topArchetypes, $event)", ng-mouseenter="hoverNodes(topArchetypes, $event)" ng-mouseleave="unHoverNodes(topArchetypes, $event)")
+					.col-xs-2
+						i.fa.fa-1-3x.fa-bullseye
+					.col-xs-6
+						h6.less-gutter Top Archetypes
+					.col-xs-4.pointable-cursor
+						h6 ({{archsViewLimit}} of {{topArchetypes.length}})
+			li.list-item.panel-item.no-hover.no-animate(ng-show="archsViewLimit < topArchetypes.length || numShowArchs !== 0")
+				.row.vert-align
+					.col-xs-12
+						a.pull-right.h6.more-text(ng-show="archsViewLimit < topArchetypes.length" ng-click='viewMoreArchs(); $event.stopPropagation();')
+							em view more
+						a.pull-right.h6.more-text(ng-show="numShowArchs !== 0" ng-click='viewLessArchs(); $event.stopPropagation();')
+							em view less
+			li.panel-item.list-item.pointable-cursor.no-animate(ng-repeat="node in topArchetypes | limitTo: archsViewLimit" ng-click="selectNodes([node], $event)" ng-mouseenter="hoverNodes([node], $event)" ng-mouseleave="unHoverNodes([node], $event)")
+				.row.vert-align
+					.col-xs-2
+						.big-circle(style="background: {{node.colorStr}};")
+					.col-xs-8
+						h6.less-gutter.truncate(uib-tooltip="{{neighbor.label}}" tooltip-placement="right" tooltip-append-to-body="true") {{node.attr[labelAttr]}}
+					.col-xs-2
+	.info-item(ng-if="!generalInfo.hideArchsBridgers && topBridgers.length != 0")
+		ul.list-unstyled.panel-list
+			li.panel-item.list-item.no-hover
+				.row.vert-align.pointable-cursor(ng-click="selectNodes(topBridgers, $event)", ng-mouseenter="hoverNodes(topBridgers, $event)" ng-mouseleave="unHoverNodes(topBridgers, $event)")
+					.col-xs-2
+						i.icon-bridger
+					.col-xs-6
+						h6.less-gutter Top Bridgers
+					.col-xs-4.pointable-cursor
+						h6.less-gutter ({{bridgersViewLimit}} of {{topBridgers.length}})
+			li.list-item.panel-item.no-hover.no-animate(ng-show="bridgersViewLimit < topBridgers.length || numShowBridgers !== 0")
+				.row.vert-align
+					.col-xs-12
+						a.pull-right(ng-show="bridgersViewLimit < topBridgers.length" ng-click='viewMoreBridgers(); $event.stopPropagation();')
+							em view more
+						a.pull-right(ng-show="numShowBridgers !== 0" ng-click='viewLessBridgers(); $event.stopPropagation();')
+							em view less
+			li.panel-item.list-item.pointable-cursor.no-animate(ng-repeat="node in topBridgers | limitTo: bridgersViewLimit" ng-click="selectNodes([node], $event)" ng-mouseenter="hoverNodes([node], $event)" ng-mouseleave="unHoverNodes([node], $event)")
+				.row.vert-align
+					.col-xs-2
+						.big-circle(style="background: {{node.colorStr}};")
+					.col-xs-8
+						h6.less-gutter.truncate(uib-tooltip="{{neighbor.label}}" tooltip-placement="right" tooltip-append-to-body="true") {{node.attr[labelAttr]}}
+					.col-xs-2

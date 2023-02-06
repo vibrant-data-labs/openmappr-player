@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="14px" height="14px" viewBox="0 0 14 14" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 64 (93537) - https://sketch.com -->
+    <title>Shape</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Page-ver.-3" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Mappr-Legend" transform="translate(-1268.000000, -46.000000)" fill="#323C47" fill-rule="nonzero">
+            <g id="Content" transform="translate(213.000000, 20.000000)">
+                <g id="Control" transform="translate(935.000000, 20.000000)">
+                    <g id="Group-2" transform="translate(113.000000, 0.000000)">
+                        <path d="M19.558,13.7 L16.1,13.7 L16.1,12.3 L19.558,12.3 C19.2388935,9.76087912 17.2391209,7.76110654 14.7,7.442 L14.7,10.9 L13.3,10.9 L13.3,7.442 C10.7608791,7.76110654 8.76110654,9.76087912 8.442,12.3 L11.9,12.3 L11.9,13.7 L8.442,13.7 C8.76110654,16.2391209 10.7608791,18.2388935 13.3,18.558 L13.3,15.1 L14.7,15.1 L14.7,18.558 C17.2391209,18.2388935 19.2388935,16.2391209 19.558,13.7 Z M14,20 C10.1340068,20 7,16.8659932 7,13 C7,9.13400675 10.1340068,6 14,6 C17.8659932,6 21,9.13400675 21,13 C21,16.8659932 17.8659932,20 14,20 Z" id="Shape"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

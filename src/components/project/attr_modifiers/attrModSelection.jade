@@ -1,0 +1,43 @@
+//- .pull-left.distr-star
+//- 	i.fa.fa-star.pointable-cursor(uib-tooltip="Toggle Attribute Significance" tooltip-append-to-body="true" ng-click="attr_mod.toggleStarred(); setAttrDirty(attr_mod);" ng-class="{'text-highlight':attr.isStarred, 'text-light':!attr.isStarred}")
+.pull-right.attr-visibility
+	div(ng-if="!attr_mod.visible" uib-tooltip="Show Attribute" tooltip-placement="left" tooltip-append-to-body="true" ng-click="attr_mod.toggleVisibility(); setAttrDirty(attr_mod);")
+		i.text-muted-light.fa.fa-lightbulb-o 
+	div.uib-dropdown(ng-if="attr_mod.visible" uib-dropdown dropdown-append-to-body is-open="status.isOpen")
+		span.uib-dropdown-toggle.text-muted(uib-dropdown-toggle uib-tooltip="Options", tooltip-placement="top", tooltip-append-to-body="true")
+			i.fa.fa-caret-down
+		.uib-dropdown-menu.uib-dropdown-menu-right.uib-dropdown-menu-flexing.pull-right(uib-dropdown-menu)
+			.uib-dropdown-click-close
+			.uib-dropdown-flex-content
+				.uib-dropdown-flex
+					ul.list-unstyled.dd-list.nowrap(ng-mouseleave="status.isOpen = false;")
+						li.row.pointable-cursor.vert-align(ng-if="attr_mod.visible" ng-click="attr_mod.toggleVisibility(); setAttrDirty(attr_mod);")
+							.col-xs-1
+								i.fa.fa-lightbulb-o
+							.col-xs-11
+								.text-sm Hide from stats
+						//- li.row.divider
+						//- li.row.pointable-cursor.vert-align(ng-click="attr_mod.toggleStarred(); setAttrDirty(attr_mod);")
+						//- 	.col-xs-1
+						//- 		i.fa.fa-star
+						//- 	.col-xs-11
+						//- 		.text-sm Anchor to ring
+						//- li.row.divider
+						li.row.pointable-cursor.vert-align(ng-click="useAttrAsNodeLabel(attr_mod.attr)")
+							.col-xs-1
+								i.fa.fa-font
+							.col-xs-11
+								.text-sm Use as node label
+						li.row.divider
+						//- li.row.pointable-cursor.vert-align(ng-repeat="atype in attrTypes" ng-click="attr_mod.setNewType(atype); changeType(attr_mod);")
+						//- 	.col-xs-1
+						//- 		i.fa.fa-check.text-primary(ng-if="atype == attr_mod.new_type")
+						//- 	.col-xs-11
+						//- 		span.text-sm(ng-class="{'text-primary': atype == attr_mod.new_type}") {{atype}}
+						//- li.row.divider
+						li.row.pointable-cursor.vert-align(ng-repeat="renderType in attrRenderTypes" ng-click="attr_mod.setNewRenderType(renderType); changeRenderType(attr_mod);")
+							.col-xs-1
+								i.fa.fa-check.text-primary(ng-if="renderType == attr_mod.new_render_type")
+							.col-xs-11
+								span.text-sm(ng-class="{'text-primary': renderType == attr_mod.new_render_type}") {{renderType}}
+				.uib-dropdown-flexer

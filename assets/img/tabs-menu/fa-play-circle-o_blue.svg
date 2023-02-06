@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="18px" height="14px" viewBox="0 0 18 14" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <g id="Page-ver.-3" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Mappr-Info-Page" transform="translate(-19.000000, -137.000000)" fill="#C2CFE1" fill-rule="nonzero">
+            <g id="Slide-bar" transform="translate(-1.000000, 0.000000)">
+                <g id="Menu" transform="translate(0.000000, 80.000000)">
+                    <g id="chart-area-solid" transform="translate(20.000000, 57.000000)">
+                        <path d="M17.578125,11.25 C17.8101563,11.25 18,11.4398437 18,11.671875 L18,13.078125 C18,13.3101563 17.8101563,13.5 17.578125,13.5 L0.421875,13.5 C0.18984375,13.5 0,13.3101563 0,13.078125 L0,0.421875 C0,0.18984375 0.18984375,0 0.421875,0 L1.828125,0 C2.06015625,0 2.25,0.18984375 2.25,0.421875 L2.25,11.25 L17.578125,11.25 Z M13.1027344,3.35742187 L10.125,5.34375 L7.12617187,1.34648437 C6.946875,1.10742187 6.58125,1.125 6.4265625,1.38164062 L3.375,6.46875 L3.375,10.125 L16.875,10.125 L13.7144531,3.52265625 C13.6019531,3.29414062 13.3136719,3.21679687 13.1027344,3.35742187 Z" id="Shape"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

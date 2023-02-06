@@ -1,0 +1,23 @@
+.neighbors-detail(ng-if="hasLinks")
+	h5.title.animate-fade-in(ng-if="customNeighborTitle") {{customNeighborTitle}}&nbsp;&nbsp;&nbsp;
+		i.fa.fa-info-circle(ng-if="customTitleTooltip" uib-tooltip="{{customTitleTooltip}}" style="color:{{clusterColor}}")
+	h5.title.animate-fade-in(ng-if="!customNeighborTitle && !linkInfo") {{numLinks}} Connections
+	h5.title.animate-fade-in(ng-if="!customNeighborTitle && linkInfo")
+		//- span(style="color:{{highlightColorStr}};") Connected By: 
+		span Connected By: 
+		span(ng-text-truncate="linkInfo" ng-tt-chars-threshold="200" ng-tt-no-toggling)
+	.content
+		.container(ng-repeat="links in linksGroup" ng-style="getContainerStyle($index)")
+			div(ng-repeat="link in links"  style="color: {{link.linkNode.colorStr}}; border-color: {{link.linkNode.colorStr}};" ng-click="beginNeighborSwitch(link.linkNode, $event);" ng-class="{dimmed: link.isDimmed}" ng-mouseenter="enterNeighbor(link, $event);" ng-mouseleave="leaveNeighbor($event);" uib-tooltip-html="getNeighborInfoHtml(link)" tooltip-placement="top" tooltip-append-to-body="true" )
+				.circle-back
+				.circle(style="background-image:url({{link.linkNodeImage}}); background-color:rgba({{link.linkNode.color[0]}},{{link.linkNode.color[1]}},{{link.linkNode.color[2]}}, .7);")
+				div
+					h6.text-center(ng-class="{truncate:(activeLinkNodeId != link.linkNode.id)}") {{link.linkNodeLabel}}
+		//- .scroll-bar(ng-if="hasScroll")
+			//- .scroller(ng-if="hasScroll" ng-style="getScrollerStyle()")
+		//- .pie-bar
+		//- 	.color(ng-repeat="color in neighborColors" style="background:{{color.colorStr}}; width:{{color.percent}}%;")
+	.scroll-left-btn(ng-if="hasScroll" ng-hide="hideScrollLeft" ng-click="scrollLeft();")
+		i.fa.fa-angle-left.fa-4x
+	.scroll-right-btn(ng-if="hasScroll" ng-hide="hideScrollRight" ng-click="scrollRight();")
+		i.fa.fa-angle-right.fa-4x

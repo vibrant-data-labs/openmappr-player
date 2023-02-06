@@ -1,0 +1,276 @@
+//
+// Axes Styling
+// X and Y axes styling for the app and player
+
+.axis-container {
+    @include user-select(none);
+    pointer-events: none;
+    bottom: 0;
+    height: 100%;
+    // left: -100%;
+    left: 0;
+    position: fixed;
+    z-index: 0;
+    margin-left: 432px;
+    right: 0;
+    overflow-x: hidden;
+
+    .xaxis-bkgrnd {
+        background: $axis-bkgrnd;
+        border-top: 1px solid $panel-border;
+        bottom: 0;
+        height: calc(100px + 2em);
+        left: 100px;
+        right: 0;
+        position: absolute;
+        width: 90%;
+    }
+
+    .yaxis-bkgrnd {
+        background: $axis-bkgrnd;
+        border-right: 1px solid $panel-border;
+        top: 10%;
+        height: 83%;
+        position: absolute;
+        left: 0;
+        width: 100px;
+    }
+
+
+
+    .xaxis-container {
+        bottom: 2em;
+        height: 100px;
+        left: 100px;
+        right: 0;
+        position: absolute;
+        overflow: hidden;
+
+        // width: 100%;
+    }
+
+    .xaxis {
+        bottom: 100px;
+        position: absolute;
+        // width: 800px;
+        transform: translateX(-290px);
+
+        .marker {
+            border-right: 1px solid $axis-marker-color;
+            height: 5px;
+            position: absolute;
+            top: 0;
+
+            h7 {
+                background: transparent;
+                color: $text-color;
+                left: -60px;
+                position: absolute;
+                text-align: center;
+                top: 5px;
+                width: 120px;
+            }
+        }
+
+        .marker-0 {
+            font-size: 8px;
+            height: 6px;
+            z-index: 1;
+        }
+
+        .marker-1 {
+            font-size: 8px;
+            height: 3px;
+            opacity: .5;
+        }
+    }
+
+    .yaxis {
+        height: 100%;
+        position: absolute;
+        left: 0;
+        width: 100px;
+
+        .marker {
+            border-top: 1px solid $axis-marker-color;
+            position: absolute;
+            right: 0;
+            width: 5px;
+
+            > div {
+                display: table;
+                height: 60px;
+                margin-top: -31px;
+                position: absolute;
+                right: 11px;
+                top: 0;
+                width: 85px;
+            }
+
+            > div > div {
+                display: table-cell;
+                vertical-align: middle;
+            }
+
+            h7 {
+                color: $text-color;
+                display: block;
+                text-align: right;
+            }
+        }
+
+        .marker-0 {
+            font-size: 8px;
+            width: 6px;
+            z-index: 1;
+
+            h7 {
+                top: -6px;
+            }
+        }
+
+        .marker-1 {
+            font-size: 8px;
+            opacity: .5;
+            width: 3px;
+
+            h7 {
+                top: -4px;
+            }
+        }
+    }
+
+    .axes-square {
+        background-color: $body-bg;
+        bottom: 0;
+        height: 100px;
+        position: absolute;
+        left:0;
+        width: 100px;
+        z-index: 1;
+    }
+
+    .x-end-axe-square {
+        background-color: $body-bg;
+        bottom: 0;
+        right: 0;
+        height: 100px;
+        position: absolute;
+        width: 5%;
+        z-index: 1;
+    }
+
+    .y-end-axe-square {
+        background-color: $body-bg;
+        top: 0;
+        left: 0;
+        height: 5%;
+        position: absolute;
+        width: 100px;
+        z-index: 1;
+    }
+
+    .xaxis-tit {
+
+        bottom: calc(40px + 2em);
+        display: table;
+        left: 50%;
+        margin-left: -250px;
+        position: absolute;
+        text-align: center;
+        width: 500px;
+        z-index: 3;
+        pointer-events: auto;
+
+        select {
+            width: 100%;            
+            text-align: center;
+            border: none;
+            border-bottom: 1px solid rgb(230, 230, 230);
+            font: 500 16px / 20px "Poppins";
+            -moz-appearance:none;
+            -webkit-appearance:none;
+            appearance:none;
+            background: deployedUrl('/img/search/arrow-down.svg') no-repeat right white;
+            text-overflow: ellipsis;
+        }
+
+        h4 {
+            color: $text-color;
+            font-weight: 500;
+            text-align: center;
+            white-space: nowrap;
+            width: 500px;
+        }
+
+        h4 > span {
+            padding: 2px 12px;
+        }
+    }
+
+    .yaxis-tit {
+        top: 50%;
+        display: table;
+        height: 500px;
+        left: 0;
+        margin-bottom: -200px;
+        position: absolute;
+        text-align: center;
+        pointer-events: auto;
+        z-index: 3;
+
+        > div {
+            display: table-cell;
+            vertical-align: middle;
+        }
+
+        select {
+            width: 100%;
+            text-align: center;
+            border: none;
+            border-bottom: 1px solid rgb(230, 230, 230);
+            font: 500 16px / 20px "Poppins";
+            -moz-appearance:none;
+            -webkit-appearance:none;
+            appearance:none;
+            background: deployedUrl('/img/search/arrow-down.svg') no-repeat right white;
+            text-overflow: ellipsis;
+        }
+
+        h4 {
+            @include rotate(270deg);
+            transform-origin: 0% 0%;
+            color: $text-color;
+            font-weight: 500;
+            left: 20px;
+            position: absolute;
+            text-align: center;
+            top: 50%;
+            white-space: nowrap;
+            width: 500px;
+        }
+
+
+        h4 > span {
+            padding: 2px 12px;
+        }
+    }
+
+    .axis-title {
+        h4 {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+
+            &:hover {
+                .card__tooltip {
+                    opacity: 1;
+                }
+            }
+        }
+    }
+
+    .subtitle {
+        font-size: 14px;
+    }
+}

@@ -1,0 +1,4 @@
+.slider-filter
+	div(ui-slider="sliderObj", min="{{bounds.min}}", max="{{bounds.max}}", ng-model="filterRange", ng-class="{ 'active' : isHovered }")
+	div.startValue(style="display:none") {{startValue()}}
+	div.endValue(style="display:none") {{endValue()}}

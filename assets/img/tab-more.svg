@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="6px" height="11px" viewBox="0 0 6 11" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 64 (93537) - https://sketch.com -->
+    <title>Path</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Page-ver.-3" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Mappr-Filters-Description-2" transform="translate(-1398.000000, -336.000000)" fill="#323C47" fill-rule="nonzero">
+            <g id="Content" transform="translate(213.000000, 20.000000)">
+                <g id="Selected-Node" transform="translate(868.000000, 0.000000)">
+                    <g id="Filters-+-Line-+-Line-+-Line-+-1-+-1-+-1-+-dropdown-Mask">
+                        <g id="2" transform="translate(0.000000, 298.000000)">
+                            <g id="Group-4" transform="translate(300.000000, 10.000000)">
+                                <path d="M24.0995028,16.8003472 L15.835614,16.8003472 C15.0925584,16.8003472 14.7210306,15.9010417 15.2453362,15.3767361 L19.3772806,11.2447917 C19.7036695,10.9184028 20.2314473,10.9184028 20.554364,11.2447917 L24.6863084,15.3767361 C25.2140862,15.9010417 24.8425584,16.8003472 24.0995028,16.8003472 Z" id="Path" transform="translate(19.967021, 13.900174) rotate(90.000000) translate(-19.967021, -13.900174) "></path>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

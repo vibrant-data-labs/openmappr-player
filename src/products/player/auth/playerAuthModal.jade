@@ -1,0 +1,21 @@
+form
+	.modal-header
+		.row.vert-align
+			.col-xs-6
+				h6
+					span Enter Access Token
+			.col-xs-6.pull-right
+				//- button.header-btn(type="submit" ng-click="doAccessAuth()") 
+				//- 	i.icon-project
+				//- 	span.h7 View Player
+	.modal-body
+		.container-fluid
+			.row
+				.col-xs-12
+					input.form-control(type="text", ng-model="playerAccessToken" dir-select-all)
+			.row(ng-show="playerAuthErr")
+				.col-xs-12 {{playerAuthErr}}
+			.divider
+			.row 
+				.col-xs-12
+					button.power-btn.pull-right(ng-click="doAccessAuth()") View Player

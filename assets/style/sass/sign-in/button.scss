@@ -1,0 +1,208 @@
+.button {
+  padding: 10px;
+  font-size: 15px;
+  text-transform: uppercase;
+  border-radius: 4px;
+  transition: all .25s;
+  cursor: pointer;
+
+  &:disabled {
+    pointer-events: none;
+    opacity: .7;
+  }
+
+  &_summarize {
+    width: 100%;
+    border: 1px solid #BC3364;
+    padding: 6px;
+    text-align: center;
+    margin: -2px 0 0 0;
+    border-radius: 6px;
+    background: #fff;
+    transition: all 350ms ease;
+    font-weight: 700;
+    color: #BC3364;
+    height: 40px;
+
+    &:hover {
+      background: #BC3364;
+      color: #fff;
+      box-shadow: 0 8px 5px -8px rgba(#000, .2);
+    }
+
+    &:disabled {
+      background: #f4f4f4;
+      box-shadow: none;
+      color: initial;
+    }
+  }
+
+  &_reset {
+    width: 100%;
+    border: 1px solid rgba(85, 85, 85, 0.3);
+    color: rgba(85, 85, 85, 0.8);
+    font-weight: 700;
+    padding: 6px;
+    text-align: center;
+    margin: 0 0 -2px 0;
+    border-radius: 6px 6px 0 0;
+    background: #fff;
+    transition: all 350ms ease;
+    position: relative;
+
+    &:hover {
+      background: #BC3364;
+      color: #fff;
+      box-shadow: 0 -8px 5px -8px rgba(#000, .2);
+    }
+
+    &:disabled {
+      background: #f4f4f4;
+      box-shadow: none;
+      color: initial;
+    }
+  }
+
+  &_collapse {
+    position: absolute;
+    content: "";
+    border-radius: 2px;
+    border: 1px solid #E2E2E2;
+    background: #fff url("/img/search/arrow-down.svg") 50% no-repeat;
+    background-size: 8px 5px;
+    top: 8px;
+    right: 10px;
+    width: 20px;
+    height: 20px;
+    
+    &_hide {
+      transform: scaleY(-1);
+    }
+  }
+
+  &_wide {
+    display: block;
+    width: 100%;
+  }
+
+  &_type {
+    &_primary {
+      background: #BA3665;
+      color: #fff;
+
+      &:hover {
+        background: darken($color: #BA3665, $amount: 8);
+      }
+
+      &:focus,
+      &:active {
+        background: darken($color: #BA3665, $amount: 8);
+        box-shadow: inset 0 0 8px rgba($color: darken($color: #BA3665, $amount: 24), $alpha: .6);
+      }
+    }
+
+    &_ghost {
+      background: none;
+      color: #BA3665;
+      text-transform: initial;
+      font-weight: 500;
+      font-size: 13px;
+
+      &:hover {
+        color: darken($color: #BA3665, $amount: 8);
+      }
+    }
+
+    &_play-toolbar {
+      display: block;
+      width: 36px;
+      height: 100%;
+      padding: 0;
+      font-size: 0;
+      position: relative;
+      background-color: #E8ECF1;
+      border-radius: 2px;
+      text-transform: none;
+
+      &:disabled {
+        opacity: .3;
+      }
+
+      &.button_with-text {
+        width: auto;
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 26px;
+        padding: 0 10px 0 20px;
+
+        &::before {
+          width: 20px;
+        }
+      }
+
+      &:hover {
+        background-color: lighten(lighten(#000, 90%), 8);
+      }
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-repeat: no-repeat;
+        background-position: 50%;
+      }
+
+      &.button {
+        &_icon {
+          &_check::before {
+            background-image: deployedUrl('/img/play-toolbar/check.svg');
+          }
+
+          &_info::before {
+            background-size: 20%;
+            background-image: url('/img/play-toolbar/info-solid.svg');
+          }
+
+          &_chevron-left::before {
+            background-image: deployedUrl('/img/play-toolbar/arrow-left.svg');
+          }
+
+          &_chevron-right::before {
+            background-image: deployedUrl('/img/play-toolbar/arrow-right.svg');
+          }
+
+          &_chevron-down::before {
+            background: deployedUrl('/img/search/angle.svg') 50% no-repeat;
+          }
+
+          &_cancel::before {
+            background-image: deployedUrl('/img/play-toolbar/cancel.svg');
+          }
+
+          &_target::before {
+            background-image: deployedUrl('/img/play-toolbar/target.svg');
+          }
+
+          &_plus::before {
+            background-image: deployedUrl('/img/play-toolbar/plus.svg');
+          }
+
+          &_minus::before {
+            background-image: deployedUrl('/img/play-toolbar/minus.svg');
+          }
+
+          &_search::before {
+            background-image: deployedUrl('/img/play-toolbar/search.svg');
+          }
+
+          &_help::before {
+            background-image: deployedUrl('/img/play-toolbar/help.svg');
+          }
+        }
+      }
+    }
+  }
+}

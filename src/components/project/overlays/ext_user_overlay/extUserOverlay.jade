@@ -1,0 +1,74 @@
+.focus-overlay(ng-show="beginOverlayAnim")
+	.animate-fade(ng-if="showOverlay")
+		.node-gradient.animate-fade-out-overlay
+			.top
+			.bottom
+			.left
+			.right
+		.back-btn.vert-align(ng-click='closeExtUserOverlay(); triggerInteraction();')
+			i.icon-neighbors
+			h6.no-margin See who you're connected to on the map.
+		.neighbor-line.animate-fade-in(ng-show="showNeighborLine")
+		div
+			div.focuspanel
+				//- .scrolloverlay(ng-if="mapprSettings.nodeFocusRenderTemplate == 'scroll'")
+				// only have one template, so don't check
+				.scrolloverlay
+					dir-scroll-overlay-anchors(color-str="{{focusNode.colorStr}}", scroll-container="#detailbox-scroll" scroll-data-id="data-attr-id" show-neighbors="{{mapprSettings.nodeFocusNeighborsButton}}" force-neighbors="{{extLinkedNodes.length > 0}}")
+					.focusnode-label(ng-hide="hideContent" style="color:{{clusterColor}};")
+						h4 {{userName}}
+					.share-btns(style="margin-top:{{shareMarginTop}}px;" ng-if="player.settings.twitterShare || player.settings.facebookShare")
+						h5 Share!
+						.share-btn.vert-align(ng-if="twitterShare" dir-social-share="twitter" share-title="{{shareTitle}}" uib-tooltip="Tweet your Creative Style" is-compare="true")
+						.share-btn.vert-align(ng-if="facebookShare" dir-social-share="facebook" share-title="{{shareTitle}}" uib-tooltip="Share your Creative Style on Facebook" is-compare="true")
+					#detailbox-scroll.detailbox-container(ng-class="{transparent: hideContent}" ng-click='closeExtUserOverlay();' dir-kill-tooltip-on-scroll)
+						//- div(ng-repeat="node in extLinkedNodes")
+						//- 	span {{node.attr.OriginalLabel}}
+						//- div(dir-neighbors-detail ng-repeat-start="attr in nodeAttrs" ng-click="$event.stopPropagation();" ng-if="showFocusNode && mapprSettings.nodeFocusShowNeighbors && (mapprSettings.nodeFocusNeighborsBefore == attr.id || ($first && !mapprSettings.nodeFocusNeighborsBefore))" grid-size="12" data-attr-id="Neighbors")
+						div
+							.detailbox-card
+								.row
+									.col-xs-12
+										span Play to your Creative Strengths:
+									.col-xs-12(style="color:{{focusNode.colorStr}};")
+										div(ng-repeat="suggestionObj in clusterSuggestionsMap")
+											.row
+												span {{suggestionObj.clusterVal}}:&nbsp;
+												span {{suggestionObj.suggestion}}
+						div(ng-click="$event.stopPropagation();")
+							.detailbox-card
+								.h5 {{customTitle}} 
+								div
+									//- h3.text-attr-content(style="color: {{clusterColor}};") {{::clusterAttr.principalVal}}
+									dir-attr-renderer(attr-to-render="clusterAttr", node-color-str="focusNode.colorStr", show-aggregation="false", is-node="true", is-node-focus="true" is-in-Overlay="true" is-ext-user="true" cancel-overlay-fctn="attrRenderClicked();" show-filter="clusterAttr.showFilter" theme="appUi.theme")
+						div(ng-click="$event.stopPropagation();")
+							div(dir-neighbors-detail ng-if="extLinkedNodes.length > 0" grid-size="12" data-attr-id="Neighbors")
+							div(ng-repeat="attr in distrAttrs" data-attr-id="{{::attr.id}}" ng-click="$event.stopPropagation();" ng-if="attr && attr.visible && attr.principalVal != null")
+								.detailbox-card
+									.row(ng-if="attr.attrType != 'integer' && attr.attrType != 'float' && attr.attrType != 'boolean' ")
+										.col-xs-12
+											span.h5(uib-tooltip="{{::attr.metadata.descr}}" tooltip-placement='left' tooltip-append-to-body="true") {{::attr.title}} 
+											//- span.h5(ng-if="attr.attrType === 'integer' || attr.attrType ==='boolean' || attr.attrType === 'float'", style="color:{{focusNode.colorStr}};") &nbsp;&nbsp;&nbsp;{{attr.principalVal}}
+									div(ng-if="attr.attrType == 'string' && (!attr.renderType || attr.renderType == 'default' || attr.renderType == 'text' || attr.renderType == 'categorybar' || attr.renderType == 'categorylist' || attr.renderType == 'barchart' || categorybar == 'categorylist' || categorybar == 'tags' || attr.renderType == 'piechart')")
+										h3.text-attr-content(style="color:{{focusNode.colorStr}};" ng-text-truncate="::attr.principalVal" ng-tt-chars-threshold="200" ng-tt-more-label="more..." ng-tt-less-label="...less")
+									dir-attr-renderer(ng-if="loadDistr" attr-to-render="attr", node-color-str="focusNode.colorStr", show-aggregation="false", is-node="true", is-node-focus="true" is-in-Overlay="true" is-ext-user="true" cancel-overlay-fctn="attrRenderClicked();" show-filter="attr.showFilter" theme="appUi.theme")
+									.row
+										.col-xs-3
+											h6.no-margin {{::attr.metadata.minLabel}}
+										.col-xs-6(style="color:{{focusNode.colorStr}};")
+											h4.no-margin.text-center(ng-if="attr.attrType === 'integer' || attr.attrType ==='boolean' || attr.attrType === 'float'", style="color:{{focusNode.colorStr}};" uib-tooltip="{{::attr.metadata.descr}}" tooltip-placement='top' tooltip-append-to-body="true")
+												strong
+													span {{::attr.title}}:&nbsp;
+													span {{attr.principalVal}}
+										.col-xs-3
+											h6.no-margin.text-right {{::attr.metadata.maxLabel}}
+									.graph-squares(ng-if="attr.attrType === 'integer' || attr.attrType ==='boolean' || attr.attrType === 'float' || attr.renderType == 'piechart' || attr.renderType == 'barchart'")
+										.pull-right
+											.square(uib-tooltip="Population" tooltip-append-to-body="true")
+											.square(uib-tooltip="Group" tooltip-append-to-body="true")
+												.color(style="background: {{focusNode.colorStr}}; opacity: .4;")
+											.square(uib-tooltip="Node" tooltip-append-to-body="true")
+												.color(style="background: {{focusNode.colorStr}};")
+										.clearfix
+	dir-focus-node(ng-if="showFocusNode" node="focusNode" img-attr="nodeImageAttr" start="nodeStartData" end="nodeEndData" duration="500" ease="" finish="finishAnimation()")
+	dir-focus-node(ng-if="showNeighborNode" node="neighborNode" img-attr="neighborNodeImageAttr" start="neighborNodeStartData" end="neighborNodeEndData" duration="600" ease="" finish="finishNeighborAnimation()")

@@ -1,0 +1,23 @@
+div.tag-list
+	.pull-right
+		.flex-container(ng-show="numShowGroups !== 0 || attrValVMs.length > renderLimit")
+			.more-btn.pull-right.no-hover.truncate
+				.h6
+					em  {{renderLimit}} of {{attrValVMs.length}}
+			.more-btn.pull-right(ng-show="numShowGroups !== 0" ng-click='showLess()')
+				.h6 
+					em less
+			.more-btn.pull-right(ng-show="attrValVMs.length > renderLimit" ng-click='showMore()')
+				.h6 
+					em more 
+	.clearfix
+	.tag-item(ng-repeat="attrValVM in attrValVMs | limitTo: renderLimit", ng-class="{'bg-primary': attrValVM.checked}")
+		.tag-linebar(style="width:{{attrValVM.percent}}%;")
+		.row.vert-align
+			.col-xs-2
+				.tag-checkbox
+					input(id="checkbox-{{$index}}-{{attrId}}" type="checkbox", ng-model="attrValVM.checked", ng-change="selectFilters();")
+					label(for="checkbox-{{$index}}-{{attrId}}")
+			.col-xs-8.truncate.tag-text.h6 {{attrValVM.value}}
+			.col-xs-2 
+				.tag-count.text-right {{attrValVM.percent}}%

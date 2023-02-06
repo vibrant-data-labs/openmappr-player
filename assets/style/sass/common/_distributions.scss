@@ -1,0 +1,137 @@
+//
+// Attribute Distributions Styles
+// Styles for the attribute distribution renderers used in the Stats panel
+// and some layouts and the node overlays
+
+.d3-tip {
+    background: $dark-panel-background;
+    border-radius: 2px;
+    color: $text-color-dark;
+    font-size: 10px;
+    font-weight: bold;
+    line-height: 1;
+    padding: 4px 10px;
+
+    // Creates a small triangle extender for the tooltip
+    &:after {
+        box-sizing: border-box;
+        color: $dark-panel-background;
+        content: '\25BC';
+        display: inline;
+        font-size: 10px;
+        line-height: 1;
+        position: absolute;
+        text-align: center;
+        width: 100%;
+    }
+
+    // Style northward tooltips differently
+    &.n {
+        &:after {
+            left: 0;
+            margin: -2px 0 0;
+            top: 100%;
+        }
+    }
+}
+
+.attrDistribution {
+    @include transition(height .3s ease-out);
+    margin-bottom: 22px;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.scrollerFadeTop {
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 100%);
+    height: 25px;
+    position: absolute;
+}
+
+.scrollerFadeBottom {
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%);
+    height: 25px;
+    position: absolute;
+}
+
+.cat-search,
+.tag-search {
+  margin-right: auto;
+  margin-left: -3px;
+  height: 32px;
+
+  input {
+    padding: 2px 22px 2px 5px;
+  }
+
+  button:hover {
+    color: $active-color;
+  }
+
+  .close-btn {
+    margin-left: -22px;
+  }
+}
+
+.more-btn {
+    margin-left: 5px;
+    color: $gray;
+    cursor: pointer;
+    margin-right: 5px;
+    white-space: nowrap;
+    text-decoration: underline;
+    text-decoration-color: $gray;
+
+    &:hover {
+        color: $link-hover-color;
+        text-decoration-color: $link-hover-color;
+    }
+
+    &.no-hover,
+    &.no-hover:hover {
+      color: inherit;
+      cursor: auto;
+      text-decoration: none;
+      padding-right: 1px;
+    }
+}
+
+.more-btn:hover .h6 {
+  color: $link-hover-color;
+}
+
+.more-btn.no-hover:hover .h6 {
+  color: $gray;
+}
+
+.cat-search {
+  input {
+    align-self: center;
+  }
+}
+
+// .sizeDistrCover1 {
+//     @include skew(0, 3deg);
+//     @include transform-origin(center right);
+//     -webkit-backface-visibility: hidden;
+//     height: 39px;
+//     margin-top: 0;
+//     overflow: hidden;
+//     transform: skew(0,3deg);
+// }
+//
+// .sizeDistrCover2 {
+//     @include skew(0, -6deg);
+//     height: 50px;
+//     margin-top: 20px;
+//     overflow: hidden;
+//     -webkit-backface-visibility: hidden;
+// }
+//
+// .sizeDistr {
+//     @include skew(0, 3deg);
+//     margin-top: -15px;
+// }

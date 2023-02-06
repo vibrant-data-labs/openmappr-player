@@ -1,0 +1,813 @@
+//
+// Node Detail Overlay
+// Styles for the node focus overlay, used in ctrlNodeOverlay and dirFocusNode overlays
+
+.highlight-text {
+    background: $highlight-color;
+}
+
+.node-pop {
+    left: 415px;
+    position: absolute;
+    top: 25px;
+}
+
+.scrolloverlay {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 390px;
+  right: 0;
+  overflow: auto;
+}
+
+.focus-node {
+  @include transition(transform .3s ease-out);
+    left: 0;
+    overflow: visible;
+    position: absolute;
+    top: 0;
+    z-index: 3;
+
+    &.external {
+
+        left: 50%;
+        margin-left: -374px;
+        top: 50%;
+
+        .circle {
+            transform: scale3d(2, 2, 1);
+        }
+    }
+
+    .circle {
+        @include transition(transform .5s ease-out);
+        background-size: cover;
+        border: 4px solid;
+        border-radius: 100%;
+        height: 100px;
+        margin: -75px;
+        width: 100px;
+    }
+
+}
+
+
+.user-container {
+    @include transition(all .3s ease-out);
+    border: 2px solid $body-bg-dark;
+    border-radius: 100%;
+    box-shadow: 0 0 5px $body-bg-dark;
+    cursor: pointer;
+    height: 50px;
+    overflow: hidden;
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: 50px;
+    z-index: 1002;
+
+    &:hover {
+        transform: scale3d(1.2, 1.2, 1);
+    }
+
+    .img {
+        background-size: cover;
+        height: 100%;
+        width: 100%;
+    }
+}
+
+
+.focusnode-label {
+    color: $text-color;
+    font-size: 24px;
+    left: 50%;
+    margin-left: -230px;
+    margin-top: 120px;
+    pointer-events: none;
+    position: fixed;
+    text-align: center;
+    top: 50%;
+    width: 370px;
+
+    h4 {
+        font-size: 24px;
+        font-weight: bold;
+        letter-spacing: 1px;
+    }
+}
+
+.focus-overlay {
+    bottom: 0;
+    left: 390px;
+    position: fixed;
+    right: 0;
+    top: 0;
+    z-index: 1000;
+    overflow: hidden;
+
+    .back-btn {
+        background: $body-bg-dark;
+        border-radius: 5px;
+        color: $text-color-dark;
+        cursor: pointer;
+        max-width: 220px;
+        padding: 6px 10px;
+        position: fixed;
+        right: 50px;
+        top: 60px;
+        z-index: 14;
+
+        &:hover {
+            color: $active-color;
+        }
+
+        i {
+            font-size: 25px;
+            padding: 0 10px 0 5px;
+        }
+
+    }
+
+    &.content-overlay {
+        right: 0;
+
+        .back-btn {
+            right: 35px;
+        }
+    }
+
+    .share-btns {
+        left: 50%;
+        margin: -164px 0 0 490px;
+        margin-top: -18vh;
+        position: absolute;
+        top: 50%;
+        z-index: 1;
+
+        .share-btn {
+            background: $body-bg-dark;
+            border: 1px solid $text-color-dark;
+            border-radius: 100%;
+            color: $text-color-dark;
+            cursor: pointer;
+            font-size: 25px;
+            height: 40px;
+            margin: 5px;
+            width: 40px;
+
+            &:hover {
+                border-color: $text-muted;
+                color: $text-muted;
+            }
+
+            i {
+                margin: auto;
+                padding-top: 2px;
+            }
+        }
+
+    }
+}
+
+
+.detailbox-container {
+    @include transition(all .5s linear);
+    // bottom: 0;
+    // left: 0;
+    margin-left: -150px;
+    opacity: 1;
+    overflow: auto;
+    padding-bottom: 70px;
+    padding-top: 25vh;
+    // position: fixed;
+    // right: 0;
+    // top: 0;
+    margin: auto;
+    width: 800px;
+    padding-left: 300px;
+    height: 100%;
+
+
+    .detailbox-card {
+        @include user-select(text);
+        color: $text-color;
+        margin: 40px 10px;
+        overflow: hidden;
+        position: relative;
+        width: 440px;
+
+        .attr-text-body {
+            color: $text-color;
+            float: none;
+            font-style: normal;
+            margin: 10px 10px 10px 25px;
+        }
+
+        div,
+        span {
+            @include user-select(text);
+        }
+    }
+
+    .text-attr-container {
+        overflow: hidden;
+        position: relative;
+    }
+
+    .text-attr {
+        margin-bottom: 20px;
+        max-height: 210px;
+        overflow: hidden;
+
+        &.auto-size {
+            height: auto;
+            max-height: none;
+        }
+    }
+
+    .text-attr-content {
+        margin-top: 0;
+        width: 100%;
+    }
+
+
+    .text-attr-more,
+    .text-attr-less {
+        box-sizing: content-box;
+        color: $text-color-dark;
+        cursor: pointer;
+        font-style: italic;
+        left: 100%;
+        margin-left: -65px;
+        padding-right: 65px;
+        position: absolute;
+        text-align: right;
+        top: 200px;
+        width: 65px;
+    }
+
+    .text-attr-less {
+        left: auto;
+        right: -35px;
+        top: 20px;
+    }
+
+    .graph-squares {
+        .square {
+            background: $text-color;
+            float: right;
+            height: 10px;
+            margin-left: 8px;
+            width: 10px;
+        }
+
+        .color {
+            height: 100%;
+            width: 100%;
+        }
+    }
+
+    .attr-renderers {
+        margin: 0;
+
+        a {
+            color: $active-color;
+            font-family: $headings-font-family;
+            font-size: 27px;
+            text-decoration: underline;
+        }
+
+        .media-embed,
+        .link-thumb {
+            background: $body-bg;
+
+            a {
+                color: $text-color;
+                text-decoration: none;
+
+                // issue with embedly embed link
+                a {
+                  text-decoration: underline;
+                }
+            }
+        }
+
+        .cat-list {
+            .cat-percent {
+                right: 20px;
+            }
+        }
+
+        .media-list {
+            ul > li {
+                border: 0;
+                margin: 50px 0;
+                padding: 0;
+
+                &:first-child {
+                    margin-top: 0;
+                }
+            }
+        }
+
+        //histogram
+
+        .xaxis,
+        .yaxis {
+            path,
+            line,
+            text {
+                stroke: $text-muted;
+            }
+        }
+    }
+
+
+
+    .more-btn {
+        color: $text-color;
+        line-height: 2.4;
+
+        &:hover {
+            color: $active-color;
+        }
+    }
+
+    .media-embed {
+        background: $body-bg;
+
+        .title {
+            color: $text-color-dark;
+            font-weight: bold;
+            padding: 5px 10px;
+        }
+
+        .text-small {
+            font-size: inherit;
+        }
+
+        p {
+            color: $text-color;
+            font-family: $headings-font-family;
+
+            a {
+              text-decoration: underline;
+            }
+        }
+
+        .descr {
+            margin: 0;
+            padding: 10px 20px 20px;
+
+            .wrap {
+                margin: 0;
+                padding: 0 20px 10px 10px;
+            }
+        }
+
+        .tag {
+            background-color: $body-bg;
+        }
+
+        //wierd bug fix and look at if decide to have tags like this
+        .tags {
+            padding: 10px 20px 20px;
+        }
+
+
+        img {
+            &.thumb {
+                margin: 0 10px 0 0;
+            }
+        }
+
+        .full-width {
+            img {
+                float: none;
+                max-width: 100%;
+            }
+
+            .title {
+                margin: 0;
+                padding: 20px 20px 5px;
+            }
+
+            .descr {
+                padding: 10px 20px 20px;
+            }
+        }
+
+        .pin-btn {
+          position: absolute;
+          top: -30px;
+          right: 3px;
+          font-size: 20px;
+          cursor: pointer;
+          left: auto;
+
+          &:hover {
+            color: $link-hover-color;
+          }
+        }
+    }
+
+    .twitter-feed {
+        // background-color: $body-bg;
+
+        iframe {
+            min-width: 100% !important;
+        }
+    }
+
+    .instagram-feed {
+
+        .pic {
+            margin: 50px 0;
+
+            &:first-child {
+                margin-top: 0;
+            }
+        }
+
+    }
+
+    //for text truncation
+    .truncate-toggle-text {
+        color: $text-color;
+        cursor: pointer;
+        float: right;
+        font-size: 17px;
+        font-style: italic;
+        margin-top: 10px;
+
+        &.top-less {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+        }
+    }
+
+
+    //old stuff
+
+    .attr-image {
+        border: 10px solid $shadow-color;
+        max-height: 400px;
+        max-width: 100%;
+    }
+
+    .attr-icon {
+        color: $text-color-dark;
+        float: left;
+        font-size: 36px;
+        height: 22px;
+        margin-left: -15px;
+    }
+
+    .attr-icon-right {
+        float: none;
+        height: auto;
+
+        > span {
+            height: 100%;
+            position: absolute;
+        }
+
+        i {
+            bottom: 70px;
+            position: absolute;
+        }
+    }
+
+    .attr-text-title {
+        color: $text-muted;
+        font-size: 21px;
+        font-style: italic;
+        margin-left: 23px;
+    }
+
+    .attr-text-body {
+        color: $text-color-dark;
+        float: left;
+        font-size: 22px;
+        font-style: italic;
+        font-weight: bold;
+        margin: 33px 10px 11px 5px;
+        max-height: 280px;
+        max-width: 450px;
+        overflow-y: auto;
+    }
+
+    .attr-media {
+        margin: 8px;
+    }
+
+
+}
+
+
+//neighbors grid
+.neighbors-detail {
+    color: $text-color;
+    margin: 10px;
+    padding: 20px;
+    position: relative;
+    width: 440px;
+
+    .content {
+        margin: 30px 0 0;
+        max-height: 530px;
+        overflow: hidden;
+        padding-bottom: 30px;
+        position: relative;
+        white-space: nowrap;
+        width: 440px;
+    }
+
+    .title {
+        color: $text-color;
+        left: 20px;
+        position: absolute;
+        top: 10px;
+        width: 400px;
+        z-index: 2;
+    }
+
+
+    .scroll-left-btn,
+    .scroll-right-btn {
+        color: $text-color;
+        cursor: pointer;
+        font-size: 22px;
+        position: absolute;
+        top: 192px;
+
+        &:hover {
+            color: $text-muted;
+        }
+    }
+
+    //
+    .scroll-left-btn {
+        right: -10px;
+    }
+
+    .scroll-right-btn {
+        right: -50px;
+    }
+
+    .pie-bar {
+        background-color: $body-bg;
+        bottom: 12px;
+        height: 8px;
+        left: -5px;
+        position: absolute;
+        right: 55px;
+
+        .color {
+            float: left;
+            height: 100%;
+        }
+    }
+
+    .container {
+        @include transition(transform .5s ease-out, opacity .4s ease-out);
+        -webkit-align-content: flex-start;
+        -webkit-flex-direction: row;
+        -webkit-flex-wrap: wrap;
+        align-content: flex-start;
+        display: -webkit-inline-flex;
+        display: inline-block;
+        display: inline-flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        margin-left: 0;
+        max-height: 500px;
+        padding: 0;
+        width: 440px;
+
+        > div {
+            height: 110px;
+            margin: 10px 35px 10px 0;
+            position: relative;
+            width: 70px;
+            z-index: 2;
+
+            &:hover {
+                @include transition(opacity 0s ease-out);
+                opacity: 1;
+            }
+
+            &.dimmed {
+                @include transition(opacity .7s ease-out .3s);
+                opacity: .3;
+                z-index: 1;
+            }
+        }
+    }
+
+    .circle-back {
+        background: $body-bg;
+        border: 4px solid $body-bg;
+        border-radius: 100%;
+        height: 70px;
+        left: 0;
+        position: absolute;
+        top: 0;
+        width: 70px;
+        z-index: -1;
+    }
+
+    .circle {
+        background-size: cover;
+        border: 4px solid;
+        border-radius: 100%;
+        height: 70px;
+        overflow: hidden;
+        width: 70px;
+    }
+
+    h6 {
+        font-weight: bold;
+        white-space: normal;
+        font-size: 12px;
+
+        &.truncate {
+            white-space: nowrap;
+        }
+    }
+}
+
+.scroll-overlay-anchors {
+    transform: scale3d(.7, .7, 1);
+    @include transition(transform .5s ease-out);
+    border: 1px solid $danger-color;
+    border-radius: 100%;
+    z-index: 2;
+    border-radius: 100%;
+    height: 260px;
+    left: 50%;
+    margin-left: -180px;
+    margin-top: -155px;
+    position: fixed;
+    top: 50%;
+    width: 260px;
+
+    &.active {
+        transform: scale3d(1, 1, 1);
+    }
+
+    .circles {
+        transform-origin: 50% 50%;
+        -webkit-backface-visibility: hidden;
+        -webkit-transform: translate3d(0, 0, 0);
+        left: 130px;
+        position: absolute;
+        top: 130px;
+    }
+
+    .circle {
+        transform-origin: 50% 50%;
+        -webkit-backface-visibility: hidden;
+        -webkit-transform: translate3d(0, 0, 0);
+        background-color: $body-bg;
+        border: 1px solid $text-shadow;
+        border-radius: 100%;
+        color: $text-color;
+        cursor: pointer;
+        font-size: 22px;
+        height: 40px;
+        margin: -20px;
+        padding: 3px 5px;
+        position: absolute;
+        width: 40px;
+
+        .icon-quotes-left {
+            font-size: .8em;
+        }
+
+        .icon-neighbors {
+            font-size: 1.2em;
+            line-height: 1.2;
+            padding: 3px;
+        }
+    }
+}
+
+.node-gradient {
+    background-image: radial-gradient(ellipse at center, rgba(255, 255, 255, 0) 0%, #ffffff 250px);
+    height: 470px;
+    left: 50%;
+    margin-left: -473px;
+    margin-top: -256px;
+    opacity: .9;
+    position: absolute;
+    top: 50%;
+    width: 470px;
+
+    .top {
+        background: $body-bg;
+        height: 1000px;
+        left: 0;
+        position: absolute;
+        width: 4000px;
+        bottom: 100%;
+        margin-left: -2000px;
+    }
+
+
+    .left {
+        background: $body-bg;
+        position: absolute;
+        right: 100%;
+        top: 0;
+        bottom: 0;
+        width:1000px;
+    }
+
+    .bottom {
+        background: $body-bg;
+        height: 1000px;
+        top: 100%;
+        width: 4000px;
+        position: absolute;
+        margin-left: -2000px;
+    }
+
+    .right {
+        background: $body-bg;
+        height: 100%;
+        left: 100%;
+        position: absolute;
+        width: 1530px;
+    }
+}
+
+.contentoverlay {
+    .detailbox-container {
+        margin-left: 0;
+        padding-left: 0;
+        padding-top: 173px;
+        right: 0;
+        left: 390px;
+
+        .content-center {
+            margin: auto;
+            max-width: 650px;
+        }
+
+        .detailbox-card {
+          width: 600px;
+        }
+
+        .attr-text-body {
+          max-width: 600px;
+        }
+    }
+
+    .neighbors-detail {
+      width: 600px;
+
+      .content {
+        width: 600px;
+      }
+
+      .title {
+        width: 560px;
+      }
+    }
+}
+
+.overlay-content-background {
+    background: $body-bg;
+    bottom: 0;
+    left: 390px;
+    position: fixed;
+    right: 0;
+    top: 0;
+
+}
+
+// #ext-user-pic-link {
+//     position: absolute;
+//     left: 50%;
+//     top: 50%;
+//     width: 300px;
+//     height: 300px;
+//     border-radius: 100%;
+//     margin-left: -525px;
+//     margin-top: -150px;
+//     z-index: 10;
+//
+//     h3 {
+//         padding: 20px;
+//         display:none;
+//         text-shadow: 0 0 1px #000, 0 0 1px #000;
+//     }
+// }
+//
+// #ext-user-pic-link:hover h3 {
+//     display: block;
+// }

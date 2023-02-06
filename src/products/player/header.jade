@@ -1,0 +1,21 @@
+#header.header.player-header(ng-if="snapInfo.snapsLoaded && player.settings.showHeader" ng-class="player.settings.headerType" ng-click="triggerInteraction();")
+	div(ng-if="player.settings.headerType != 'simple'" ng-bind-html="player.settings.headerHtml")
+	div(ng-if="player.settings.headerType == 'simple'")
+		//- .vert-align.pull-left.logo(ng-if="!player.settings.showModal")
+		//- 	img.pull-left(ng-if="player.settings.headerImageUrl" ng-src="{{player.settings.headerImageUrl}}")
+		//- 	h1.pull-left.no-margin.truncate(ng-bind-html="headerTitle")
+			//- .info-btn.pull-left.text-center(ng-if="hasModal || player.settings.infoClickToParent" ng-click="infoBtnClick();") i
+		ul.list-unstyled.pull-right.vert-align.no-margin
+			//- li.square-btn.pull-right.no-border(ng-click="resetLayoutSelections();", ng-show="appUi.showGridResetBtn", uib-tooltip="Reset Selections" tooltip-placement="bottom")
+			//- 	i.fa.fa-fw.fa-refresh 
+			//- li.square-btn.pull-right(ng-click="panelUI.openPanel('summary', false); closeOverlay();" ng-hide="panelUI.summaryPanelOpen" uib-tooltip="Show Legend" tooltip-placement="bottom")
+			//- 	i.fa.fa-fw.fa-list-ul
+			//- li.square-btn.pull-right(ng-click="panelUI.openPanel('filter', true); closeOverlay();" ng-hide="panelUI.filterPanelOpen" uib-tooltip="Show Properties" tooltip-placement="bottom")
+			//- 	i.fa.fa-fw.fa-pie-chart
+			//- li.square-btn.search.pull-right(ng-controller="SearchPanelCtrl")
+			//-     i.fa.fa-search
+			//-     input.h4.form-control(type="text", placeholder="Search...", ng-model="globalSearch.text", ng-model-options="{debounce:500}" ng-keyup="searchFn($event)")
+			li.shadow-btn.pull-right.facebook.vert-align(ng-if="player.settings.facebookShare" dir-social-share="facebook" share-title="{{player.settings.shareTitle}}")
+			li.shadow-btn.pull-right.twitter.vert-align(ng-if="player.settings.twitterShare" dir-social-share="twitter" share-title="{{player.settings.shareTitle}}")
+			li.circle-btn.pull-right.ext-user-btn(ng-if="appUi.hasExtUser" ng-click="openExtUserOverlay();" ng-class="{'invisible': appUi.openExtUserOverlay}")
+				.img(ng-if="!appUi.openExtUserOverlay" style="background-image: url({{extUserInfo.userPicUrl}});")

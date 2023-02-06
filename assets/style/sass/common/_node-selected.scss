@@ -1,0 +1,30 @@
+.node-selected {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  width: 100%;
+  
+  &__img {
+    flex: 0 0 45px;
+    height: 45px;
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+  }
+
+  &__info {
+    margin: 0 5px;
+    padding: 0 10px
+  }
+
+  &__title {
+    font: 500 14px/21px "Poppins";
+    color: #BC3364;
+  }
+
+  &__desc {
+    font: 400 12px/18px "Poppins";
+    margin: 0;
+    color: #858585;
+  }
+}
