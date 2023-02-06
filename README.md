@@ -1,4 +1,4 @@
-# OpenMappr Static 📊
+# OpenMappr Player 📊
 ## Prerequisites
 - node > v14
 - install npm dependencies `npm install`
