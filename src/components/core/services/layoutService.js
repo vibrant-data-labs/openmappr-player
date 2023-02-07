@@ -350,16 +350,18 @@ function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partiti
     // Assign settings to service instance
     this.dataGraphSettings =  dataGraphSettings;
 
+    const interpolate = require('d3-interpolate');
+
     // scaler factory
     var interpolatorForScaler = {
-        'RGB'            : d3.interpolateRgb,
-        'HSL'            : d3.interpolateHsl,
-        'HSL Long'       : d3.interpolateHslLong,
-        'LAB'            : d3.interpolateLab,
-        'HCL'            : d3.interpolateHcl,
-        'HCL Long'       : d3.interpolateHclLong,
-        'Cubehelix'      : d3.interpolateCubehelix,
-        'Cubehelix Long' : d3.interpolateCubehelixLong
+        'RGB'            : interpolate.interpolateRgb,
+        'HSL'            : interpolate.interpolateHsl,
+        'HSL Long'       : interpolate.interpolateHslLong,
+        'LAB'            : interpolate.interpolateLab,
+        'HCL'            : interpolate.interpolateHcl,
+        'HCL Long'       : interpolate.interpolateHclLong,
+        'Cubehelix'      : interpolate.interpolateCubehelix,
+        'Cubehelix Long' : interpolate.interpolateCubehelixLong
     };
 
     //The current layout
