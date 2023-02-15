@@ -43,8 +43,9 @@
                 
                   iframe(ng-if="tab.value.includes('http') && !tab.text" ng-src="{{ tab.value | trustUrl }}", id='iframe001', width="100%", height="200px" frameborder="0", webkitallowfullscreen, mozallowfullscreen, allowfullscreen)
                   a.section__more(href="#", ng-if="tab.text && tab.text.couldExpand && tab.text.isExpanded", ng-click="toggleText(tab, $event)") &larr; Less
-                  p(ng-if="tab.text && !tab.value.includes('http')") {{tab.text.isExpanded ? tab.value : (tab.text.shortValue + '...')}}
-                  p(ng-if="tab.text && tab.value.includes('http')" ng-bind-html="parseLinks(tab)")
+                  p(ng-if="!tab.isHtml && !tab.hasLinks") {{tab.text.isExpanded ? tab.value : (tab.text.shortValue + '...')}}
+                  p(ng-if="!tab.isHtml && tab.hasLinks" ng-bind-html="parseLinks(tab)")
+                  div(ng-if="tab.isHtml" class="tab__description" ng-class="{'tab__description--expanded': tab.text.isExpanded }" ng-bind-html="tab.value")
                   a.section__more(href="#", ng-if="tab.text && tab.text.couldExpand && !tab.text.isExpanded", ng-click="toggleText(tab, $event)") Read More &rarr;
 
             section.section.section_tabs.section_tab-2(ng-if="nodeRightInfo.sectionTags.length", dir-elem-ready="onSection3Load(null, $event)")

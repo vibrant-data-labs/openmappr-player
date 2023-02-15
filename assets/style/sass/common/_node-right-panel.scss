@@ -143,6 +143,18 @@
     &__content {
       padding: 10px 20px;
       display: flex;
+
+      .tab__description {
+        max-height: 200px;
+        overflow: hidden;
+        -webkit-mask-image: linear-gradient(180deg, #000 80%, transparent);
+
+        &--expanded {
+          max-height: none;
+          overflow: auto;
+          -webkit-mask-image: none;
+        }
+      }
     }
 
     &__social {

@@ -69,7 +69,7 @@ angular.module('common')
                 $scope.showNeighborLine = false;
             };
 
-            $scope.getImgStyle = function(info) {
+            $scope.getImgStyle = function (info) {
                 if (!info.imageShow || !info.image) {
                     return {
                         'background': info.colorStr,
@@ -83,19 +83,19 @@ angular.module('common')
                 }
             };
 
-            $scope.getCarouselStyle = function() {
+            $scope.getCarouselStyle = function () {
                 return {
                     'transform': `translateX(${-(30 * $scope.carouselIndex)}px)`
                 }
             }
 
-            $scope.handleCarousel = function(value) {
+            $scope.handleCarousel = function (value) {
                 if (value === 'right' && $scope.carouselIndex + 1 <= $scope.carouselMax) {
-                    $scope.carouselIndex += 1; 
+                    $scope.carouselIndex += 1;
                 }
 
                 if (value === 'left' && $scope.carouselIndex - 1 >= 0) {
-                    $scope.carouselIndex -= 1; 
+                    $scope.carouselIndex -= 1;
                 }
             }
 
@@ -108,7 +108,7 @@ angular.module('common')
                 $scope.showFocusNode = false;
             };
 
-            $scope.toggleRightPanel = function(val = false) {
+            $scope.toggleRightPanel = function (val = false) {
                 $scope.drawerTitle = $scope.player.player.settings.defaultPanel || 'Map Information';
                 $scope.projectInfoTitle = $scope.player.player.settings.modalSubtitle;
                 $scope.projectInfoDesc = $scope.player.player.settings.modalDescription;
@@ -117,7 +117,7 @@ angular.module('common')
                 $scope.carouselMax = $scope.sponsorsRow2.length - 8;
 
                 $scope.sponsorsTxt = $scope.player.player.settings.sponsorsTxt || 'Powered by';
-                
+
                 if ($scope.player.player.settings.footer) {
                     $scope.footerLogo = $scope.player.player.settings.footer.studioLogo || '#{player_prefix_index_source}/img/logos/vdl-logo.svg';
                     $scope.footerName = $scope.player.player.settings.footer.studioName || 'Vibrant Data Labs';
@@ -140,7 +140,7 @@ angular.module('common')
             $scope.$on(BROADCAST_MESSAGES.grid.clickNode, onClickNode); //if in grid
             $scope.$on(BROADCAST_MESSAGES.list.clickNode, onClickNode); //if in list
 
-            $scope.$on(BROADCAST_MESSAGES.hss.subset.changed, function(ev, data) {
+            $scope.$on(BROADCAST_MESSAGES.hss.subset.changed, function (ev, data) {
                 $scope.totalCount = data.nodes.length;
             });
             $scope.$on(BROADCAST_MESSAGES.snapshot.loaded, function onSnapLoad(e, data) {
@@ -149,7 +149,7 @@ angular.module('common')
                     showNodeDetailOnLoad = snapData.snapshot.layout.settings.showNodeDetailOnLoad && $scope.mapprSettings.nodeFocusShow;
                 }
                 if ($scope.player.player.settings.showStartInfo) {
-                   $timeout(()=> $scope.toggleRightPanel(),500);
+                    $timeout(() => $scope.toggleRightPanel(), 500);
                 }
             });
             $scope.$on(BROADCAST_MESSAGES.snapshot.changed, function onSnapChange(e, data) {
@@ -160,7 +160,7 @@ angular.module('common')
                 }
             });
 
-            $scope.$on(BROADCAST_MESSAGES.sigma.clickStage, function() {
+            $scope.$on(BROADCAST_MESSAGES.sigma.clickStage, function () {
                 $scope.cancelOverlay();
             });
 
@@ -183,7 +183,7 @@ angular.module('common')
                 }
             });
 
-            $scope.$on(BROADCAST_MESSAGES.ip.nodeBrowser.show, function(ev) {
+            $scope.$on(BROADCAST_MESSAGES.ip.nodeBrowser.show, function (ev) {
                 selectService.unselect();
 
                 if (!$scope.beginOverlayRightPanel) {
@@ -191,18 +191,18 @@ angular.module('common')
                 }
             });
 
-            $scope.$on(BROADCAST_MESSAGES.ip.changed, function(ev, isInfoPanel) {
+            $scope.$on(BROADCAST_MESSAGES.ip.changed, function (ev, isInfoPanel) {
                 $scope.toggleRightPanel(isInfoPanel);
             });
 
-            $scope.onTagLoad = function(section, $event) {
+            $scope.onTagLoad = function (section, $event) {
                 var elem = $event.target[0];
                 if (!section.popupText && $(elem).find('.cat-text')[0].scrollWidth > elem.clientWidth) {
                     section.popupText = section.value;
                 }
             }
 
-            $scope.onTitleLoad = function(number, $event) {
+            $scope.onTitleLoad = function (number, $event) {
                 var elem = $event.target[0];
                 const labelText = $(elem).find('.label-text');
                 if (number.popupText || !labelText.length) return;
@@ -211,14 +211,14 @@ angular.module('common')
                 }
             }
 
-            $scope.isFullWidth = function(index) {
+            $scope.isFullWidth = function (index) {
                 const section = $scope.nodeRightInfo.sectionShortTags;
                 const nextIndex = index + 1;
                 const nextIsWide = !section[nextIndex] || section[nextIndex].isWide;
                 return index % 2 == 0 && nextIsWide;
             }
 
-            $scope.onTabLoad = function(tab, $event) {
+            $scope.onTabLoad = function (tab, $event) {
                 var elem = $($event.target[0]).find('span')[0];
                 if (elem.scrollWidth > elem.clientWidth + 2) {
                     elem.style.textOverflow = 'ellipsis';
@@ -226,15 +226,15 @@ angular.module('common')
                 }
             }
 
-            $scope.scrollParentRight = function($event) {
+            $scope.scrollParentRight = function ($event) {
                 $($event.target.parentElement).animate({ scrollLeft: '+=' + ($('.node-rigth-panel-overlay').width() / 2) }, 500, 'swing');
             }
 
-            $scope.scrollParentLeft = function($event) {
+            $scope.scrollParentLeft = function ($event) {
                 $($event.target.parentElement).animate({ scrollLeft: '-=' + ($('.node-rigth-panel-overlay').width() / 2) }, 500, 'swing');
             }
 
-            $scope.onSection2Load = function(selector, $event) {
+            $scope.onSection2Load = function (selector, $event) {
                 var elem = selector ? $(selector)[0] : $event.target[0];
                 $timeout(() => {
                     $scope.section2More = !isTabInView($(elem).find('.tabVisible').find('.tab:not(.more):not(.less)').last()[0]);
@@ -250,7 +250,7 @@ angular.module('common')
                 })
             }
 
-            $scope.onSection3Load = function(selector, $event) {
+            $scope.onSection3Load = function (selector, $event) {
                 var elem = selector ? $(selector)[0] : $event.target[0];
                 $timeout(() => {
                     $scope.section3More = !isTabInView($(elem).find('.tabVisible').find('.tab:not(.more):not(.less)').last()[0]);
@@ -265,27 +265,27 @@ angular.module('common')
                 })
             }
 
-            $scope.onHover = function(link) {
-                $scope.hoverTimeout.then(function() {
-                    hoverService.hoverNodes({ ids: [link.nodeId], force: true, showNeighbors: false});
+            $scope.onHover = function (link) {
+                $scope.hoverTimeout.then(function () {
+                    hoverService.hoverNodes({ ids: [link.nodeId], force: true, showNeighbors: false });
                 });
             };
-    
-            $scope.onHoverOut = function() {
-                $scope.hoverTimeout.then(function() {
+
+            $scope.onHoverOut = function () {
+                $scope.hoverTimeout.then(function () {
                     hoverService.unhover();
                 });
             };
 
-            $scope.toggleText = function(tab, event) {
+            $scope.toggleText = function (tab, event) {
                 if (tab.text) {
                     tab.text.isExpanded = !tab.text.isExpanded;
                 }
 
                 event.preventDefault();
             }
-    
-            $scope.onNeighborClick = function(link) {
+
+            $scope.onNeighborClick = function (link) {
                 selectService.selectSingleNode(link.nodeId);
             }
 
@@ -302,19 +302,19 @@ angular.module('common')
 
             $scope.darken = window.mappr.utils.darkenColor;
 
-            $scope.parseLinks = function(tab) {
+            $scope.parseLinks = function (tab) {
                 const { text, value } = tab;
-                
+
                 if (!text.isExpanded) {
-                    return text.shortValue.replace(/(http|www)[^\s]+/g, function(match) { return '<a href="' + match + '" target="_blank">' + match + '</a>' }) + '...'
+                    return text.shortValue.replace(/(http|www)[^\s]+/g, function (match) { return '<a href="' + match + '" target="_blank">' + match + '</a>' }) + '...'
                 } else {
-                    return value.replace(/(http|www)[^\s]+/g, function(match) { return '<a href="' + match + '" target="_blank">' + match + '</a>' });
+                    return value.replace(/(http|www)[^\s]+/g, function (match) { return '<a href="' + match + '" target="_blank">' + match + '</a>' });
                 }
             }
 
-            $scope.$watch(function() {
+            $scope.$watch(function () {
                 return $scope.showOverlay;
-            }, function() {
+            }, function () {
                 if (!selectService.singleNode) {
                     setTimeout(() => {
                         $scope.nodeRightInfo = null;
@@ -339,10 +339,10 @@ angular.module('common')
                 if (elem) {
                     var docViewRight = $(window).innerWidth();
                     var docViewLeft = docViewRight - $('.node-rigth-panel-overlay').width();
-                
+
                     var elemLeft = $(elem).offset().left;
                     var elemRight = elemLeft + $(elem).width();
-                
+
                     return (elemRight <= docViewRight) && (elemLeft >= docViewLeft);
                 }
             }
@@ -353,7 +353,7 @@ angular.module('common')
                     var tabs = sectionElem.querySelectorAll('.tab');
                     var tabTotalWidth = () => Array.prototype.reduce.call(tabs, (acc, x) => acc += $(x).width(), 0);
 
-                    for(let i = 0; i < tabs.length; i++) {
+                    for (let i = 0; i < tabs.length; i++) {
                         if (sectionWidth < tabTotalWidth()) {
                             break;
                         }
@@ -395,8 +395,8 @@ angular.module('common')
                             $scope.activeNeigh('out');
                             $scope.hoverTimeout = Promise.resolve();
                         } else {
-                            $scope.hoverTimeout = new Promise(function(resolve, reject) {
-                                $timeout(function() {
+                            $scope.hoverTimeout = new Promise(function (resolve, reject) {
+                                $timeout(function () {
                                     resolve();
                                 }, 500);
                             });
@@ -527,11 +527,11 @@ angular.module('common')
                 var $nDiv = $($event.currentTarget);
                 var pos = $nDiv.offset();
                 //use width because close to circle size
-                var top = pos.top+$nDiv.width()/2;
-                var left = pos.left+$nDiv.width()/2-475;
-                var top2 = window.innerHeight/2;
-                var left2 = window.innerWidth/2-415;
-                drawLink(left, top, left2, top2, node.colorStr, $scope.focusNode.colorStr, !similarity ? 3 : Math.ceil(similarity*4));
+                var top = pos.top + $nDiv.width() / 2;
+                var left = pos.left + $nDiv.width() / 2 - 475;
+                var top2 = window.innerHeight / 2;
+                var left2 = window.innerWidth / 2 - 415;
+                drawLink(left, top, left2, top2, node.colorStr, $scope.focusNode.colorStr, !similarity ? 3 : Math.ceil(similarity * 4));
                 $scope.showNeighborLine = true;
             }
 
@@ -564,7 +564,7 @@ angular.module('common')
                     });
                 });
 
-                if($scope.focusNode.id && $scope.focusNode.dataPointId) {
+                if ($scope.focusNode.id && $scope.focusNode.dataPointId) {
                     $scope.canvasPanX = zoomService.nodeFocus($scope.focusNode);
                 }
             }
@@ -696,20 +696,27 @@ angular.module('common')
 
                 attrArray.map((attr) => {
                     if (mapToSectionOne(attr)) result.section1.push({ ...setToSectionOne(attr, values[attr.id]) });
-                    if (mapToSectionTwo(attr)) result.section2.push({ 
-                        key: attr.title ? attr.title : attr.id, 
-                        value: values[attr.id], 
-                        text: attr.renderType === 'text' ? { 
-                            isExpanded: values[attr.id].split(' ').length <= $scope.mapprSettings.nodeFocusTextLength,
-                            shortValue: values[attr.id].split(' ').splice(0, $scope.mapprSettings.nodeFocusTextLength).join(' '), 
-                            couldExpand: values[attr.id].split(' ').length > $scope.mapprSettings.nodeFocusTextLength
-                         } : null });
+                    if (mapToSectionTwo(attr)) {
+                        const htmlValue = processStringValue(values[attr.id])
+
+                        result.section2.push({
+                            key: attr.title ? attr.title : attr.id,
+                            value: values[attr.id],
+                            isHtml: htmlValue.isHtml,
+                            hasLinks: htmlValue.hasLinks,
+                            text: attr.renderType === 'text' ? {
+                                isExpanded: values[attr.id].split(' ').length <= $scope.mapprSettings.nodeFocusTextLength,
+                                shortValue: htmlValue.shortText || '',
+                                couldExpand: values[attr.id].split(' ').length > $scope.mapprSettings.nodeFocusTextLength
+                            } : null
+                        });
+                    }
                     if (mapToSectionFour(attr)) result.section4.push({ key: attr.title ? attr.title : attr.id, value: parseValueToSection4(attr, values[attr.id]) });
                     getSectionTags(attr, values, result);
                 });
-                
+
                 result.sectionShortTags.map(item => {
-                    if (_.some(item.values, {isTag: true}) && _.some(item.values, {isTag: false})) {
+                    if (_.some(item.values, { isTag: true }) && _.some(item.values, { isTag: false })) {
                         item.isWide = true;
                         item.values = _.sortBy(item.values, (el) => !el.isTag)
 
@@ -720,6 +727,20 @@ angular.module('common')
                 })
 
                 $scope.nodeRightInfo = result;
+            }
+
+            function processStringValue(text) {
+                if (text.startsWith('<p>')) {
+                    return {
+                        isHtml: true,
+                    }
+                }
+
+                return {
+                    isHtml: false,
+                    hasLinks: text.includes('http'),
+                    shortText: text.split(' ').splice(0, $scope.mapprSettings.nodeFocusTextLength).join(' '),
+                };
             }
 
             function buildNeighbours(node) {
@@ -737,13 +758,13 @@ angular.module('common')
                         break;
                     case 'outgoing':
                         outgoing = getOutgoingNeighbours(node, graph);
-                        console.log('outgoing' , outgoing);
+                        console.log('outgoing', outgoing);
                         break;
                 }
 
                 $scope.neighs = {
-                    in: _.sortBy(incoming, [ {'weight': 'desc' }]),
-                    out: _.sortBy(outgoing, [ {'weight': 'desc' }])
+                    in: _.sortBy(incoming, [{ 'weight': 'desc' }]),
+                    out: _.sortBy(outgoing, [{ 'weight': 'desc' }])
                 };
 
                 $scope.sectionNeigh = outgoing.length > 0 ? 'out' : 'in';
@@ -754,13 +775,13 @@ angular.module('common')
                 const isShowSelectedNodeTab = settings('isShowSelectedNodeTab');
                 $scope.isShowNeighbours = isShowSelectedNodeTab === undefined ? true : isShowSelectedNodeTab;
                 $scope.directLink = settings('edgeDirectional');
-                $scope.allNeighs = _.sortBy(outgoing.concat(incoming), [{'weight': 'desc' }]);
+                $scope.allNeighs = _.sortBy(outgoing.concat(incoming), [{ 'weight': 'desc' }]);
             }
 
             function getIncomingNeighbours(node, graph) {
                 var result = [];
                 _.forEach(graph.getInNodeNeighbours(node.id), function (edgeInfo, targetId) {
-                    _.forEach(edgeInfo, function(edge, edgeId) {
+                    _.forEach(edgeInfo, function (edge, edgeId) {
                         var neighNode = graph.nodes(edge.source);
 
                         result.push({
@@ -781,7 +802,7 @@ angular.module('common')
             function getOutgoingNeighbours(node, graph) {
                 var result = [];
                 _.forEach(graph.getOutNodeNeighbours(node.id), function (edgeInfo, targetId) {
-                    _.forEach(edgeInfo, function(edge, edgeId) {
+                    _.forEach(edgeInfo, function (edge, edgeId) {
                         var neighNode = graph.nodes(edge.target);
 
                         result.push({
@@ -807,13 +828,13 @@ angular.module('common')
                 if (!cloudRenderTypes.includes(renderType) && !isWide && !isHorizontalBar) return;
                 var attrInfo = AttrInfoService.getNodeAttrInfoForRG().getForId(attr.id);
                 if (attrType === 'liststring') {
-                    if(attrInfo.isSingleton) {
+                    if (attrInfo.isSingleton) {
                         var count = attrInfo.valuesCount[values[attr.id]];
                         var value = values[attr.id];
-                        result.sectionShortTags.push({ 
-                            key: attr.title || attr.id, 
-                            id: attr.id, 
-                            values: _.map(value, function(v) {
+                        result.sectionShortTags.push({
+                            key: attr.title || attr.id,
+                            id: attr.id,
+                            values: _.map(value, function (v) {
                                 return {
                                     value: v,
                                     isTag: attrInfo.valuesCount[v] > 1
@@ -822,16 +843,16 @@ angular.module('common')
                             isWide
                         });
                     } else {
-                        result.sectionTags.push({ key: attr.title || attr.id, id: attr.id, value: values[attr.id], isWide});                        
+                        result.sectionTags.push({ key: attr.title || attr.id, id: attr.id, value: values[attr.id], isWide });
                     }
                 }
                 else if (attrType === 'string') {
                     var count = attrInfo.valuesCount[values[attr.id]];
                     result.sectionShortTags.push({
-                        key: attr.title || attr.id, 
-                        id: attr.id, 
+                        key: attr.title || attr.id,
+                        id: attr.id,
                         values: [{
-                            value: values[attr.id], 
+                            value: values[attr.id],
                             isTag: count > 1
                         }],
                         isWide
@@ -897,7 +918,7 @@ angular.module('common')
                 if (url.includes('youtube.com')) return 'Youtube.com';
                 if (url.includes('vimeo.com')) return 'Vimeo.com';
                 if (url.includes('instagram.com')) return 'Instagram.com';
-                
+
                 if (!url.startsWith('http')) {
                     url = 'https://' + url;
                 }
@@ -933,16 +954,16 @@ angular.module('common')
                 if (attr.attrType === 'url')
                     return ({ type: 'link', icon: getLinkIcon(value), value, tooltip: getLinkTooltip(value), class: getLinkClass(value) });
                 if (attr.renderType === 'email') {
-                    return ({ type: 'email', icon: 'https://image.flaticon.com/icons/svg/561/561127.svg', value, tooltip: value, class: { 'email': true }});
+                    return ({ type: 'email', icon: 'https://image.flaticon.com/icons/svg/561/561127.svg', value, tooltip: value, class: { 'email': true } });
                 }
             }
 
             function onSectionHover(sections, tag, $event) {
-                hoverService.hoverNodes({ attr: sections.id, value: tag});
+                hoverService.hoverNodes({ attr: sections.id, value: tag });
             }
 
             function onSectionSelect(sections, tag) {
-                selectService.selectNodes({ attr: sections.id, value: tag});
+                selectService.selectNodes({ attr: sections.id, value: tag });
             }
 
             function onSectionLeave() {
