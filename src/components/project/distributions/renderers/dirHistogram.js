@@ -65,12 +65,31 @@ angular.module('common')
 
             var maxTickValue = 0;
             var initAxis = null;
-            var isLogScaleById = {};
 
             /*************************************
             ******** Controller Function *********
             **************************************/
 
+            function getAttrDetailedInfo(attrInfo, logAttrInfo, renderCtrl) {
+                if (!logAttrInfo) return {
+                    info: attrInfo,
+                    isLogScale: false,
+                };
+
+                const binPercentage = attrInfo.bins[0].count / renderCtrl.getTotalNodesCount() * 100;
+                if (binPercentage > 80) {
+                    attrInfo.isLogScale = true;
+                    return {
+                        info: logAttrInfo,
+                        isLogScale: true
+                    };
+                }
+
+                return {
+                    info: attrInfo,
+                    isLogScale: false,
+                };
+            }
 
             /*************************************
             ******** Post Link Function *********
@@ -81,10 +100,11 @@ angular.module('common')
                 var defaultAttrInfo = _.cloneDeep(AttrInfoService.getNodeAttrInfoForRG().getForId(scope.attrToRender.id));
                 var logAttrInfo = _.cloneDeep(AttrInfoService.getNodeAttrInfoForRG().getForLogId(scope.attrToRender.id));
                 scope.hasLogScale = !!logAttrInfo;
-                var attrInfo = defaultAttrInfo;
-                scope.attrInfo = defaultAttrInfo;
-                isLogScaleById[scope.attrToRender.id] = false;
-                scope.isLogScale = false;
+
+                const attrDetailedInfo = getAttrDetailedInfo(defaultAttrInfo, logAttrInfo, renderCtrl);
+                var attrInfo = attrDetailedInfo.info;
+                scope.attrInfo = attrDetailedInfo.info;
+                scope.isLogScale = attrDetailedInfo.isLogScale;
                 var histElem = element[0].querySelector('.histogram');
                 var tooltip = element.find(".d3-tip");
 
@@ -138,7 +158,7 @@ angular.module('common')
                 scope.$on(BROADCAST_MESSAGES.hss.select, function (ev, payload) {
                     var nodes = payload.nodes;
                     updateSelectionBars(histoBars, nodes, attrInfo, histoData, mappTheme, false, histElem, renderCtrl);
-                    updateFiltSelBars(histoBars, nodes, attrInfo, histoData, renderCtrl);
+                    updateFiltSelBars(histoBars, nodes, attrInfo, histoData, renderCtrl, scope);
                 });
 
                 scope.$on(BROADCAST_MESSAGES.hss.subset.changed, function (ev, payload) {
@@ -157,13 +177,21 @@ angular.module('common')
 
                 // Create global distributions & selection bars
                 try {
+                    // if (scope.hasLogScale && !scope.checkLogScale && attrInfo.bins.length) {
+                    //     const binPercentage = attrInfo.bins[0].count / renderCtrl.getTotalNodesCount() * 100;
+                    //     if (binPercentage > 85) {
+                    //         attrInfo.isLogScale = scope.isLogScale = true
+                    //     }
+                    //     scope.checkLogScale = true;
+                    // }
+
                     var initialSelection = FilterPanelService.getInitialSelection();
-                    histoBars = createGlobalDistribution(histElem, tooltip, attrInfo, renderCtrl, histoData);
+                    histoBars = createGlobalDistribution(histElem, tooltip, attrInfo, renderCtrl, histoData, scope.isLogScale);
 
                     if (!_.isEmpty(initialSelection)) {
                         updateSelectionBars(histoBars, initialSelection, attrInfo, histoData, mappTheme, initialSelection.length === 1, histElem, renderCtrl);
                         if (initialSelection.length > 1) {
-                            updateFiltSelBars(histoBars, FilterPanelService.getCurrentSelection(), attrInfo, histoData);
+                            updateFiltSelBars(histoBars, FilterPanelService.getCurrentSelection(), attrInfo, histoData, scope);
                         }
                     }
                     else {
@@ -183,7 +211,7 @@ angular.module('common')
                         scope.attrInfo = defaultAttrInfo;
                         attrInfo = defaultAttrInfo;
                     }
-                    attrInfo.isLogScale = isLogScaleById[attrInfo.attr.id] = scope.isLogScale;
+                    attrInfo.isLogScale = scope.isLogScale;
                     redrawHistogram(attrInfo);
                 }
 
@@ -195,7 +223,7 @@ angular.module('common')
                             histElem.removeChild(histElem.lastChild);
                         }
                         histoData.binType = getBinType(attrInfo);
-                        histoBars = createGlobalDistribution(histElem, tooltip, attrInfo, renderCtrl, histoData, nodes);
+                        histoBars = createGlobalDistribution(histElem, tooltip, attrInfo, renderCtrl, histoData, nodes, scope.isLogScale);
                         $timeout(function () {
                             updateSelectionBars(histoBars, [], attrInfo, histoData, mappTheme, false, histElem, renderCtrl, scope.isLogScale);
                         }, 500);
@@ -291,14 +319,14 @@ angular.module('common')
                 return result;
             }
 
-            function mapSelectionToBars(attrId, selectionDataMap, histoData, isNumeric) {
+            function mapSelectionToBars(attrId, selectionDataMap, histoData, isNumeric, isLogScale) {
                 var histoRangeList = [];
                 var selectionValues = _.keys(selectionDataMap);
 
                 if (isNumeric) {
                     _.each(histoData, function (barData, i) {
-                        var min = isLogScaleById[attrId] ? Math.pow(10, barData.x) : barData.x;
-                        var max = isLogScaleById[attrId] ? Math.pow(10, barData.x + barData.dx) : (barData.x + barData.dx);
+                        var min = isLogScale ? Math.pow(10, barData.x) : barData.x;
+                        var max = isLogScale ? Math.pow(10, barData.x + barData.dx) : (barData.x + barData.dx);
                         var valsInRange = _.filter(selectionValues, function (val) {
                             if (histoData.length == i + 1)
                                 return val >= min && val <= max;
@@ -390,7 +418,7 @@ angular.module('common')
                     return d3.layout.histogram()
                         .bins(binCount)(values);
                 }
-                
+
                 if (attrInfo.isYear) {
                     return d3.layout.histogram()
                         .bins(x.ticks(binCount))(values);
@@ -510,7 +538,7 @@ angular.module('common')
                     });
             }
 
-            function createGlobalDistribution(histElem, tooltip, attrInfo, renderCtrl, histoData, nodes) {
+            function createGlobalDistribution(histElem, tooltip, attrInfo, renderCtrl, histoData, nodes, isLogScale) {
                 var isOrdinal = histoData.isOrdinal = !attrInfo.isNumeric;
 
                 histoData.selectedNodes = nodes || renderCtrl.getSelectedNodes();
@@ -619,14 +647,14 @@ angular.module('common')
                 var globalBarFillColor = opts.barColor;
                 // Make global bar
                 bar.append("rect")
-                .attr('opacity', 1)
-                .style({ fill: globalBarFillColor, 'shape-rendering': 'crispEdges' })
-                .attr("data-main-bar", "true")
-                .attr("x", function (d, i) { return getBarXPosn(d, i, binType, barWidth); })
-                .attr("width", barWidth)
-                .attr("y", height)
-                .attr("height", 0);
- 
+                    .attr('opacity', 1)
+                    .style({ fill: globalBarFillColor, 'shape-rendering': 'crispEdges' })
+                    .attr("data-main-bar", "true")
+                    .attr("x", function (d, i) { return getBarXPosn(d, i, binType, barWidth); })
+                    .attr("width", barWidth)
+                    .attr("y", height)
+                    .attr("height", 0);
+
 
                 // Make selection bar, initially height 0
                 bar.append("rect")
@@ -690,6 +718,7 @@ angular.module('common')
                     .attr("class", "yaxis")
                     .call(yAxis);
 
+
                 function onBarHover(segment, i) {
                     var targetElem = d3.select(d3.event.target);
                     if (!yAxisWidth) {
@@ -703,9 +732,9 @@ angular.module('common')
                         if (isOrdinal) {
                             hoverService.hoverNodes({ attr: attrInfo.attr.id, value: segment.label });
                         }
-                        else if (isLogScaleById[attrInfo.attr.id]) {
+                        else if (isLogScale) {
                             var min = Math.pow(10, segment.x);
-                            var max = Math.pow(10, _.last(segment));
+                            var max = Math.pow(10, _.last(segment) + segment.dx);
                             hoverService.hoverNodes({ attr: attrInfo.attr.id, min: min, max: max });
                         } else {
                             hoverService.hoverNodes({ attr: attrInfo.attr.id, min: segment.x, max: _.last(segment) });
@@ -725,9 +754,9 @@ angular.module('common')
                     if (isOrdinal) {
                         selectService.selectNodes({ attr: attrInfo.attr.id, value: segment.label });
                     }
-                    else if (isLogScaleById[attrInfo.attr.id]) {
+                    else if (isLogScale) {
                         var min = Math.pow(10, segment.x);
-                        var max = Math.pow(10, _.last(segment));
+                        var max = Math.pow(10, _.last(segment) + segment.dx);
                         selectService.selectNodes({ attr: attrInfo.attr.id, min: min, max: max });
                     }
                     else {
@@ -740,7 +769,7 @@ angular.module('common')
             }
 
             function getNodeClusterColor(nodes, attrId) {
-                var maxNode = _(nodes).map(function(x) {
+                var maxNode = _(nodes).map(function (x) {
                     return {
                         [attrId]: x.attr[attrId],
                         color: x.colorStr
@@ -750,7 +779,7 @@ angular.module('common')
                 return maxNode ? maxNode.color : undefined;
             }
 
-            function updateSelectionBars(bar, selectedNodes, attrInfo, histoData, mappTheme, showClusterNodes, histElem, renderCtrl,isLogScale) {
+            function updateSelectionBars(bar, selectedNodes, attrInfo, histoData, mappTheme, showClusterNodes, histElem, renderCtrl, isLogScale) {
                 var principalNode = null;
                 var binType = histoData.binType;
 
@@ -765,7 +794,7 @@ angular.module('common')
                 }
                 var opts = histoData.opts;
                 var selectionValuesMap = getSelectionValuesMap(selectedNodes, attrInfo.attr.id);
-                var selectionCountsList = histoData.selectionCountsList = mapSelectionToBars(attrInfo.attr.id, selectionValuesMap, histoData.d3Data, !histoData.isOrdinal, attrInfo);
+                var selectionCountsList = histoData.selectionCountsList = mapSelectionToBars(attrInfo.attr.id, selectionValuesMap, histoData.d3Data, !histoData.isOrdinal, attrInfo, isLogScale);
                 var isColorBy = renderCtrl.getMapprSettings().nodeColorAttr == attrInfo.attr.id;
                 var nodeClusterColor = isColorBy && attrInfo.isNumeric ? getNodeClusterColor(selectedNodes, attrInfo.attr.id) : undefined;
                 var selectionColor = getSelectionColor(selectedNodes, opts, nodeClusterColor, isColorBy);
@@ -809,14 +838,14 @@ angular.module('common')
                     layoutService.getCurrent().then(resp => {
                         const nodeColorAttr = resp.mapprSettings.nodeColorAttr;
                         const isShow = (attrInfo.attr.id === nodeColorAttr) && attrInfo.attr.isNumeric;
-                        
+
                         if (renderCtrl && renderCtrl.isGradient() && isShow) {
                             const mapprSettings = renderCtrl.getMapprSettings();
                             const min = selectionCountsList[i].min;
                             const max = selectionCountsList[i].max;
                             const delta = 0.001;
                             const node = _.filter(allNodes, x => {
-                                const val = isLogScale ? Math.log10(x.attr[mapprSettings.nodeColorAttr]):x.attr[mapprSettings.nodeColorAttr];
+                                const val = isLogScale ? Math.log10(x.attr[mapprSettings.nodeColorAttr]) : x.attr[mapprSettings.nodeColorAttr];
                                 return val >= min && val <= max + delta;
                             });
                             const barColor = node && node.length ? node[0].colorStr : opts.barColor;
@@ -892,10 +921,10 @@ angular.module('common')
 
             }
 
-            function updateFiltSelBars(bar, selectedNodes, attrInfo, histoData, renderCtrl) {
+            function updateFiltSelBars(bar, selectedNodes, attrInfo, histoData, renderCtrl, scope) {
                 var opts = histoData.opts;
                 var selectionValuesMap = getSelectionValuesMap(selectedNodes, attrInfo.attr.id);
-                var filtSelectionCountsList = mapSelectionToBars(attrInfo.attr.id, selectionValuesMap, histoData.d3Data, !histoData.isOrdinal, attrInfo);
+                var filtSelectionCountsList = mapSelectionToBars(attrInfo.attr.id, selectionValuesMap, histoData.d3Data, !histoData.isOrdinal, attrInfo, scope.isLogScale);
                 var isColorBy = renderCtrl.getMapprSettings().nodeColorAttr == attrInfo.attr.id;
                 var nodeClusterColor = isColorBy && attrInfo.isNumeric ? getNodeClusterColor(selectedNodes, attrInfo.attr.id) : undefined;
                 var selectionColor = getSelectionColor(selectedNodes, opts, nodeClusterColor, isColorBy);
