@@ -142,7 +142,7 @@
                               )
                               div.img(
                                 ng-if="link.imageShow && link.image"
-                                ng-style="{ 'background-image': `url(${link.image})` }"
+                                ng-style="{ 'background-image': 'url(' + link.image + ')' }"
                                 style="border-color: {{darken(link.color)}}"
                               )
                           .info-user
@@ -158,7 +158,7 @@
                               )
                               div.img(
                                 ng-if="link.imageShow && link.image"
-                                ng-style="{ 'background-image': `url(${link.image})` }"
+                                ng-style="{ 'background-image': 'url(' + link.image + ')' }"
                                 style="border-color: {{darken(link.color)}}"
                               )
                           .info-user
@@ -167,7 +167,7 @@
                               p {{link.description}}
                 
                 section.section.section_tabs(ng-if="!directLink")
-                  .tabContainer
+                  .tabContainer.tabContainer_pt-15
                     .tabVisible
                       .tab
                         button.active
@@ -182,7 +182,7 @@
                               )
                               div.img(
                                 ng-if="link.imageShow && link.image"
-                                ng-style="{ 'background-image': `url(${link.image})` }"
+                                ng-style="{ 'background-image': 'url(' + link.image + ')' }"
                                 style="border-color: {{darken(link.color)}}"
                               )
                           .info-user
