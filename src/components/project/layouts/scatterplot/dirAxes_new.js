@@ -287,7 +287,7 @@ function ($rootScope, $q, $compile, $timeout, renderGraphfactory, layoutService,
                 }
 
                 var initialMaxValue = attrInfo.bounds.max + shiftInputValBy;
-                var max = initialMaxValue > 0 && initialMaxValue < 1 ? 1 : (initialMaxValue);
+                var max = initialMaxValue // > 0 && initialMaxValue < 1 ? 1 : (initialMaxValue);
 
                 scale.domain([attrInfo.bounds.min + shiftInputValBy, max]);
 
@@ -409,17 +409,14 @@ function ($rootScope, $q, $compile, $timeout, renderGraphfactory, layoutService,
                 });
             } else {
                 $marker.css({
-                    top: coords
+                    // added header offset
+                    top: coords + 90
                 });
             }
-
-            // $marker.find('h7').parent().tooltip();
 
             $marker.find('h7').parent().succinct({
                 size: 50
             });
-
-
         }
 
         // Number formatting
@@ -441,33 +438,6 @@ function ($rootScope, $q, $compile, $timeout, renderGraphfactory, layoutService,
             return formatNumber(val);
             // return Math.round(val*100)/100;
         }
-
-        // function genLabelForTimestamp (axis, momentVal) {
-        //     return momentVal.utc().format(formatAxis[axis]);
-        // }
-
-        // function genTicks (axis, begin, end, numTicks) {
-        //     var range = window.moment.twix(begin, end);
-        //     var prefixes = ["seconds","minutes","hours","days","months","years"];
-        //     var ranges = [range.count("ms")]; // atleast have milliseconds
-        //     _.each(prefixes, function(pfx) {
-        //         var count = range.count(pfx);
-        //         if(count >= numTicks) {
-        //             ranges.push(count);
-        //         } else return false; // exit loop if interval can't be subdivided
-        //     });
-        //     var ticks = [begin];
-        //     var prefix = ranges.length < 2 ? "ms" : prefixes[ranges.length - 2]; // the max prefix which can be subdivided
-        //     var interval = Math.round(_.last(ranges) / (numTicks - 2));
-        //     var iter = range.iterate(interval, prefix);
-        //     while(iter.hasNext()) {
-        //         ticks.push(iter.next());
-        //     }
-        //     ticks.push(end);
-        //     formatAxis[axis] = timestampFormats[prefix];
-        //     return ticks;
-        // }
-
 
         // Builds a id safe string
         function makeSafeForId(name) {
