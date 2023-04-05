@@ -201,9 +201,6 @@ module.exports = {
             new TerserPlugin({
                 test: /\.js(\?.*)?$/i,
             })
-            // ...(isProduction ? [new TerserPlugin({
-            //     test: /\.js(\?.*)?$/i,
-            // })] : []),
         ]
     },
     devServer: {

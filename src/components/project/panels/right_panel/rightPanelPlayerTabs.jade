@@ -22,6 +22,14 @@
     //-       span.dark-grey-font.list-panel-header__links.truncate(ng-if="links") {{links.length}} {{linksStatus}}
     //-       span.dark-drey-font(ng-if="!links") ...
         
+  .side-menu__tutorial(ng-if="isShowTutorial")
+    ul.right-top-corner
+
+      li.right-top-corner__item
+        div.tutorial
+          span Tutorial?
+          button.tutorial__next(ng-click="startTutorial()") Next
+          button.tutorial__close(ng-click="closeTutorial()") Close 
 
 
   .side-menu__footer
