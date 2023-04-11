@@ -314,6 +314,8 @@ function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partiti
     var colorStr = window.mappr.utils.colorStr;
         // limitValue = window.mappr.utils.limitValue;
 
+    // marginRt - 5% of axis-container
+    // marginLeft - 100px
     var marginRt = 40, marginLeft = 40, marginTop = 0, marginBtm = 40, scatterplotMarginBtm = 200;
     var offsetX = (marginRt - marginLeft)/2;
     var offsetY = (marginTop - marginBtm)/2;
@@ -1270,21 +1272,37 @@ function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partiti
         };
 
         this.setupLayoutFuncs.push(function setupAxisAttrs() {
-            var aspect  = this.mapprSettings['scatterAspect'];
-            var wd      = window.innerWidth - marginRt - 50 - marginLeft;
+            // var aspect  = this.mapprSettings['scatterAspect'];
+            // const container = $('canvas');
+            // var wd = window.innerWidth - (0.05 * container.width()) - 660;
+            //  var ht      = (window.innerHeight - marginTop - scatterplotMarginBtm);
+            // var centerX = wd/2;
+            // var centerY = (window.innerHeight - marginTop - scatterplotMarginBtm)/2;
+            // aspect = Math.max(0, Math.min(aspect, 1));  // constrain value
+            // aspect = Math.pow(2, 2*aspect-1);   // map (0,1) to (1/2, 2) with 1 at center of range
+            // //aspect = 1;
+            // var rangeX = aspect * wd;
+            // var rangeY = ht;
+            // // if(rangeX > wd) {
+            // //     rangeY = rangeY * wd/rangeX;
+            // //     rangeX = wd;
+            // // }
+            // const xAttrInfo = AttrInfoService.getNodeAttrInfoForRG().getForId(this.attr.x);
+            // const left = xAttrInfo.attr.attrType === 'timestamp' ? centerX - (rangeX/2 - 150) : centerX - (rangeX - 100);
+            // this.setAxisAttr(this.attr.x, 'x', left, centerX + rangeX/2);
+            // this.setAxisAttr(this.attr.y, 'y', centerY - rangeY/2, centerY + rangeY/2);
+            // var aspect  = this.mapprSettings['scatterAspect'];
+            const container = $('canvas');
+            var wd = 1.1 * container.width()
             var ht      = (window.innerHeight - marginTop - scatterplotMarginBtm);
             var centerX = wd/2;
-            var centerY = (window.innerHeight - marginTop - scatterplotMarginBtm)/2;
-            aspect = Math.max(0, Math.min(aspect, 1));  // constrain value
-            aspect = Math.pow(2, 2*aspect-1);   // map (0,1) to (1/2, 2) with 1 at center of range
+            var centerY = ht/2;
+            // aspect = Math.max(0, Math.min(aspect, 1));  // constrain value
+            // aspect = Math.pow(2, 2*aspect-1);   // map (0,1) to (1/2, 2) with 1 at center of range
             //aspect = 1;
-            var rangeX = aspect * ht;
+            var rangeX = wd;
             var rangeY = ht;
-            if(rangeX > wd) {
-                rangeY = rangeY * wd/rangeX;
-                rangeX = wd;
-            }
-            this.setAxisAttr(this.attr.x, 'x', centerX - (rangeX - 80), centerX + rangeX/2);
+            this.setAxisAttr(this.attr.x, 'x', centerX - rangeX / 2, centerX + rangeX/2);
             this.setAxisAttr(this.attr.y, 'y', centerY - rangeY/2, centerY + rangeY/2);
         });
 
