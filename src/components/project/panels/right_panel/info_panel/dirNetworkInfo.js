@@ -153,16 +153,9 @@ angular.module('common')
                 console.error(logPrefix + 'empty nodes title');
                 return;
             }
-            projFactory.updateProjectSettings({nodesTitle: scope.vm.nodesTitle})
-            .then(function() {
-                console.log(logPrefix + 'nodes title changed successfully to ' + scope.vm.nodesTitle);
-                nodesTitleCopy = scope.vm.nodesTitle;
-                scope.ui.editNodesTitle = false;
-            }, function(err) {
-                console.error(logPrefix + 'could not update nodes title');
-                console.log(logPrefix, err);
-                scope.vm.nodesTitle = nodesTitleCopy;
-            });
+            console.log(logPrefix + 'nodes title changed successfully to ' + scope.vm.nodesTitle);
+            nodesTitleCopy = scope.vm.nodesTitle;
+            scope.ui.editNodesTitle = false;
         }
 
         function cancelNodesTitleUpdate() {

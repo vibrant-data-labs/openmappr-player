@@ -792,16 +792,7 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
         _.set(projSettings, 'clusterMeta.' + networkId + '.' + colorAttrId + '.' + clusterItem.name + '.descr', newDescrVal);
         _.set(projSettings, 'clusterMeta.' + networkId + '.' + colorAttrId + '.' + clusterItem.name + '.suggestion', newSuggVal);
 
-        return projFactory.updateProjectSettings(projSettings)
-        .then(function() {
-            clusterItem.originalDescr = newDescrVal;
-            clusterItem.origSuggestion = newSuggVal;
-        }, function(err) {
-            console.error(logPrefix + 'Cluster descr not updated', err);
-            console.log(logPrefix + 'Reverting to old val');
-            clusterItem.descr = oldDescrVal;
-            clusterItem.suggestion = oldSuggVal;
-        });
+        return Promise.resolve();
     }
 
     function changeColor(l, col) {

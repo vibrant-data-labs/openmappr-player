@@ -14,10 +14,6 @@
 		div
 			div.focuspanel
 				.contentoverlay.scrolloverlay(ng-if="showFocusNode && mapprSettings.nodeFocusRenderTemplate == 'content'" )
-					//- .share-btns(style="margin-top:{{shareMarginTop}}px;" ng-if="player.settings.shareEnableSelect")
-					//- 	h5 Share!
-					//- 	.share-btn.vert-align(ng-if="player.settings.twitterShare" dir-social-share="twitter" share-title="{{player.settings.shareTitleSelect}}")
-					//- 	.share-btn.vert-align(ng-if="player.settings.facebookShare" dir-social-share="facebook" share-title="{{player.settings.shareTitleSelect}}")
 					#detailbox-scroll.detailbox-container(ng-class="{transparent: hideContent}" style="padding-top:{{scrollPaddingTop}}px" dir-kill-tooltip-on-scroll)
 						.content-center
 							div(ng-hide="hideContent" ng-click="$event.stopPropagation();")
@@ -54,10 +50,6 @@
 					dir-scroll-overlay-anchors(color-str="{{focusNode.colorStr}}", scroll-container="#detailbox-scroll" scroll-data-id="data-attr-id" show-neighbors="{{mapprSettings.nodeFocusNeighborsButton}}")
 					.focusnode-label(ng-hide="hideContent" style="color:{{focusNode.colorStr}};")
 						h4 {{focusNode.attr[mapprSettings.labelAttr]}}
-					//- .share-btns(style="margin-top:{{shareMarginTop}}px;" ng-if="player.settings.shareEnableSelect")
-					//- 	h5 Share!
-					//- 	.share-btn.vert-align(ng-if="player.settings.twitterShare" dir-social-share="twitter" share-title="{{player.settings.shareTitleSelect}}")
-					//- 	.share-btn.vert-align(ng-if="player.settings.facebookShare" dir-social-share="facebook" share-title="{{player.settings.shareTitleSelect}}")
 					#detailbox-scroll.detailbox-container(ng-class="{transparent: hideContent}" style="padding-top:{{scrollPaddingTop}}px" dir-kill-tooltip-on-scroll)
 						div(dir-neighbors-detail ng-repeat-start="attr in nodeInfoAttrs" ng-click="$event.stopPropagation();" ng-if="showFocusNode && mapprSettings.nodeFocusShowNeighbors && (mapprSettings.nodeFocusNeighborsBefore == attr.id || ($first && !mapprSettings.nodeFocusNeighborsBefore))" grid-size="12" data-attr-id="Neighbors")
 						div(ng-repeat-end data-attr-id="{{::attr.id}}" ng-click="$event.stopPropagation();" ng-if="attr && attr.visible && attr.principalVal != null" id="overlayattr-{{attr.id}}")
@@ -87,5 +79,5 @@
 										.square(uib-tooltip="Node" tooltip-append-to-body="true")
 											.color(style="background: {{focusNode.colorStr}};")
 									.clearfix
-	dir-focus-node(ng-show="!appUi.openExtUserOverlay" ng-if="showFocusNode && mapprSettings.nodeFocusRenderTemplate != 'content'" node="focusNode" img-attr="nodeImageAttr" start="nodeStartData" end="nodeEndData" duration="500" ease="" finish="finishAnimation()")
+	dir-focus-node(ng-if="showFocusNode && mapprSettings.nodeFocusRenderTemplate != 'content'" node="focusNode" img-attr="nodeImageAttr" start="nodeStartData" end="nodeEndData" duration="500" ease="" finish="finishAnimation()")
 	dir-focus-node(ng-if="showNeighborNode" node="neighborNode" img-attr="nodeImageAttr" start="neighborNodeStartData" end="neighborNodeEndData" duration="600" ease="" finish="finishNeighborAnimation()")

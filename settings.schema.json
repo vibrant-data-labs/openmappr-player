@@ -93,32 +93,8 @@
                 "settings": {
                     "type": "object",
                     "properties": {
-                        "fontClass": {
-                            "type": "string"
-                        },
-                        "showModal": {
-                            "type": "boolean"
-                        },
-                        "simpleSplash": {
-                            "type": "boolean"
-                        },
-                        "showHeader": {
-                            "type": "boolean"
-                        },
-                        "headerType": {
-                            "type": "string"
-                        },
                         "shareTitle": {
                             "type": "string"
-                        },
-                        "shareTitleCompare": {
-                            "type": "string"
-                        },
-                        "shareTitleSelect": {
-                            "type": "string"
-                        },
-                        "shareEnableSelect": {
-                            "type": "boolean"
                         },
                         "showExportBtn": {
                             "type": "boolean"
@@ -128,9 +104,6 @@
                         },
                         "twitterShare": {
                             "type": "boolean"
-                        },
-                        "colorTheme": {
-                            "type": "string"
                         },
                         "showPanels": {
                             "type": "boolean"
@@ -322,15 +295,7 @@
                         }
                     },
                     "required": [
-                        "fontClass",
-                        "showModal",
-                        "simpleSplash",
-                        "showHeader",
-                        "headerType",
                         "shareTitle",
-                        "shareTitleCompare",
-                        "shareTitleSelect",
-                        "shareEnableSelect",
                         "showExportBtn",
                         "facebookShare",
                         "twitterShare",

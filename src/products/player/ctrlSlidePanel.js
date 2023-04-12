@@ -67,10 +67,6 @@ angular.module('common')
              }
 
             $timeout(function() {
-                if(!$scope.player.settings.showModal && $scope.player.settings.autoPlay) {
-                    //  checkForAudio();
-                    $scope.startPlaying();
-                }
                 initKeyboard();
             }, 100);
 

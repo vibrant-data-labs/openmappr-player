@@ -1,6 +1,6 @@
 #footer-menu.footer-menu(ng-show="snapInfo.snapsLoaded" ng-class="{'lower':(player.settings.timelineType == 'bottom'), 'clear': (player.snapshots.length == 1 || !player.settings.showTimeline)}" ng-click="triggerInteraction();")
 	.bottom-controls(ng-if="player.settings.timelineType == 'bottom' && player.settings.showTimeline" ng-show="startedSlideshow" ng-controller="BottomTimelineCtrl" ng-class="{'no-height':(player.snapshots.length === 1)}")
-		.zoom-to-fit-btn.square-btn.pull-right(ng-if="(!mapprSettings.zoomLock || !mapprSettings.panLock) && player.settings.showHeader && !appUi.showResetBtn", ng-click="zoomInfo.zoomExtents(); closeOverlay();" uib-tooltip="Zoom to Selection" tooltip-placement="top-left" tooltip-append-to-body="true")
+		.zoom-to-fit-btn.square-btn.pull-right(ng-if="(!mapprSettings.zoomLock || !mapprSettings.panLock) && !appUi.showResetBtn", ng-click="zoomInfo.zoomExtents();" uib-tooltip="Zoom to Selection" tooltip-placement="top-left" tooltip-append-to-body="true")
 			i.fa.fa-bullseye
 		.background(ng-show="player.snapshots.length !== 1")
 		.container(ng-if="player.snapshots.length > 1")

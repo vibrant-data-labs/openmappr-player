@@ -144,16 +144,6 @@ function ($q, $http, $rootScope, $routeParams, layoutService, graphSelectionServ
         }
         currentSnapshot = refSnap;
 
-        // Update last viewed snap for app
-        if(!isPlayer) {
-            var projSettings = projFactory.getProjectSettings();
-            if(projSettings && projSettings.lastViewedSnap != currentSnapshot.id) {
-                projFactory.updateProjectSettings({
-                    lastViewedSnap: snapId
-                });
-            }
-        }
-
         return currentSnapshot;
     }
 

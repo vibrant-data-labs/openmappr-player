@@ -28,7 +28,6 @@ angular.module('player')
             // UI
             $scope.appUi = {
                 theme: null,
-                openExtUserOverlay: false,
                 hasExtUser: false,
                 showGridResetBtn: false,
                 setColor: function ($event, color) {
@@ -177,8 +176,6 @@ angular.module('player')
             /**
     * Scope methods
     */
-            $scope.openExtUserOverlay = openExtUserOverlay;
-            $scope.closeOverlay = closeOverlay;
             $scope.isTallImg = isTallImg; //determine if image is wide or tall (for correct css (can't do purely with css))
             $scope.requestFullScreen = requestFullScreen;
             $scope.triggerInteraction = triggerInteraction; //kill playing if any mouse interactions in player
@@ -201,7 +198,6 @@ angular.module('player')
     ****** Event Listeners/Watches *******
     **************************************/
             $scope.$on(BROADCAST_MESSAGES.extUserOverlay.create, onExtOverlayCreate);
-            $scope.$on(BROADCAST_MESSAGES.extUserOverlay.close, onExtOverlayClose);
             $rootScope.$on(BROADCAST_MESSAGES.sigma.rendered, onSigmaRender);
 
             $scope.$on(BROADCAST_MESSAGES.snapshot.loaded, function (e, data) {
@@ -277,24 +273,8 @@ angular.module('player')
                 projFactory.setProjSettingsForPlayer($scope.player.projSettings || {});
 
                 //MODAL
-                //if($scope.player.settings.showModal){
                 $scope.hasModal = true;
                 $scope.panelUI.openPanel($scope.player.player.settings.startPage || 'modal');
-                if (!$window.localStorage.modal)
-                    $timeout(function () {
-                        ngIntroService.setOptions(
-                            {
-                                steps: [
-                                    {
-                                        element: '#firstLoad',
-                                        intro: 'First Load just says Welcome to Mappr + a 250 wd max introduction'
-                                    }
-                                ]
-                            }
-                        );
-                        //ngIntroService.start();
-                    }, 100);
-                //}
 
                 //info btn triggering event in parent
                 if ($scope.player.settings.infoClickToParent) {
@@ -304,16 +284,8 @@ angular.module('player')
                     }, $scope.player.settings.infoClickParentHost);
                 }
 
-                //HEADER
-                if ($scope.player.settings.showHeader) {
-                    $scope.headerHtml = $sce.trustAsHtml($scope.player.settings.headerHtml || "<div></div>"); //have to user $sce to get style attributes to work
-                    $scope.headerTitle = $sce.trustAsHtml($scope.player.settings.headerTitle || "<div></div>");
-                } else {
-                    $scope.headerHtml = null;
-                }
-
                 //COLORTHEME
-                $scope.colorTheme = $scope.player.settings.colorTheme || 'light';
+                $scope.colorTheme = 'light';
                 loadSuccess(dataset);
 
                 $scope.$broadcast(BROADCAST_MESSAGES.player.load);
@@ -361,9 +333,6 @@ angular.module('player')
                 $scope.extUserInfo = _.pick(data, ['userName', 'userPicUrl', 'nodeIdsToSelect', 'clusterVal', 'userDistrVals', 'showExtUserOverlay']);
                 if (data.hasUserInfo) {
                     $scope.appUi.hasExtUser = true;
-                }
-                if ($scope.extUserInfo.showExtUserOverlay) {
-                    $scope.openExtUserOverlay();
                 }
             }
 
@@ -440,13 +409,6 @@ angular.module('player')
                     });
             }
 
-            function onExtOverlayClose(e, data) {
-                if (data && data.hasUserInfo) {
-                    $scope.appUi.hasExtUser = true;
-                }
-                $scope.appUi.openExtUserOverlay = false;
-            }
-
             function onSigmaRender() {
                 console.log('sigma render called');
                 var currSnap = snapshotService.getCurrentSnapshot();
@@ -463,17 +425,6 @@ angular.module('player')
                     $scope.$broadcast(BROADCAST_MESSAGES.extUserOverlay.minimized);
                     console.log('broadcasting ext user overlay minimized');
                 }
-            }
-
-            function openExtUserOverlay() {
-                $rootScope.$broadcast(BROADCAST_MESSAGES.nodeOverlay.remove);
-                $rootScope.$broadcast(BROADCAST_MESSAGES.extUserOverlay.open);
-                $scope.appUi.openExtUserOverlay = true;
-            }
-
-            function closeOverlay() {
-                $scope.appUi.openExtUserOverlay = false;
-                $rootScope.$broadcast(BROADCAST_MESSAGES.nodeOverlay.remove);
             }
 
             function getPlayerData() {

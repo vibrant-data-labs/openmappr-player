@@ -89,7 +89,6 @@ function($scope, $rootScope, $timeout, $interval, $document, BROADCAST_MESSAGES,
     ********* Initialise *****************
     **************************************/
     console.log('loading bottom timeline ctrl');
-    // $scope.$watch('player.settings.showModal', function() {
     if($scope.snapInfo.snapsLoaded && !$scope.startedSlideshow && (!$scope.sound || $scope.sound.currentTime)) {
         checkForAudio();
         //$scope.startPlaying(true);
@@ -111,10 +110,6 @@ function($scope, $rootScope, $timeout, $interval, $document, BROADCAST_MESSAGES,
         // }
 
     $timeout(function() {
-        if(!$scope.player.settings.showModal && (!$scope.sound || $scope.sound.currentTime)) {
-            checkForAudio();
-            $scope.startPlaying();
-        }
         initKeyboard();
         // this doesn't work if first snap is disabled. Not sure why we need since active snap is set in ctrlApp.
         // if(!hasCustomData) {

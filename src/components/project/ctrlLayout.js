@@ -31,20 +31,6 @@ function ($scope, $q, $timeout, eventBridgeFactory, leafletData, layoutService, 
     */
     $scope.toggleNodeDetail = toggleNodeDetail;
 
-    $scope.updateProjectSettings = function(key) {
-        // dirSettingsInput uses $timeout to update ng-model
-        $timeout(function() {
-            switch(key) {
-            case 'theme':
-                changeProjectTheme($scope.projSettings.theme);
-                break;
-            default:
-            }
-        }, 250);
-    };
-
-
-
 
     /*************************************
     ****** Event Listeners/Watches *******
@@ -82,10 +68,6 @@ function ($scope, $q, $timeout, eventBridgeFactory, leafletData, layoutService, 
     $scope.$on(BROADCAST_MESSAGES.player.load, function() {
         $scope.projSettings = projFactory.getProjectSettings();
         onPlayerLoad();
-    });
-
-    $scope.$on(BROADCAST_MESSAGES.project.changeTheme, function(e, data) {
-        if(data.theme !== undefined) changeProjectTheme(data.theme);
     });
 
     // Switch to light theme on exiting project
@@ -229,22 +211,12 @@ function ($scope, $q, $timeout, eventBridgeFactory, leafletData, layoutService, 
     }
 
     function onPlayerLoad() {
-        if($scope.player.settings.colorTheme == 'dark') {
-            $scope.projSettings.backgroundColor = '#000000';
-            $scope.projSettings.labelColor = '#ffffff';
-            $scope.projSettings.labelOutlineColor = '#000000';
-            $scope.projSettings.nodeUnselectedOpacity = 0.3;
-            $scope.projSettings.edgeUnselectedOpacity = 0.25;
-            $scope.appUi.theme = 'dark';
-        }
-        else {
-            $scope.projSettings.backgroundColor = '#ffffff';
-            $scope.projSettings.labelColor = '#000000';
-            $scope.projSettings.labelOutlineColor = '#ffffff';
-            $scope.projSettings.nodeUnselectedOpacity = 0.25;
-            $scope.projSettings.edgeUnselectedOpacity = 0.2;
-            $scope.appUi.theme = 'light';
-        }
+        $scope.projSettings.backgroundColor = '#ffffff';
+        $scope.projSettings.labelColor = '#000000';
+        $scope.projSettings.labelOutlineColor = '#ffffff';
+        $scope.projSettings.nodeUnselectedOpacity = 0.25;
+        $scope.projSettings.edgeUnselectedOpacity = 0.2;
+        $scope.appUi.theme = 'light';
     }
 
     function toggleNodeDetail() {
@@ -259,32 +231,6 @@ function ($scope, $q, $timeout, eventBridgeFactory, leafletData, layoutService, 
             settings.nodeFocusShow = true;
             $scope.nodeDetailActive = true;
         }
-    }
-
-    function changeProjectTheme(theme) {
-        projFactory.changeProjectTheme(theme)
-        .then(function(newSettings) {
-            // Settings updated
-            _.assign($scope.projSettings, newSettings);
-
-            // Update mapprSettings too
-            _.assign($scope.mapprSettings, _.pick($scope.projSettings, [
-                'theme', 'backgroundColor', 'labelColor', 'labelOutlineColor', 'nodeUnselectedOpacity', 'nodeUnselectedOpacity'
-            ]));
-
-            resetColors($scope.projSettings);
-            // update theme
-            $scope.appUi.theme = $scope.projSettings.theme || 'light';
-            return playerFactory.currPlayer();
-        }, function() {
-            // Error while updating settings. Revert settings
-            _.assign($scope.projSettings, projFactory.getProjectSettings());
-        }).then(function(currPlayer) {
-            // Lazily Update player theme.
-            var proj = projFactory.currProjectUnsafe();
-            currPlayer.settings.colorTheme = theme;
-            playerFactory.updatePlayer(proj.org.ref, proj._id, currPlayer);
-        });
     }
 
     // Generates a layout which can be applied to a dataset
