@@ -3,7 +3,7 @@ ul.list-unstyled.info-item(dir-attr-modifiers="", ng-if="ui.loadInfoAttrs && nod
 		.col-xs-12
 			.row.vert-align
 				.col-xs-10.vert-align
-					.text-muted.text-small.pull-left.h6(uib-tooltip="{{::attr.metadata.descr}}" tooltip-placement='top' tooltip-append-to-body="true") {{attr.title}}
+					.text-muted.text-small.pull-left.h6 {{attr.title}}
 					.text-small.color-primary.truncate(ng-if="attr.attrType === 'integer' || attr.attrType ==='boolean' || attr.attrType === 'float'", style="color:{{nodeColorStr}}") &nbsp;{{attr.principalVal}}
 				.col-xs-2(ng-if="MAPP_EDITOR_OPEN && ui.activeAttrIdx == $index")
 					dir-attr-mod(attr="::attr", placement="selection")

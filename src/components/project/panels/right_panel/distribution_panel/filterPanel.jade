@@ -20,7 +20,7 @@
 						ng-click='selectNodesByAttrib(attr.title, attr.value, $event)'
 					)
 						section.card.card_type_filter(data-attr="{{attr.id}}", ng-class="{'card__chart' : attr.attrType == 'integer' || attr.attrType == 'float' || attr.attrType == 'boolean' || attr.attrType == 'year' || attr.attrType == 'timestamp' }")
-							header.card__header(uib-tooltip="{{::attr.metadata.descr}}" tooltip-placement='right' tooltip-append-to-body="true")
+							header.card__header
 								.card__head-wrap(ng-if="attr.attrType != 'integer' && attr.attrType != 'float' && attr.attrType != 'boolean' && attr.attrType != 'year' && attr.attrType != 'timestamp'")
 									h2.card__title(dir-elem-ready="onAttrHeaderLoad(attr, $event)") {{::attr.title}}
 									span.card__tooltip(ng-if="attr.tooltip"
@@ -77,7 +77,7 @@
 						ng-click='selectNodesByAttrib(attr.title, attr.value, $event)'
 					)
 						section.card.card_type_filter(data-attr="{{attr.id}}", ng-class="{'card__chart' : attr.attrType == 'integer' || attr.attrType == 'float' || attr.attrType == 'boolean' || attr.attrType == 'year' || attr.attrType == 'timestamp' }")
-							header.card__header(uib-tooltip="{{::attr.metadata.descr}}" tooltip-placement='right' tooltip-append-to-body="true")
+							header.card__header
 								.card__head-wrap(ng-if="attr.attrType != 'integer' && attr.attrType != 'float' && attr.attrType != 'boolean' && attr.attrType != 'year' && attr.attrType != 'timestamp'")
 									h2.card__title(dir-elem-ready="onAttrHeaderLoad(attr, $event)") {{::attr.title}}
 									span.card__tooltip(ng-if="attr.tooltip"

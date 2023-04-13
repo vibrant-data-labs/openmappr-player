@@ -22,9 +22,6 @@ function($q, $http, $rootScope, $timeout, networkService, dataService, AttrInfoS
     // var booleanValues = ["true", "y", "yes", "false", "n", "no"];
 
     var liststring_splitter = /\s*\|\s*/;
-    var attrMetaProps = ['minLabel', 'maxLabel', 'descr', 'overlayAnchor'];
-
-
 
 
     /*************************************
@@ -46,7 +43,6 @@ function($q, $http, $rootScope, $timeout, networkService, dataService, AttrInfoS
         this.searchable = this.attr.searchable;
         this.visibleInProfile = this.attr.visibleInProfile;
         this.title = this.attr.title;
-        this.newMetaData = buildAttrMetaClone(this.attr.metadata);
     }
     AttrModifier.prototype.toggleVisibility = function() {
         this.visible = !this.visible;
@@ -92,9 +88,7 @@ function($q, $http, $rootScope, $timeout, networkService, dataService, AttrInfoS
         return !_.isEmpty(this.new_scope);
     };
     AttrModifier.prototype.metaInfoUpdated = function() {
-        //this wasn't working because initially, metadata can be an empty object
-        // return !_.isEmpty(this.attr.metadata) && !_.isEqual(this.newMetaData, this.attr.metadata);
-        return !_.isEmpty(this.newMetaData) && !_.isEqual(this.newMetaData, this.attr.metadata);
+        return true;
 
     };
     AttrModifier.prototype.attrModified = function() {
@@ -117,18 +111,12 @@ function($q, $http, $rootScope, $timeout, networkService, dataService, AttrInfoS
         if(this.scopeChangeRequested()) {
             this._changeScope();
         }
-        if(this.metaInfoUpdated()) {
-            this._changeMetaInfo();
-        }
         this.attr.visible = this.visible;
         this.attr.isStarred = this.isStarred;
         this.attr.searchable = this.searchable;
         this.attr.visibleInProfile = this.visibleInProfile;
         this.attr.title = this.title;
         this.attr.renderType = this.new_render_type;
-    };
-    AttrModifier.prototype._changeMetaInfo = function() {
-        _.assign(this.attr.metadata, this.newMetaData);
     };
     AttrModifier.prototype.validateChange = function() {
         var attr = this.attr,
@@ -307,16 +295,6 @@ function($q, $http, $rootScope, $timeout, networkService, dataService, AttrInfoS
             attrDescriptors.push(attr);
         });
         return attrDescriptors;
-    }
-
-    function buildAttrMetaClone(metaData) {
-        var clone = _.clone(metaData);
-        attrMetaProps.forEach(function(key) {
-            if(!_.has(clone, key)) {
-                clone[key] = '';
-            }
-        });
-        return clone;
     }
 
     function _removeAttrFromEntities(attrId, entities) {

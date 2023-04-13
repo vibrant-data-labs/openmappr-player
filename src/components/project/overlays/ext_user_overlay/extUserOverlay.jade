@@ -43,21 +43,17 @@
 								.detailbox-card
 									.row(ng-if="attr.attrType != 'integer' && attr.attrType != 'float' && attr.attrType != 'boolean' ")
 										.col-xs-12
-											span.h5(uib-tooltip="{{::attr.metadata.descr}}" tooltip-placement='left' tooltip-append-to-body="true") {{::attr.title}} 
+											span.h5 {{::attr.title}} 
 											//- span.h5(ng-if="attr.attrType === 'integer' || attr.attrType ==='boolean' || attr.attrType === 'float'", style="color:{{focusNode.colorStr}};") &nbsp;&nbsp;&nbsp;{{attr.principalVal}}
 									div(ng-if="attr.attrType == 'string' && (!attr.renderType || attr.renderType == 'default' || attr.renderType == 'text' || attr.renderType == 'categorybar' || attr.renderType == 'categorylist' || attr.renderType == 'barchart' || categorybar == 'categorylist' || categorybar == 'tags' || attr.renderType == 'piechart')")
 										h3.text-attr-content(style="color:{{focusNode.colorStr}};" ng-text-truncate="::attr.principalVal" ng-tt-chars-threshold="200" ng-tt-more-label="more..." ng-tt-less-label="...less")
 									dir-attr-renderer(ng-if="loadDistr" attr-to-render="attr", node-color-str="focusNode.colorStr", show-aggregation="false", is-node="true", is-node-focus="true" is-in-Overlay="true" is-ext-user="true" cancel-overlay-fctn="attrRenderClicked();" show-filter="attr.showFilter" theme="appUi.theme")
 									.row
-										.col-xs-3
-											h6.no-margin {{::attr.metadata.minLabel}}
 										.col-xs-6(style="color:{{focusNode.colorStr}};")
-											h4.no-margin.text-center(ng-if="attr.attrType === 'integer' || attr.attrType ==='boolean' || attr.attrType === 'float'", style="color:{{focusNode.colorStr}};" uib-tooltip="{{::attr.metadata.descr}}" tooltip-placement='top' tooltip-append-to-body="true")
+											h4.no-margin.text-center(ng-if="attr.attrType === 'integer' || attr.attrType ==='boolean' || attr.attrType === 'float'", style="color:{{focusNode.colorStr}};")
 												strong
 													span {{::attr.title}}:&nbsp;
 													span {{attr.principalVal}}
-										.col-xs-3
-											h6.no-margin.text-right {{::attr.metadata.maxLabel}}
 									.graph-squares(ng-if="attr.attrType === 'integer' || attr.attrType ==='boolean' || attr.attrType === 'float' || attr.renderType == 'piechart' || attr.renderType == 'barchart'")
 										.pull-right
 											.square(uib-tooltip="Population" tooltip-append-to-body="true")
