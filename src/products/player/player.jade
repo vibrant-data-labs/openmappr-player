@@ -6,7 +6,7 @@
 			h1 Please consider updating your browser
 			p Your browser is out of date and Mappr will respond unpredictably in this version of your browser.
 		#mappr-player.mappr-player(ng-class="colorTheme")
-			#project-layout.project-layout( ng-class="{'higher':(player.settings.timelineType == 'bottom')}")
+			#project-layout.project-layout
 				div(ng-controller="renderGraphCtrl")
 					div(ng-controller="layoutCtrl")
 						.dots-loader(ng-if="!snapInfo || !snapInfo.snapsLoaded" ng-include=' "#{player_prefix_index}/player/dotsLoader.html" ')

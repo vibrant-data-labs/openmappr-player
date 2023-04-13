@@ -1,32 +1,4 @@
-#footer-menu.footer-menu(ng-show="snapInfo.snapsLoaded" ng-class="{'lower':(player.settings.timelineType == 'bottom'), 'clear': (player.snapshots.length == 1 || !player.settings.showTimeline)}" ng-click="triggerInteraction();")
-	.bottom-controls(ng-if="player.settings.timelineType == 'bottom' && player.settings.showTimeline" ng-show="startedSlideshow" ng-controller="BottomTimelineCtrl" ng-class="{'no-height':(player.snapshots.length === 1)}")
-		.zoom-to-fit-btn.square-btn.pull-right(ng-if="(!mapprSettings.zoomLock || !mapprSettings.panLock) && !appUi.showResetBtn", ng-click="zoomInfo.zoomExtents();" uib-tooltip="Zoom to Selection" tooltip-placement="top-left" tooltip-append-to-body="true")
-			i.fa.fa-bullseye
-		.background(ng-show="player.snapshots.length !== 1")
-		.container(ng-if="player.snapshots.length > 1")
-		
-			//- .play-btn.square-btn(ng-click="$event.stopPropagation();")
-			//-     i.fa.fa-pause(ng-if="isPlaying" ng-click="stopPlaying(true); sound.pause();")
-			//-     i.fa.fa-play(ng-if="!isPlaying" ng-click="startPlaying(true); sound.play();")
-			.snaps-bar
-				.time-bar(style="border-color:{{player.settings.highlightColor}};" ng-style="getTimeBarStyle()")
-				.snaps
-					.snap.vert-align(ng-repeat="snap in player.snapshots" uib-tooltip="{{player.settings.showSnapTooltips ? snap.snapName : ''}}" tooltip-append-to-body="true" ng-class="getSnapClass($index);" ng-style="getSnapStyle($index, player.settings.highlightColor)" ng-click="setSnapActive(snap);")
-						i.marker(ng-class="getSnapIconClass(snap, $index)" ng-style="getSnapIconStyle($index, player.settings.highlightColor)")
-			//- .fullscreen-btn.square-btn(ng-click="requestFullScreen()")
-			//-     i.fa.fa-arrows-alt
-		.description.text-center(ng-if="player.settings.showSnapDescrs" ng-show="(startedSlideshow || player.snapshots.length == 1) && hasDescription(snapInfo.activeSnap.id)" ng-class="{closed: isDescriptionClosed, 'one-snap': (player.snapshots.length === 1), open: isDescriptionOpen}")
-			.content(ng-mouseleave="resetForceClose();")
-				ul
-					li.close-descr-btn.square-btn(ng-click="closeSnapDescription()" ng-hide="isDescriptionClosed" uib-tooltip="Hide Description" tooltip-placement="left" tooltip-append-to-body="true")
-						i.fa.fa-times
-					li.open-descr-btn.square-btn(ng-click="openSnapDescription()" ng-show="isDescriptionClosed" uib-tooltip="Keep Title Open" tooltip-placement="left" tooltip-append-to-body="true")
-						i.fa.fa-chevron-up
-				.container.animate-fadeover(ng-repeat="snap in player.snapshots" ng-if="snap.id == snapInfo.activeSnap.id")
-					h1.h3(style="color: {{player.settings.highlightColor}};") {{snap.snapName}}
-					div.text-center(ng-bind-html="snap.descr")
-			.one-snap-filler(ng-if="player.snapshots.length == 1")
-
+#footer-menu.footer-menu(ng-show="snapInfo.snapsLoaded" ng-class="{'clear': (player.snapshots.length == 1)}" ng-click="triggerInteraction();")
 	.logo
 		a.vert-align(href="http://vibrantdata.io",target="_blank")
 			em powered by

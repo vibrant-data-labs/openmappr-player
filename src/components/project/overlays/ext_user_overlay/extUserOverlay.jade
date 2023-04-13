@@ -17,10 +17,6 @@
 					dir-scroll-overlay-anchors(color-str="{{focusNode.colorStr}}", scroll-container="#detailbox-scroll" scroll-data-id="data-attr-id" show-neighbors="{{mapprSettings.nodeFocusNeighborsButton}}" force-neighbors="{{extLinkedNodes.length > 0}}")
 					.focusnode-label(ng-hide="hideContent" style="color:{{clusterColor}};")
 						h4 {{userName}}
-					.share-btns(style="margin-top:{{shareMarginTop}}px;" ng-if="player.settings.twitterShare || player.settings.facebookShare")
-						h5 Share!
-						.share-btn.vert-align(ng-if="twitterShare" dir-social-share="twitter" share-title="{{shareTitle}}" uib-tooltip="Tweet your Creative Style" is-compare="true")
-						.share-btn.vert-align(ng-if="facebookShare" dir-social-share="facebook" share-title="{{shareTitle}}" uib-tooltip="Share your Creative Style on Facebook" is-compare="true")
 					#detailbox-scroll.detailbox-container(ng-class="{transparent: hideContent}" ng-click='closeExtUserOverlay();' dir-kill-tooltip-on-scroll)
 						//- div(ng-repeat="node in extLinkedNodes")
 						//- 	span {{node.attr.OriginalLabel}}

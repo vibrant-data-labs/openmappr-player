@@ -54,7 +54,7 @@ function($q, $http, $location, snapshotService, graphSelectionService, AttrInfoS
             }
 
             var playerState = {
-                serverPrefix: currPlayer.settings.shareServerPrefix || $location.protocol() + '://' + $location.host() + '/play/' + currPlayer.playerUrl,
+                serverPrefix: $location.protocol() + '://' + $location.host() + '/play/' + currPlayer.playerUrl,
                 snapNum: snapshotIdx >= 0 ? snapshotIdx + 1 : 1,
                 select: {
                     nid: nid,

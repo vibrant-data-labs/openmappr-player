@@ -93,89 +93,14 @@
                 "settings": {
                     "type": "object",
                     "properties": {
-                        "shareTitle": {
-                            "type": "string"
-                        },
-                        "showExportBtn": {
-                            "type": "boolean"
-                        },
-                        "facebookShare": {
-                            "type": "boolean"
-                        },
-                        "twitterShare": {
-                            "type": "boolean"
-                        },
-                        "showPanels": {
-                            "type": "boolean"
-                        },
-                        "showSearch": {
-                            "type": "boolean"
-                        },
-                        "showTimeline": {
-                            "type": "boolean"
-                        },
-                        "showSnapDescrs": {
-                            "type": "boolean"
-                        },
-                        "infoClickToParent": {
-                            "type": "boolean"
-                        },
-                        "showSnapTooltips": {
-                            "type": "boolean"
-                        },
-                        "panelLayoutType": {
-                            "type": "string"
-                        },
-                        "autoPlay": {
-                            "type": "boolean"
-                        },
-                        "snapTransition": {
-                            "type": "string"
-                        },
-                        "snapDuration": {
-                            "type": "number"
-                        },
-                        "timelineType": {
-                            "type": "string"
-                        },
-                        "totalDuration": {
-                            "type": "number"
-                        },
                         "headerTitle": {
-                            "type": "string"
-                        },
-                        "headerImageUrl": {
-                            "type": "string"
-                        },
-                        "headerHtml": {
-                            "type": "string"
-                        },
-                        "highlightColor": {
                             "type": "string"
                         },
                         "modalDescription": {
                             "type": "string"
                         },
-                        "modalBackground": {
-                            "type": "string"
-                        },
-                        "modalLogo": {
-                            "type": "string"
-                        },
                         "modalSubtitle": {
                             "type": "string"
-                        },
-                        "searchAlg": {
-                            "type": "string"
-                        },
-                        "modalTitle": {
-                            "type": "string"
-                        },
-                        "modalIntroHtml": {
-                            "type": "string"
-                        },
-                        "allowJoin": {
-                            "type": "boolean"
                         },
                         "displayTooltipCard": {
                             "type": "boolean"
@@ -218,12 +143,6 @@
                             "type": "string"
                         },
                         "projectLogoUrl": {
-                            "type": [
-                                "null",
-                                "string"
-                            ]
-                        },
-                        "sharingLogoUrl": {
                             "type": [
                                 "null",
                                 "string"
@@ -295,35 +214,9 @@
                         }
                     },
                     "required": [
-                        "shareTitle",
-                        "showExportBtn",
-                        "facebookShare",
-                        "twitterShare",
-                        "colorTheme",
-                        "showPanels",
-                        "showSearch",
-                        "showTimeline",
-                        "showSnapDescrs",
-                        "infoClickToParent",
-                        "showSnapTooltips",
-                        "panelLayoutType",
-                        "autoPlay",
-                        "snapTransition",
-                        "snapDuration",
-                        "timelineType",
-                        "totalDuration",
                         "headerTitle",
-                        "headerImageUrl",
-                        "headerHtml",
-                        "highlightColor",
                         "modalDescription",
-                        "modalBackground",
-                        "modalLogo",
                         "modalSubtitle",
-                        "searchAlg",
-                        "modalTitle",
-                        "modalIntroHtml",
-                        "allowJoin",
                         "displayTooltipCard",
                         "startPage",
                         "showStartInfo",

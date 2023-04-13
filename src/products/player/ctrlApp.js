@@ -276,14 +276,6 @@ angular.module('player')
                 $scope.hasModal = true;
                 $scope.panelUI.openPanel($scope.player.player.settings.startPage || 'modal');
 
-                //info btn triggering event in parent
-                if ($scope.player.settings.infoClickToParent) {
-                    //trigger event letting parent know info btn clicked
-                    window.parent.postMessage({
-                        infoBtnClicked: true
-                    }, $scope.player.settings.infoClickParentHost);
-                }
-
                 //COLORTHEME
                 $scope.colorTheme = 'light';
                 loadSuccess(dataset);
@@ -490,7 +482,6 @@ angular.module('player')
             // function loadFailure(reason) {
             //     console.warn('[playerCtrl.loadFailure] Loading failed! %O', reason);
             //     //show 404 modal here
-            //     $scope.modalIntroHtml = "<div class='content><h1> Oh Nodes! This is embarrassing...</h1><div>Sorry we could not find the specified player. Please check if the URL is correct.</div><div class='clearfix'></div></div>";
             // }
 
             function isTallImg() {
