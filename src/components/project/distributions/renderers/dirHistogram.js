@@ -96,7 +96,6 @@ angular.module('common')
             **************************************/
             function postLinkFn(scope, element, attrs, renderCtrl) {
                 var histoBars; // Ref for histo svg bars
-                var mappTheme = projFactory.getProjectSettings().theme || 'light';
                 var defaultAttrInfo = _.cloneDeep(AttrInfoService.getNodeAttrInfoForRG().getForId(scope.attrToRender.id));
                 var logAttrInfo = _.cloneDeep(AttrInfoService.getNodeAttrInfoForRG().getForLogId(scope.attrToRender.id));
                 scope.hasLogScale = !!logAttrInfo;
@@ -157,7 +156,7 @@ angular.module('common')
 
                 scope.$on(BROADCAST_MESSAGES.hss.select, function (ev, payload) {
                     var nodes = payload.nodes;
-                    updateSelectionBars(histoBars, nodes, attrInfo, histoData, mappTheme, false, histElem, renderCtrl);
+                    updateSelectionBars(histoBars, nodes, attrInfo, histoData, false, histElem, renderCtrl);
                     updateFiltSelBars(histoBars, nodes, attrInfo, histoData, renderCtrl, scope);
                 });
 
@@ -189,13 +188,13 @@ angular.module('common')
                     histoBars = createGlobalDistribution(histElem, tooltip, attrInfo, renderCtrl, histoData, scope.isLogScale);
 
                     if (!_.isEmpty(initialSelection)) {
-                        updateSelectionBars(histoBars, initialSelection, attrInfo, histoData, mappTheme, initialSelection.length === 1, histElem, renderCtrl);
+                        updateSelectionBars(histoBars, initialSelection, attrInfo, histoData, initialSelection.length === 1, histElem, renderCtrl);
                         if (initialSelection.length > 1) {
                             updateFiltSelBars(histoBars, FilterPanelService.getCurrentSelection(), attrInfo, histoData, scope);
                         }
                     }
                     else {
-                        updateSelectionBars(histoBars, FilterPanelService.getCurrentSelection(), attrInfo, histoData, mappTheme, false, histElem, renderCtrl);
+                        updateSelectionBars(histoBars, FilterPanelService.getCurrentSelection(), attrInfo, histoData, false, histElem, renderCtrl);
                     }
 
                     redrawHistogram(attrInfo);
@@ -225,7 +224,7 @@ angular.module('common')
                         histoData.binType = getBinType(attrInfo);
                         histoBars = createGlobalDistribution(histElem, tooltip, attrInfo, renderCtrl, histoData, nodes, scope.isLogScale);
                         $timeout(function () {
-                            updateSelectionBars(histoBars, [], attrInfo, histoData, mappTheme, false, histElem, renderCtrl, scope.isLogScale);
+                            updateSelectionBars(histoBars, [], attrInfo, histoData, false, histElem, renderCtrl, scope.isLogScale);
                         }, 500);
                     }, 500);
                 }
@@ -297,21 +296,17 @@ angular.module('common')
             function getSelectionValuesMap(nodes, attrId) {
                 var result = nodes.reduce((acc, node) => {
                     var nodeVal = node.attr[attrId];
-                    if (acc[nodeVal] == null) {
-                        return {
-                            ...acc,
-                            [nodeVal]: {
-                                count: 1,
-                                nodeIds: [node.id]
-                            }
-                        };
-                    }
+                    const res = {
+                        count: 1,
+                        nodeIds: [node.id]
+                    };
 
+                    const record = acc[nodeVal];
                     return {
                         ...acc,
                         [nodeVal]: {
-                            count: acc[nodeVal].count + 1,
-                            nodeIds: [...acc[nodeVal].nodeIds, node.id]
+                            count: (record?.count || 0) + res.count,
+                            nodeIds: [...(record?.nodeIds || []), ...res.nodeIds]
                         }
                     }
                 }, {});
@@ -319,7 +314,7 @@ angular.module('common')
                 return result;
             }
 
-            function mapSelectionToBars(attrId, selectionDataMap, histoData, isNumeric, isLogScale) {
+            function mapSelectionToBars(attrId, selectionDataMap, histoData, isNumeric, attrInfo, isLogScale) {
                 var histoRangeList = [];
                 var selectionValues = _.keys(selectionDataMap);
 
@@ -779,7 +774,7 @@ angular.module('common')
                 return maxNode ? maxNode.color : undefined;
             }
 
-            function updateSelectionBars(bar, selectedNodes, attrInfo, histoData, mappTheme, showClusterNodes, histElem, renderCtrl, isLogScale) {
+            function updateSelectionBars(bar, selectedNodes, attrInfo, histoData, showClusterNodes, histElem, renderCtrl, isLogScale) {
                 var principalNode = null;
                 var binType = histoData.binType;
 
