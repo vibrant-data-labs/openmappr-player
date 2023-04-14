@@ -286,16 +286,6 @@ function ($http, $q, $timeout, $rootScope, projFactory, AttrSanitizeService, BRO
             }
             return newLayoutsList;
         });
-
-        if(settingsChanged) {
-            projFactory.updateProjectSettings(settings)
-            .then(function () {
-                console.log('Layouts belonging to deleted network removed.');
-            }, function(err) {
-                console.error('Layouts from project settings could not be removed');
-                console.log(err);
-            });
-        }
     }
 
     function deCacheNetwork(networkId) {

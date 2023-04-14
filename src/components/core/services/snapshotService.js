@@ -92,15 +92,7 @@ function ($q, $http, $rootScope, $routeParams, layoutService, graphSelectionServ
     }
 
     function getAnchoredAttrIds() {
-
-        if(!currentSnapshot) {
-            console.warn('Current snapshot not set');
-            return [];
-        }
-        console.log('attrs for possible anchor: ', dataGraph.getNodeAttrs());
-        return _.map(_.filter(dataGraph.getNodeAttrs(), function(n) {
-            return n.metadata.overlayAnchor;
-        }), 'id');
+        return [];
     }
 
     function getPinnedAttrIds() {
@@ -143,16 +135,6 @@ function ($q, $http, $rootScope, $routeParams, layoutService, graphSelectionServ
             throw new Error('Snapshot doesn\'t exist');
         }
         currentSnapshot = refSnap;
-
-        // Update last viewed snap for app
-        if(!isPlayer) {
-            var projSettings = projFactory.getProjectSettings();
-            if(projSettings && projSettings.lastViewedSnap != currentSnapshot.id) {
-                projFactory.updateProjectSettings({
-                    lastViewedSnap: snapId
-                });
-            }
-        }
 
         return currentSnapshot;
     }

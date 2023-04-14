@@ -38,7 +38,6 @@ function($scope, $rootScope, $timeout, $interval, $document, BROADCAST_MESSAGES,
     */
     $scope.startPlaying = startPlaying;
     $scope.stopPlaying = stopPlaying;
-    $scope.getTimeBarStyle = getTimeBarStyle;
     $scope.getSnapStyle = getSnapStyle; //snapshot styling
     $scope.getSnapClass = getSnapClass;
     $scope.hasDescription = hasDescription; //if snap has a description
@@ -89,7 +88,6 @@ function($scope, $rootScope, $timeout, $interval, $document, BROADCAST_MESSAGES,
     ********* Initialise *****************
     **************************************/
     console.log('loading bottom timeline ctrl');
-    // $scope.$watch('player.settings.showModal', function() {
     if($scope.snapInfo.snapsLoaded && !$scope.startedSlideshow && (!$scope.sound || $scope.sound.currentTime)) {
         checkForAudio();
         //$scope.startPlaying(true);
@@ -98,23 +96,7 @@ function($scope, $rootScope, $timeout, $interval, $document, BROADCAST_MESSAGES,
     }
     // });
 
-    //begin playing once loaded
-    // $scope.$on(BROADCAST_MESSAGES.player.load, function() {
-        //if snapDuration not set (legacy players, then use default)
-    if(!$scope.player.settings.snapDuration) {
-        $scope.player.settings.snapDuration = defaultSnapDuration;
-    }
-
-        //see if only one snapshot and no bottom timeline and update right panel bottom
-        // if($scope.player.snapshots.length == 1 && (!$scope.player.settings.showSnapDescrs || !$scope.player.snapshots[0].descr)) {
-        //  $scope.panelUI.eight(false, false, true);
-        // }
-
     $timeout(function() {
-        if(!$scope.player.settings.showModal && (!$scope.sound || $scope.sound.currentTime)) {
-            checkForAudio();
-            $scope.startPlaying();
-        }
         initKeyboard();
         // this doesn't work if first snap is disabled. Not sure why we need since active snap is set in ctrlApp.
         // if(!hasCustomData) {
@@ -134,9 +116,6 @@ function($scope, $rootScope, $timeout, $interval, $document, BROADCAST_MESSAGES,
     **************************************/
 
     function onSnapChange() {
-        var snapInd = _.findIndex($scope.player.snapshots, {'id': $scope.snapInfo.activeSnap.id});
-        $scope.currentTime = $scope.player.settings.snapDuration*snapInd*1000;
-
         //set old snap id
         $scope.snapInfo.curSnapId = $scope.snapInfo.activeSnap.id;
         checkForAudio();
@@ -198,41 +177,6 @@ function($scope, $rootScope, $timeout, $interval, $document, BROADCAST_MESSAGES,
             }
             // console.log('sound obj: ', $scope.sound);
         },5000);
-    }
-
-    // function startSlideshow() {
-    //     slideshowInt = $interval(function() {
-
-    //         //get current index of active snap
-    //         var activeInd = _.findIndex($scope.player.snapshots, {'id': $scope.snapInfo.activeSnap.id});
-    //         if($scope.sound && $scope.sound.currentTime) {
-    //             $scope.currentTime = activeInd*$scope.player.settings.snapDuration*1000 + $scope.sound.currentTime/($scope.sound.currentTime + $scope.sound.remaining)*$scope.player.settings.snapDuration*1000;
-    //         } else {
-    //             $scope.currentTime += interval;
-    //         }
-    //         //check if new snapshot should load
-    //         var curSnapInd = Math.floor($scope.currentTime/($scope.player.settings.snapDuration*1000));
-    //         if(curSnapInd == $scope.player.snapshots.length - 1) {
-    //             $scope.stopPlaying();
-    //         }
-    //         if(activeInd != curSnapInd) {
-    //             $scope.setSnapActive($scope.player.snapshots[curSnapInd]);
-    //         }
-    //     }, interval);
-    // }
-
-    function getTimeBarStyle() {
-        var w = $('.snaps-bar').width();
-        var ind = _.findIndex($scope.player.snapshots, 'id', $scope.snapInfo.activeSnap.id);
-        var dur = $scope.player.settings.snapDuration;
-        var maxW = w/($scope.player.snapshots.length - 1);
-        var pos = ind*maxW;
-        var mod = $scope.currentTime - dur*1000 * ind;
-        w = Math.min(maxW, mod/(dur*1000)*maxW);
-        return {
-            marginLeft: pos,
-            width: w
-        };
     }
 
     function getSnapStyle(ind, highlightColor) {

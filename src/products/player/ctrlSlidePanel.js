@@ -62,15 +62,7 @@ angular.module('common')
             //      checkForAudio();
             //  }
 
-             if(!$scope.player.settings.snapDuration) {
-                 $scope.player.settings.snapDuration = defaultSnapDuration;
-             }
-
             $timeout(function() {
-                if(!$scope.player.settings.showModal && $scope.player.settings.autoPlay) {
-                    //  checkForAudio();
-                    $scope.startPlaying();
-                }
                 initKeyboard();
             }, 100);
 
@@ -108,56 +100,7 @@ angular.module('common')
                 if($scope.isPlaying === false && $scope.snapInfo.curSnapInd === $scope.player.snapshots.length - 1) {
                     setSnapActive($scope.player.snapshots[0]);
                 }
-                slideshowInt = $interval(function() {
-
-                    //get current index of active snap
-                    var activeInd = _.findIndex($scope.player.snapshots, {'id': $scope.snapInfo.activeSnap.id});
-                    // if($scope.sound && $scope.sound.currentTime) {
-                    //     $scope.currentTime = activeInd*$scope.player.settings.snapDuration*1000 + $scope.sound.currentTime/($scope.sound.currentTime + $scope.sound.remaining)*$scope.player.settings.snapDuration*1000;
-                    // } else {
-                        $scope.currentTime += interval;
-                    // }
-                    //check if new snapshot should load
-                    var curInd = Math.floor($scope.currentTime/($scope.player.settings.snapDuration*1000));
-                    if(curInd == $scope.player.snapshots.length - 1) {
-                        $scope.stopPlaying();
-                    }
-                    if(activeInd != curInd) {
-                        $scope.setSnapActive($scope.player.snapshots[curInd]);
-                    }
-                }, interval);
             }
-
-            // function checkForAudio() {
-            //    //if audio pause timer and load audio
-            //    if($scope.snapInfo.activeSnap.audio) {
-            //        if($scope.isPlaying) {
-            //            isTempPaused = true;
-            //            $scope.stopPlaying();
-            //        }
-            //        waitingForSoundLoad = true;
-            //        $scope.sound = ngAudio.load($scope.snapInfo.activeSnap.audio);
-            //    }
-            // }
-
-            // function soundWatchFn() {
-            //    $timeout(function() {
-            //
-            //        if(waitingForSoundLoad) {
-            //            if(isTempPaused) {
-            //                isTempPaused = false;
-            //                $scope.startPlaying();
-            //            }
-            //            if(!$scope.sound || $scope.sound.error) {
-            //                //maybe throw error saying sound couldn't load
-            //            } else {
-            //                $scope.sound.play();
-            //                waitingForSoundLoad = false;
-            //            }
-            //        }
-            //        // console.log('sound obj: ', $scope.sound);
-            //    },5000);
-            // }
 
             function nextSnap() {
                 var curInd = $scope.snapInfo.curSnapInd + 1;
@@ -197,22 +140,6 @@ angular.module('common')
                 var oldSnapInd = _.findIndex($scope.player.snapshots, {id: $scope.snapInfo.oldSnapId});
                 var fromBottom = $scope.snapInfo.curSnapInd > oldSnapInd;
                 $scope.snapDescClass = fromBottom ? 'animate-from-bottom' : 'animate-from-top' ;
-                $timeout(function() {
-                    $scope.snapInfo.activeSnap = snap;
-                    switch (snap.type) {
-                    case 'network':
-                    default:
-                        $scope.switchSnapshot(snap.id);
-                    }
-
-                    var snapInd = _.findIndex($scope.player.snapshots, {'id': $scope.snapInfo.activeSnap.id});
-                    $scope.currentTime = $scope.player.settings.snapDuration*snapInd*1000;
-
-                    //set old snap id
-                    $scope.snapInfo.curSnapId = $scope.snapInfo.activeSnap.id;
-                });
-
-
             }
 
             function onSigmaRender() {
