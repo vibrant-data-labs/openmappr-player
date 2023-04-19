@@ -15,9 +15,6 @@
 					.arrows.vert-align
 						i.pull-right.material-icons(ng-class="{'disabled': snapInfo.curSnapInd === 0}" ng-click="prevSnap()") arrow_back
 						i.pull-right.material-icons(ng-class="{'disabled': snapInfo.curSnapInd === player.snapshots.length - 1}" ng-click="nextSnap()") arrow_forward
-			.row
-				.col-xs-12
-					.timer(style="width: {{((currentTime / 1000) % (player.settings.snapDuration)) / player.settings.snapDuration * 100}}%;")
 		#slideDescription.left-panel-body.flex-fill
 			.panel-scroll(ng-repeat="snap in player.snapshots" ng-if="snap.id === snapInfo.activeSnap.id" ng-class="snapDescClass")
 				.panel-item

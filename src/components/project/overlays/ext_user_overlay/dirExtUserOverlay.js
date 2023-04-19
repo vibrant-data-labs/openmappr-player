@@ -12,9 +12,6 @@ function($timeout, $rootScope, dataGraph, graphSelectionService, AttrInfoService
         scope: {
             loadInfo: '=',
             mapprSettings: '=',
-            shareTitle: '@',
-            facebookShare: '=',
-            twitterShare: '='
         },
         link: postLinkFn
     };

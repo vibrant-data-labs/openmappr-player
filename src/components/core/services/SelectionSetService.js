@@ -56,19 +56,6 @@ function($q, $rootScope, uiService, dataService, projFactory, graphSelectionServ
 
         selectionSets.unshift(_.pick(this, propsToUpdate));
         selectionData.genCount++;
-
-        projFactory.updateProjectSettings(projSettings)
-        .then(function() {
-            self.createMode = false;
-            $rootScope.$broadcast(BROADCAST_MESSAGES.dataGroup.added, {groupName: self.selName});
-            console.log(logPrefix + 'selection saved');
-            uiService.log('Group created!');
-        })
-        .catch(function(err) {
-            console.error(logPrefix + 'error in saving selection', err);
-            uiService.logError('Could not create group!');
-        });
-
     };
 
     Selection.prototype.addDatapoints = function(dpIdsToAdd) {
@@ -242,7 +229,7 @@ function($q, $rootScope, uiService, dataService, projFactory, graphSelectionServ
             var origSelection = _.find(selectionSets, 'selName', this.origSelection.selName);
             _.assign(origSelection, _.pick(this, propsToUpdate));
         }
-        return projFactory.updateProjectSettings(projSettings);
+        return Promise.resolve();
     };
 
     Selection.prototype.cancelNameChange = function() {
@@ -326,27 +313,6 @@ function($q, $rootScope, uiService, dataService, projFactory, graphSelectionServ
         var projSettings = projFactory.getProjectSettings();
         var selectionData = _.get(projSettings, 'selectionData'),
             selectionSets;
-        if(!selectionData) {
-            projSettings.selectionData = {
-                genCount: 0,
-                selections: []
-            };
-            selectionSets = projSettings.selectionData.selections;
-            projFactory.currProject()
-            .then(function () {
-                return projFactory.updateProjectSettings(projSettings);
-            })
-            .then(function() {
-                console.log(logPrefix + 'added selection sets');
-            })
-            .catch(function(err) {
-                console.error(logPrefix + 'error in saving selection', err);
-                // uiService.logError('Could not add selection sets!');
-            });
-        }
-        else {
-            selectionSets = projSettings.selectionData.selections;
-        }
 
         selectionVMs = _.map(selectionSets, function(selection) {
             return new Selection(selection);

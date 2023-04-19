@@ -21,8 +21,6 @@ angular.module('common')
         var attribId = attr.id;
         var isNum = true, isInt = true; // hopefully
         attr.existsOnAll = attr.isNumeric = attr.isInteger = attr.isTag = false;
-        // set metadata
-        attr.metadata = _.isObject(attr.metadata) ? attr.metadata : {};
 
         // For existing projects, set searchable to false for numeric attrs
         if (['integer', 'float'].indexOf(attr.attrType) !== -1) { attr.searchable = false; }

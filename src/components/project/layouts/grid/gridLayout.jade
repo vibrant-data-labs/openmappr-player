@@ -74,7 +74,7 @@
     button.pull-left.no-margin.vert-align.h3(
         ng-if="MAPP_EDITOR_OPEN"
         ng-show="scrolled"
-        ng-click="resetScrollPosition(); closeOverlay();"
+        ng-click="resetScrollPosition();"
         uib-tooltip="Scroll to Top"
         tooltip-placement="top-left"
         tooltip-append-to-body="true"
@@ -84,7 +84,7 @@
     button.pull-left.no-margin.vert-align.square-btn(
         ng-if="!MAPP_EDITOR_OPEN"
         ng-show="scrolled"
-        ng-click="resetScrollPosition(); closeOverlay();"
+        ng-click="resetScrollPosition();"
         uib-tooltip="Scroll to Top"
         tooltip-placement="top-left"
         tooltip-append-to-body="true"

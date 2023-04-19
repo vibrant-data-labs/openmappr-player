@@ -1,32 +1,4 @@
 .search.search-box
-  //.square-btn.no-background.text-center.uib-dropdown.pull-left.vert-align(uib-dropdown dropdown-append-to-body)
-    div.vert-align(uib-dropdown-toggle auto-close="outsideClick")
-      h4.no-margin.pull-left.truncate {{ui.attrFilterText}}&nbsp;
-      i.fa.fa-caret-down
-    .uib-dropdown-menu.uib-dropdown-menu-flexing(uib-dropdown-menu)
-      .uib-dropdown-click-close
-      .uib-dropdown-flex-content(style="margin-left: 50px;")
-        .uib-dropdown-flex.right
-          ul.list-unstyled.dd-list
-            //- ng-repeat here
-            li.row.vert-align
-              .col-xs-2
-                .tag-checkbox(ng-click="$event.stopPropagation();")
-                  input(id="attr-select-all" type="checkbox", ng-disabled="ui.disableAllChkbx", ng-model="ui.allAttrsSelected")
-                  label(for="attr-select-all")
-              .col-xs-9
-                //- Attribute title here
-                h6.no-margin All
-            li.row.vert-align(ng-repeat="attrVM in filterAttrVMs")
-              .col-xs-2
-                .tag-checkbox(ng-click="$event.stopPropagation();")
-                  input(id="attr-select-{{::$index}}" type="checkbox" ng-model="attrVM.checked", ng-change="attrToggled(attrVM);")
-                  label(for="attr-select-{{::$index}}")
-              .col-xs-10
-                //- Attribute title here
-                h6.no-margin.truncate {{::attrVM.title}}
-                  span &nbsp;&nbsp;&nbsp;
-                    i.fa.fa-info-circle(ng-if="::attrVM.metadata.descr" uib-tooltip="{{::attrVM.metadata.descr}}" tooltip-placement="right" tooltip-append-to-body="true")
   .search-box__input-wrap
     .search-input
       input.search-box__input(
@@ -110,19 +82,3 @@
 
     .search-results__footer
       span.more(ng-click='showMore()' ng-if="searchResults && searchResults.length > ui.showLimit") Show more results
-
-        //- .header
-        //- 	h6.title.text-uppercase.pointable-cursor.vert-align.no-margin
-        //- 		//description of what found
-        //- 		span {{searchResults.length}} Nodes found for ...
-        //- .panel-scroll.flex-fill
-        //- 	.panel-list
-        //- 		.panel-item
-        //- 			.row.vert-align
-        //- 				.col-xs-1
-        //- 					.legend-icon
-        //- 						i.fa-1-3x.icon-legend-dots
-        //- 				.col-xs-10
-        //- 					h6 {{node.attr.DataPointLabel}}
-        //- 				//- .col-xs-9
-        //- 				//- 	h6.less-gutter Searched Value

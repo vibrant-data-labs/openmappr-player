@@ -8,9 +8,7 @@
 								span Sized By: &nbsp;
 							span.inline.nowrap
 								dir-filter-dropdown(ng-model="vm.nodeSizeAttr", change-val="sizeByAttrUpdate()", vals-list="nodeSizeAttrs", default-title=" 'Size By' " show-triangle="false", dd-class="text-link" is-right="false" left-margin="120px")
-								span(ng-if="vm.nodeSizeAttr.metadata.descr" uib-tooltip="{{vm.nodeSizeAttr.metadata.descr}}" tooltip-append-to-body="true" tooltip-placement="bottom-left")
-									| &nbsp;&nbsp;&nbsp;
-									i.fa.fa-info-circle
+
 				//- .col-xs-4
 				//- 	span
 				//- 		button.square-btn.small-btn.panel-btn(type="button", ng-click="clearSelections();") Reset
@@ -73,9 +71,7 @@
 												li.row.vert-align.pointable-cursor(ng-repeat="colorAttr in edgeColorAttrs")
 													.col-xs-12(ng-click="colorByEdgeAttrUpdate(colorAttr);")
 														h6.no-margin.text-uppercase {{colorAttr.title}}
-							span.subtitle(ng-if="dataGroupsInfo.colorNodesBy.metadata.descr" uib-tooltip="{{dataGroupsInfo.colorNodesBy.metadata.descr}}" tooltip-append-to-body="true" tooltip-placement="bottom-left")
-								| &nbsp;&nbsp;&nbsp;
-								i.fa.fa-info-circle
+
 
 		.clearfix
 	.list-content.panel-scroll.flex-fill

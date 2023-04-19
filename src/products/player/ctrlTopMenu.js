@@ -62,10 +62,7 @@ function($scope, $timeout, BROADCAST_MESSAGES) {
             return;
         }
         //initialize top menu buttons if needed
-        _.find($scope.topMenu, {name:'search'}).enabled = $scope.player.player.settings.showSearch == true;
         _.find($scope.topMenu, {name: 'network'}).enabled = $scope.player.snapshots.length > 1;
-        _.find($scope.topMenu, {name: 'snapshot'}).enabled = (($scope.player.settings.showSnapDescrs || $scope.player.settings.showTimeline) && $scope.player.settings.timelineType != 'bottom') == true;
-        // _.find($scope.topMenu, {name: 'fullscreenEnter'}).enabled = isFullscreenEnabled() && !isFullscreen();
     }
 
     function topMenuCmd(name) {

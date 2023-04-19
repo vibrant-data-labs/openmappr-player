@@ -29,7 +29,6 @@ function($http, $q) {
         removeProject:          removeProject,
         cloneProject:           cloneProject,
         changeProjectOrg:       changeProjectOrg,
-        changeProjectTheme:     changeProjectTheme,
 
         //edit users
         inviteMember:           function(){return;},
@@ -54,7 +53,6 @@ function($http, $q) {
         removePin:              function(){return;},
 
         getProjectSettings       : getProjectSettings,
-        updateProjectSettings    : updateProjectSettings,
         bakeSelections           : bakeSelections,
         setProjSettingsForPlayer : setProjSettingsForPlayer,
         getClusterDescr          : getClusterDescr,
@@ -115,24 +113,6 @@ function($http, $q) {
         currProjectDefer = $q.defer();
     }
 
-    function updateProjectSettings(updatedSettings) {
-        // Need to post complete settings to server
-        var oldSettings = _.clone(projectSettings);
-        _.assign(projectSettings, updatedSettings, function(oldVal, newVal) {
-            return newVal != null ? newVal : oldVal;
-        });
-
-        return $http.post('/api/orgs/' + currProject.org.ref + '/projects/' + currProject._id + '/settings', {'updatedSettings': projectSettings}, {'ignoreLoadingBar': true})
-        .then(function(response) {
-            return response.data;
-        }, function(err) {
-            console.error(err);
-            // Revert settings
-            _.assign(projectSettings, oldSettings);
-            return $q.reject('updateError');
-        });
-    }
-
     function bakeSelections () {
         return $http.post('/api/orgs/' + currProject.org.ref + '/projects/' + currProject._id + '/dataset/bake_groups')
             .then(function(respData) { return respData.data; });
@@ -157,29 +137,6 @@ function($http, $q) {
 
     function setProjSettingsForPlayer(settings) {
         projectSettings = _.clone(settings);
-    }
-
-    function changeProjectTheme(theme) {
-        // Update background, labels
-        var newSettings = getProjectSettings();
-        if(theme == 'dark') {
-            newSettings.theme = 'dark';
-            newSettings.backgroundColor = '#000000';
-            newSettings.labelColor = '#ffffff';
-            newSettings.labelOutlineColor = '#000000';
-            newSettings.nodeUnselectedOpacity = 0.3;
-            newSettings.edgeUnselectedOpacity = 0.25;
-        }
-        else if(theme == 'light') {
-            newSettings.theme = 'light';
-            newSettings.backgroundColor = '#ffffff';
-            newSettings.labelColor = '#000000';
-            newSettings.labelOutlineColor = '#ffffff';
-            newSettings.nodeUnselectedOpacity = 0.25;
-            newSettings.edgeUnselectedOpacity = 0.2;
-        }
-
-        return updateProjectSettings(newSettings);
     }
 
     function changeProject(project) {

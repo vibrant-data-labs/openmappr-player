@@ -54,9 +54,8 @@ function($q, $http, $location, snapshotService, graphSelectionService, AttrInfoS
             }
 
             var playerState = {
-                serverPrefix: currPlayer.settings.shareServerPrefix || $location.protocol() + '://' + $location.host() + '/play/' + currPlayer.playerUrl,
+                serverPrefix: $location.protocol() + '://' + $location.host() + '/play/' + currPlayer.playerUrl,
                 snapNum: snapshotIdx >= 0 ? snapshotIdx + 1 : 1,
-                enableSelect: currPlayer.settings.shareEnableSelect,
                 select: {
                     nid: nid,
                     cid: cid
@@ -86,13 +85,6 @@ function($q, $http, $location, snapshotService, graphSelectionService, AttrInfoS
     function buildPlayerUrl(ps) {
         //base
         var urlLong = ps.serverPrefix;
-
-        //compare or select
-        if(ps.enableSelect){
-            urlLong += '/select?';
-        } else {
-            urlLong += '?';
-        }
 
         //snapnum
         if (!_.isUndefined(ps.snapNum)) urlLong += 'snapnum=' + ps.snapNum;

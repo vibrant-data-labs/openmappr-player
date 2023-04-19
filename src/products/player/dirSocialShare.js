@@ -25,7 +25,6 @@ angular.module('player')
         var requestSite = attrs.dirSocialShare.toLowerCase(),
             shareLink,
             pageLink = $location.absUrl(),
-            pageTitle = attrs.shareTitle, //comes from player.settings.shareTitle
             pageTitleUri = encodeURIComponent(pageTitle),
             square = '',
             isCompareOverlayOpen = false,
