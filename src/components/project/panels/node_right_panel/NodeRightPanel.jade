@@ -3,7 +3,7 @@
     .animate-node-right
       .animate-fade.node-rigth-panel-container(ng-if="mapprSettings.nodeFocusRenderTemplate == 'node-right-panel'" style="padding-top:{{scrollPaddingTop}}px" dir-kill-tooltip-on-scroll)
         .node-rigth-panel.node-right-panel(ng-click="$event.stopPropagation();")
-          div.section-wrap(ng-if="nodeRightInfo")
+          div.section-wrap.node-info-panel(ng-if="nodeRightInfo")
             section.section.section--head(ng-if="nodeRightInfo.section1.length")
               .section__header
                 .nameContainer.node-selected(ng-repeat="info in nodeRightInfo.section1" ng-if="info.type == 'name'")
@@ -215,6 +215,10 @@
                           a.sponsors__link(ng-if="item.linkUrl" href="{{item.linkUrl}}", alt="{{item.linkTitle}}" target="_blank" rel="nofollow")
                             img.sponsors__img(ng-src="{{item.iconUrl}}")
                           img.sponsors__img(ng-src="{{item.iconUrl}}" ng-if="!item.linkUrl" uib-tooltip="{{item.linkTitle}}" tooltip-placement="bottom")
+            .project-info__onboarding(ng-if="isShowTutorial" ng-click="resumeTutorial()")
+              .blobs-container
+                .blob.project-color
+              div Resume tutorial
             .project-info__content
               div(ng-bind-html="projectInfoTitle | trustHtml")
               div(ng-bind-html="projectInfoDesc | trustHtml")

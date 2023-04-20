@@ -26,10 +26,14 @@
     ul.right-top-corner
 
       li.right-top-corner__item
-        div.tutorial
+        div.tutorial(dir-elem-ready="tutorialCountdown()")
           span Tutorial?
           button.tutorial__next(ng-click="startTutorial()") Next
-          button.tutorial__close(ng-click="closeTutorial()") Close 
+          button.tutorial__close(ng-click="closeTutorial()") Close
+          .countdown
+            svg(viewBox="-50 -50 100 100" stroke-width="20")
+              circle(r="40")
+              circle(r="40" stroke-dasharray="251" stroke-dashoffset="251px")
 
 
   .side-menu__footer

@@ -8,6 +8,7 @@
   },
   "scripts": {
     "build": "webpack",
+    "build:production": "cross-env NODE_ENV=production webpack",
     "start": "webpack serve",
     "publish": "cross-env NODE_ENV=production webpack && node ./scripts/publish.js --deploy-mode player"
   },

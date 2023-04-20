@@ -45,6 +45,7 @@ angular.module('common')
             $scope.nodeRightInfo = null;
             $scope.totalCount = 0;
             $scope.showFocusNode = false;
+            $scope.isShowTutorial = false;
             /**
             * Scope methods
             */
@@ -108,6 +109,10 @@ angular.module('common')
                 $scope.showFocusNode = false;
             };
 
+            $scope.resumeTutorial = function () {
+                $rootScope.$broadcast(BROADCAST_MESSAGES.tutorial.start);
+            }
+
             $scope.toggleRightPanel = function (val = false) {
                 $scope.drawerTitle = $scope.player.player.settings.defaultPanel || 'Map Information';
                 $scope.projectInfoTitle = $scope.player.player.settings.modalSubtitle;
@@ -131,6 +136,7 @@ angular.module('common')
                 $scope.beginOverlayRightPanel = val || !$scope.beginOverlayRightPanel;
                 $scope.showOverlay = val || !$scope.showOverlay;
                 $scope.showFocusNode = val || !$scope.showFocusNode;
+                $scope.$apply();
             }
             /*************************************
             ****** Event Listeners/Watches *******
@@ -148,9 +154,9 @@ angular.module('common')
                 if (snapData.snapshot) {
                     showNodeDetailOnLoad = snapData.snapshot.layout.settings.showNodeDetailOnLoad && $scope.mapprSettings.nodeFocusShow;
                 }
-                if ($scope.player.player.settings.showStartInfo) {
-                    $timeout(() => $scope.toggleRightPanel(), 500);
-                }
+                // if ($scope.player.player.settings.showStartInfo) {
+                //     $timeout(() => $scope.toggleRightPanel(), 500);
+                // }
             });
             $scope.$on(BROADCAST_MESSAGES.snapshot.changed, function onSnapChange(e, data) {
                 $scope.cancelOverlay(true);
@@ -193,6 +199,14 @@ angular.module('common')
 
             $scope.$on(BROADCAST_MESSAGES.ip.changed, function (ev, isInfoPanel) {
                 $scope.toggleRightPanel(isInfoPanel);
+            });
+
+            $scope.$on(BROADCAST_MESSAGES.tutorial.started, function () {
+                $scope.isShowTutorial = false;
+            });
+
+            $scope.$on(BROADCAST_MESSAGES.tutorial.completed, function () {
+                $scope.isShowTutorial = true;
             });
 
             $scope.onTagLoad = function (section, $event) {
@@ -305,7 +319,7 @@ angular.module('common')
             $scope.parseLinks = function (tab) {
                 const { text, value } = tab;
 
-                if (!text.isExpanded) {
+                if (text && !text.isExpanded) {
                     return text.shortValue.replace(/(http|www)[^\s]+/g, function (match) { return '<a href="' + match + '" target="_blank">' + match + '</a>' }) + '...'
                 } else {
                     return value.replace(/(http|www)[^\s]+/g, function (match) { return '<a href="' + match + '" target="_blank">' + match + '</a>' });

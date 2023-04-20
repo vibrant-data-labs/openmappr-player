@@ -5,6 +5,18 @@
   display: flex;
   flex-direction: column;
 
+  &__onboarding {
+    display: flex;
+    align-items: baseline;
+    cursor: pointer;
+    padding-left: 10px;
+    text-decoration: underline;
+    &:hover {
+      color: #30adbf;
+      text-decoration: none;
+    }
+  }
+
   &__content {
     padding: 10px 20px;
     background: #fff;
@@ -37,5 +49,37 @@
 
   &__footer-link {
     color: #5885e1;
+  }
+}
+
+.blobs-container {
+  display: flex;
+}
+
+.blob {
+  background: #BC3364;
+  border-radius: 50%;
+  box-shadow: 0 0 0 0 rgba(188, 51, 100, 1);
+  margin: 10px;
+  height: 10px;
+  width: 10px;
+  transform: scale(1);
+  animation: pulse-project-color 2s infinite;
+}
+
+@keyframes pulse-project-color {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(188, 51, 100, 0.7);
+  }
+  
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 10px rgba(188, 51, 100, 0);
+  }
+  
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(188, 51, 100, 0);
   }
 }

@@ -410,6 +410,14 @@ angular.module('common')
                 $scope.showSearch = !$scope.showSearch;
             }
 
+            $scope.searchEnable = function searchEnable() {
+                $scope.showSearch = true;
+            }
+
+            $scope.searchDisable = function searchDisable() {
+                $scope.showSearch = false;
+            }
+
             $scope.toggleSearchDropdown = function toggleSearchDropdown() {
                 $scope.searchDropdownVisible = !$scope.searchDropdownVisible;
             }
