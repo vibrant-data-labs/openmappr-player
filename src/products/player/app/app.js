@@ -333,6 +333,14 @@ angular.module('hcApp', [
         },
         tabs: {
             changed: 'tabs:changed'
+        },
+        searchRequest: {
+            init: 'searchRequest:init'
+        },
+        tutorial: {
+            start: 'tutorial:start',
+            started: 'tutorial:started',
+            completed: 'tutorial:completed'
         }
     })
 

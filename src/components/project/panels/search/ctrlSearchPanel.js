@@ -124,6 +124,26 @@ function($scope, $rootScope, $timeout, searchService, BROADCAST_MESSAGES, uiServ
         $scope.ui.overlayOpen = false;
     });
 
+    $scope.$on(BROADCAST_MESSAGES.searchRequest.init, function(ev, data){
+        if (!data) {
+            $timeout(function() {
+                $scope.ui.overlayOpen = false;
+                $scope.searchDisable();
+                $scope.globalSearch.text = '';
+                $scope.onBlurSearch({ target: { value: '' }})
+            }, 50);
+            return;
+        }
+
+        $scope.ui.overlayOpen = true;
+        $scope.showSearch = true;
+        $scope.searchEnable();
+        $scope.searchFocus();
+        $scope.globalSearch.text = data.text;
+
+        searchFn();
+    });
+
 
 
 
