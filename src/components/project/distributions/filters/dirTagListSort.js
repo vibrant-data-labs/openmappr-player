@@ -50,10 +50,6 @@ function(FilterPanelService, BROADCAST_MESSAGES) {
 
         // scope.sortTypes = filterSortOpts(sortTypes, renderType);
 
-        // scope.$on(BROADCAST_MESSAGES.hss.select, function() {
-        //     scope.sortTypes = filterSortOpts(sortTypes, renderType);
-        // });
-
         console.log("POSTLINK", scope.attr);
         var sortOrder = 'desc';
         scope.setSortOrder = function setSortOrder($event) {

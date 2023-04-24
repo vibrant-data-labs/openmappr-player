@@ -745,20 +745,10 @@ angular.module('common')
                     var source = edge.source;
                     var target = edge.target;
 
-                    return _.find(nodes, function(n) { 
-                        return n.id == source || n.id == target;
-                    }) != null;
+                    return nodes.some(x => x.id == source || x.id == target);
                 });
 
-                var selectedEdges = _.reduce(filteredEdges, function(acc, cv) {
-                    if (!_.find(acc, function(e) { return e.id == cv.id})) {
-                        acc.push(cv);
-                    }
-
-                    return acc;
-                }, []);
-
-                return selectedEdges;
+                return filteredEdges;
             }
 
             function getEdgesByAttrib(attr, value) {

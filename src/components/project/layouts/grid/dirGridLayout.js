@@ -228,25 +228,6 @@ angular.module('common')
                     resetCollection();
                 });
 
-                $rootScope.$on(BROADCAST_MESSAGES.hss.select, function(ev, data) {
-                    var nodes = data.selectionCount == 1 ? data.nodes : selectService.getSelectedNodes();
-                    var newNodeIds = _.map(nodes, function(node) {
-                        return node.id;
-                    });
-
-                    listCompareIds = _.clone(newNodeIds);
-                    $scope.selectedNodeIds = _.clone(newNodeIds);
-
-                    console.log('refreshing collection from selectNodes');
-                    refreshCollection();
-
-                    if (data.nodes.length == 1) {
-                        $rootScope.$broadcast(BROADCAST_MESSAGES.grid.clickNode, {
-                            node: data.nodes[0]
-                        });
-                    }
-                });
-
                 $scope.$on(BROADCAST_MESSAGES.hss.subset.changed, function(ev, data) {
                     $scope.isSubsetApplied = false;
                     $scope.currentSubsetNodes = data.subsetCount ? data.nodes : [];

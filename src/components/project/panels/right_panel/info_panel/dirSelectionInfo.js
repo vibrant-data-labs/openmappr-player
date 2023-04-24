@@ -116,7 +116,7 @@ angular.module('common')
                 $scope.$on(BROADCAST_MESSAGES.hss.select, function(e, data) {
                     if (data.selectionCount > 0) {
                         $scope.hasSelection = true;
-                        refresh(selectService.getSelectedNodes());
+                        refresh(data.nodes);
                     }
                     $scope.selInfo.interactionType = 'select';
                     if($scope.selInfo.selectionBrowsing) {
@@ -167,11 +167,7 @@ angular.module('common')
                     var panelMode = $scope.selInfo.panelMode = infoPanelService.getPanelMode(selNodes, $scope.mapprSettings.nodeColorAttr);
                     $scope.selInfo.genericSelNodes = _.clone(selNodes);
                     if (!selLinks) {
-                        $scope.selInfo.genericSelLinks = null; 
-                        new Promise(function(resolve) {
-                            $scope.selInfo.genericSelLinks = dataGraph.getEdgesByNodes(selNodes);
-                            resolve();
-                        });
+                        $scope.selInfo.genericSelLinks = dataGraph.getEdgesByNodes(selNodes); 
                     } else {
                         $scope.selInfo.genericSelLinks = selLinks
                     }

@@ -388,12 +388,8 @@ angular.module('common')
                     $scope.cancelOverlay();
                     return;
                 }
-                // TODO: correct this bug
-                // if(!$scope.mapprSettings) return;
-                // else if(($scope.mapprSettings.nodeFocusShow || showNodeDetailOnLoad === true)
-                // TODO: restore validation
                 if (!$scope.mapprSettings) return;
-                else if ($scope.mapprSettings.nodeFocusShow
+                if ($scope.mapprSettings.nodeFocusShow
                     && $scope.nodeOverlayProps.enabled && $scope.layout.plotType !== 'grid') {
                     if (_.isArray(data.nodes) && data.nodes.length === 1) {
                         //reset so only shows on snapshot load
@@ -425,6 +421,7 @@ angular.module('common')
                         $scope.cancelOverlay(true);
                     }
                 }
+                
                 $scope.onSection2Load('.section_tab-1')
                 $scope.onSection3Load('.section_tab-2')
             }

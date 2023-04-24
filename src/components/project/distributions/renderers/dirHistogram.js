@@ -302,13 +302,14 @@ angular.module('common')
                     };
 
                     const record = acc[nodeVal];
-                    return {
-                        ...acc,
-                        [nodeVal]: {
-                            count: (record?.count || 0) + res.count,
-                            nodeIds: [...(record?.nodeIds || []), ...res.nodeIds]
-                        }
+                    if (record) {
+                        record.count = record.count + res.count;
+                        record.nodeIds.push(node.id);
+                    } else {
+                        acc[nodeVal] = res;
                     }
+
+                    return acc;
                 }, {});
 
                 return result;
