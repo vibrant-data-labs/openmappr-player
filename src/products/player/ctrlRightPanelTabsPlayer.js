@@ -135,20 +135,19 @@ angular.module('common')
                 ngIntroService.setOptions(
                     {
                         tooltipClass: 'tutorial__tooltip',
+                        skipLabel: 'Close',
                         steps: [
                             {
                                 element: '#right-panel',
                                 intro: `
-                                <p>Welcome! Map information is located in the right side panel, opened by clicking the info icon.</p>
-                                <p>If a node is selected, the panel will display node-specific information.</p>
-                                <p>Close the panel by clicking the drawer icon.</p>
+                                <p>Welcome! Map information is located in the right side panel, opened by clicking the info icon. <span class="tutorial__button tutorial__button--info"></span></p>
                                 `,
                                 tooltipClass: 'tutorial__tooltip step--0'
                             },
                             {
                                 element: '#right-panel',
                                 intro: `
-                                <p>If a node is selected, the panel will display node-specific information. Close the panel by clicking the drawer icon at the top.</p>
+                                <p>If a node is selected, the panel will display node-specific information. Close the panel by clicking the drawer icon at the top. <span class="tutorial__button tutorial__button--drawer-close"></span></p>
                                 `,
                                 tooltipClass: 'tutorial__tooltip step--1'
                             },
@@ -170,7 +169,7 @@ angular.module('common')
                             {
                                 element: '#right-panel',
                                 intro: `
-                                <p>Selecting a data element will highlight your selection in the data visualization. A 'Filters Applied' (Data Selected) window appears to itemize the elements you've selected and the number of nodes in your current selection and to provide the option to 'Summarize Selection.'</p>
+                                <p>Selecting a data element will highlight your selection in the data visualization. A 'Filters Applied' window appears to itemize the elements you've selected and the number of nodes in your current selection and to provide the option to 'Summarize Selection.'</p>
                                 <p>Selecting multiple elements within the same category will act as an OR operator, while selecting elements across different categories will act as an AND operator.</p>
                                 `,
                                 tooltipClass: 'tutorial__tooltip step--4'
@@ -213,7 +212,7 @@ angular.module('common')
                                     </p>
                                     <p>
                                         Thanks for taking this Tutorial! If you have any questions, comments, or suggestions, 
-                                        <a href="https://docs.google.com/forms/d/e/1FAIpQLSdVGTlY-sM09NrMUk8bAUYlcU_Bhuev9GdcLrDTaLKDNr_oeg/viewform" target="_blank">
+                                        <a href="https://airtable.com/shruDh1SDKndgTl51" target="_blank">
                                         contact us
                                         </a>!
                                     </p>
@@ -345,6 +344,7 @@ angular.module('common')
                     $rootScope.$broadcast(BROADCAST_MESSAGES.tutorial.completed);
                     $timeout(() => {
                         $scope.panelUI.openPanel('summary');
+                        selectService.unselect();
                     }, 50);
                 });
         

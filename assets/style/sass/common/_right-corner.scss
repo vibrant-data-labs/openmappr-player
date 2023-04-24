@@ -158,6 +158,26 @@
     transform: translateX(-345px);
   }
 
+  &__button {
+    display: inline-block;
+    height: 24px;
+    width: 24px;
+    position: absolute;
+    margin-left: 4px;
+    
+    &--info {
+      &::before {
+        content: deployedUrl('/img/play-toolbar/info-information-circle.svg');
+      }
+    }
+
+    &--drawer-close {
+      &::before {
+        content: deployedUrl('/img/play-toolbar/close.svg');
+      }
+    }
+  }
+
   &__next {
     background: #e8ecf1;
     color: #616161;
