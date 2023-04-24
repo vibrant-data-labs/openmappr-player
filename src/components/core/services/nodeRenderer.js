@@ -199,7 +199,7 @@ angular.module('common')
                     .attr("r", hoverBorderRadius)
                     .style('stroke-width',  hoverStrokeWidth + 'px')
                     .style('fill', 'transparent')
-                    .style("stroke", function(n){ return isDark ? n.colorStr : darkenColor(n.color);});
+                    .style("stroke", function(n){ return n.colorStr; });
             }
         }
     }

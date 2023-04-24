@@ -405,9 +405,29 @@ $n: length($c);
 $u: 100%/($n - 1);
 
 .countdown {
-	display: grid;
-	margin: 1em auto;
-	width: $d; height: $d;
+  display: grid;
+  margin: 1em auto;
+  width: $d;
+  height: $d;
+
+
+  svg {
+    grid-column: 1;
+    grid-row: 1
+  }
+
+  [r] {
+    fill: none;
+    stroke: white;
+
+    +[r] {
+      transform: rotate(-90deg);
+      stroke-linecap: round;
+      stroke: nth($c, 1);
+      animation: arc $t*1s linear;
+      animation-name: arc, col
+    }
+  }
 }
 
 @keyframes num {
@@ -416,23 +436,6 @@ $u: 100%/($n - 1);
 	}
 }
 
-svg {
-	grid-column: 1;
-	grid-row: 1
-}
-
-[r] {
-	fill: none;
-	stroke: white;
-	
-	+ [r] {
-		transform: rotate(-90deg);
-		stroke-linecap: round;
-		stroke: nth($c, 1);
-		animation: arc $t*1s linear;
-		animation-name: arc, col
-	}
-}
 
 @keyframes arc {
 	0% { stroke-dashoffset: 0px }
