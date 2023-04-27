@@ -200,54 +200,78 @@
     min-width: 312px;
     padding-top: 2em;
     border-radius: 20px;
+    right: unset !important;
+    position: fixed;
 
     .introjs-disabled {
       display: none;
     }
 
     &.step--0 {
-      top: 100px;
+      top: 100px !important;
       left: calc(100vw - 700px) !important;
     }
 
     &.step--1 {
-      top: 100px;
+      top: 100px !important;
       left: calc(100vw - 700px) !important;
     }
 
     &.step--2 {
-      top: 100px;
+      top: 100px !important;
+      position: fixed;
+      bottom: unset !important;
     }
 
     &.step--3 {
-      top: 100px;
+      top: 100px !important;
+      position: fixed;
+      bottom: unset !important;
     }
 
     &.step--4 {
-      top: 100px;
+      top: 100px !important;
+      position: fixed;
+      left: unset !important;
+      bottom: unset !important;
     }
 
     &.step--5 {
-      top: 100px;
+      top: 100px !important;
+      position: fixed;
+      bottom: unset !important;
+      left: unset !important;
     }
 
     &.step--6 {
-      top: 100px;
+      top: 100px !important;
+      position: fixed;
+      bottom: unset !important;
     }
 
     &.step--7 {
-      top: 100px;
+      top: 100px !important;
       left: 810px !important;
+      position: fixed;
+      bottom: unset !important;
     }
 
     &.step--8 {
       left: calc(100vw - 780px) !important;
-      top: 40px;
+      top: 40px !important;
+      position: fixed;
+      bottom: unset !important;
     }
 
     &.step--9 {
       left: calc(100vw - 400px) !important;
-      top: calc(100vh - 345px);
+      top: calc(100vh - 345px) !important;
+      position: fixed;
+      bottom: unset !important;
+
+      .introjs-tooltipbuttons {
+        flex-direction: row-reverse;
+      }
     }
 
   }
@@ -393,9 +417,13 @@ body {
     transition: none !important;
   }
 
-  &-helperLayer, &-helperNumberLayer, &-arrow {
+  &-arrow, &-helperNumberLayer {
     display: none !important;
   }
+
+  // &-helperLayer, &-helperNumberLayer, &-arrow {
+  //   display: none !important;
+  // }
 
   &-button {
     color: #616161;

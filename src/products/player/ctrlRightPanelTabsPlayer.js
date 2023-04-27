@@ -111,7 +111,7 @@ angular.module('common')
             var tutorialCountdownPromise = undefined;
 
             $scope.tutorialCountdown = function () {
-                tutorialCountdownPromise = $timeout(function() {
+                tutorialCountdownPromise = $timeout(function () {
                     $scope.isShowTutorial = false;
                     $rootScope.$broadcast(BROADCAST_MESSAGES.tutorial.completed);
                 }, 15000)
@@ -138,14 +138,14 @@ angular.module('common')
                         skipLabel: 'Close',
                         steps: [
                             {
-                                element: '#right-panel',
+                                element: '.focus-rigth-panel',
                                 intro: `
                                 <p>Welcome! Map information is located in the right side panel, opened by clicking the info icon. <span class="tutorial__button tutorial__button--info"></span></p>
                                 `,
                                 tooltipClass: 'tutorial__tooltip step--0'
                             },
                             {
-                                element: '#right-panel',
+                                element: '.focus-rigth-panel',
                                 intro: `
                                 <p>If a node is selected, the panel will display node-specific information. Close the panel by clicking the drawer icon at the top. <span class="tutorial__button tutorial__button--drawer-close"></span></p>
                                 `,
@@ -167,7 +167,7 @@ angular.module('common')
                                 tooltipClass: 'tutorial__tooltip step--3'
                             },
                             {
-                                element: '#right-panel',
+                                element: '.play-toolbar__buttons',
                                 intro: `
                                 <p>Selecting a data element will highlight your selection in the data visualization. A 'Filters Applied' window appears to itemize the elements you've selected and the number of nodes in your current selection and to provide the option to 'Summarize Selection.'</p>
                                 <p>Selecting multiple elements within the same category will act as an OR operator, while selecting elements across different categories will act as an AND operator.</p>
@@ -175,7 +175,7 @@ angular.module('common')
                                 tooltipClass: 'tutorial__tooltip step--4'
                             },
                             {
-                                element: '#right-panel',
+                                element: '.play-toolbar__buttons',
                                 intro: `
                                 <p>Clicking 'Summarize Selection' filters the data down to the subset of nodes that match your selected attributes, and the data elements within each category in the Summary panel will update to reflect the content of your current data subset.</p>
                                 <p>You can select additional data elements and click 'Summarize Selection' to filter your subset further and continue exploring.</p>
@@ -191,21 +191,21 @@ angular.module('common')
                                 tooltipClass: 'tutorial__tooltip step--6'
                             },
                             {
-                                element: '#right-panel',
+                                element: '.details-panel__snapshots',
                                 intro: `
                                 <p>The Snapshot Selector provides a list of data visualizations with preset configurations. A description of each one is displayed below the Snapshot Title.</p>
                                 `,
                                 tooltipClass: 'tutorial__tooltip step--7'
                             },
                             {
-                                element: '#right-panel',
+                                element: '.details-panel__controls',
                                 intro: `
                                 <p>You can Search the text fields of the dataset via the search bar at the top.</p>
                                 `,
                                 tooltipClass: 'tutorial__tooltip step--8'
                             },
                             {
-                                element: '#right-panel',
+                                element: '.button-zoom',
                                 intro: `
                                     <p>
                                         You can Zoom In/Out with your mouse or via the + and - toggles.
@@ -324,7 +324,13 @@ angular.module('common')
                 });
 
                 transitionHandler.registerCallback(8, () => {
-                    $rootScope.$broadcast(BROADCAST_MESSAGES.searchRequest.init, { text: 'oceans'});
+                    $rootScope.$broadcast(BROADCAST_MESSAGES.searchRequest.init, { text: 'oceans' });
+
+                    $timeout(function () {
+                        $('.introjs-helperLayer')
+                            .css('left', $('.details-panel__controls').offset().left)
+                            .css('width', $('.details-panel__controls').width());
+                    }, 100);
                 });
 
                 transitionHandler.registerTransition(8, 7, () => {
@@ -347,7 +353,7 @@ angular.module('common')
                         selectService.unselect();
                     }, 50);
                 });
-        
+
                 ngIntroService.intro.onexit(function () {
                     $rootScope.$broadcast(BROADCAST_MESSAGES.tutorial.completed);
                 });
@@ -395,7 +401,7 @@ angular.module('common')
                 $scope.showButtons = data.nodes.length != 1;
             });
 
-            $scope.$on(BROADCAST_MESSAGES.tutorial.start, function() {
+            $scope.$on(BROADCAST_MESSAGES.tutorial.start, function () {
                 $scope.startTutorial();
             });
 
