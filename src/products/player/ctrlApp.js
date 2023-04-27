@@ -299,18 +299,10 @@ angular.module('player')
             function getMetaData() {
                 const { projectLogoTitle, projectLogoImageUrl } = $scope.player.player.settings;
                 const title = document.querySelector('title');
-                const favicon = document.querySelector('link[rel="icon"]');
 
                 if (projectLogoTitle && title) {
                     title.innerHTML = projectLogoTitle;
                 }
-
-                if (projectLogoImageUrl && favicon) {
-                    favicon.href = projectLogoImageUrl;
-                } else {
-                    favicon.href = '#{player_prefix_index_source}/img/logos/vdl-logo.svg';
-                }
-
             }
 
             /*************************************
