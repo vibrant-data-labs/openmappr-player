@@ -35,6 +35,7 @@ function ($rootScope, renderGraphfactory, eventBridgeFactory, dataGraph, labelSe
 
     var __rendering_in_progress__ = false;
     var leftPanelWidth = 475;
+    var topPanelHeight = 80;
 
     var selectionDiv;
     var x1 = 0, y1 = 0, x2 = 0, y2 = 0;
@@ -151,8 +152,8 @@ function ($rootScope, renderGraphfactory, eventBridgeFactory, dataGraph, labelSe
                         const nodeBorders = {
                             left: node['camcam1:x'] + leftPanelWidth - node['camcam1:size'],
                             right: node['camcam1:x'] + leftPanelWidth + node['camcam1:size'],
-                            top: node['camcam1:y'] - node['camcam1:size'],
-                            bottom: node['camcam1:y'] + node['camcam1:size'],
+                            top: node['camcam1:y'] + topPanelHeight - node['camcam1:size'],
+                            bottom: node['camcam1:y'] + topPanelHeight + node['camcam1:size'],
                         };
 
                         return left >= nodeBorders.left && right <= nodeBorders.right && top >= nodeBorders.top && bottom <= nodeBorders.bottom;
@@ -160,7 +161,7 @@ function ($rootScope, renderGraphfactory, eventBridgeFactory, dataGraph, labelSe
                 } else {
                     selectedNodes = _.filter(allNodes, function(node) {
                         return node['camcam1:x'] + leftPanelWidth < right && node['camcam1:x'] + leftPanelWidth > left &&
-                        node['camcam1:y'] > top && node['camcam1:y'] < bottom;
+                        node['camcam1:y'] + topPanelHeight > top && node['camcam1:y'] + topPanelHeight < bottom;
                     });
                 }
                 selectionDivEnabled = false;
