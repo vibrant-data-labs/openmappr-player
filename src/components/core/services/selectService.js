@@ -225,6 +225,7 @@ angular.module('common')
                 var node = findNodeWithId(id);
                 this.singleNode = node;
                 var currentSubset = subsetService.currentSubset();
+
                 var nodes = [node];
 
                 $rootScope.$broadcast(BROADCAST_MESSAGES.hss.select, {
@@ -239,7 +240,6 @@ angular.module('common')
             function applyFilters(filters, searchText, searchAttr, scope) {
                 this.unselect();
                 this.filters = _.clone(filters);
-                console.log("SCOPE!!!!", scope);
                 return this.selectNodes({ searchText: searchText, searchAttr: searchAttr, scope: scope});
             }
 
@@ -301,16 +301,7 @@ angular.module('common')
                 var currentSubset = subsetService.currentSubset();
 
                 if (this.singleNode) {
-                    var selected = this.getSelectedNodes().filter(s=>s.id !== this.singleNode.id);
                     this.singleNode = null;
-                    $rootScope.$broadcast(BROADCAST_MESSAGES.hss.select, {
-                        filtersCount: this.getActiveFilterCount(),
-                        selectionCount: selected.length,
-                        isSubsetted: currentSubset.length > 0,
-                        nodes: selected,
-                    });
-                    
-                    return;
                 }
 
                 this.attrs = null;

@@ -78,8 +78,29 @@ angular.module('common')
             }
 
             $scope.collapseCard = function(e) {
+                const classes = [
+                    'card__head-wrap',
+                    'card__action-collapse',
+                    'card__title',
+
+                ]
+
+                const isValid = classes.some(x => e.target.classList.contains(x));
+
+                if (!isValid) return;
                 const card = e.target.closest('.card_type_filter');
                 card.classList.toggle('card_collapsed');
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            $scope.collapseCardHistogram = function(e) {
+                const titleClassName = 'card_histogram';
+
+                const element = e.target.classList.contains(titleClassName) ? e.target : $(e.target).parent(`.${titleClassName}`)[0];
+
+                const card = $(element).siblings('.card_type_filter');
+                card.toggleClass('card_collapsed');
             }
 
             $scope.clearSearch = function search(attr) {

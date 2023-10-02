@@ -98,7 +98,11 @@ function(BROADCAST_MESSAGES, playerFactory, hoverService, selectService, subsetS
             }
         });
 
-        scope.$on(BROADCAST_MESSAGES.hss.select, function() {
+        scope.$on(BROADCAST_MESSAGES.hss.select, function(e, data) {
+            if (data.selectionCount > 1 && data.nodes.length == 1) {
+                return;
+            }
+
             setTimeout(() => {
                 scope.handleSearch();
             }, 100)
@@ -202,6 +206,10 @@ function(BROADCAST_MESSAGES, playerFactory, hoverService, selectService, subsetS
         }
 
         scope.$on(BROADCAST_MESSAGES.hss.select, function(ev, data) {
+            if (data.selectionCount == 1) {
+                return;
+            }
+
             if (data.filtersCount > 0) {
                 scope.nodesStatus = 'Points selected';
                 scope.linksStatus = 'Links selected';

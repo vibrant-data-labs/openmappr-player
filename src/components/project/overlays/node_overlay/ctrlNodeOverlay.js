@@ -860,13 +860,16 @@ angular.module('common')
                         console.log(`section tags: ${attr.title}`)
                         let nodeVals = values[attr.id];
                         const weightInfo = weightedAttr ? weightedAttr.find(x => x.id == attr.id) : undefined;
-                        if (weightInfo) {
-                           const weightData = weightInfo.values.map((item, idx) => ({
+                        if (weightInfo && weightInfo.values) {
+                            const valuesData = Array.isArray(weightInfo.values) ? weightInfo.values : JSON.parse(weightInfo.values);
+                            const weightsData = Array.isArray(weightInfo.weights) ? weightInfo.weights : JSON.parse(weightInfo.weights);
+
+                           const weightData = valuesData.map((item, idx) => ({
                             val: item,
-                            weight: weightInfo.weights[idx] || 0   
+                            weight: weightsData[idx] || 0   
                            }));
 
-                           nodeVals = nodeVals.filter(x => weightInfo.values.includes(x))
+                           nodeVals = nodeVals.filter(x => valuesData.includes(x))
                            const sortMethod = function(o) {
                             const w = weightData.find(x => x.val == o);
                             if (w) {

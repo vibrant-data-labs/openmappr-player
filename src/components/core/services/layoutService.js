@@ -1518,16 +1518,22 @@ function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partiti
             aspect = Math.max(0, Math.min(aspect, 1));  // constrain value
             aspect = Math.pow(2, 2*aspect-1);   // map (0,1) to (1/2, 2) with 1 at center of range
             //aspect = 1;
-            var rangeX = aspect * ht;
-            var rangeY = ht;
+            var rangeX = aspect * wd;
+            var rangeY = 2 * ht;
             if(rangeX > wd) {
                 rangeY = rangeY * wd/rangeX;
                 rangeX = wd;
             }
+
+            var yRange = rangeY - 500;
+            if (yRange < 0) {
+                yRange = rangeY / 2;
+            }
+
             this.setAxisAttr(this.attr.xaxis, 'x', centerX - (rangeX - 80), centerX + rangeX/2);
             this.setAxisAttr(this.attr.yaxis, 'y', centerY - rangeY/2, centerY + rangeY/2);
             this.setAxisAttr(this.nodeAttr.x, 'nodeX', centerX - (rangeX - 80), centerX + rangeX/2);
-            this.setAxisAttr(this.nodeAttr.y, 'nodeY', centerY - rangeY/2, centerY + rangeY/2);
+            this.setAxisAttr(this.nodeAttr.y, 'nodeY', centerY - yRange, centerY + yRange);
 
             this.recalculateClusters();
         });
@@ -1654,7 +1660,7 @@ function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partiti
                     }
                     scaler.domain(domain);
                     scaler.nice();
-                    scaler.rangeRound([rangeMin, rangeMax]);
+                    scaler.rangeRound([rangeMin, rangeMax / 2]);
 
                     if(shiftInputVal) {
                         //log fails if the bounds contain zero, since log 0 is infinity. So move bounds to solve this issue

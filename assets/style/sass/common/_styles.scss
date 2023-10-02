@@ -1433,3 +1433,18 @@ i {
         margin-left: 5px;
     }
 }
+
+.tooltip[uib-tooltip-popup] {
+    animation: uib-tooltip-hide-animation 3s forwards;
+}
+@media (pointer: fine) {
+    .tooltip[uib-tooltip-popup] {
+        animation: none;
+    }
+}
+
+@keyframes uib-tooltip-hide-animation {
+    0%   {opacity: 1;}
+    90%  {opacity: 1;}
+    100% {opacity: 0;}
+}

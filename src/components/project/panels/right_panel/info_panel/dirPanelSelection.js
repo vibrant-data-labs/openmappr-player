@@ -108,6 +108,10 @@ angular.module('common')
                 $scope.$watch('selInfo.sortInfo', sortNodesInSelection, true);
 
                 $scope.$on(BROADCAST_MESSAGES.hss.select, function(e, data) {
+                    if (data.selectionCount > 1 && data.nodes.length == 1) {
+                        return;
+                    }
+
                     if (data.selectionCount > 0) {
                         refresh(selectService.getSelectedNodes());
                     }

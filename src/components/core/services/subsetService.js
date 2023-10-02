@@ -24,6 +24,16 @@ angular.module('common')
 
                 return this.subsetHistory[currentSubsetIndex];
             }
+
+            $rootScope.$on(BROADCAST_MESSAGES.sigma.clickStage, () => {
+                const nodes = this.currentSubset();
+                if (!nodes || !nodes.length) {
+                    return;
+                }
+
+                draw(nodes);
+            });
+
             /*************************************
     ********* Local Data *****************
     **************************************/
@@ -164,7 +174,7 @@ angular.module('common')
                     node.isSelected = false;
                 });
                 
-                if (nodes.length > 0) {
+                if (nodeIds && nodeIds.length > 0) {
                     sigma.d3.labels.def(
                         nodes,
                         nodes,
@@ -180,6 +190,7 @@ angular.module('common')
                 var renderer = sig.renderers.graph;
                 var _this = this;
                 renderer.bind('render', function () {
+                    console.log('subset! render')
                     draw(_this.currentSubset());
                 });
 

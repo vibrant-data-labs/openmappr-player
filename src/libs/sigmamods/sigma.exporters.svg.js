@@ -18,12 +18,6 @@
 
 
   /**
-   * Polyfills
-   */
-  var URL = this.URL || this.webkitURL || this;
-
-
-  /**
    * Utilities
    */
   function createBlob(data) {

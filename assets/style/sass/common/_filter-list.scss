@@ -110,10 +110,27 @@
         align-items: center;
       }
 
+      &.card_collapsed {
+        & + h6 {
+          &:hover {
+            background-color: #F7F7F7;
+            border-radius: 5px;
+          }
+        }
+        .card__header {
+          &:hover {
+            background-color: #F7F7F7;
+            border-radius: 5px;
+          }
+        }
+      }
+
       .card__header {
         display: flex;
         align-items: center;
         padding: 0;
+        transition: all .5s ease;
+        cursor: pointer;
 
         + .card__body {
           margin-top: 4px;
@@ -354,6 +371,8 @@
       text-align: left;
       padding: 0 0 0 20px;
       font: 500 15px/20px "Poppins" !important;
+      cursor: pointer;
+      transition: background-color .5s ease;
     }
 
     .card__action-sort,

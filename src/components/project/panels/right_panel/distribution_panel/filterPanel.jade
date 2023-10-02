@@ -19,8 +19,8 @@
 						ng-if="attr.visible", ng-class="{'attr-hidden':!attr.visible, 'first': ($index == 1), 'chart-first-item': attr.isFirstChart, 'tags-first-item': attr.isFirstTag}",
 						ng-click='selectNodesByAttrib(attr.title, attr.value, $event)'
 					)
-						section.card.card_type_filter(data-attr="{{attr.id}}", ng-class="{'card__chart' : attr.attrType == 'integer' || attr.attrType == 'float' || attr.attrType == 'boolean' || attr.attrType == 'year' || attr.attrType == 'timestamp' }")
-							header.card__header
+						section.card.card_type_filter(data-attr="{{attr.id}}", class="card_collapsed" ng-class="{'card__chart' : attr.attrType == 'integer' || attr.attrType == 'float' || attr.attrType == 'boolean' || attr.attrType == 'year' || attr.attrType == 'timestamp' }")
+							header.card__header(ng-click="collapseCard($event)")
 								.card__head-wrap(ng-if="attr.attrType != 'integer' && attr.attrType != 'float' && attr.attrType != 'boolean' && attr.attrType != 'year' && attr.attrType != 'timestamp'")
 									h2.card__title(dir-elem-ready="onAttrHeaderLoad(attr, $event)") {{::attr.title}}
 									span.card__tooltip(ng-if="attr.tooltip"
@@ -57,8 +57,9 @@
 								.card__content
 									dir-attr-renderer(attr-to-render="attr", node-color-str="nodeColorStr", is-node="true", show-filter="ui.enableFilters", disable-filter="attr.disableFilter" theme="appUi.theme" pinned-media="pinnedMedia" gradient="true")
 
-						h6.no-margin.text-center.title(
-							ng-if="attr.attrType == 'integer' || attr.attrType == 'float' || attr.attrType == 'boolean' || attr.attrType == 'year' || attr.attrType == 'timestamp'"
+						h6.no-margin.text-center.card_histogram.title(
+							ng-if="attr.attrType == 'integer' || attr.attrType == 'float' || attr.attrType == 'boolean' || attr.attrType == 'year' || attr.attrType == 'timestamp'",
+							ng-click="collapseCardHistogram($event)"
 						)
 							span {{::attr.title}}
 							span(ng-show="attr.principalVal") :&nbsp;{{attr.principalVal}}
@@ -76,7 +77,7 @@
 						ng-if="attr.visible", ng-class="{'attr-hidden':!attr.visible, 'first': ($index == 1), 'chart-first-item': attr.isFirstChart, 'tags-first-item': attr.isFirstTag}",
 						ng-click='selectNodesByAttrib(attr.title, attr.value, $event)'
 					)
-						section.card.card_type_filter(data-attr="{{attr.id}}", ng-class="{'card__chart' : attr.attrType == 'integer' || attr.attrType == 'float' || attr.attrType == 'boolean' || attr.attrType == 'year' || attr.attrType == 'timestamp' }")
+						section.card.card_type_filter(data-attr="{{attr.id}}", class="card_collapsed", ng-click="collapseCard($event)", ng-class="{'card__chart' : attr.attrType == 'integer' || attr.attrType == 'float' || attr.attrType == 'boolean' || attr.attrType == 'year' || attr.attrType == 'timestamp' }")
 							header.card__header
 								.card__head-wrap(ng-if="attr.attrType != 'integer' && attr.attrType != 'float' && attr.attrType != 'boolean' && attr.attrType != 'year' && attr.attrType != 'timestamp'")
 									h2.card__title(dir-elem-ready="onAttrHeaderLoad(attr, $event)") {{::attr.title}}
@@ -114,8 +115,9 @@
 								.card__content
 									dir-attr-renderer(attr-to-render="attr", node-color-str="nodeColorStr", is-node="true", show-filter="ui.enableFilters", disable-filter="attr.disableFilter" theme="appUi.theme" pinned-media="pinnedMedia" gradient="true")
 
-						h6.no-margin.text-center.title(
-							ng-if="attr.attrType == 'integer' || attr.attrType == 'float' || attr.attrType == 'boolean' || attr.attrType == 'year' || attr.attrType == 'timestamp'"
+						h6.no-margin.text-center.card_histogram.title(
+							ng-if="attr.attrType == 'integer' || attr.attrType == 'float' || attr.attrType == 'boolean' || attr.attrType == 'year' || attr.attrType == 'timestamp'",
+							ng-click="collapseCardHistogram($event)"
 						)
 							span {{::attr.title}}
 							span(ng-show="attr.principalVal") :&nbsp;{{attr.principalVal}}

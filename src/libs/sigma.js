@@ -5170,6 +5170,7 @@
               _startTouchY1 - _startTouchY0,
               _startTouchX1 - _startTouchX0
             );
+
             _startTouchDistance = Math.sqrt(
               Math.pow(_startTouchY1 - _startTouchY0, 2) +
               Math.pow(_startTouchX1 - _startTouchX0, 2)
@@ -5232,6 +5233,11 @@
             _touchMode = 0;
             break;
         }
+
+        const instance = sigma.instances()[0];
+        instance.dispatchEvent('clickStage', {captor: e.data});
+        instance.refresh();
+
       }
     }
 
@@ -5306,8 +5312,6 @@
                 altKey: e.altKey,
                 shiftKey: e.shiftKey
               });
-
-              _self.dispatchEvent('drag');
             }
             break;
           case 2:
@@ -5373,8 +5377,6 @@
                 angle: newStageAngle,
                 ratio: newStageRatio
               });
-
-              _self.dispatchEvent('drag');
             }
 
             break;
