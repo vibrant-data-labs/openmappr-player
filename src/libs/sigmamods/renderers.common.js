@@ -84,7 +84,7 @@
    *  render the d3 parts of the graph (hovered or selected nodes and edges, labels), common to canvas or webgl rendering
    */
   sigma.renderers.common.prototype.render = function(drawLabels, optimize, embedSettings) {
-    drawLabels = true;
+    drawLabels = drawLabels === undefined ? true : drawLabels;
     //Draw Labels in D3. Reject aggregated nodes
     if(drawLabels && !optimize) {
       if(this.domElements['d3-labels'].style.display === 'none')
