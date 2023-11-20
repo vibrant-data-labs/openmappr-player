@@ -82,13 +82,20 @@ angular.module('common')
                     'card__head-wrap',
                     'card__action-collapse',
                     'card__title',
-
-                ]
+                ];
 
                 const isValid = classes.some(x => e.target.classList.contains(x));
 
                 if (!isValid) return;
+                const isButtonClick = e.target.classList.contains('card__action-collapse');
                 const card = e.target.closest('.card_type_filter');
+                if (card.classList.contains('card_expanded')) {
+                    if (isButtonClick) {
+                        card.classList.toggle('card_expanded');
+                    }
+
+                    return;
+                }
                 card.classList.toggle('card_collapsed');
                 e.preventDefault();
                 e.stopPropagation();
