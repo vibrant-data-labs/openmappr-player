@@ -834,6 +834,18 @@ angular.module('common')
                 return result;
             }
 
+            function parseWeightsData(weightsData) {
+                if (Array.isArray(weightsData)) {
+                    return weightsData;
+                }
+
+                try {
+                    return JSON.parse(weightsData);
+                } catch(e) {
+                    return JSON.parse(weightsData.replace(/\'/g, "\""));
+                }
+            }
+
             function getSectionTags(attr, values, weightedAttr, result) {
                 const { attrType, renderType } = attr;
                 const isWide = renderType === 'wide-tag-cloud';
@@ -861,8 +873,8 @@ angular.module('common')
                         let nodeVals = values[attr.id];
                         const weightInfo = weightedAttr ? weightedAttr.find(x => x.id == attr.id) : undefined;
                         if (weightInfo && weightInfo.values) {
-                            const valuesData = Array.isArray(weightInfo.values) ? weightInfo.values : JSON.parse(weightInfo.values);
-                            const weightsData = Array.isArray(weightInfo.weights) ? weightInfo.weights : JSON.parse(weightInfo.weights);
+                            const valuesData = parseWeightsData(weightInfo.values);
+                            const weightsData = parseWeightsData(weightInfo.weights);
 
                            const weightData = valuesData.map((item, idx) => ({
                             val: item,
