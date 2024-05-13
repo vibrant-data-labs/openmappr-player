@@ -134,7 +134,7 @@ angular.module('common')
                 $ev.stopPropagation();
                 $scope.geoLevel = lvl;
                 $scope.isGeoSelectorOpen = false;
-                $rootScope.geo.level = lvl;
+                $rootScope.geo.level = lvl.id;
                 $rootScope.$broadcast(BROADCAST_MESSAGES.geoSelector.changed, { levelId: lvl.id });
 
             }

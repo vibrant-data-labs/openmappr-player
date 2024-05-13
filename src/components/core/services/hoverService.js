@@ -50,6 +50,9 @@ angular.module('common')
                 //  * @param {string} hoverData.degree - degree
 
                 _runHoverNodes.call(this, hoverData);
+                $rootScope.$broadcast(BROADCAST_MESSAGES.hss.hover, {
+                    nodes: this.hoveredNodes,
+                });
             }
 
             function _runHoverNodes(hoverData) {
@@ -152,6 +155,10 @@ angular.module('common')
 
                 var snapshot = snapshotService.getCurrentSnapshot();
                 _hoverHelper(this.hoveredNodes, snapshot ? (snapshot.layout.settings.nodeSelectionDegree || 0) : 0, !!selectService.singleNode);
+
+                $rootScope.$broadcast(BROADCAST_MESSAGES.hss.hover, {
+                    nodes: this.hoveredNodes,
+                });
             }
 
             function _hoverHelper(ids, degree, withNeighbors, showNeighbors = true) {

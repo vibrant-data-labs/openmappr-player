@@ -121,6 +121,11 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
                 $scope.center.lat = layout.camera.x;
                 $scope.center.lng = layout.camera.y;
                 $log.debug("[dirGeo] Updated center on layout.change", $scope.center);
+                if (layout.plotType == 'geo') {
+                    $('sig').css('display', 'none');
+                } else {
+                    $('sig').css('display', 'inherit');
+                }
             });
             $scope.$on(BROADCAST_MESSAGES.layout.loaded, function(event, layout) {
                 $scope.center.zoom = layout.setting('savedZoomLevel');
@@ -216,6 +221,33 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
             current: null,
             previous: null,
             clickedItem: null,
+            _expHovers: [],
+            _setHighlightInternal: function(id) {
+                const color = colors[id];
+                tileGrid.setFeatureStyle(id, {
+                    color: color,
+                    opacity: 1,
+                    fillOpacity: 0.8,
+                    fill: true,
+                });
+            },
+            _clearHighlightInternal: function(id) {
+                const color = colors[id];
+                tileGrid.setFeatureStyle(id, {
+                    color: color,
+                    opacity: 0.3,
+                    fillOpacity: 0.1,
+                    fill: true,
+                });
+            },
+            setHoverStyleExplicitly: function(osmIds) {
+                this._expHovers = osmIds;
+                this._expHovers.forEach(this._setHighlightInternal);
+            },
+            hardResetHoverStyle: function() {
+                this._expHovers.forEach(this._clearHighlightInternal);
+                this._expHovers = [];
+            },
             setCurrentItem: function(osmId) {
                 this.previous = this.current;
                 this.resetHoverStyle();
@@ -229,13 +261,7 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
             click: function(osmId) {
                 this.clickedItem = osmId;
                 this.reset();
-                const color = colors[this.clickedItem];
-                tileGrid.setFeatureStyle(this.clickedItem, {
-                    color: color,
-                    opacity: 1,
-                    fillOpacity: 0.8,
-                    fill: true,
-                });
+                this._setHighlightInternal(this.clickedItem)
 
                 var sig = renderGraphfactory.sig();
                 var allNodes = sig.graph.nodes();
@@ -251,13 +277,7 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
                 selectService.selectNodes({ids: _.map(selectedNodes, (node) => node.id)});
             },
             clearClick: function() {
-                const color = colors[this.clickedItem];
-                tileGrid.setFeatureStyle(this.clickedItem, {
-                    color: color,
-                    opacity: 0.3,
-                    fillOpacity: 0.1,
-                    fill: true,
-                });
+                this._clearHighlightInternal(this.clickedItem);
                 this.clickedItem = null;
                 this.reset();
                 selectService.unselect();
@@ -281,13 +301,7 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
                 }
 
                 if (this.current) {
-                    const color = colors[this.current];
-                    tileGrid.setFeatureStyle(this.current, {
-                        color: color,
-                        opacity: 1,
-                        fillOpacity: 0.8,
-                        fill: true,
-                    });
+                    this._setHighlightInternal(this.current);
                     return;
                 }
             },
@@ -300,18 +314,16 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
                     return;
                 }
 
+                if (this._expHovers.includes(this.previous)) {
+                    return;
+                }
+
                 if (this.previous) {
-                    const color = colors[this.previous];
                     const container = document.querySelector('.leaflet-container');
                     if (container.classList.contains('leaflet-clickable')) {
                         container.classList.remove('leaflet-clickable');
                     }
-                    tileGrid.setFeatureStyle(this.previous, {
-                        color: color,
-                        opacity: 0.3,
-                        fillOpacity: 0.1,
-                        fill: true,
-                    });
+                    this._clearHighlightInternal(this.previous);
                     return;
                 }
             }
@@ -387,6 +399,8 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
             window.map.removeLayer(tileGrid);
         }
 
+        scope.visitorTracker = visitorTracker;
+
     }
 
     function postLinkFn(scope) {
@@ -429,10 +443,51 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
         scope.$on(BROADCAST_MESSAGES.geoSelector.changed, function(ev, d) {
             const nodes = renderGraphfactory.sig().graph.nodes();
             renderProtobuf(d.levelId, nodes, scope);
+
+            if (d.levelId == 'node') {
+                window.removeTileLayer();
+                $('sig').css('display', 'inherit');
+            } else {
+                $('sig').css('display', 'none');
+            }
         });
 
         scope.$on(BROADCAST_MESSAGES.renderGraph.loaded, function(ev, d) {
             renderProtobuf('countries', d.graph.nodes, scope);
+        });
+
+        scope.$on(BROADCAST_MESSAGES.hss.subset.changed, function(ev, d) {
+            if (!d.subsetCount) {
+                const nodes = renderGraphfactory.sig().graph.nodes();
+                renderProtobuf($rootScope.geo.level, nodes, scope);
+            } else {
+                renderProtobuf($rootScope.geo.level, d.nodes, scope);
+            }
+        });
+
+        scope.$on(BROADCAST_MESSAGES.hss.hover, function(ev, d) {
+            scope.visitorTracker.hardResetHoverStyle();
+            if (!d.nodes.length) {
+                return;
+            }
+
+            var sig = renderGraphfactory.sig();
+            var allNodes = sig.graph.nodes();
+            const lod = $rootScope.geo.level;
+
+            const geoItems = new Set();
+
+            _.filter(allNodes, function(node) {
+                if (!('geodata' in node)) {
+                    return false;
+                }
+
+                return d.nodes.includes(node.id) && Boolean(node.geodata[lod]);
+            }).forEach((v) => {
+                geoItems.add(v.geodata[lod])
+            });
+
+            scope.visitorTracker.setHoverStyleExplicitly(Array.from(geoItems));
         });
 
 
@@ -452,6 +507,8 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
 
         function setupGeoLayout (map) {
             console.assert(map, "Map Exists on the graph");
+            $('sig').css('display', 'none');
+           
             scope.mapCenter = map.latLngToLayerPoint(map.getCenter());
             map.on('move', function(e) {
                 const newCenter = map.latLngToLayerPoint(map.getCenter());
