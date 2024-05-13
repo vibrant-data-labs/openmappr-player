@@ -116,6 +116,9 @@ angular.module('common')
                 { id: 'node', title: 'Nodes', description: 'Nodes only, without regions' }
             ];
             $scope.geoLevel = $scope.geoLevels[0];
+            $rootScope.geo = {
+                level: 'countries'
+            }
 
             var tutorialCountdownPromise = undefined;
 
@@ -131,6 +134,7 @@ angular.module('common')
                 $ev.stopPropagation();
                 $scope.geoLevel = lvl;
                 $scope.isGeoSelectorOpen = false;
+                $rootScope.geo.level = lvl;
                 $rootScope.$broadcast(BROADCAST_MESSAGES.geoSelector.changed, { levelId: lvl.id });
 
             }

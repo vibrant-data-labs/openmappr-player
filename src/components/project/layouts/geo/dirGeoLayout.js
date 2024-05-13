@@ -329,6 +329,10 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
                 color: colors[osmId]
             }
 
+            if (visitorTracker.current == visitorTracker.clickedItem) {
+                return;
+            }
+
             $('#regionLabelFollower').css({
                 left:  e.originalEvent.pageX + 20,
                 top:   e.originalEvent.pageY
@@ -360,7 +364,7 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
                 name: e.layer.properties['name:en'] || e.layer.properties.name,
                 color: colors[osmId],
                 x: e.originalEvent.pageX + 20,
-                y: e.originalEvent.pageY
+                y: e.originalEvent.pageY,
             }
 
             e.originalEvent._isCaught = true;
@@ -448,13 +452,23 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
 
         function setupGeoLayout (map) {
             console.assert(map, "Map Exists on the graph");
+            scope.mapCenter = map.latLngToLayerPoint(map.getCenter());
+            map.on('move', function(e) {
+                const newCenter = map.latLngToLayerPoint(map.getCenter());
 
-            // $log.debug('[dirGeo]Binding GEO events: ' + mouseEvents);
-            // _.each(mouseEvents, function(eventName) {
-            //     deregisters.push(scope.$on(prefix + eventName, function(e, data) {
-            //         renderGraphfactory.getRenderer().dispatchEvent(e.name, data.leafletEvent);
-            //     }));
-            // });
+                const diffX = scope.mapCenter.x - newCenter.x;
+                const diffY = scope.mapCenter.y - newCenter.y;
+                if(Math.abs(diffX) > 0.01 || Math.abs(diffY) > 0.01) {
+                    scope.mapCenter = newCenter;
+
+                    if (scope.clickedRegion) {
+                        scope.clickedRegion.x = scope.clickedRegion.x + diffX;
+                        scope.clickedRegion.y = scope.clickedRegion.y + diffY;
+                    }
+                    
+                }
+
+            });
 
             // Zoom Start Event
             deregisters.push(scope.$on(prefix + 'zoomstart', function(e, data) {

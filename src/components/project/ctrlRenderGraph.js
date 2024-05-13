@@ -191,7 +191,6 @@ angular.module('common')
                     });
 
                     operation.filterArray = result;
-                    console.log("FILTERARRAY", result);
                     return operation.filterArray;
                 }
             };

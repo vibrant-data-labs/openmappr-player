@@ -491,10 +491,14 @@ function($q, $rootScope, $timeout, dataGraph, layoutService, renderGraphfactory,
 
     // Returns the flag indicating whether was the panning or not
     function nodeFocus(node) {
+        if (isInGeoMode() && $rootScope.geo.level !== 'node') {
+            // no extra panning for the region selection
+            return;
+        }
+
         if(!node.id || !node.dataPointId) throw new Error('Not a valid node object');
         // Visible graph area center coords
-        var rightPanel = $('#right-panel'),
-            header = $('#header'),
+        var header = $('#header'),
             leftPanelWidth = $('.node-right-panel').width() || 0,
             rightPanelWidth = $('.right-panel').offset().left + $('.right-panel').width(),
             headerHeight = header ? $(header).height() : 0;

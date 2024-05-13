@@ -1908,6 +1908,10 @@
             var vectorTilePromise = this._getVectorTilePromise(coords);
     
             if (storeFeatures) {
+                if (this._vectorTiles[this._tileCoordsToKey(coords)]) {
+                    return renderer.getContainer();
+                }
+
                 this._vectorTiles[this._tileCoordsToKey(coords)] = renderer;
                 renderer._features = {};
             }
