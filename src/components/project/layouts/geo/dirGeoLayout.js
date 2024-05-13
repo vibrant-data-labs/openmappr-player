@@ -2,8 +2,8 @@
  * Layout based switching
  */
  angular.module('common')
- .directive('geolayout', ['$rootScope', 'renderGraphfactory', 'leafletData', 'layoutService', 'dataGraph', 'zoomService', 'selectService', 'BROADCAST_MESSAGES',
-function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph, zoomService, selectService, BROADCAST_MESSAGES) {
+ .directive('geolayout', ['$rootScope', 'renderGraphfactory', 'leafletData', 'layoutService', 'dataGraph', 'zoomService', 'selectService', '$log', 'BROADCAST_MESSAGES',
+function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph, zoomService, selectService, $log, BROADCAST_MESSAGES) {
     'use strict';
 
     /*************************************
@@ -11,7 +11,27 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
     **************************************/
     var dirDefn = {
         restrict: 'EA',
-        template:'<leaflet center="center" defaults="defaults" tiles="tiles" event-broadcast="events"></leaflet>', //
+        template:`<leaflet center="center" defaults="defaults" tiles="tiles" event-broadcast="events"></leaflet>
+            <div
+                class="node-label group-label"
+                style="position: absolute; font-size: 15px;"
+                ng-style="{'color': clickedRegion.color, 'top': clickedRegion.y, 'left': clickedRegion.x }"
+                ng-if="clickedRegion">
+                <p style="font-size: 15px; pointer-events: auto;">
+                    {{clickedRegion.name}}
+                </p>
+            </div>
+            <div
+                id="regionLabelFollower"
+                class="node-label group-label"
+                style="position: absolute; font-size: 15px;"
+                ng-style="{'color': region ? region.color : 'black' }"
+                ng-show="!!region">
+                <p style="font-size: 15px; pointer-events: auto;" ng-if="region">
+                    {{region.name}}
+                </p>
+            </div>
+            `, //
         scope: true,
         controller: ['$scope', ControllerFn],
         link:  {
@@ -100,13 +120,13 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
                 $scope.center.zoom = layout.setting('savedZoomLevel');
                 $scope.center.lat = layout.camera.x;
                 $scope.center.lng = layout.camera.y;
-                console.log("[dirGeo] Updated center on layout.change", $scope.center);
+                $log.debug("[dirGeo] Updated center on layout.change", $scope.center);
             });
             $scope.$on(BROADCAST_MESSAGES.layout.loaded, function(event, layout) {
                 $scope.center.zoom = layout.setting('savedZoomLevel');
                 $scope.center.lat = layout.camera.x;
                 $scope.center.lng = layout.camera.y;
-                console.log("[dirGeo] Updated center on layout.loaded", $scope.center);
+                $log.debug("[dirGeo] Updated center on layout.loaded", $scope.center);
             });
         } else {
             console.warn('[dirGeoLayout]Should never be called!');
@@ -124,8 +144,249 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
         //$('#project-layout').height($(element).height()).width($(element).width());
     }
 
+    function getColors(nodes, lod) {
+        const polygonColors = _.reduce(nodes, function(acc, cv) {
+            if (!cv.geodata || !cv.geodata[lod]) return acc;
+
+            const itemId = cv.geodata[lod];
+            const color = cv.colorStr;
+
+            if (itemId in acc) {
+                acc[itemId] = [...acc[itemId], color];
+            } else {
+                acc[itemId] = [color];
+            }
+
+            return acc;
+        }, {});
+
+        return _.reduce(polygonColors, function(acc, cv, key) {
+            acc[key] = _.chain(cv).countBy().pairs().max(_.last).head().value();
+            return acc;
+        }, {});
+    }
+
+    function renderProtobuf(lod, nodes, scope) {
+        if (!lod) {
+            lod = 'countries';
+        }
+
+        if (typeof window.removeTileLayer == 'function') {
+            window.removeTileLayer();
+        }
+
+        const colors = getColors(nodes, lod); // { [lodId]: color }
+        const latLons = _.chain(nodes)
+            .map((node) => {
+                if (!node.geodata || !node.geodata[lod]) return null;
+                return [node.attr['Latitude'], node.attr['Longitude']]
+            })
+            .filter(Boolean)
+            .value();
+        const tileGrid = L.vectorGrid
+        .protobuf(`http://localhost:3050/${lod}/{z}/{x}/{y}`, {
+            vectorTileLayerStyles: {
+                [lod]: (prop) => {
+                    const color = colors[prop.osm_id];
+                    if (color) {
+                        return {
+                            color: color,
+                            opacity: 0.3,
+                            fillOpacity: 0.1,
+                            fill: true,
+                        }
+                    }
+
+                    return {
+                        color: 'transparent',
+                        fill: false,
+                    }
+                }
+            },
+            rendererFactory: L.canvas.tile,
+            interactive: true,
+            getFeatureId: function(feature) {
+                return feature.properties.osm_id;
+            },
+            nodeCoordinates: latLons
+        })
+        .addTo(window.map);
+
+        const visitorTracker = {
+            current: null,
+            previous: null,
+            clickedItem: null,
+            setCurrentItem: function(osmId) {
+                this.previous = this.current;
+                this.resetHoverStyle();
+                this.current = osmId;
+                this.setHoverStyle();
+            },
+            leaveItem: function(osmId) {
+                this.previous = osmId;
+                this.resetHoverStyle();
+            },
+            click: function(osmId) {
+                this.clickedItem = osmId;
+                this.reset();
+                const color = colors[this.clickedItem];
+                tileGrid.setFeatureStyle(this.clickedItem, {
+                    color: color,
+                    opacity: 1,
+                    fillOpacity: 0.8,
+                    fill: true,
+                });
+
+                var sig = renderGraphfactory.sig();
+                var allNodes = sig.graph.nodes();
+    
+                var selectedNodes = _.filter(allNodes, function(node) {
+                    if (!('geodata' in node)) {
+                        return false;
+                    }
+
+                    return Object.values(node.geodata).includes(osmId);
+                });
+                
+                selectService.selectNodes({ids: _.map(selectedNodes, (node) => node.id)});
+            },
+            clearClick: function() {
+                const color = colors[this.clickedItem];
+                tileGrid.setFeatureStyle(this.clickedItem, {
+                    color: color,
+                    opacity: 0.3,
+                    fillOpacity: 0.1,
+                    fill: true,
+                });
+                this.clickedItem = null;
+                this.reset();
+                selectService.unselect();
+            },
+            reset: function() {
+                this.current = null;
+                this.previous = null;
+            },
+            setHoverStyle: function() {
+                if (!(this.current in colors)) {
+                    return;
+                }
+
+                if (this.current == this.clickedItem) {
+                    return;
+                }
+
+                const container = document.querySelector('.leaflet-container');
+                if (!container.classList.contains('leaflet-clickable')) {
+                    container.classList.add('leaflet-clickable');
+                }
+
+                if (this.current) {
+                    const color = colors[this.current];
+                    tileGrid.setFeatureStyle(this.current, {
+                        color: color,
+                        opacity: 1,
+                        fillOpacity: 0.8,
+                        fill: true,
+                    });
+                    return;
+                }
+            },
+            resetHoverStyle: function() {
+                if (!(this.previous in colors)) {
+                    return;
+                }
+
+                if (this.previous == this.clickedItem) {
+                    return;
+                }
+
+                if (this.previous) {
+                    const color = colors[this.previous];
+                    const container = document.querySelector('.leaflet-container');
+                    if (container.classList.contains('leaflet-clickable')) {
+                        container.classList.remove('leaflet-clickable');
+                    }
+                    tileGrid.setFeatureStyle(this.previous, {
+                        color: color,
+                        opacity: 0.3,
+                        fillOpacity: 0.1,
+                        fill: true,
+                    });
+                    return;
+                }
+            }
+        };
+
+        const onMouseMove = function(e) {
+            const osmId = +e.layer.properties.osm_id;
+            if (!(osmId in colors)) {
+                return;
+            }
+
+            visitorTracker.setCurrentItem(osmId);
+            scope.region = {
+                name: e.layer.properties['name:en'] || e.layer.properties.name,
+                color: colors[osmId]
+            }
+
+            $('#regionLabelFollower').css({
+                left:  e.originalEvent.pageX + 20,
+                top:   e.originalEvent.pageY
+             });
+        };
+
+        tileGrid.on('mousemove', onMouseMove);
+
+        const onMouseOut = function(e) {
+            const osmId = +e.layer.properties.osm_id;
+            visitorTracker.leaveItem(osmId);
+            scope.region = undefined;
+        };
+
+        tileGrid.on('mouseout', onMouseOut);
+
+        const onClick = function(e) {
+            const osmId = +e.layer.properties.osm_id;
+            scope.clickedRegion = undefined;
+            if (visitorTracker.clickedItem && visitorTracker.clickedItem != osmId) {
+                visitorTracker.clearClick();
+            }
+            if (!(osmId in colors)) {
+                return;
+            }
+            
+            visitorTracker.click(osmId);
+            scope.clickedRegion = {
+                name: e.layer.properties['name:en'] || e.layer.properties.name,
+                color: colors[osmId],
+                x: e.originalEvent.pageX + 20,
+                y: e.originalEvent.pageY
+            }
+
+            e.originalEvent._isCaught = true;
+        }
+
+        tileGrid.on('click', onClick);
+        window.map.on('click', (e) => {
+            if (e.originalEvent._isCaught) {
+                return;
+            }
+
+            scope.clickedRegion = undefined;
+            visitorTracker.clearClick();
+        });
+
+        window.removeTileLayer = function() {
+            tileGrid.off('mousemove', onMouseMove);
+            tileGrid.off('mouseout', onMouseOut);
+            tileGrid.off('click', onClick);
+            window.map.removeLayer(tileGrid);
+        }
+
+    }
+
     function postLinkFn(scope) {
-        console.log('[dirGeoLayout.postLink] called!');
+        $log.debug('[dirGeoLayout.postLink] called!');
         $('.angular-leaflet-map')
             .height(window.innerHeight)
             .width(window.innerWidth - leftPanelWidth - 20)
@@ -150,7 +411,7 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
 
         scope.$watch('mapprSettings.mapboxMapID',function(newVal, oldVal) {
             if(newVal && newVal !== oldVal && newVal !== mapID) {
-                console.log('[dirGeo]mapboxMapID Changed! (%s -> %s)', oldVal, newVal);
+                $log.debug('[dirGeo]mapboxMapID Changed! (%s -> %s)', oldVal, newVal);
                 mapID = newVal;
                 scope.tiles = {
                     url: "https://api.mapbox.com/styles/v1/" + mapID + "/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZXJpY2JlcmxvdyIsImEiOiJja2h6MjA5bGkwY283MndvaDMyMzN0eXlmIn0.9f_Dm_N5IHHgGS4bfidgtA",
@@ -161,7 +422,14 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
         scope.$on(BROADCAST_MESSAGES.layout.loaded, disableViewResetEvent);
 
         scope.$on(BROADCAST_MESSAGES.sigma.rendered, enableViewResetEvent);
-        //scope.$on(BROADCAST_MESSAGES.renderGraph.loaded, enableViewResetEvent);
+        scope.$on(BROADCAST_MESSAGES.geoSelector.changed, function(ev, d) {
+            const nodes = renderGraphfactory.sig().graph.nodes();
+            renderProtobuf(d.levelId, nodes, scope);
+        });
+
+        scope.$on(BROADCAST_MESSAGES.renderGraph.loaded, function(ev, d) {
+            renderProtobuf('countries', d.graph.nodes, scope);
+        });
 
 
 
@@ -179,23 +447,19 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
         });
 
         function setupGeoLayout (map) {
-            //console.log(map);
             console.assert(map, "Map Exists on the graph");
 
-            // $('.angular-leaflet-map').height($('#project-layout').height()).width($('#project-layout').width());
-            // bind events
-            console.log('[dirGeo]Binding GEO events: ' + mouseEvents);
-            _.each(mouseEvents, function(eventName) {
-                deregisters.push(scope.$on(prefix + eventName, function(e, data) {
-                    //console.log('mouse Event. e:%O, data: %O', e, data);
-                    renderGraphfactory.getRenderer().dispatchEvent(e.name, data.leafletEvent);
-                }));
-            });
+            // $log.debug('[dirGeo]Binding GEO events: ' + mouseEvents);
+            // _.each(mouseEvents, function(eventName) {
+            //     deregisters.push(scope.$on(prefix + eventName, function(e, data) {
+            //         renderGraphfactory.getRenderer().dispatchEvent(e.name, data.leafletEvent);
+            //     }));
+            // });
 
             // Zoom Start Event
             deregisters.push(scope.$on(prefix + 'zoomstart', function(e, data) {
                 if(!disableViewReset) {
-                    console.log('[Geo Zoom: zoomstart]: For graph. Event:%O, Data: %O',e, data);
+                    $log.debug('[Geo Zoom: zoomstart]: For graph. Event:%O, Data: %O',e, data);
                     zoomService.onGeoZoomStart(e, data);
                 }
             }));
@@ -203,10 +467,9 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
             // View Reset Event. Rebuild Graph as well
             deregisters.push(scope.$on(prefix + 'viewreset', function(e, data) {
                 if(!disableViewReset) {
-                    console.log('[Geo Zoom: viewreset]: rebuilding graph. Event:%O, Data: %O',e, data);
+                    $log.debug('[Geo Zoom: viewreset]: rebuilding graph. Event:%O, Data: %O',e, data);
                     zoomService.onGeoZoomEnd(e, data);
                 }
-                //dataGraph.getRenderableGraph().refreshForGeoLevelChange();
             }));
 
             //Move event. Panning
@@ -217,9 +480,9 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
                         var sigCam = sig.cameras.cam1;
                         var geoCenter = map.getCenter();
                         var center = map.latLngToLayerPoint(geoCenter);
-                        //console.log(center);
+                        //$log.debug(center);
                         if(Math.abs(sigCam.x - center.x) > 0.01 || Math.abs(sigCam.y - center.y) > 0.01) {
-                            console.log("[dirGeo]Updating Geo camera");
+                            $log.debug("[dirGeo]Updating Geo camera");
                             sigCam.x = center.x;
                             sigCam.y = center.y;
                             sig.renderCamera(sigCam);
@@ -241,7 +504,7 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
             });
         }
         scope.$on('$destroy', function() {
-            console.log("geoDir destroyed");
+            $log.debug("geoDir destroyed");
             cleanup();
         });
 

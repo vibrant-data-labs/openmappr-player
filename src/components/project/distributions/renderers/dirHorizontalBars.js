@@ -91,7 +91,6 @@ angular.module('common')
                             filterTags(cs, catListData);
                             scope.totalValue = catListData.maxValue;
                             scope.totalItems = catListData.data.length;
-                            console.log('catListData', catListData);
                             scope.catListData = catListData.data.slice(0, scope.displayItemsBars);
                             scope.catListDataTail = catListData.data.slice(scope.displayItemsBars);
                             distrData.numShownCats = Math.min(distrData.numShowGroups * ITEMS_TO_SHOW + initVisItemCount, catListData.data.length);
@@ -384,7 +383,6 @@ angular.module('common')
                     return subset.length ? selTagFreq : globalFreq;
                 });
                 var maxVal = values.reduce(function(v,v1){return v+v1;});
-                console.log({maxVal});
                 var catData = _.map(attrInfo.values, function genCatData(catVal) {
                     var globalFreq = attrInfo.valuesCount[catVal],
                         selTagFreq = currSelFreqs[catVal] || 0;

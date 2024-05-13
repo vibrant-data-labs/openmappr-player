@@ -178,15 +178,9 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
     
     $scope.showClusteredBy = function() {
         var snapshot = snapshotService.getCurrentSnapshot();
-        var disableClusteredBy = ['scatterplot', 'geo'];
+        var disableClusteredBy = ['scatterplot'];
         return !disableClusteredBy.includes(snapshot.layout.plotType);
     }
-
-    /*************************************
-    ****** Initialisation Logic **********
-    **************************************/
-    initialise();
-
 
 
     /*************************************
@@ -299,6 +293,9 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
             _.find($scope.dataSet.attrDescriptors , 'id', $scope.mapprSettings.nodeClusterAttr) : $scope.dataGroupsInfo.colorNodesBy;
 
         $scope.dataGroupsInfo.colorEdgesBy = _.find($scope.edgeColorAttrs, 'id', $scope.mapprSettings.edgeColorAttr);
+        $scope.isNumericItemByColor = _.find($scope.dataSet.attrDescriptors, 'id', $scope.mapprSettings.nodeColorAttr);
+        $scope.vm.nodeSizeAttr = _.find($scope.dataSet.attrDescriptors, 'id', $scope.mapprSettings.nodeSizeAttr);
+
         console.assert($scope.dataGroupsInfo.colorNodesBy, "$scope.dataGroupsInfo.colorNodesBy can't be null");
         console.assert($scope.dataGroupsInfo.colorEdgesBy, "$scope.dataGroupsInfo.colorEdgesBy can't be null");
         triggerDGVMGeneration();

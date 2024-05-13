@@ -110,7 +110,9 @@ angular.module('hcApp', [
         //$httpProvider.defaults.headers.get['If-Modified-Since'] = '0';
 
     }])
-
+    .config(function ($logProvider) {
+        $logProvider.debugEnabled(false);
+    })
     .config(['cfpLoadingBarProvider',
         function (cfpLoadingBarProvider) {
             cfpLoadingBarProvider.latencyThreshold = 100;
@@ -126,36 +128,6 @@ angular.module('hcApp', [
             'http://d1vk2agkq7tezn.cloudfront.net/**',
             '#{player_prefix_index_source}/**'
         ]);
-    }])
-
-    //Hack for logging all broadcast/emit messages
-    .config(['$provide', function ($provide) {
-
-        //Log only for non-production environments
-        if (!_.contains(document.location.host.split('.'), 'mappr')) {
-            $provide.decorator('$rootScope', ["$delegate" ,function ($delegate) {
-                var Scope = $delegate.constructor,
-                    origBroadcast = Scope.prototype.$broadcast,
-                    origEmit = Scope.prototype.$emit;
-
-                Scope.prototype.$broadcast = function (eventName, data) {
-                    if (eventName && eventName.lastIndexOf && eventName.lastIndexOf('cfpLoadingBar:', 0) !== 0) {
-                        // console.log('[EventLogger][' + eventName + '] event $broadcasted with data: ', data);
-                    }
-                    return origBroadcast.apply(this, arguments);
-                };
-
-                Scope.prototype.$emit = function (eventName, data) {
-                    if (eventName && eventName.lastIndexOf && eventName.lastIndexOf('cfpLoadingBar:', 0) !== 0) {
-                        // console.log('[EventLogger][' + eventName + '] event $emitted with data: ', data);
-                    }
-                    return origEmit.apply(this, arguments);
-                };
-
-                return $delegate;
-            }]);
-        }
-
     }])
 
     .config(['$animateProvider', function ($animateProvider) {
@@ -175,6 +147,10 @@ angular.module('hcApp', [
         openMediaModal: 'openMediaModal',
         customData: 'customData',
         searchClose: 'searchClose',
+
+        geoSelector: {
+            changed: 'geoSelector:changed'
+        },
 
         extUserOverlay: {
             open: 'extUserOverlay:open',

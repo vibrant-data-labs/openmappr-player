@@ -464,7 +464,6 @@ angular.module('common')
             function cancelOverlay(isChangingSnap) {
                 // console.log('cancel zoom level: ', zoomService.currentZoomLevel());
                 if (!$scope.showOverlay) { //assuming showOverlay is the flag to check if overlay is currently open
-                    console.warn(logPrefix + 'overlay is not open, wrongly called!');
                     return;
                 }
                 if ($scope.canvasPanX) {
@@ -954,7 +953,7 @@ angular.module('common')
                 if (url.includes('youtube.com')) return '#{player_prefix_index_source}/img/youtube.svg';
                 if (url.includes('vimeo.com')) return '#{player_prefix_index_source}/img/vimeo.svg';
                 if (url.includes('instagram.com')) return '#{player_prefix_index_source}/img/instagram.svg';
-                return 'https://image.flaticon.com/icons/svg/455/455691.svg'
+                return null;//'https://image.flaticon.com/icons/svg/455/455691.svg'
             }
 
             function getLinkTooltip(url) {

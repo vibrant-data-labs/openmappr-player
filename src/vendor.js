@@ -15,6 +15,9 @@ import './libs/es6Shims';
 import './libs/fuzzysort';
 import './libs/removeAccents';
 import './libs/matchSorter';
+import './libs/angular-leaflet-directive';
+import './libs/leaflet.vectorgrid'
+import './libs/leaflet.mbtiles'
 
 import '../assets/style/morris.js/morris.css';
 import '../assets/style/toastr.js/toastr.min.css';

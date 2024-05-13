@@ -26,6 +26,14 @@
         bounds,
         prefix = 0;
 
+    if (this.settings("isGeo")) {
+      // Geo Layout uses its own rendering mechanish
+      // which is not related to sigma      
+      // this.render();
+
+      return this;
+    }
+
     if( !movingCamera ) {
       // Call each middleware:
       a = this.middlewares || [];

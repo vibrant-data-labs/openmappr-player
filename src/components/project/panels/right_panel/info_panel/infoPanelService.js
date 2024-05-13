@@ -124,7 +124,6 @@ function(networkService, AttrInfoService, SelectionSetService, dataGraph) {
     }
 
     function _filterRenderableNodeIds(nodeIds) {
-        console.log('Filtering out nodes which are not in rendered graph');
         var rgNodesMap = _.get(dataGraph.getRenderableGraph(), 'graph.nodeIndex', {});
         return _.filter(nodeIds, function(nodeId) {
             return rgNodesMap.hasOwnProperty(nodeId);

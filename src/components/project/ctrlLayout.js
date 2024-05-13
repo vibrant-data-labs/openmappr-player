@@ -188,17 +188,9 @@ function ($scope, $q, $timeout, eventBridgeFactory, leafletData, layoutService, 
                     var rg = dataGraph.getRenderableGraph();
                     rg.refreshForZoomLevel(0);
                     $scope.$broadcast(BROADCAST_MESSAGES.renderGraph.changed, rg);
-                    //var onGraphP = buildRenderGraph(args[0], args[1]);
-                    // onGraphP.then(function(graph) {
-                    //     $scope.$broadcast(BROADCAST_MESSAGES.renderGraph.changed, graph);
-                    // });
                 });
             } else {
                 console.log('Simple mappr reload. regen:' + regenGraph);
-                // Ensure current renderGraph is updated with zoom levels
-                //var rg = dataGraph.getRenderableGraph();
-                //var layout = layoutService.getCurrentIfExists();
-                //rg.setOptions(layout.mapprSettings);
             }
             $scope.$broadcast(BROADCAST_MESSAGES.layout.mapprSettingsUpdated, {
                 regenGraph: regenGraph,
@@ -348,12 +340,15 @@ function ($scope, $q, $timeout, eventBridgeFactory, leafletData, layoutService, 
 
 
     function onGeoLayoutLoaded(graphData, layout) {
-        var removeListener = $scope.$on('leafletDirectiveMap.viewreset', function () {
-            removeListener();
-            buildRenderGraph(graphData, layout).then(function (graph) {
-                $scope.$broadcast(BROADCAST_MESSAGES.renderGraph.loaded, graph);
-            });
+        buildRenderGraph(graphData, layout).then(function (graph) {
+            $scope.$broadcast(BROADCAST_MESSAGES.renderGraph.loaded, graph);
         });
+        // var removeListener = $scope.$on('leafletDirectiveMap.viewreset', function () {
+        //     removeListener();
+        //     buildRenderGraph(graphData, layout).then(function (graph) {
+        //         $scope.$broadcast(BROADCAST_MESSAGES.renderGraph.loaded, graph);
+        //     });
+        // });
     }
 
     function onCommonLayoutLoaded(graphData, layout) {

@@ -504,7 +504,6 @@ angular.module('common')
             }
 
             function _clearSel () {
-                console.log('Clearing selections!');
                 var n = null;
 
                 for(n in selectedNodes) {

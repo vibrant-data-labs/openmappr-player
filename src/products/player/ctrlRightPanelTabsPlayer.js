@@ -107,8 +107,33 @@ angular.module('common')
             $scope.currentExport = 'all';
             $scope.showButtons = true;
             $scope.isShowTutorial = undefined;
+            $scope.isGeoLayout = false;
+            $scope.isGeoSelectorOpen = false;
+            $scope.geoLevels = [
+                { id: 'countries', title: 'Countries', description: 'Countries or territories' },
+                { id: 'fed_districts', title: 'States', description: 'States, federal districts' },
+                { id: 'adm_districts', title: 'Counties', description: 'Counties, cities' },
+                { id: 'node', title: 'Nodes', description: 'Nodes only, without regions' }
+            ];
+            $scope.geoLevel = $scope.geoLevels[0];
 
             var tutorialCountdownPromise = undefined;
+
+            $scope.toggleGeoSelector = function () {
+                $scope.isGeoSelectorOpen = !$scope.isGeoSelectorOpen;
+            }
+
+            $scope.getGeoLevelTitle = function () {
+                return $scope.geoLevel.title;
+            }
+
+            $scope.selectGeoLevel = function ($ev, lvl) {
+                $ev.stopPropagation();
+                $scope.geoLevel = lvl;
+                $scope.isGeoSelectorOpen = false;
+                $rootScope.$broadcast(BROADCAST_MESSAGES.geoSelector.changed, { levelId: lvl.id });
+
+            }
 
             $scope.tutorialCountdown = function () {
                 tutorialCountdownPromise = $timeout(function () {
@@ -361,10 +386,15 @@ angular.module('common')
                 ngIntroService.start();
             };
 
-            $scope.$on(BROADCAST_MESSAGES.snapshot.loaded, function (ev, isInfoPanel) {
+            $scope.$on(BROADCAST_MESSAGES.snapshot.loaded, function (ev, data) {
+                $scope.isGeoLayout = data.snapshot.layout.plotType == 'geo';
                 if ($scope.isShowTutorial === undefined) {
                     $scope.isShowTutorial = true;
                 }
+            });
+
+            $scope.$on(BROADCAST_MESSAGES.snapshot.changed, function (ev, data) {
+                $scope.isGeoLayout = data.snapshot.layout.plotType == 'geo';
             });
 
             $scope.exportCurrentImage = function () {
@@ -463,30 +493,6 @@ angular.module('common')
             /*************************************
              ****** Event Listeners/Watches *******
              **************************************/
-
-            // $scope.$on(BROADCAST_MESSAGES.renderGraph.loaded, function() {
-            //     updateSelCount();
-            // });
-
-            // $scope.$on(BROADCAST_MESSAGES.selectNodes, function() {
-            //     updateSelCount();
-            // });
-
-            // $scope.$on(BROADCAST_MESSAGES.selectStage, function() {
-            //     updateSelCount();
-            // });
-
-            // $rootScope.$on(BROADCAST_MESSAGES.cleanStage, function() {                
-            //     updateSelCount();
-            // });
-
-            // $scope.$on(BROADCAST_MESSAGES.fp.currentSelection.changed, function() {
-            //     updateSelCount();
-            // });
-
-            // $rootScope.$on(BROADCAST_MESSAGES.fp.initialSelection.changed, function() {
-            //     updateSelCount();
-            // });
 
             $rootScope.$on(BROADCAST_MESSAGES.hss.select, function (ev, data) {
                 if (data.selectionCount == 0 && data.isSubsetted) {

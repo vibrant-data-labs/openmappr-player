@@ -190,7 +190,6 @@ angular.module('common')
                 var renderer = sig.renderers.graph;
                 var _this = this;
                 renderer.bind('render', function () {
-                    console.log('subset! render')
                     draw(_this.currentSubset());
                 });
 

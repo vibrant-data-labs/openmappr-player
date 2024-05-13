@@ -370,12 +370,8 @@ function($q, $rootScope, $timeout, dataGraph, layoutService, renderGraphfactory,
         var map = layout.map;
         var center = dataGraph.getRawDataUnsafe().bounds.getCenter();
         var zoomLevelToReset = map.getBoundsZoom(graphData.bounds);
-        // var zoomLevelToReset = layout.mapprSettings.savedZoomLevel;
-        // var currentMapZoom = layout.map.getZoom();
-
 
         map.setView(center, zoomLevelToReset);
-        console.log('GeoZoom reset!');
     }
 
     function geoZoomToNodes (nodes) {
