@@ -151,7 +151,7 @@ function ($q, $timeout, renderGraphfactory, inputMgmtService, graphHoverService,
     function AngularLeaflet2Sigma(options) {
         var self = this;
         var prefix = 'leafletDirectiveMap.';
-        var events = ['zoomstart', 'drag', 'viewreset', 'resize'];
+        var events = ['zoomstart', 'zoomend', 'drag', 'viewreset', 'resize'];
         //var events = ['zoomstart', 'drag','dragend', 'viewreset', 'resize'];
         var mouseEvents = ['click', 'mouseup','mousemove', 'mouseout', 'dblclick'];
         var opts = options || {};

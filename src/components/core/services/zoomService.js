@@ -30,6 +30,7 @@ function($q, $rootScope, $timeout, dataGraph, layoutService, renderGraphfactory,
     // geo
     this.onGeoZoomStart   = onGeoZoomStart;
     this.onGeoZoomEnd     = onGeoZoomEnd;
+    this.geoZoomRefresh = geoZoomRefresh;
 
 
 
@@ -350,6 +351,10 @@ function($q, $rootScope, $timeout, dataGraph, layoutService, renderGraphfactory,
     function geoZoom(delta) {
         var zoomType = delta > 0 ? 'zoomOut' : 'zoomIn';
         layoutService.getCurrentIfExists().map[zoomType](Math.abs(delta));
+    }
+
+    function geoZoomRefresh() {
+        layoutService.getCurrentIfExists().map['zoomOut'](0);
     }
 
     function geoZoomOut() {

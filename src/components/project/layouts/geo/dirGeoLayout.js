@@ -49,7 +49,7 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
     var prefix = 'leafletDirectiveMap.';
     //var events = ['move'];//['zoomstart', 'drag', 'viewreset', 'resize'];
     //var events = ['zoomstart', 'drag','dragend', 'viewreset', 'resize'];
-    var mouseEvents = ['click', 'mouseup','mousemove', 'mouseout', 'dblclick', 'viewreset', 'zoomstart', 'move', 'moveend'];
+    var mouseEvents = ['click', 'mouseup','mousemove', 'mouseout', 'dblclick', 'viewreset', 'zoomstart', 'zoomend', 'move', 'moveend'];
     var leftPanelWidth = 432;
 
 
@@ -189,7 +189,7 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
             .filter(Boolean)
             .value();
         const tileGrid = L.vectorGrid
-        .protobuf(`http://localhost:3050/${lod}/{z}/{x}/{y}`, {
+        .protobuf(`https://geo-tiles.vibrantdatalabs.org/tiles/${lod}/{z}/{x}/{y}`, {
             vectorTileLayerStyles: {
                 [lod]: (prop) => {
                     const color = colors[prop.osm_id];
@@ -442,12 +442,17 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
         scope.$on(BROADCAST_MESSAGES.sigma.rendered, enableViewResetEvent);
         scope.$on(BROADCAST_MESSAGES.geoSelector.changed, function(ev, d) {
             const nodes = renderGraphfactory.sig().graph.nodes();
-            renderProtobuf(d.levelId, nodes, scope);
 
             if (d.levelId == 'node') {
-                window.removeTileLayer();
+                if (typeof window.removeTileLayer == 'function') {
+                    window.removeTileLayer();
+                }
+
+                // dataGraph.getRenderableGraph().refreshForZoomLevel(0);
+
                 $('sig').css('display', 'inherit');
             } else {
+                renderProtobuf(d.levelId, nodes, scope);
                 $('sig').css('display', 'none');
             }
         });
@@ -535,10 +540,10 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
                 }
             }));
 
-            // View Reset Event. Rebuild Graph as well
-            deregisters.push(scope.$on(prefix + 'viewreset', function(e, data) {
+            // Zoom End Event. Rebuild Graph as well
+            deregisters.push(scope.$on(prefix + 'zoomend', function(e, data) {
                 if(!disableViewReset) {
-                    $log.debug('[Geo Zoom: viewreset]: rebuilding graph. Event:%O, Data: %O',e, data);
+                    $log.debug('[Geo Zoom: zoomend]: rebuilding graph. Event:%O, Data: %O',e, data);
                     zoomService.onGeoZoomEnd(e, data);
                 }
             }));
