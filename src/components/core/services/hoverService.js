@@ -221,13 +221,6 @@ angular.module('common')
             }
 
             function draw(nodeIds, withNeighbors, degree, showNeighbors) {
-                const snapshot = snapshotService.getCurrentSnapshot();
-                if (snapshot.layout.plotType === 'geo') {
-                    // when working with regions, selectservice does not draw anything
-                    // TODO: node granuarity
-                    return;
-                }
-
                 var selectedNodes = selectService.selectedNodes;
                 var subsetNodes = subsetService.subsetNodes;
                 var sigRender = renderGraphfactory.getRenderer();

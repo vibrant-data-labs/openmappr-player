@@ -115,10 +115,10 @@ angular.module('common')
                 { id: 'adm_districts', title: 'Counties', description: 'Counties, cities' },
                 { id: 'node', title: 'Nodes', description: 'Nodes only, without regions' }
             ];
-            $scope.geoLevel = $scope.geoLevels[0];
             $rootScope.geo = {
                 level: 'countries'
             }
+            $scope.geoLevel = $scope.geoLevels.find(x => x.id == $rootScope.geo.level);
 
             var tutorialCountdownPromise = undefined;
 

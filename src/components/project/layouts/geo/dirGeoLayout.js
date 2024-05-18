@@ -114,25 +114,8 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
             $scope.center = {
                 lat: center.lat,
                 lng: center.lng,
-                zoom: 3
+                zoom: 2
             };
-            $scope.$on(BROADCAST_MESSAGES.layout.changed, function(event, layout) {
-                $scope.center.zoom = layout.setting('savedZoomLevel');
-                $scope.center.lat = layout.camera.x;
-                $scope.center.lng = layout.camera.y;
-                $log.debug("[dirGeo] Updated center on layout.change", $scope.center);
-                if (layout.plotType == 'geo') {
-                    $('sig').css('display', 'none');
-                } else {
-                    $('sig').css('display', 'inherit');
-                }
-            });
-            $scope.$on(BROADCAST_MESSAGES.layout.loaded, function(event, layout) {
-                $scope.center.zoom = layout.setting('savedZoomLevel');
-                $scope.center.lat = layout.camera.x;
-                $scope.center.lng = layout.camera.y;
-                $log.debug("[dirGeo] Updated center on layout.loaded", $scope.center);
-            });
         } else {
             console.warn('[dirGeoLayout]Should never be called!');
             //Make it happy
@@ -166,9 +149,32 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
         }, {});
 
         return _.reduce(polygonColors, function(acc, cv, key) {
-            acc[key] = _.chain(cv).countBy().pairs().max(_.last).head().value();
+            acc[key] = {
+                color: _.chain(cv).countBy().pairs().max(_.last).head().value(),
+                count: cv.length,
+            }
+            acc.max = cv.length > acc.max ? cv.length : acc.max;
             return acc;
-        }, {});
+        }, {
+            max: 0,
+        });
+    }
+
+    function getOpacity(nodeData, id, opt) {
+        if (!(id in nodeData)) {
+            return 0;
+        }
+
+        if (!opt) {
+            opt = {};
+        }
+
+        const percentage = nodeData[id].count / nodeData.max;
+
+        const maxOpacity = opt.isHover ? 0.9 : 0.5;
+        const minOpacity = opt.isHover ? 0.5 : 0.1;
+
+        return minOpacity + (maxOpacity - minOpacity) * percentage;
     }
 
     function renderProtobuf(lod, nodes, scope) {
@@ -180,7 +186,7 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
             window.removeTileLayer();
         }
 
-        const colors = getColors(nodes, lod); // { [lodId]: color }
+        const nodeData = getColors(nodes, lod); // { [lodId]: color }
         const latLons = _.chain(nodes)
             .map((node) => {
                 if (!node.geodata || !node.geodata[lod]) return null;
@@ -192,12 +198,12 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
         .protobuf(`https://geo-tiles.vibrantdatalabs.org/tiles/${lod}/{z}/{x}/{y}`, {
             vectorTileLayerStyles: {
                 [lod]: (prop) => {
-                    const color = colors[prop.osm_id];
+                    const color = nodeData[prop.osm_id]?.color;
                     if (color) {
                         return {
                             color: color,
-                            opacity: 0.3,
-                            fillOpacity: 0.1,
+                            opacity: getOpacity(nodeData, prop.osm_id, { isHover: false }),
+                            fillOpacity: getOpacity(nodeData, prop.osm_id, { isHover: false }),
                             fill: true,
                         }
                     }
@@ -223,20 +229,23 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
             clickedItem: null,
             _expHovers: [],
             _setHighlightInternal: function(id) {
-                const color = colors[id];
+                const color = nodeData[id].color;
                 tileGrid.setFeatureStyle(id, {
                     color: color,
-                    opacity: 1,
-                    fillOpacity: 0.8,
+                    opacity: getOpacity(nodeData, id, { isHover: true }),
+                    fillOpacity: getOpacity(nodeData, id, { isHover: true }),
                     fill: true,
                 });
             },
             _clearHighlightInternal: function(id) {
-                const color = colors[id];
+                if (!(id in nodeData)) {
+                    return;
+                }
+                const color = nodeData[id].color;
                 tileGrid.setFeatureStyle(id, {
                     color: color,
-                    opacity: 0.3,
-                    fillOpacity: 0.1,
+                    opacity: getOpacity(nodeData, id, { isHover: false }),
+                    fillOpacity: getOpacity(nodeData, id, { isHover: false }),
                     fill: true,
                 });
             },
@@ -245,7 +254,7 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
                 this._expHovers.forEach(this._setHighlightInternal);
             },
             hardResetHoverStyle: function() {
-                this._expHovers.forEach(this._clearHighlightInternal);
+                this._expHovers.filter(x => x != this.clickedItem).forEach(this._clearHighlightInternal);
                 this._expHovers = [];
             },
             setCurrentItem: function(osmId) {
@@ -287,7 +296,7 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
                 this.previous = null;
             },
             setHoverStyle: function() {
-                if (!(this.current in colors)) {
+                if (!(this.current in nodeData)) {
                     return;
                 }
 
@@ -306,7 +315,7 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
                 }
             },
             resetHoverStyle: function() {
-                if (!(this.previous in colors)) {
+                if (!(this.previous in nodeData)) {
                     return;
                 }
 
@@ -331,14 +340,14 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
 
         const onMouseMove = function(e) {
             const osmId = +e.layer.properties.osm_id;
-            if (!(osmId in colors)) {
+            if (!(osmId in nodeData)) {
                 return;
             }
 
             visitorTracker.setCurrentItem(osmId);
             scope.region = {
-                name: e.layer.properties['name:en'] || e.layer.properties.name,
-                color: colors[osmId]
+                name: (e.layer.properties['name:en'] || e.layer.properties.name),
+                color: nodeData[osmId]?.color
             }
 
             if (visitorTracker.current == visitorTracker.clickedItem) {
@@ -367,14 +376,14 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
             if (visitorTracker.clickedItem && visitorTracker.clickedItem != osmId) {
                 visitorTracker.clearClick();
             }
-            if (!(osmId in colors)) {
+            if (!(osmId in nodeData)) {
                 return;
             }
             
             visitorTracker.click(osmId);
             scope.clickedRegion = {
                 name: e.layer.properties['name:en'] || e.layer.properties.name,
-                color: colors[osmId],
+                color: nodeData[osmId]?.color,
                 x: e.originalEvent.pageX + 20,
                 y: e.originalEvent.pageY,
             }
@@ -446,9 +455,9 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
             if (d.levelId == 'node') {
                 if (typeof window.removeTileLayer == 'function') {
                     window.removeTileLayer();
+                    window.map.panBy(window.L.point(1, 1));
+                    window.map.panBy(window.L.point(-1, -1));
                 }
-
-                // dataGraph.getRenderableGraph().refreshForZoomLevel(0);
 
                 $('sig').css('display', 'inherit');
             } else {
@@ -458,7 +467,14 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
         });
 
         scope.$on(BROADCAST_MESSAGES.renderGraph.loaded, function(ev, d) {
-            renderProtobuf('countries', d.graph.nodes, scope);
+            if ($rootScope.geo.level == 'node') {
+                window.map.panBy(window.L.point(1, 1));
+                window.map.panBy(window.L.point(-1, -1));
+                // $('sig').css('display', 'inherit');
+            } else {
+                $('sig').css('display', 'none');
+                renderProtobuf($rootScope.geo.level, d.graph.nodes, scope);
+            }
         });
 
         scope.$on(BROADCAST_MESSAGES.hss.subset.changed, function(ev, d) {
@@ -471,7 +487,12 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
         });
 
         scope.$on(BROADCAST_MESSAGES.hss.hover, function(ev, d) {
+            if (!scope.visitorTracker) {
+                return;
+            }
+
             scope.visitorTracker.hardResetHoverStyle();
+            
             if (!d.nodes.length) {
                 return;
             }
@@ -512,7 +533,6 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
 
         function setupGeoLayout (map) {
             console.assert(map, "Map Exists on the graph");
-            $('sig').css('display', 'none');
            
             scope.mapCenter = map.latLngToLayerPoint(map.getCenter());
             map.on('move', function(e) {
