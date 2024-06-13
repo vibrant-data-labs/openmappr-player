@@ -17,9 +17,10 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
                 style="position: absolute; font-size: 15px;"
                 ng-style="{'color': clickedRegion.color, 'top': clickedRegion.y, 'left': clickedRegion.x }"
                 ng-if="clickedRegion">
-                <p style="font-size: 15px; pointer-events: auto;">
+                <p style="font-size: 15px; pointer-events: auto; width: max-content;" ng-if="clickedRegion && clickedRegion.name">
                     {{clickedRegion.name}}
                 </p>
+                <span ng-if="!clickedRegion.name" class="loader-spinner"></span>
             </div>
             <div
                 id="regionLabelFollower"
@@ -27,9 +28,10 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
                 style="position: absolute; font-size: 15px;"
                 ng-style="{'color': region ? region.color : 'black' }"
                 ng-show="!!region">
-                <p style="font-size: 15px; pointer-events: auto;" ng-if="region">
+                <p style="font-size: 15px; pointer-events: auto; width: max-content;" ng-if="region && region.name">
                     {{region.name}}
                 </p>
+                <span ng-if="!region.name" class="loader-spinner"></span>
             </div>
             `, //
         scope: true,
@@ -40,8 +42,8 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
         }
     };
 
-
-
+    var currentQuery = {};
+    var abortController = new AbortController();
 
     /*************************************
     ************ Local Data **************
@@ -174,10 +176,59 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
 
         const percentage = nodeData[id].count / nodeData.max;
 
-        const maxOpacity = opt.isHover ? 0.9 : 0.5;
-        const minOpacity = opt.isHover ? 0.5 : 0.1;
+        const maxOpacity = opt.isHover ? 0.9 : 0.75;
+        const minOpacity = opt.isHover ? 0.5 : 0.3;
 
         return minOpacity + (maxOpacity - minOpacity) * percentage;
+    }
+
+    function getRegionCacheItem(scope, osmId) {
+        if (!scope.cache) {
+            return undefined;
+        }
+
+        if (osmId in scope.cache) {
+            return scope.cache[osmId];
+        }
+
+        return undefined;
+    }
+
+    function updateRegionCacheItem(scope, osmId, name) {
+        if (!scope.cache) {
+            scope.cache = {};
+        }
+
+        scope.cache[osmId] = name;
+    }
+
+    function getItemName(osmId, scope, type) {
+        if (currentQuery[type] && currentQuery[type].id == osmId) {
+            return;
+        }
+
+        currentQuery[type] = { id: osmId };
+
+        abortController.abort('Query is obsolete');
+        abortController = new AbortController();
+        return fetch(`https://geo-tiles.vibrantdatalabs.org/regionname/${osmId}`, {
+            signal: abortController.signal
+        }).then(x => x.json())
+            .then(x => {
+                if (!x.name) {
+                    return;
+                }
+
+                updateRegionCacheItem(scope, osmId, x.name);
+
+                scope[type] = {
+                    ...scope[type],
+                    name: x.name
+                }
+                scope.$apply();
+            }).catch(() => {
+                currentQuery[type] = undefined;
+            });
     }
 
     function renderProtobuf(lod, nodes, scope) {
@@ -341,8 +392,12 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
 
             visitorTracker.setCurrentItem(osmId);
             scope.region = {
-                name: (e.layer.properties['name:en'] || e.layer.properties.name),
+                name: (e.layer.properties['name:en'] || e.layer.properties.name || getRegionCacheItem(scope, osmId)),
                 color: nodeData[osmId]?.color
+            }
+
+            if (!scope.region.name) {
+                getItemName(osmId, scope, 'region');
             }
 
             if (visitorTracker.current == visitorTracker.clickedItem) {
@@ -377,10 +432,14 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
             
             visitorTracker.click(osmId);
             scope.clickedRegion = {
-                name: e.layer.properties['name:en'] || e.layer.properties.name,
+                name: e.layer.properties['name:en'] || e.layer.properties.name || getRegionCacheItem(scope, osmId),
                 color: nodeData[osmId]?.color,
                 x: e.originalEvent.pageX + 20,
                 y: e.originalEvent.pageY,
+            }
+
+            if (!scope.clickedRegion.name) {
+                getItemName(osmId, scope, 'clickedRegion');
             }
 
             e.originalEvent._isCaught = true;
@@ -462,10 +521,14 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
         });
 
         scope.$on(BROADCAST_MESSAGES.renderGraph.loaded, function(ev, d) {
+            if (!d.isGeo) {
+                $('sig').css('display', 'inherit');
+                return;
+            }
+
             if ($rootScope.geo.level == 'node') {
                 window.map.panBy(window.L.point(1, 1));
                 window.map.panBy(window.L.point(-1, -1));
-                // $('sig').css('display', 'inherit');
             } else {
                 $('sig').css('display', 'none');
                 renderProtobuf($rootScope.geo.level, d.graph.nodes, scope);
