@@ -110,9 +110,6 @@ angular.module('hcApp', [
         //$httpProvider.defaults.headers.get['If-Modified-Since'] = '0';
 
     }])
-    .config(function ($logProvider) {
-        $logProvider.debugEnabled(false);
-    })
     .config(['cfpLoadingBarProvider',
         function (cfpLoadingBarProvider) {
             cfpLoadingBarProvider.latencyThreshold = 100;
@@ -134,6 +131,25 @@ angular.module('hcApp', [
         $animateProvider.classNameFilter(/^((?!(no-animate)).)*$/);
     }])
 
+    .decorator("$xhrFactory", function($delegate, $rootScope) {
+        'ngInject';
+    
+        return function(method, url) {
+            var xhr = $delegate(method, url);
+    
+            xhr.setRequestHeader = (function(sup) {
+                return function(header, value) {
+                    if ((header === "__XHR__") && angular.isFunction(value))
+                        value(this);
+                    else
+                        sup.apply(this, arguments);
+                };
+            })(xhr.setRequestHeader);
+    
+            return xhr;
+        };
+    })
+
     .constant('BROADCAST_MESSAGES', {
         overNodes: 'overNodes',
         outNodes: 'outNodes',
@@ -147,6 +163,10 @@ angular.module('hcApp', [
         openMediaModal: 'openMediaModal',
         customData: 'customData',
         searchClose: 'searchClose',
+
+        data: {
+            downloadProgress: 'data:downloadProgress'
+        },
 
         geoSelector: {
             changed: 'geoSelector:changed'

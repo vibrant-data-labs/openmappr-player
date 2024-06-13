@@ -11,7 +11,7 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
     **************************************/
     var dirDefn = {
         restrict: 'EA',
-        template:`<leaflet center="center" defaults="defaults" tiles="tiles" event-broadcast="events"></leaflet>
+        template:`<leaflet center="center" defaults="defaults" tiles="tiles" no-wrap="true" event-broadcast="events"></leaflet>
             <div
                 class="node-label group-label"
                 style="position: absolute; font-size: 15px;"
@@ -100,6 +100,9 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
                 },
                 tiles: {
                     url: "https://api.mapbox.com/styles/v1/" + mapID + "/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZXJpY2JlcmxvdyIsImEiOiJja2h6MjA5bGkwY283MndvaDMyMzN0eXlmIn0.9f_Dm_N5IHHgGS4bfidgtA",
+                    // options: {
+                    //     noWrap: true
+                    // }
                 }
             });
             $scope.events = {
@@ -187,16 +190,9 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
         }
 
         const nodeData = getColors(nodes, lod); // { [lodId]: color }
-        const latLons = _.chain(nodes)
-            .map((node) => {
-                if (!node.geodata || !node.geodata[lod]) return null;
-                return [node.attr['Latitude'], node.attr['Longitude']]
-            })
-            .filter(Boolean)
-            .value();
         const tileGrid = L.vectorGrid
         .protobuf(`https://geo-tiles.vibrantdatalabs.org/tiles/${lod}/{z}/{x}/{y}`, {
-            vectorTileLayerStyles: {
+                vectorTileLayerStyles: {
                 [lod]: (prop) => {
                     const color = nodeData[prop.osm_id]?.color;
                     if (color) {
@@ -219,7 +215,6 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
             getFeatureId: function(feature) {
                 return feature.properties.osm_id;
             },
-            nodeCoordinates: latLons
         })
         .addTo(window.map);
 

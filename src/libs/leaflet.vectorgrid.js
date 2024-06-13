@@ -1888,10 +1888,10 @@
                 this._overriddenStyles = {};
                 this.on('tileunload', function(e) {
                     var key = this._tileCoordsToKey(e.coords),
-                        tile = this._vectorTiles[key];
+                        tiles = this._vectorTiles[key];
     
-                    if (tile && this._map) {
-                        tile.removeFrom(this._map);
+                    if (tiles && tiles.length && this._map) {
+                        tiles.forEach(x => x.removeFrom(this._map));
                     }
                     delete this._vectorTiles[key];
                 }, this);
@@ -1908,11 +1908,13 @@
             var vectorTilePromise = this._getVectorTilePromise(coords);
     
             if (storeFeatures) {
-                if (this._vectorTiles[this._tileCoordsToKey(coords)]) {
-                    return renderer.getContainer();
+                const tileIdx = this._tileCoordsToKey(coords);
+                if (!this._vectorTiles[tileIdx]) {
+                    this._vectorTiles[tileIdx] = [];
+                    // return renderer.getContainer();
                 }
 
-                this._vectorTiles[this._tileCoordsToKey(coords)] = renderer;
+                this._vectorTiles[tileIdx].push(renderer);
                 renderer._features = {};
             }
     
@@ -1997,19 +1999,22 @@
             this._overriddenStyles[id] = layerStyle;
     
             for (var tileKey in this._vectorTiles) {
-                var tile = this._vectorTiles[tileKey];
-                var features = tile._features;
-                var data = features[id];
-                if (data) {
-                    var feat = data.feature;
-    
-                    var styleOptions = layerStyle;
-                    if (layerStyle[data.layerName]) {
-                        styleOptions = layerStyle[data.layerName];
+                var tiles = this._vectorTiles[tileKey];
+                for (var tile of tiles) {
+                    var features = tile._features;
+                    var data = features[id];
+                    if (data) {
+                        var feat = data.feature;
+        
+                        var styleOptions = layerStyle;
+                        if (layerStyle[data.layerName]) {
+                            styleOptions = layerStyle[data.layerName];
+                        }
+        
+                        this._updateStyles(feat, tile, styleOptions);
                     }
-    
-                    this._updateStyles(feat, tile, styleOptions);
                 }
+                
             }
             return this;
         },
@@ -2020,14 +2025,16 @@
             delete this._overriddenStyles[id];
     
             for (var tileKey in this._vectorTiles) {
-                var tile = this._vectorTiles[tileKey];
-                var features = tile._features;
-                var data = features[id];
-                if (data) {
-                    var feat = data.feature;
-                    var styleOptions = this.options.vectorTileLayerStyles[ data.layerName ] ||
-                    L.Path.prototype.options;
-                    this._updateStyles(feat, tile, styleOptions);
+                var tiles = this._vectorTiles[tileKey];
+                for (var tile of tiles) {
+                    var features = tile._features;
+                    var data = features[id];
+                    if (data) {
+                        var feat = data.feature;
+                        var styleOptions = this.options.vectorTileLayerStyles[ data.layerName ] ||
+                        L.Path.prototype.options;
+                        this._updateStyles(feat, tile, styleOptions);
+                    }
                 }
             }
             return this;
@@ -2161,10 +2168,6 @@
             this._abortController = new AbortController();
             this._zoomLevel = undefined;
             L.VectorGrid.prototype.initialize.call(this, options);
-
-            if ('nodeCoordinates' in options) {
-                this._nodeCoordinates = options.nodeCoordinates;
-            }
         },
     
         // 🍂method setUrl(url: String, noRedraw?: Boolean): this
@@ -2180,39 +2183,6 @@
         },
     
         _getSubdomain: L.TileLayer.prototype._getSubdomain,
-
-        _tileCache: {},
-        
-        _getItemFromCache: function(x, y, z) {
-            if (!(x in this._tileCache)) {
-                this._tileCache[x] = {};
-                return null;
-            }
-
-            if (!(y in this._tileCache[x])) {
-                this._tileCache[x][y] = {};
-                return null;
-            }
-
-            if (!(z in this._tileCache[x][y])) {
-                this._tileCache[x][y][z] = null;
-                return null;
-            }
-
-            return this._tileCache[x][y][z];
-        },
-
-        _setCacheItem: function(x, y, z, pbf) {
-            if (!(x in this._tileCache)) {
-                this._tileCache[x] = {};
-            }
-
-            if (!(y in this._tileCache[x])) {
-                this._tileCache[x][y] = {};
-            }
-
-            this._tileCache[x][y][z] = pbf;
-        },
     
         _getVectorTilePromise: function(coords) {
             var data = {
@@ -2408,6 +2378,7 @@
             this._initContainer();
             this._container.setAttribute('width', this._size.x);
             this._container.setAttribute('height', this._size.y);
+            this._container.dataset['tileCoord'] = `${tileCoord.x}:${tileCoord.y}:${tileCoord.z}`
             this._layers = {};
             this._drawnLayers = {};
             this._drawing = true;

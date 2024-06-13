@@ -34,7 +34,10 @@
   //-     tooltip-placement="bottom"
   //-     tooltip-append-to-body="true")
   //-     img(src="/img/play-toolbar/plus.svg")
-.details-panel__snapshots(ng-click="toggleSnapshotSelector()")
+.details-panel__snapshots(ng-if="!loadingState.isLoaded")
+  .row-data__content Loading Nodes Data ({{loadingState.progress | number:2}}%)
+
+.details-panel__snapshots(ng-if="loadingState.isLoaded" ng-click="toggleSnapshotSelector()")
   .row-data__content {{getSelectedSnapshotTitle() || ''}}
   .button-group__item
     button.button.button_type_play-toolbar(
