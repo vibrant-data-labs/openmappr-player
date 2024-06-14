@@ -2,8 +2,8 @@
  * Layout based switching
  */
  angular.module('common')
- .directive('geolayout', ['$rootScope', 'renderGraphfactory', 'leafletData', 'layoutService', 'dataGraph', 'zoomService', 'selectService', '$log', 'BROADCAST_MESSAGES',
-function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph, zoomService, selectService, $log, BROADCAST_MESSAGES) {
+ .directive('geolayout', ['$rootScope', 'renderGraphfactory', 'leafletData', 'layoutService', 'dataGraph', 'zoomService', 'selectService', 'subsetService', '$log', 'BROADCAST_MESSAGES',
+function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph, zoomService, selectService, subsetService, $log, BROADCAST_MESSAGES) {
     'use strict';
 
     /*************************************
@@ -137,7 +137,7 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
         //$('#project-layout').height($(element).height()).width($(element).width());
     }
 
-    function getColors(nodes, lod) {
+    function getColors(nodes, lod, scope) {
         const polygonColors = _.reduce(nodes, function(acc, cv) {
             if (!cv.geodata || !cv.geodata[lod]) return acc;
 
@@ -177,7 +177,7 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
         const percentage = nodeData[id].count / nodeData.max;
 
         const maxOpacity = opt.isHover ? 0.9 : 0.75;
-        const minOpacity = opt.isHover ? 0.5 : 0.3;
+        const minOpacity = opt.isHover ? 0.7 : 0.3;
 
         return minOpacity + (maxOpacity - minOpacity) * percentage;
     }
@@ -240,7 +240,7 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
             window.removeTileLayer();
         }
 
-        const nodeData = getColors(nodes, lod); // { [lodId]: color }
+        const nodeData = getColors(nodes, lod, scope); // { [lodId]: color }
         const tileGrid = L.vectorGrid
         .protobuf(`https://geo-tiles.vibrantdatalabs.org/tiles/${lod}/{z}/{x}/{y}`, {
                 vectorTileLayerStyles: {
@@ -319,7 +319,7 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
                 this._setHighlightInternal(this.clickedItem)
 
                 var sig = renderGraphfactory.sig();
-                var allNodes = sig.graph.nodes();
+                var allNodes = subsetService.subsetNodes.length > 0 ? subsetService.subsetNodes : sig.graph.nodes();
     
                 var selectedNodes = _.filter(allNodes, function(node) {
                     if (!('geodata' in node)) {
@@ -463,7 +463,6 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
         }
 
         scope.visitorTracker = visitorTracker;
-
     }
 
     function postLinkFn(scope) {
@@ -518,6 +517,17 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
                 renderProtobuf(d.levelId, nodes, scope);
                 $('sig').css('display', 'none');
             }
+        });
+
+        scope.$on(BROADCAST_MESSAGES.renderGraph.changed, () => {
+            if (typeof window.removeTileLayer == 'function') {
+                window.removeTileLayer();
+            }
+
+            var sig = renderGraphfactory.sig();
+            var nodes = subsetService.subsetNodes.length > 0 ? subsetService.subsetNodes : sig.graph.nodes();
+
+            renderProtobuf($rootScope.geo.level, nodes, scope);
         });
 
         scope.$on(BROADCAST_MESSAGES.renderGraph.loaded, function(ev, d) {

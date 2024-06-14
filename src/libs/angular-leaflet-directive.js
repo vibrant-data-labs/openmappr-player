@@ -5195,7 +5195,6 @@
     
         return function(e) {
           var broadcastName = _this.rootBroadcastName + maybeMapId + '.' + eventName;
-          $log.debug(broadcastName);
           _this.fire(leafletScope, broadcastName, logic, e, e.target || lObject, model, name, layerName, extra);
         };
       };
@@ -5467,7 +5466,6 @@
         return function(e) {
           // Put together broadcast name
           var broadcastName = 'leafletDirectiveMap.' + maybeMapId + eventName;
-          $log.debug(broadcastName);
     
           // Safely broadcast the event
           fire(scope, broadcastName, logic, e, e.target, scope);
@@ -5600,7 +5598,6 @@
     
         return function(e) {
           var broadcastName = 'leafletDirectivePath' + maybeMapId + '.' + eventName;
-          $log.debug(broadcastName);
           fire(leafletScope, broadcastName, logic, e, e.target || lObject, model, name, layerName);
         };
       };
