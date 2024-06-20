@@ -25,17 +25,13 @@
 
     button.details-panel__button.details-panel__button--info(ng-click="openProjectInfo()")
     button.details-panel__button.details-panel__button--menu(ng-click="openRightPanel()")
-  //- .details-panel__logos
-  //-   span.details-panel__logo-item(ng-repeat="logo in getLogos()")
-  //-     img(src="{{logo}}")
-  //-   button.details-panel__logo-more(ng-click="showMoreLogos()", ng-if="isShowMoreBtn && getLogos().length > 4", 
-  //-     data-toggle="tooltip" 
-  //-     uib-tooltip="Show more partners"
-  //-     tooltip-placement="bottom"
-  //-     tooltip-append-to-body="true")
-  //-     img(src="/img/play-toolbar/plus.svg")
-.details-panel__snapshots(ng-if="!loadingState.isLoaded")
-  .row-data__content Loading Nodes Data ({{loadingState.progress | number:2}}%)
+
+.details-panel__snapshots(ng-if="!loadingState.isLoaded" ng-class="{'global-loading': !loadingState.isLoaded}")
+  .row-data__content.global-loading__bar
+    span.global-loading__bar--progress(ng-style="{'width': loadingState.progress + '%'}")
+    .global-loading__bar--text
+      span.text__content Loading Data
+      span.text__percent {{loadingState.progress | number:0}}%
 
 .details-panel__snapshots(ng-if="loadingState.isLoaded" ng-click="toggleSnapshotSelector()")
   .row-data__content {{getSelectedSnapshotTitle() || ''}}
@@ -52,9 +48,6 @@
       .snapshot-selector__item(ng-repeat="snap in getSnapshots()", ng-attr-id="{{ snap.snapName }}" ng-click="selectSnapshot($event, snap)", ng-class="{ highlight: selectedSnapshot ? snap.isCurrentSnap: ($index == 0) }" uib-tooltip="{{formatSnapshotTooltip(snap)}}" tooltip-append-to-body="true" tooltip-placement="right")
         h3 {{formatSnapshotTitle(snap)}}
         h6(ng-if="snap.subtitle") {{snap.subtitle}}
-        
-      //.button-group__item
-      //  button.button.button_type_play-toolbar.button_icon_help help
 
 .play-toolbar__buttons
   .button-group_type_play-toolbar

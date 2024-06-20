@@ -20,7 +20,12 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
                 <p style="font-size: 15px; pointer-events: auto; width: max-content;" ng-if="clickedRegion && clickedRegion.name">
                     {{clickedRegion.name}}
                 </p>
-                <span ng-if="!clickedRegion.name" class="loader-spinner"></span>
+                <p ng-if="!clickedRegion.name" class="loader-spinner">
+                    <svg viewBox="-50 -50 100 100" stroke-width="20">
+                        <circle r="40" />
+                        <circle r="40" />
+                    </svg>
+                </p>
             </div>
             <div
                 id="regionLabelFollower"
@@ -31,7 +36,12 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
                 <p style="font-size: 15px; pointer-events: auto; width: max-content;" ng-if="region && region.name">
                     {{region.name}}
                 </p>
-                <span ng-if="!region.name" class="loader-spinner"></span>
+                <p ng-if="!region.name" class="loader-spinner">
+                    <svg viewBox="-50 -50 100 100" stroke-width="20">
+                        <circle r="40" />
+                        <circle r="40" />
+                    </svg>
+                </p>
             </div>
             `, //
         scope: true,
