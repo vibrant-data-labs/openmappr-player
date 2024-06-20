@@ -161,7 +161,6 @@ function($scope, $rootScope, $timeout, searchService, BROADCAST_MESSAGES, uiServ
     **************************************/
 
     function searchFn() {
-
         $scope.ui.searchHelperText = null;
 
         if($scope.globalSearch.text.length < 3) {
@@ -179,7 +178,13 @@ function($scope, $rootScope, $timeout, searchService, BROADCAST_MESSAGES, uiServ
             return;
         }
 
-        console.log('broadcasting search');
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            'event' : 'view_search_results',
+            'search_term' : $scope.globalSearch.text
+        });
+
+        console.log('broadcasting search for ', $scope.globalSearch.text);
 
         $rootScope.$broadcast(BROADCAST_MESSAGES.search, {
             search: $scope.globalSearch.text
