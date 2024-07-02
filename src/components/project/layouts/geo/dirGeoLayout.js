@@ -169,6 +169,7 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
                 color: _.chain(cv).countBy().pairs().max(_.last).head().value(),
                 count: cv.length,
             }
+
             acc.max = cv.length > acc.max ? cv.length : acc.max;
             return acc;
         }, {
@@ -185,12 +186,18 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
             opt = {};
         }
 
+        const colorByDensity = opt.scope ? Boolean(opt.scope.layout.setting("colorByDensity")) : false;
+
         const percentage = nodeData[id].count / nodeData.max;
 
-        const maxOpacity = opt.isHover ? 0.9 : 0.75;
-        const minOpacity = opt.isHover ? 0.7 : 0.3;
+        if (colorByDensity) {
+            const maxOpacity = opt.isHover ? 0.9 : 0.75;
+            const minOpacity = opt.isHover ? 0.7 : 0.3;
+    
+            return minOpacity + (maxOpacity - minOpacity) * percentage;
+        }
 
-        return minOpacity + (maxOpacity - minOpacity) * percentage;
+        return opt.isHover ? 0.9 : 0.3;
     }
 
     function getRegionCacheItem(scope, osmId) {
@@ -282,8 +289,8 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
 
                     return {
                         color: color,
-                        opacity: getOpacity(nodeData, prop.osm_id, { isHover }),
-                        fillOpacity: getOpacity(nodeData, prop.osm_id, { isHover }),
+                        opacity: getOpacity(nodeData, prop.osm_id, { isHover, scope }),
+                        fillOpacity: getOpacity(nodeData, prop.osm_id, { isHover, scope }),
                         fill: true,
                     }
                 }
@@ -307,8 +314,8 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
                 const color = self._nodeData[id].color;
                 tileGrid.setFeatureStyle(id, {
                     color: color,
-                    opacity: getOpacity(self._nodeData, id, { isHover: true }),
-                    fillOpacity: getOpacity(self._nodeData, id, { isHover: true }),
+                    opacity: getOpacity(self._nodeData, id, { isHover: true, scope }),
+                    fillOpacity: getOpacity(self._nodeData, id, { isHover: true, scope }),
                     fill: true,
                 });
             },
@@ -317,13 +324,7 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
                 if (!(id in self._nodeData)) {
                     return;
                 }
-                const color = self._nodeData[id].color;
-                tileGrid.setFeatureStyle(id, {
-                    color: color,
-                    opacity: getOpacity(self._nodeData, id, { isHover: false }),
-                    fillOpacity: getOpacity(self._nodeData, id, { isHover: false }),
-                    fill: true,
-                });
+                tileGrid.resetFeatureStyle(id);
             },
             setHoverStyleExplicitly: (osmIds) => {
                 const self = scope.visitorTracker;
@@ -351,7 +352,7 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
                 const self = scope.visitorTracker;
                 self.clickedItem = osmId;
                 self.reset();
-                self._setHighlightInternal(self.clickedItem)
+                // self._setHighlightInternal(self.clickedItem)
 
                 var sig = renderGraphfactory.sig();
                 var allNodes = subsetService.subsetNodes.length > 0 ? subsetService.subsetNodes : sig.graph.nodes();
@@ -368,16 +369,16 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
             },
             clearClick: () => {
                 const self = scope.visitorTracker;
-                self._clearHighlightInternal(self.clickedItem);
-                const geoIds = new Set();
-                selectService.getSelectedNodes().forEach((node) => {
-                    geoIds.add(node.geodata[lod]); 
-                });
-
-                Array.from(geoIds).forEach(self._clearHighlightInternal);
-                self.clickedItem = null;
-                self.reset();
                 selectService.unselect();
+
+                if (typeof window.removeTileLayer == 'function') {
+                    window.removeTileLayer();
+                }
+
+                var sig = renderGraphfactory.sig();
+                var nodes = subsetService.subsetNodes.length > 0 ? subsetService.subsetNodes : sig.graph.nodes();
+
+                renderProtobuf($rootScope.geo.level, nodes, scope);
             },
             reset: () => {
                 const self = scope.visitorTracker;
@@ -570,7 +571,7 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
 
         scope.$on(BROADCAST_MESSAGES.sigma.rendered, enableViewResetEvent);
         scope.$on(BROADCAST_MESSAGES.geoSelector.changed, function(ev, d) {
-            const nodes = renderGraphfactory.sig().graph.nodes();
+            const nodes = subsetService.subsetNodes.length > 0 ? subsetService.subsetNodes : renderGraphfactory.sig().graph.nodes();
 
             scope.selectedRegions = [];
 
@@ -610,7 +611,8 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
                 window.map.panBy(window.L.point(-1, -1));
             } else {
                 $('sig').css('display', 'none');
-                renderProtobuf($rootScope.geo.level, d.graph.nodes, scope);
+                var nodes = subsetService.subsetNodes.length > 0 ? subsetService.subsetNodes : d.graph.nodes;
+                renderProtobuf($rootScope.geo.level, nodes, scope);
             }
         });
 
@@ -753,9 +755,6 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
             if(newVal !== oldVal) {
                 $('.angular-leaflet-map').height($('#project-layout').height()).width(window.innerWidth - leftPanelWidth);
             }
-        });
-        scope.$watch('selectedRegions', function(newVal, oldVal) {
-            console.log('selected regions update')
         });
         scope.$watch('windowHeight', function(newVal, oldVal) {
             if(newVal !== oldVal) {
