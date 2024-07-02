@@ -82,6 +82,7 @@ const externalLibs = {
     'libs/json3.min.js': './node_modules/json3/lib/json3.min.js',
     'libs/lodash.min.js': './node_modules/lodash/index.js',
     'libs/leaflet.js': './node_modules/leaflet/dist/leaflet.js',
+    'libs/leaflet.vectorgrid': './node_modules/leaflet.vectorgrid/dist/Leaflet.VectorGrid.bundled.min.js',
     'libs/angular-leaflet-directive.min.js': './node_modules/angular-leaflet-directive/dist/angular-leaflet-directive.min.js',
     'libs/angular-loading-bar.min.js': './node_modules/angular-loading-bar/build/loading-bar.min.js',
     'libs/d3.min.js': './node_modules/d3/d3.min.js',
@@ -209,6 +210,7 @@ module.exports = {
         },
         hot: true,
         compress: true,
+        allowedHosts: "all",
         client: {
             overlay: {
                 warnings: false,
@@ -240,6 +242,7 @@ module.exports = {
                 { from: 'assets/fonts', to: 'fonts' },
                 { from: 'assets/img', to: 'img' },
                 { from: 'assets/data', to: 'data' },
+                { from: 'assets/map', to: 'map' },
                 ...Object.keys(externalLibs).map((key) => ({ from: externalLibs[key], to: key }))
             ]
         })

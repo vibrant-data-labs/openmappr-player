@@ -500,8 +500,6 @@ angular.module('player')
             }
 
             function triggerInteraction() {
-                console.log('player interacted');
-                //for stopping slideshow in player
                 $rootScope.$broadcast(BROADCAST_MESSAGES.player.interacted);
             }
 

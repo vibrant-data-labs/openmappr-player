@@ -30,6 +30,7 @@ function($q, $rootScope, $timeout, dataGraph, layoutService, renderGraphfactory,
     // geo
     this.onGeoZoomStart   = onGeoZoomStart;
     this.onGeoZoomEnd     = onGeoZoomEnd;
+    this.geoZoomRefresh = geoZoomRefresh;
 
 
 
@@ -352,6 +353,10 @@ function($q, $rootScope, $timeout, dataGraph, layoutService, renderGraphfactory,
         layoutService.getCurrentIfExists().map[zoomType](Math.abs(delta));
     }
 
+    function geoZoomRefresh() {
+        layoutService.getCurrentIfExists().map['zoomOut'](0);
+    }
+
     function geoZoomOut() {
         console.timeStamp('zoomOut');
         if(isZoomDisabled) {return;}
@@ -370,12 +375,8 @@ function($q, $rootScope, $timeout, dataGraph, layoutService, renderGraphfactory,
         var map = layout.map;
         var center = dataGraph.getRawDataUnsafe().bounds.getCenter();
         var zoomLevelToReset = map.getBoundsZoom(graphData.bounds);
-        // var zoomLevelToReset = layout.mapprSettings.savedZoomLevel;
-        // var currentMapZoom = layout.map.getZoom();
-
 
         map.setView(center, zoomLevelToReset);
-        console.log('GeoZoom reset!');
     }
 
     function geoZoomToNodes (nodes) {
@@ -495,10 +496,14 @@ function($q, $rootScope, $timeout, dataGraph, layoutService, renderGraphfactory,
 
     // Returns the flag indicating whether was the panning or not
     function nodeFocus(node) {
+        if (isInGeoMode() && $rootScope.geo.level !== 'node') {
+            // no extra panning for the region selection
+            return;
+        }
+
         if(!node.id || !node.dataPointId) throw new Error('Not a valid node object');
         // Visible graph area center coords
-        var rightPanel = $('#right-panel'),
-            header = $('#header'),
+        var header = $('#header'),
             leftPanelWidth = $('.node-right-panel').width() || 0,
             rightPanelWidth = $('.right-panel').offset().left + $('.right-panel').width(),
             headerHeight = header ? $(header).height() : 0;

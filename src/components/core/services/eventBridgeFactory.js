@@ -1,6 +1,6 @@
 angular.module('common')
-.service('eventBridgeFactory', ['$q','$timeout', 'renderGraphfactory', 'inputMgmtService', 'graphHoverService','graphSelectionService', 'hoverService', 'selectService', 'subsetService',
-function ($q, $timeout, renderGraphfactory, inputMgmtService, graphHoverService, graphSelectionService, hoverService, selectService, subsetService) {
+.service('eventBridgeFactory', ['$rootScope', 'layoutService', '$q','$timeout', 'renderGraphfactory', 'inputMgmtService', 'graphHoverService','graphSelectionService', 'hoverService', 'selectService', 'subsetService',
+function ($rootScope, layoutService, $q, $timeout, renderGraphfactory, inputMgmtService, graphHoverService, graphSelectionService, hoverService, selectService, subsetService) {
 
     "use strict";
 
@@ -115,6 +115,11 @@ function ($q, $timeout, renderGraphfactory, inputMgmtService, graphHoverService,
     }
 
     function clickHandler (name, event) {
+        if (layoutService.getCurrentIfExists().plotType == 'geo' && $rootScope.geo.level != 'node') {
+            // click and hover events for polygons are processed in dir-geo-layout
+            return;
+        }
+        
         var settings = renderGraphfactory.getRenderer().settings;
         if(name === 'clickNodes') {
             // event.data.node = event.data.all ? event.data.node : [_getTopNode(event.data.node)];
@@ -151,8 +156,7 @@ function ($q, $timeout, renderGraphfactory, inputMgmtService, graphHoverService,
     function AngularLeaflet2Sigma(options) {
         var self = this;
         var prefix = 'leafletDirectiveMap.';
-        var events = ['zoomstart', 'drag', 'viewreset', 'resize'];
-        //var events = ['zoomstart', 'drag','dragend', 'viewreset', 'resize'];
+        var events = ['zoomstart', 'zoomend', 'drag', 'viewreset', 'resize'];
         var mouseEvents = ['click', 'mouseup','mousemove', 'mouseout', 'dblclick'];
         var opts = options || {};
 
@@ -171,20 +175,16 @@ function ($q, $timeout, renderGraphfactory, inputMgmtService, graphHoverService,
             var deregisters = [];
             _.each(mouseEvents, function(eventName) {
                 deregisters.push(scope.$on(prefix + eventName, function(e, data) {
-                    //callEventHooks(data.leafletEvent.type, map, sig);
+                    callEventHooks(data.leafletEvent.type, map, sig);
                     renderGraphfactory.getRenderer().dispatchEvent(e.name, data.leafletEvent);
                 }));
             });
-            _.map(events, function(eventName) {
+            _.each(events, function(eventName) {
                 deregisters.push(scope.$on(prefix + eventName, function(e, data) {
 
                     callEventHooks(data.leafletEvent.type, map, sig);
 
                     if(e.name === prefix + 'zoomstart') {
-
-                        //sig.settings('drawEdges', false);
-                        //sig.settings('drawNodes', false);
-                        //sig.settings('drawLabels', false);
                         _.each(sig.renderers,function(r) {
                             r.clear({
                                 leafletEvent:data.leafletEvent
@@ -193,9 +193,6 @@ function ($q, $timeout, renderGraphfactory, inputMgmtService, graphHoverService,
                     } else if(e.name  === prefix + 'drag') {
                         sig.renderCamera(sig.cameras.cam1);
                     } else {
-                        //sig.settings('drawEdges', true);
-                        //sig.settings('drawNodes', true);
-                        //sig.settings('drawLabels', true);
                         sig.refresh();
                     }
                 }));

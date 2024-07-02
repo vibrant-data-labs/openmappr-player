@@ -110,7 +110,6 @@ angular.module('hcApp', [
         //$httpProvider.defaults.headers.get['If-Modified-Since'] = '0';
 
     }])
-
     .config(['cfpLoadingBarProvider',
         function (cfpLoadingBarProvider) {
             cfpLoadingBarProvider.latencyThreshold = 100;
@@ -128,39 +127,28 @@ angular.module('hcApp', [
         ]);
     }])
 
-    //Hack for logging all broadcast/emit messages
-    .config(['$provide', function ($provide) {
-
-        //Log only for non-production environments
-        if (!_.contains(document.location.host.split('.'), 'mappr')) {
-            $provide.decorator('$rootScope', ["$delegate" ,function ($delegate) {
-                var Scope = $delegate.constructor,
-                    origBroadcast = Scope.prototype.$broadcast,
-                    origEmit = Scope.prototype.$emit;
-
-                Scope.prototype.$broadcast = function (eventName, data) {
-                    if (eventName && eventName.lastIndexOf && eventName.lastIndexOf('cfpLoadingBar:', 0) !== 0) {
-                        // console.log('[EventLogger][' + eventName + '] event $broadcasted with data: ', data);
-                    }
-                    return origBroadcast.apply(this, arguments);
-                };
-
-                Scope.prototype.$emit = function (eventName, data) {
-                    if (eventName && eventName.lastIndexOf && eventName.lastIndexOf('cfpLoadingBar:', 0) !== 0) {
-                        // console.log('[EventLogger][' + eventName + '] event $emitted with data: ', data);
-                    }
-                    return origEmit.apply(this, arguments);
-                };
-
-                return $delegate;
-            }]);
-        }
-
-    }])
-
     .config(['$animateProvider', function ($animateProvider) {
         $animateProvider.classNameFilter(/^((?!(no-animate)).)*$/);
     }])
+
+    .decorator("$xhrFactory", function($delegate, $rootScope) {
+        'ngInject';
+    
+        return function(method, url) {
+            var xhr = $delegate(method, url);
+    
+            xhr.setRequestHeader = (function(sup) {
+                return function(header, value) {
+                    if ((header === "__XHR__") && angular.isFunction(value))
+                        value(this);
+                    else
+                        sup.apply(this, arguments);
+                };
+            })(xhr.setRequestHeader);
+    
+            return xhr;
+        };
+    })
 
     .constant('BROADCAST_MESSAGES', {
         overNodes: 'overNodes',
@@ -175,6 +163,14 @@ angular.module('hcApp', [
         openMediaModal: 'openMediaModal',
         customData: 'customData',
         searchClose: 'searchClose',
+
+        data: {
+            downloadProgress: 'data:downloadProgress'
+        },
+
+        geoSelector: {
+            changed: 'geoSelector:changed'
+        },
 
         extUserOverlay: {
             open: 'extUserOverlay:open',

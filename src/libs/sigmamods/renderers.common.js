@@ -38,24 +38,6 @@
   sigma.labels.labelFuncCache = labelFuncCache;
   sigma.labels.labelFunc = labelFunc;
 
-  // function serializeCbs(nodes, fn_err_success, onFinish) {
-  //   var results = [];
-  //   results.length = nodes.length;
-  //   function _runner (idx) {
-  //     if(idx < nodes.length) {
-  //       fn_err_success(nodes[idx], function(err, success) {
-  //         if(success) {
-  //           results.push(nodes[idx]);
-  //         }
-  //         _runner(idx + 1);
-  //       });
-  //     } else {
-  //       onFinish(results);
-  //     }
-  //   }
-  //   _runner(0);
-  // }
-
   // reuse webgl canvas when new networks are loaded
   // this means there can be only one sigma object at a time
   // but works around bug with webGl contexts not being cleared out when canvas is discarded
@@ -415,80 +397,16 @@
    */
   sigma.renderers.common.prototype.clearSelection  = function clearSelection() {
     throw 'Method Obsolete';
-    var n = null;
-    for(n in this.nodesSelected) {
-      this.nodesSelected[n].isSelected = false;
-    }
-    for(n in this.nodeNeighboursOfSelected) {
-      this.nodeNeighboursOfSelected[n].isNeighbourOfSelected = false;
-    }
-
-    this.nodesSelected = {};
-    this.nodeNeighboursOfSelected = {};
-    this.edgesToDraw = {};
-    this.contexts.selections.canvas.width = this.contexts.selections.canvas.width;  // clear the selection canvas
   };
   //
   // Select a node.
   //
   sigma.renderers.common.prototype.selectNode  = function selectNode(n, degree, haltDispatchEvent) {
     throw 'Method Obsolete';
-    var self = this,
-      addNeigh = +this.settings('nodeSelectionDegree') === 1;
-      if(typeof degree !== 'undefined')
-        addNeigh = degree == 1;
-
-    n.isSelected = true;
-    self.nodesSelected[n.id] = n;
-    self.nodeNeighboursOfSelected[n.id] = n; // self is a neighbour of self.
-    //Get neighbours and their edges
-    if(addNeigh)
-      _.forEach(self.graph.getNodeNeighbours(n.id), function addTargetNode(edgeInfo, targetId){
-        self.nodeNeighboursOfSelected[targetId] = self.graph.getNodeWithId(targetId);
-        _.forEach(edgeInfo, function addConnEdge(edge, edgeId) {
-          self.edgesToDraw[edgeId] = edge;
-        });
-      });
-    // Mark as neighbours
-    _.each(self.nodeNeighboursOfSelected, function(node) {node.isNeighbourOfSelected = true;});
-
-    if(!haltDispatchEvent) {
-      console.log('[renderers.canvas]Sending nodeSelected event');
-      self.dispatchEvent('nodeSelected', {
-        nodesSelected: _.values(self.nodesSelected),
-        nodeNeighboursOfSelected: _.values(self.nodeNeighboursOfSelected),
-        edges: _.values(self.edgesToDraw)
-      });
-    } else {
-      console.log('[renderers.canvas]NOT Sending nodeSelected event');
-    }
   };
   // Selects a bunch of nodes, and clears others
   sigma.renderers.common.prototype.onlySelectNodes  = function onlySelectNode(nodes, haltDispatchEvent) {
     throw 'Method Obsolete';
-    var n;
-    // If nothing to select, return
-    if(nodes.length === 0 && this.nodesSelected.length === 0)
-      return;
-    // Check if there is a change in selection
-    var noSelChange = nodes.length === this.nodesSelected.length && _.every(nodes, function(n1) {
-      return _.any(this.nodesSelected, function(n2) { return n1.id === n2.id;});
-    }, this);
-    // If no change, do nothing
-    if(noSelChange)
-      return;
-
-    // clear current selections if any previously selected node is not be to selected again
-    var shouldClear = _.any(this.nodesSelected, function(prevNode) {
-      // returns true if prevNode does not exist in node
-      return _.all(nodes, function(n) {
-        return n.id !== prevNode.id;
-      });
-    });
-    this.clearSelection(shouldClear);
-    _.each(nodes, function(n) {
-      this.selectNode(n, this.settings('nodeSelectionDegree'), true);
-    },this);
   };
   /**
    * Generates dataURL

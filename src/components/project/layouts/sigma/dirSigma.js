@@ -76,12 +76,16 @@ function ($rootScope, renderGraphfactory, eventBridgeFactory, dataGraph, labelSe
         // Build the sigmaAngular Bridge
         var sigmaBridge = new eventBridgeFactory.Sigma2Angular({});
         sigmaBridge.build($rootScope, sig);
+
         graphHoverService.sigBinds(sig);
         graphSelectionService.sigBinds(sig);
         zoomService.sigBinds(sig);
         hoverService.sigBinds(sig);
         selectService.sigBinds(sig);
         subsetService.sigBinds(sig);
+
+        var leafletBridge = new eventBridgeFactory.AngularLeaflet2Sigma();
+        leafletBridge.build($rootScope, undefined, sig)
 
         scope.$on(BROADCAST_MESSAGES.sigma.doubleClickNode, function(event, data) {
             console.log("Node double clicked!:", event, data);

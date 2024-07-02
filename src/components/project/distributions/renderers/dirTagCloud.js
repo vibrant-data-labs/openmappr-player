@@ -218,7 +218,6 @@ angular.module('common')
                 });
 
                 scope.$watch('attrToRender.sortConfig', function (sortOps) {
-                    console.log('dirTagCloud: sortConfig', sortOps);
                     sortType = sortOps && sortOps.sortType || 'frequency';
                     sortOrder = sortOps && sortOps.sortOrder || 'desc';
                     var subsetData = subsetService.subsetNodes;

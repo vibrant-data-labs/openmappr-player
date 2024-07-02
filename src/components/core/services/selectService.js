@@ -364,13 +364,7 @@ angular.module('common')
 
                         if (!node) {
                             console.warn('Node with Id: %s does not exist in the graph', nodeId);
-                        } else {
-                            /* TODO: --- IT'S TEMPORARY COMMENT --- */
-                            //console.log('Found aggregation node:%O  for node Id:%s', node, nodeId);
                         }
-                    } else {
-                        /* TODO: --- IT'S TEMPORARY COMMENT --- */
-                        //console.log('Found node:%O  for node Id:%s', node, nodeId);
                     }
 
                     if (node && node[renderGraphfactory.getRendererPrefix() + 'size'] === null) { // no render data

@@ -22,10 +22,10 @@
     //-       span.dark-grey-font.list-panel-header__links.truncate(ng-if="links") {{links.length}} {{linksStatus}}
     //-       span.dark-drey-font(ng-if="!links") ...
         
-  .side-menu__tutorial(ng-if="isShowTutorial")
+  .side-menu__tutorial
     ul.right-top-corner
 
-      li.right-top-corner__item
+      li.right-top-corner__item(ng-if="isShowTutorial")
         div.tutorial(dir-elem-ready="tutorialCountdown()")
           span Tutorial?
           button.tutorial__next(ng-click="startTutorial()") Next
@@ -34,7 +34,22 @@
             svg(viewBox="-50 -50 100 100" stroke-width="20")
               circle(r="40")
               circle(r="40" stroke-dasharray="251" stroke-dashoffset="251px")
-
+      li.right-top-corner__item.geoselector__list-item(ng-if="isGeoLayout")
+        div.geoselector(ng-click="toggleGeoSelector()")
+          .row-data__content {{getGeoLevelTitle() || ''}}
+          .button-group__item
+            button.button.button_type_play-toolbar(
+              ng-class="isGeoSelectorOpen ? 'button_icon_cancel' : 'button_icon_chevron-down'"
+              
+              uib-tooltip="Geo Level Selector"
+              tooltip-append-to-body="true"
+              tooltip-placement="right"
+          )
+          .geoselector__extra-container(ng-if="isGeoSelectorOpen")
+            .extra-container__content
+              .geoselector__item(ng-repeat="item in geoLevels", ng-attr-id="{{ snap.id }}" ng-click="selectGeoLevel($event, item)", ng-class="{ highlight: item.id == geoLevel.id }" uib-tooltip="{{item.title}}" tooltip-append-to-body="true" tooltip-placement="right")
+                h3 {{item.title}}
+                h6(ng-if="item.description") {{item.description}}
 
   .side-menu__footer
     ul.right-corner(ng-if="showButtons")

@@ -120,20 +120,6 @@ angular.module('common')
                     });
                     $rootScope.$broadcast(BROADCAST_MESSAGES.player.interacted);
                 };
-
-                /* TODO: --- IT'S TEMPORARY COMMENT --- */
-                // $scope.clickStage = function() {
-                //     var selNodes = graphSelectionService.getSelectedNodes();
-                //     if (selNodes.length !== 0) {
-                //         resetCollection();
-                //
-                //         _.each($scope.nodesObj, function(nodeObj) {
-                //             nodeObj.isSelected = false;
-                //         });
-                //         $scope.selectedNodeIds = [];
-                //     }
-                // }
-
                 //HOVERING
 
                 //hovering of rows (needed to keep heart icon when showing group dropdowns)
@@ -146,11 +132,6 @@ angular.module('common')
                     _.each($scope.nodesObj, function(n) {
                         n.inHover = false;
                     });
-
-                    /* TODO: --- IT'S TEMPORARY COMMENT --- */
-                    // _.each($scope.comparedItems, function(n) {
-                    //     n.inHover = false;
-                    // });
 
                     if (node) {
                         node.inHover = true;

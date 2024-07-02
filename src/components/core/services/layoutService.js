@@ -1732,8 +1732,8 @@ function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partiti
             });
             node.x = p.x;
             node.y = p.y;
-            node[prefix+'x'] = p.x;
-            node[prefix+'y'] = p.y;
+            // node[prefix+'x'] = p.x;
+            // node[prefix+'y'] = p.y;
         };
         this.edgeT = function edgeT(edge) {
             this._commonEdgeT(edge);

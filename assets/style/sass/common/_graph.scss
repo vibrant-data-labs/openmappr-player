@@ -69,12 +69,39 @@
         pointer-events: auto;
         text-shadow: $text-color-dark -1px -1px 1px, $text-color-dark 1px -1px 1px, $text-color-dark -1px 1px 1px, $text-color-dark 1px 1px 1px, $text-color-dark -1px 0 1px, $text-color-dark 1px 0 1px, $text-color-dark 0 -1px 1px, $text-color-dark 0 1px 1px;
 
+        &.label__animated {
+            transition: all 0.3s ease;
+        }
+
+
         p {
             margin: 0;
             padding: .325rem 1rem .2rem;
             border-radius: 32px;
             background: rgba(255,255,255,.9);
             box-shadow: 0 0 4px rgba(#000, .1);
+        }
+
+        .loader-spinner {
+            display: flex;
+            svg {
+                stroke: #bc3364;
+                stroke-linecap: round;
+                stroke-dasharray: 200;
+                width:32px;
+                height:32px;
+                fill: none;
+                animation: rotateLoader 1s linear infinite;
+            }
+
+            @keyframes rotateLoader {
+                0% {
+                    transform: rotate(0deg);
+                }
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
         }
     }
 

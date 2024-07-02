@@ -57,7 +57,7 @@
     margin-bottom: 10px;
     text-align: right;
     margin-left: 10px;
-    
+
     &_exports {
       position: relative;
     }
@@ -125,12 +125,107 @@
   list-style: none;
   display: flex;
   align-items: center;
-  flex-direction: row-reverse;
+  flex-direction: column;
 
   &__item {
     margin-bottom: 10px;
     text-align: right;
     margin-left: 10px;
+  }
+
+  // li:nth-child(1) {
+  //   .geoselector__extra-container {
+  //     top: 40px;
+  //   }
+  // }
+
+  // li:nth-child(2) {
+  //   .geoselector__extra-container {
+  //     top: 92px;
+  //   }
+  // }
+}
+
+.geoselector {
+  background: white;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  border: 1px solid #e6e6e6;
+  background: white;
+  border-radius: 4px;
+  width: 280px;
+  box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  text-align: start;
+
+  &__list-item {
+    position: relative;
+  }
+
+  .button-group__item {
+    height: 100%;
+    border-left: 1px solid #e6e6e6;
+    opacity: .8;
+  }
+
+  .row-data__content {
+    width: 100%;
+    padding: 0 10px;
+    font: 400 16px/40px 'Poppins';
+    line-height: 23px;
+    overflow-x: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: #616161;
+  }
+
+  &__extra-container {
+    position: absolute;
+    width: 100%;
+    top: 42px;
+
+    .extra-container__content {
+      position: absolute;
+      top: 0;
+      width: 100%;
+      max-height: calc(100vh - 156px);
+      overflow-y: scroll;
+      padding: 5px 0;
+      border: 1px solid #e6e6e6;
+      background: white;
+
+      .geoselector__item {
+        cursor: pointer;
+        padding: .1em 0;
+        padding-left: 10px;
+        border-bottom: 1px solid rgba(41, 101, 145, .3);
+
+        &:last-child {
+          border: none !important;
+        }
+
+        &.highlight, &:hover {
+          background-color: rgba(41, 101, 145, .3);
+        }
+
+        transition: background-color 0.5s ease;
+        border-radius: 2px;
+      }
+
+      h3 {
+        font: 400 16px / 23px "Poppins";
+        color: #BC3364;
+        margin-top: 5px;
+        margin-bottom: 0;
+      }
+
+      h6 {
+        font-size: 14px;
+        font-weight: 300;
+        margin-top: 0;
+      }
+    } 
   }
 }
 
@@ -148,7 +243,7 @@
   font: 400 16px/40px Poppins;
   line-height: 23px;
   position: relative;
-  box-shadow: 0 0 12px rgba(0,0,0,.1);
+  box-shadow: 0 0 12px rgba(0, 0, 0, .1);
 
   span {
     margin-right: .5em;
@@ -164,7 +259,7 @@
     width: 24px;
     position: absolute;
     margin-left: 4px;
-    
+
     &--info {
       &::before {
         content: deployedUrl('/img/play-toolbar/info-information-circle.svg');
@@ -190,6 +285,7 @@
   &__close {
     background: #fff;
     color: #616161;
+
     &:hover {
       background: #ec1802;
       color: #fafafa;
@@ -417,7 +513,8 @@ body {
     transition: none !important;
   }
 
-  &-arrow, &-helperNumberLayer {
+  &-arrow,
+  &-helperNumberLayer {
     display: none !important;
   }
 
@@ -478,19 +575,46 @@ $u: 100%/($n - 1);
   }
 }
 
+.loader {
+  width: 48px;
+  height: 48px;
+  border: 5px solid #bc3364;
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: loader-rotation 1s linear infinite;
+}
+
+@keyframes loader-rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 @keyframes num {
-	@for $i from 0 through $t {
-		#{$i*100%/$t} { counter-reset: s $t - $i }
-	}
+  @for $i from 0 through $t {
+    #{$i*100%/$t} {
+      counter-reset: s $t - $i
+    }
+  }
 }
 
 
 @keyframes arc {
-	0% { stroke-dashoffset: 0px }
+  0% {
+    stroke-dashoffset: 0px
+  }
 }
 
 @keyframes col {
-	@for $i from 0 to $n {
-		#{$i*$u} { stroke: nth($c, $i + 1) }
-	}
+  @for $i from 0 to $n {
+    #{$i*$u} {
+      stroke: nth($c, $i + 1)
+    }
+  }
 }

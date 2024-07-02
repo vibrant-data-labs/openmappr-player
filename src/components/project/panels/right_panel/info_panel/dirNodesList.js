@@ -279,6 +279,9 @@ function(BROADCAST_MESSAGES, playerFactory, hoverService, selectService, subsetS
         function scrollTo(id) {
             var $scrollTo = angular.element('#item-' + id);
             var $container = angular.element('#info-panel-scroll');
+            if (!$scrollTo.length || !$container.length) return;
+            if (!$scrollTo.offset()) return;
+
             $container.animate({scrollTop: $scrollTo.offset().top - $container.offset().top + $container.scrollTop()}, "slow");
         }
     }

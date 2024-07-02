@@ -145,8 +145,7 @@ angular.module('common')
                 // this.nodeAttrs = _.map(this.nodeAttrsBase, function(attr) { return self.nodeAttrsInfo[attr.title]; });
                 // this.edgeAttrs = _.map(this.edgeAttrsBase, function(attr) { return self.edgeAttrsInfo[attr.title]; });
 
-                // this.hasGeoData = this.isNodeAttr('Latitude') && this.isNodeAttr('Longitude');
-                this.hasGeoData = true;
+                this.hasGeoData = this.isNodeAttr('Latitude') && this.isNodeAttr('Longitude');
                 // If it has geo data, then find it's bounds
                 if (this.hasGeoData) {
                     this.bounds = _.map(this.nodes, function calcGeoBounds(n) {
@@ -529,6 +528,11 @@ angular.module('common')
      */
             function mergeAndLoadNetwork(network) {
                 var nwData = network;
+                const tileData = {
+                    0: 'countries',
+                    1: 'fed_districts',
+                    2: 'adm_districts'
+                };
                 var mergedNodeAttrDescriptors = [];
                 var dataset = dataService.currDataSetUnsafe();
                 // merge network node data and dataset datapoint data for now
@@ -538,6 +542,12 @@ angular.module('common')
                     var dp = dpIndex[node.dataPointId];
                     //_.extend(node.attr, dp.attr); // _.defaults instead of _.extend so that dataset does not overwrite network prop
                     _.defaults(node.attr, dp.attr);
+                    if ('geodata' in dp) {
+                        node.geodata = dp.geodata.reduce((acc, cv) => {
+                            acc[tileData[cv.level]] = cv.polygon_id;
+                            return acc;
+                        }, {});
+                    }
                 });
                 // update attr descriptions too
                 var nwNodeAttrDescIndex = _.indexBy(nwData.nodeAttrDescriptors, 'title');

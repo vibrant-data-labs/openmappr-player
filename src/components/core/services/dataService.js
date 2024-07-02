@@ -2,8 +2,8 @@
 * Handles dataset operations
 */
 angular.module('common')
-    .service('dataService',['$http', '$q', '$timeout', 'projFactory', 'AttrSanitizeService', 'extAPIService',
-        function ($http, $q, $timeout, projFactory, AttrSanitizeService, extAPIService) {
+    .service('dataService',['$http', '$q', '$rootScope', '$timeout', 'projFactory', 'AttrSanitizeService', 'extAPIService', 'BROADCAST_MESSAGES',
+        function ($http, $q, $rootScope, $timeout, projFactory, AttrSanitizeService, extAPIService, BROADCAST_MESSAGES) {
             'use strict';
 
             /*************************************
@@ -48,11 +48,27 @@ angular.module('common')
             }
 
             function fetchProjectDatasetLocally() {
-                return $http.get(DATA_PATH + 'nodes.json')
+                return $http.head(DATA_PATH + 'nodes.json')
+                        .then(function(result) {
+                            return +result.headers('content-length');
+                        })
+                        .then((contentLength) => $http.get(DATA_PATH + 'nodes.json', {
+                    headers: {
+                        __XHR__: function () {
+                            return function (xhr) {
+                                xhr.addEventListener("progress", function (event) {
+                                    const progress = event.loaded / contentLength * 100;
+                                    $rootScope.$broadcast(BROADCAST_MESSAGES.data.downloadProgress, {
+                                        progress: progress > 100 ? 100 : progress
+                                    });
+                                });
+                            };
+                        }
+                    }
+                })
                     .then(
                         function(result) {
                             console.log("----------- getting project data locally");
-                            console.log("result", result);
                             return updateDataSet(result.data);
                         },
                         function(err) {
@@ -60,7 +76,7 @@ angular.module('common')
                             currDataSetDefer.reject(err);
                             return $q.reject(err);
                         }
-                    );
+                    ));
             }
 
             function fetchProjectDataSet(orgId, projId) {

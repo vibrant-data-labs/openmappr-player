@@ -76,6 +76,11 @@ angular.module('common')
             $scope.host = window.location.href;
             $scope.title = '';
 
+            $scope.loadingState = {
+                isLoaded: false,
+                progress: 0
+            };
+
             $scope.operations = {
                 list: [],
                 opened: true,
@@ -191,7 +196,6 @@ angular.module('common')
                     });
 
                     operation.filterArray = result;
-                    console.log("FILTERARRAY", result);
                     return operation.filterArray;
                 }
             };
@@ -340,10 +344,7 @@ angular.module('common')
             // #####
 
             $scope.updatePlotType = function (plotType) {
-                $scope.plotType = 'original';
-                $timeout(function() {
-                    $scope.plotType = plotType || 'original';
-                }, 100);
+                $scope.plotType = plotType || 'original';
             };
 
             $scope.resetFilters = function () {
@@ -454,6 +455,10 @@ angular.module('common')
                 }
                 $scope.showSearch = bool;
             }
+
+            $scope.$on(BROADCAST_MESSAGES.data.downloadProgress, function (event, data) {
+                $scope.loadingState.progress = data.progress;
+            });
 
 
             $scope.$on(BROADCAST_MESSAGES.hss.select, function (e, data) {
@@ -632,6 +637,7 @@ angular.module('common')
      * @return {nothing}
      */
             function onProjectOrPlayerLoad(event) {
+                $scope.loadingState.isLoaded = true;
                 console.group('renderGraphCtrl.onProjectOrPlayerLoad');
                 dataGraph.clear();
                 layoutService.invalidateCurrent();
