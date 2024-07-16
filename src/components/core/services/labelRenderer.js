@@ -250,11 +250,11 @@ function($q, renderGraphfactory, hoverService) {
         // var maxWd = 350;
         var wd = txt.length * fontSize*0.8;
         var ht = fontSize*1.2;
-        if( wd > 350 ) {
+        if( wd > 236 ) {
             ht *= Math.ceil(wd/350);
-            wd = 350;
+            wd = 236;
         }
-        return {wd: wd, ht:ht};
+        return {wd: wd, ht:26};
     }
 
 

@@ -79,64 +79,7 @@
       this.contexts.nodes = this.contexts.scene;
       this.contexts.labels = this.contexts.scene;
     }
-    /*
-    this.initDOM('canvas', 'selections'); // For selections
-    //d3 stuff
-    this.initDOM('div', 'd3-selections');
-    this.initDOM('div', 'd3-labels');
-    this.initDOM('div', 'd3-hovers');
 
-    this.d3Sel.labels = _.once(function() {
-      return d3.select(self.domElements['d3-labels']);
-    });
-    this.d3Sel.selections = _.once(function() {
-      return d3.select(self.domElements['d3-selections']);
-    });
-    this.d3Sel.hovers = _.once(function() {
-      return d3.select(self.domElements['d3-hovers']);
-    });
-    
-    this.initDOM('canvas', 'mouse');
-    this.contexts.hover = this.contexts.mouse;
-
-    // Initialize captors:
-    this.captors = [];
-    a = this.options.captors || [sigma.captors.mouse2, sigma.captors.touch];
-    for (i = 0, l = a.length; i < l; i++) {
-      fn = typeof a[i] === 'function' ? a[i] : sigma.captors[a[i]];
-      this.captors.push(
-        new fn(
-          this.domElements.mouse,
-          this.camera,
-          this.settings
-        )
-      );
-    }
-
-    // Bind resize:
-    window.addEventListener(
-      'resize',
-      this.boundResize = this.resize.bind(this),
-      false
-    );
-
-    // Deal with sigma events:
-    sigma.misc.bindEvents.call(this, this.options.prefix);
-    sigma.misc.bindLeafletEvents.call(this, this.options.prefix);
-    //sigma.misc.drawOnlyHovers.call(this, this.options.prefix);
-    //sigma.misc.drawSelected.call(this, this.options.prefix);
-
-    // Bind zoomIn zoomOut Events
-    for (i = 0, l = this.captors.length; i < l; i++) {
-      this.captors[i].bind('zoomIn', function(e) {
-        self.dispatchEvent('zoomIn', e.data);
-      });
-      this.captors[i].bind('zoomOut', function(e) {
-        self.dispatchEvent('zoomOut', e.data);
-      });
-    }
-    this.resize(false);
-    */
     this.commonInitialization();
   };
 

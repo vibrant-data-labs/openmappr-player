@@ -365,10 +365,26 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
                     return Object.values(node.geodata).includes(osmId);
                 });
                 
-                selectService.selectNodes({ids: _.map(selectedNodes, (node) => node.id)});
+                const searchAttrText = {
+                    'countries': 'Country',
+                    'fed_districts': 'States',
+                    'adm_districts': 'Counties'
+                }[$rootScope.geo.level] || ''
+
+                selectService.selectNodes({
+                    ids: _.map(selectedNodes, (node) => node.id),
+                    searchAttr: { 
+                        isGeo: true,
+                        title: searchAttrText,
+                    },
+                    geoText: scope.region.name
+                });
             },
             clearClick: () => {
                 const self = scope.visitorTracker;
+                scope.region = undefined;
+                scope.selectedRegions = [];
+                scope.$apply();
                 selectService.unselect();
 
                 if (typeof window.removeTileLayer == 'function') {

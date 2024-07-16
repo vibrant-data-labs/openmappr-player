@@ -470,9 +470,9 @@ angular.module('common')
                     removeOperation();
                 } else if ($scope.operations.last().type == 'select') {
                     $scope.operations.last().filterArray = null;
-                    updateOperation('select', true, data.searchText, data.searchAttr);
+                    updateOperation('select', true, data.searchText, data.searchAttr, data.geoText);
                 } else {
-                    updateOperation('select', false, data.searchText, data.searchAttr);
+                    updateOperation('select', false, data.searchText, data.searchAttr, data.geoText);
                 }
 
                 $scope.isShowShare = false;
@@ -545,7 +545,7 @@ angular.module('common')
                 }
             }
 
-            function updateOperation(type, replace, searchText, searchAttr) {
+            function updateOperation(type, replace, searchText, searchAttr, geoText) {
                 switch (type) {
                     case 'init': {
                         $scope.operations.list.push({
@@ -573,6 +573,8 @@ angular.module('common')
                                 filters: _.clone(selectService.filters),
                                 searchText: searchText,
                                 searchAttr: searchAttr,
+                                geoSlice: geoText ? searchAttr.title: null,
+                                geoText: geoText,
                                 nodesCount: selectedNodes.length,
                                 isOpened: $scope.operations.list.length == 1 ? true : _.last($scope.operations.list).isOpened,
                                 totalNodes: totalNodes

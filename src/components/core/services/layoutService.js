@@ -1036,7 +1036,7 @@ function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partiti
                 return this.mapprSettings[key];
             } else {
                 //throw 'Key:' + key + ' not found in layout settings';
-                console.warn('Key:' + key + ' not found in layout settings');
+                //console.warn('Key:' + key + ' not found in layout settings');
             }
         };
 

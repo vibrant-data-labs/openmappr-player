@@ -181,7 +181,7 @@ angular.module('common')
                     var _catListData = genTagListData(data.nodes,
                         AttrInfoService.getNodeAttrInfoForRG().getForId(scope.attrToRender.id), filteringCatVals, FilterPanelService.getColorString(), genValColorMap(scope.attrToRender.id, data.nodes), sortType, sortOrder);
                     scope.filteredListData = filterTags(data.nodes, _catListData).filter(function(s){return s.id});
-                    console.log({filteredListData:scope.filteredListData});
+
                     _catListData.data = _catListData.data.map(function mapData(cat) {
                         cat.isSubsetted = cat.selPercentOfSel == 100;
                         cat.isChecked = cat.isSubsetted;

@@ -143,18 +143,19 @@ angular.module('common')
 
                 if (selectData.searchText) {
                     return searchNodes(selectData, this);
-                } else {
-                    $rootScope.$broadcast(BROADCAST_MESSAGES.hss.select, {
-                        filtersCount: this.getActiveFilterCount(),
-                        selectionCount: this.selectedNodes.length,
-                        isSubsetted: currentSubset.length > 0,
-                        nodes: this.getSelectedNodes(),
-                        searchText: selectData.searchText,
-                        searchAttr: selectData.searchAttr
-                    });
-
-                    return Promise.resolve();
                 }
+
+                $rootScope.$broadcast(BROADCAST_MESSAGES.hss.select, {
+                    filtersCount: this.getActiveFilterCount(),
+                    selectionCount: this.selectedNodes.length,
+                    isSubsetted: currentSubset.length > 0,
+                    nodes: this.getSelectedNodes(),
+                    searchText: selectData.searchText,
+                    geoText: selectData.geoText,
+                    searchAttr: selectData.searchAttr
+                });
+
+                return Promise.resolve();
             }
 
             function appendToSelection(nodeIds) {
