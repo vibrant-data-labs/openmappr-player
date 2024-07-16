@@ -1,7 +1,7 @@
 angular.module('common')
-    .controller('RightPanelTabsPlayerCtrl', ['$rootScope', '$scope', '$http', 'graphSelectionService', 'BROADCAST_MESSAGES', 'ngIntroService', 'FilterPanelService',
+    .controller('RightPanelTabsPlayerCtrl', ['$rootScope', '$scope', 'renderGraphfactory', '$http', 'graphSelectionService', 'BROADCAST_MESSAGES', 'ngIntroService', 'FilterPanelService',
         '$timeout', '$window', 'selectService', 'subsetService', 'playerFactory', 'dataGraph', 'AttrInfoService',
-        function ($rootScope, $scope, $http, graphSelectionService, BROADCAST_MESSAGES, ngIntroService, FilterPanelService, $timeout, $window, selectService, subsetService, playerFactory, dataGraph, AttrInfoService) {
+        function ($rootScope, $scope, renderGraphfactory, $http, graphSelectionService, BROADCAST_MESSAGES, ngIntroService, FilterPanelService, $timeout, $window, selectService, subsetService, playerFactory, dataGraph, AttrInfoService) {
             'use strict';
 
             /*************************************
@@ -390,8 +390,18 @@ angular.module('common')
                 ngIntroService.start();
             };
 
+            $scope.$on(BROADCAST_MESSAGES.renderGraph.loaded, function (ev, d) {
+                if (d.rawData.nodes.every(node => !('geodata' in node))) {
+                    $rootScope.geo = {
+                        level: 'node'
+                    }
+                    $scope.geoLevel = $scope.geoLevels.find(x => x.id == $rootScope.geo.level);
+                }
+            });
+
             $scope.$on(BROADCAST_MESSAGES.snapshot.loaded, function (ev, data) {
                 $scope.isGeoLayout = data.snapshot.layout.plotType == 'geo';
+
                 if ($scope.isShowTutorial === undefined) {
                     $scope.isShowTutorial = true;
                 }
