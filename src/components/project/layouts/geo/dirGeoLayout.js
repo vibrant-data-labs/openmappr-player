@@ -381,6 +381,10 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
                 });
             },
             clearClick: () => {
+                if (selectService.selectedNodes.length == 0) {
+                    return;
+                }
+
                 const self = scope.visitorTracker;
                 scope.region = undefined;
                 scope.selectedRegions = [];

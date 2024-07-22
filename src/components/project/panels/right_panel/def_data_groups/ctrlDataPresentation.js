@@ -194,7 +194,9 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
         if(!data.regenGraph) { refreshDataGroups(event, data); }
     });
     $scope.$on(BROADCAST_MESSAGES.renderGraph.changed, initialise);
-    $scope.$on(BROADCAST_MESSAGES.renderGraph.loaded, initialise);
+    $scope.$on(BROADCAST_MESSAGES.renderGraph.loaded, function () {
+        initialise();
+});
 
     $scope.$on(BROADCAST_MESSAGES.overNodes, highlightLegendCategoriesThrottled);
 
@@ -826,6 +828,8 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
             // console.log(logPrefix + 'unhighlighting ', mapCategory);
         });
     }
+    
+initialise();
 
 }
 ]);
