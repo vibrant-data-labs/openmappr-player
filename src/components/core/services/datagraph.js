@@ -4,6 +4,11 @@
  * RawData contains data for the current network and operation on them
  * Rendergraph contains color values and adjusted size values. I.e. Rendergraph is the graph generrate after a layout is applied to the rawData
  */
+
+const GENERIC_TERRITORIES = [
+    16467322 // Metropolitan France (Landmass)
+]
+
 angular.module('common')
     .factory('dataGraph', ['$timeout', '$q', '$rootScope', 'aggregatorService', 'dataService', 'networkService', 'AttrInfoService', 'orgFactory', 'BROADCAST_MESSAGES',
         function ($timeout, $q, $rootScope, aggregatorService, dataService, networkService, AttrInfoService, orgFactory, BROADCAST_MESSAGES) {
@@ -543,7 +548,7 @@ angular.module('common')
                     //_.extend(node.attr, dp.attr); // _.defaults instead of _.extend so that dataset does not overwrite network prop
                     _.defaults(node.attr, dp.attr);
                     if ('geodata' in dp) {
-                        node.geodata = dp.geodata.reduce((acc, cv) => {
+                        node.geodata = dp.geodata.filter(x => !GENERIC_TERRITORIES.includes(x.polygon_id)).reduce((acc, cv) => {
                             acc[tileData[cv.level]] = cv.polygon_id;
                             return acc;
                         }, {});
