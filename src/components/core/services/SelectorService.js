@@ -3,8 +3,8 @@
  * This service builds intelligence about an attribute in the dataset
  */
 angular.module('common')
-    .service('SelectorService', ['$timeout', '$q', 'dataGraph', 'AttrInfoService',
-        function ($timeout, $q, dataGraph, AttrInfoService) {
+    .service('SelectorService', ['$timeout', '$q', 'dataGraph', 'AttrInfoService', 'subsetService',
+        function ($timeout, $q, dataGraph, AttrInfoService, subsetService) {
             "use strict";
 
             /*************************************
@@ -114,6 +114,15 @@ angular.module('common')
                 };
                 return this;
             };
+            NodeSelector.prototype.ofGeo = function (attrId, attrValue) {
+                this.type = 'GEO';
+                this.attrId = attrId;
+                this.attrValue = attrValue;
+                this.stringify = function() {
+                    return { values: attrValue.map(x => x.name) }
+                }
+                return this;
+            }
             NodeSelector.prototype.ofMultipleAttrValues = function(attrId, attrVals) {
                 this.type = 'MULTI_ATTR_VALUE';
                 this.attrId = attrId;
@@ -182,6 +191,18 @@ angular.module('common')
                     break;
                 case 'MULTI_DATAPOINTS' : nodeIds = _.compact(_.map(this.entityIds, function(id) { return rd.dataPointIdNodeIdMap[id]; }));
                     break;
+                case 'GEO':
+                    const allNodes = subsetService.subsetNodes.length > 0 ? subsetService.subsetNodes : rd.nodes;
+                    const attrValues = this.attrValue;
+                    nodeIds = _.filter(allNodes, function(node) {
+                        if (!('geodata' in node)) {
+                            return false;
+                        }
+
+                        const geoValues = Object.values(node.geodata);
+                        return geoValues.some(x => attrValues.map(r => r.id).includes(x));
+                    }).map(x => x.id)
+                    break;
                 }
                 this.nodeIds = nodeIds;
                 return nodeIds;
@@ -195,7 +216,9 @@ angular.module('common')
                 var attrInfo = null, attr = null;
                 if(attrId) {
                     attr = rd.getAttrInfo(attrId);
-                    attrInfo =  AttrInfoService.buildAttrInfoMap(attr, nodes).infoObj;
+                    if (attr) {
+                        attrInfo =  AttrInfoService.buildAttrInfoMap(attr, nodes).infoObj;
+                    }
                 }
                 switch(this.type) {
                 case 'CLUSTER':
@@ -209,6 +232,17 @@ angular.module('common')
                 case 'MULTI_ATTR_VALUE' : nodeIds = _.uniq(_.flatten(_.map(this.attrVals, function(attrVal) {
                     return filterNodesByAttrib(nodes, attrId, attrInfo, attrVal, fivePct);
                 })));
+                    break;
+                case 'GEO':
+                    const attrValues = this.attrValue;
+                    nodeIds = _.filter(nodes, function(node) {
+                        if (!('geodata' in node)) {
+                            return false;
+                        }
+
+                        const geoValues = Object.values(node.geodata);
+                        return geoValues.some(x => attrValues.map(r => r.id).includes(x));
+                    }).map(x => x.id)
                     break;
                 default:
                     throw new Error(logPrefix + 'selectFromNodes() ' + "Not implemented for " + this.type);

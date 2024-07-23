@@ -5,6 +5,29 @@ angular.module('common')
         function ($scope, $rootScope, $routeParams, $q, $timeout, $location, leafletData, dataService, networkService, dataGraph, AttrInfoService, layoutService, snapshotService, orgFactory, projFactory, playerFactory, graphSelectionService, zoomService, SelectorService, BROADCAST_MESSAGES, selectService, subsetService) {
             'use strict';
 
+            const GEO_FILTERS = {
+                'countries': {
+                    attr: {
+                        id: 'countries',
+                        title: 'Countries',
+                        attrType: 'geo'
+                    }
+                },
+                'fed_districts': {
+                    attr: {
+                        id: 'fed_districts',
+                        title: 'State',
+                        attrType: 'geo'
+                    }
+                },
+                'adm_districts': {
+                    attr: {
+                        id: 'adm_districts',
+                        title: 'County',
+                        attrType: 'geo'
+                    }
+                }
+            }
 
             /*************************************
     ************ Local Data **************
@@ -121,7 +144,12 @@ angular.module('common')
                     keys.forEach(function (key) {
                         var filter = operation.filters[key];
                         if (!filter.isEnabled || !filter.selector) return;
-                        var attrInfo = AttrInfoService.getNodeAttrInfoForRG().getForId(filter.attrId);
+
+                        if (Object.keys(GEO_FILTERS).includes(filter.attrId)) {
+                            var attrInfo = GEO_FILTERS[filter.attrId];
+                        } else {
+                            var attrInfo = AttrInfoService.getNodeAttrInfoForRG().getForId(filter.attrId);
+                        }
 
                         var selector = filter.selector.stringify();
 

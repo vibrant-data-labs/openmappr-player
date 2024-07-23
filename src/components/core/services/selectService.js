@@ -32,6 +32,12 @@ angular.module('common')
                 return angular.copy(this.filters);
             };
 
+            const GEO_FILTERS = {
+                'countries': 'Country',
+                'fed_districts': 'States',
+                'adm_districts': 'Counties'
+            }
+
             /*************************************
             ********* Local Data *****************
             **************************************/
@@ -44,8 +50,9 @@ angular.module('common')
             /*************************************
             ********* CLASSES ********************
             **************************************/
-            function FilterConfig(attrId) {
+            function FilterConfig(attrId, attrName) {
                 this.attrId = attrId;
+                this.attrName = attrName;
                 this.isEnabled = false;
                 this.selector = null;
                 this.selectedVals = [];
@@ -270,7 +277,11 @@ angular.module('common')
                 }
 
                 filterConfig.state.selectedVals = filterVal;
-                filterConfig.selector = SelectorService.newSelector().ofMultipleAttrValues(attrId, filterVal, true);
+                if (Object.keys(GEO_FILTERS).includes(attrId)) {
+                    filterConfig.selector = SelectorService.newSelector().ofGeo(attrId, filterVal);
+                } else {
+                    filterConfig.selector = SelectorService.newSelector().ofMultipleAttrValues(attrId, filterVal, true);
+                }
                 filterConfig.isEnabled = filterVal && filterVal.length > 0;
 
                 return filterConfig;
@@ -377,7 +388,14 @@ angular.module('common')
             }
 
             function _buildFilters(attrs) {
-                return _.map(attrs, function (attr) { return new FilterConfig(attr.id, "DISABLE"); });
+                const res = _.map(attrs, function (attr) { return new FilterConfig(attr.id); });
+
+                return [
+                    ...res,
+                    ...Object.entries(GEO_FILTERS).map(([k, v]) => {
+                        return new FilterConfig(k, v)
+                    })
+                ]
             }
         }
     ]);

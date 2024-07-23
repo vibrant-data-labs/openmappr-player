@@ -357,31 +357,10 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
                 self.reset();
                 // self._setHighlightInternal(self.clickedItem)
 
-                var sig = renderGraphfactory.sig();
-                var allNodes = subsetService.subsetNodes.length > 0 ? subsetService.subsetNodes : sig.graph.nodes();
-    
-                var selectedNodes = _.filter(allNodes, function(node) {
-                    if (!('geodata' in node)) {
-                        return false;
-                    }
-
-                    return Object.values(node.geodata).includes(osmId);
-                });
-                
-                const searchAttrText = {
-                    'countries': 'Country',
-                    'fed_districts': 'States',
-                    'adm_districts': 'Counties'
-                }[$rootScope.geo.level] || ''
-
-                selectService.selectNodes({
-                    ids: _.map(selectedNodes, (node) => node.id),
-                    searchAttr: { 
-                        isGeo: true,
-                        title: searchAttrText,
-                    },
-                    geoText: scope.region.name
-                });
+                selectService.selectNodes({ attr: $rootScope.geo.level, value: {
+                    id: osmId,
+                    name: scope.region.name
+                } });
             },
             clearClick: () => {
                 if (selectService.selectedNodes.length == 0) {
@@ -505,10 +484,10 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
         const onClick = function(e) {
             const osmId = +e.layer.properties.osm_id;
             scope.selectedRegions = [];
-            if (scope.visitorTracker.clickedItem && scope.visitorTracker.clickedItem != osmId) {
-                scope.visitorTracker.clearClick();
-            }
+
             if (!(osmId in nodeData)) {
+                scope.visitorTracker.clearClick();
+
                 return;
             }
             
