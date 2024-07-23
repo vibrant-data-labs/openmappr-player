@@ -94,15 +94,8 @@ angular.module('common')
                             scope.catListData = catListData.data.slice(0, scope.displayItemsBars);
                             scope.catListDataTail = catListData.data.slice(scope.displayItemsBars);
                             distrData.numShownCats = Math.min(distrData.numShowGroups * ITEMS_TO_SHOW + initVisItemCount, catListData.data.length);
-                        }, 1000)
+                        }, 500)
                     })
-                }
-
-                try {
-                    filteringCatVals = _.get(FilterPanelService.getFilterForId(attrId), 'state.selectedVals', []);
-                    draw();
-                } catch (e) {
-                    console.error(dirPrefix + "draw() throws error for attrId:" + scope.attrToRender.id + ',', e.stack, e);
                 }
 
                 function drawSubsetNodes(data) {
@@ -145,8 +138,22 @@ angular.module('common')
                         scope.isShowMore = !scope.catListDataTail.length;
                         $timeout(() => {
                             scope.transition = false;
-                        }, 1000);
-                    }, 1000);
+                        }, 500);
+                    }, 500);
+                }
+
+                try {
+                    filteringCatVals = _.get(FilterPanelService.getFilterForId(attrId), 'state.selectedVals', []);
+                    var nodes = subsetService.subsetNodes;
+                    if (!nodes.length) {
+                        $timeout(function() {
+                            draw();
+                        }, 0);
+                    } else {
+                        drawSubsetNodes({nodes, subsetCount: nodes.length})
+                    }
+                } catch (e) {
+                    console.error(dirPrefix + "draw() throws error for attrId:" + scope.attrToRender.id + ',', e.stack, e);
                 }
 
                 scope.$on(BROADCAST_MESSAGES.hss.subset.changed, function (ev, data) {

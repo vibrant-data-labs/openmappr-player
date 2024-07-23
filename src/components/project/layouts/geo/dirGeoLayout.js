@@ -149,11 +149,14 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
     }
 
     function getColors(nodes, lod, scope) {
+        const dataNodes = dataGraph.getRenderableGraph().graph.nodes;
+
         const polygonColors = _.reduce(nodes, function(acc, cv) {
             if (!cv.geodata || !cv.geodata[lod]) return acc;
+            const node = dataNodes.find(x => x.id == cv.id)
 
-            const itemId = cv.geodata[lod];
-            const color = cv.colorStr;
+            const itemId = node.geodata[lod];
+            const color = node.colorStr;
 
             if (itemId in acc) {
                 acc[itemId] = [...acc[itemId], color];

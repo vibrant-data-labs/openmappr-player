@@ -91,7 +91,7 @@
 
               button(ng-if="$index == operations.list.length -1", ng-click="resetOperation()").play-toolbar__btn.play-toolbar__btn-undo Undo
 
-            .play-toolbar-list__content(ng-if="(operation.searchText || operation.filters) && operation.isOpened")
+            .play-toolbar-list__content(ng-if="(operation.searchText || operation.filters || operation.geoText) && operation.isOpened")
               .filter-section-wrap(ng-if="operation.searchText")
                   dl.filter-section
                     dt.filter-section__label
@@ -102,8 +102,17 @@
                     dd.filter-section__content
                       ul.filter-section__list
                         li.filter-section__item
-                          span "{{operation.searchText}}"    
-              .filter-section-wrap(ng-repeat="filter in operations.filterArray(operation)", ng-if="operation.filters")
+                          span "{{operation.searchText}}"
+              .filter-section-wrap(ng-if="operation.geoText")
+                dl.filter-section
+                  dt.filter-section__label
+                    | {{operation.geoSlice}}:
+
+                  dd.filter-section__content
+                    ul.filter-section__list
+                      li.filter-section__item
+                        span {{operation.geoText}}
+              .filter-section-wrap(ng-repeat="filter in operations.filterArray(operation)", ng-if="operation.filters && !operation.geoText")
                 dl.filter-section
                   dt.filter-section__label
                     | {{filter.attrInfo.attr.title}}:
