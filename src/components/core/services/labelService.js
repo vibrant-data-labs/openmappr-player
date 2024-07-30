@@ -291,12 +291,12 @@ angular.module('common')
                 var sortedNodes = nodes.sort(function isSmallerInSize(n1, n2) {
                     var order1 = selectOrder(n1), order2 = selectOrder(n2);
                     if(order1 == order2) { /// XNOR
-                        if(n1.isGroup) return n1.count - n2.count;  // sort group nodes by group size
+                        if(n1.isGroup) return n2.count - n1.count;  // sort group nodes by group size
+
                         return n2[prefix + 'size'] - n1[prefix + 'size'];
-                    } else {
-                        
-                        return order2 - order1;
                     }
+
+                    return order2 - order1;
                 });
 
                 //thresholded = sortedNodes.slice(0, Math.min(maxLabels, Math.floor(threshold*sortedNodes.length)));
