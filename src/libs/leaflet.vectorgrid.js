@@ -2166,6 +2166,7 @@
     // 		this._slicer = geojsonvt(geojson, options);
             this._url = url;
             this._abortController = new AbortController();
+            this._featureMap = {};
             this._zoomLevel = undefined;
             L.VectorGrid.prototype.initialize.call(this, options);
         },
@@ -2208,7 +2209,8 @@
             }
     
             var tileUrl = L.Util.template(this._url, L.extend(data, this.options));
-    
+            var self = this;
+
             return fetch(tileUrl, {
                 ...this.options.fetchOptions,
                 signal: this._abortController.signal
@@ -2237,6 +2239,8 @@
     
                     for (var i=0; i<json.layers[layerName].length; i++) {
                         var feat = json.layers[layerName].feature(i);
+                        self._featureMap[feat.properties['osm_id']] = feat.properties;
+
                         feat.geometry = feat.loadGeometry();
                         feats.push(feat);
                     }

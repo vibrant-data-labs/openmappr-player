@@ -270,14 +270,24 @@ angular.module('common')
                 var newVal = _.isArray(vals) ? vals : [vals];
                 var filterVal;
 
-                if (filterConfig.state.selectedVals && filterConfig.state.selectedVals.indexOf(vals) > -1) {
-                    filterVal = _.filter(_.filter(filterConfig.state.selectedVals, function (v) { return newVal.indexOf(v) == -1 }), _.identity);
+                const isGeoFilter = Object.keys(GEO_FILTERS).includes(attrId);
+
+                if (!isGeoFilter) {
+                    if (filterConfig.state.selectedVals && filterConfig.state.selectedVals.indexOf(vals) > -1) {
+                        filterVal = _.filter(_.filter(filterConfig.state.selectedVals, v => newVal.indexOf(v) == -1), _.identity);
+                    } else {
+                        filterVal = _.filter(_.flatten([filterConfig.state.selectedVals, _.clone(newVal)]), _.identity);
+                    }
                 } else {
-                    filterVal = _.filter(_.flatten([filterConfig.state.selectedVals, _.clone(newVal)]), _.identity);
+                    if (filterConfig.state.selectedVals && filterConfig.state.selectedVals.some(x => x.id == vals.id)) {
+                        filterVal = _.filter(_.filter(filterConfig.state.selectedVals, v => v.id != vals.id), _.identity);
+                    } else {
+                        filterVal = _.filter(_.flatten([filterConfig.state.selectedVals, _.clone(newVal)]), _.identity);
+                    }
                 }
 
                 filterConfig.state.selectedVals = filterVal;
-                if (Object.keys(GEO_FILTERS).includes(attrId)) {
+                if (isGeoFilter) {
                     filterConfig.selector = SelectorService.newSelector().ofGeo(attrId, filterVal);
                 } else {
                     filterConfig.selector = SelectorService.newSelector().ofMultipleAttrValues(attrId, filterVal, true);

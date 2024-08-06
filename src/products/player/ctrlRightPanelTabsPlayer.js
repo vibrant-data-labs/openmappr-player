@@ -113,7 +113,7 @@ angular.module('common')
                 { id: 'countries', title: 'Countries', description: 'Countries or territories' },
                 { id: 'fed_districts', title: 'States', description: 'States, federal districts' },
                 { id: 'adm_districts', title: 'Counties', description: 'Counties, cities' },
-                { id: 'node', title: 'Nodes', description: 'Nodes only, without regions' }
+                { id: 'node', title: 'Points', description: 'Points only, without regions' }
             ];
             $rootScope.geo = {
                 level: 'countries'

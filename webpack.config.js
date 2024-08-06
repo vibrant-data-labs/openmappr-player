@@ -33,16 +33,16 @@ const cssOutputMapping = {
 const jadeReplacer = [
     {
         pathPrefix: './src/components',
-        replaceWith: '/partials/components',
+        replaceWith: 'partials/components',
     }, {
         pathPrefix: './src/products/player',
-        replaceWith: '/partials/player'
+        replaceWith: 'partials/player'
     }
 ]
 
 const templateParameters = {
     player_prefix_index_source: isProduction ? mapping.sourceUrl : '',
-    player_prefix_index: isProduction ? `${mapping.sourceUrl}/partials` : '/partials',
+    player_prefix_index: isProduction ? `${mapping.sourceUrl}/partials` : 'partials',
     gtag_id: mapping.gtag,
     playerTitle: 'network visualization',
     backgroundColor: '#fff',
@@ -120,7 +120,7 @@ module.exports = {
                 test: /\.js|\.jade|\.(s?)css$/,
                 use: [
                     getReplaceLoader(/#{player_prefix_index_source}/g, isProduction ? mapping.sourceUrl : ''),
-                    getReplaceLoader(/#{player_prefix_index}/g, isProduction ? `${mapping.sourceUrl}/partials` : '/partials'),
+                    getReplaceLoader(/#{player_prefix_index}/g, isProduction ? `${mapping.sourceUrl}/partials` : 'partials'),
                     getReplaceLoader(/#{gtag_id}/g, mapping.gtag),
                     getReplaceLoader(/#{playerTitle}/g, 'network visualization'),
                     getReplaceLoader(/#{backgroundColor}/g, '#fff'),
@@ -141,7 +141,7 @@ module.exports = {
                     options: {
                         locals: {
                             player_prefix_index_source: isProduction ? mapping.sourceUrl : '',
-                            player_prefix_index: isProduction ? `${mapping.sourceUrl}/partials` : '/partials',
+                            player_prefix_index: isProduction ? `${mapping.sourceUrl}/partials` : 'partials',
                             gtag_id: mapping.gtag,
                             playerTitle: 'network visualization',
                             backgroundColor: '#fff',
@@ -240,9 +240,9 @@ module.exports = {
                 { from: 'assets/style/css/mappr-icons/style.css', to: 'css/mappr-icons/style.css' },
                 { from: 'assets/fonts', to: 'fonts' },
                 { from: 'assets/img', to: 'img' },
-                { from: 'assets/data', to: 'data' },
+                !isProduction ? { from: 'assets/data', to: 'data' } : undefined,
                 ...Object.keys(externalLibs).map((key) => ({ from: externalLibs[key], to: key }))
-            ]
+            ].filter(Boolean)
         })
     ]
 }

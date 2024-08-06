@@ -12,20 +12,6 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
     var dirDefn = {
         restrict: 'EA',
         template:`<leaflet center="center" defaults="defaults" tiles="tiles" no-wrap="true" event-broadcast="events"></leaflet>
-            <div ng-repeat="region in selectedRegions"
-                class="node-label group-label label__animated"
-                style="position: absolute; font-size: 15px;"
-                ng-style="{'color': region.color, 'top': region.y, 'left': region.x }">
-                <p style="font-size: 15px; pointer-events: auto; width: max-content;" ng-if="region.name">
-                    {{region.name}}
-                </p>
-                <p ng-if="!region.name" class="loader-spinner">
-                    <svg viewBox="-50 -50 100 100" stroke-width="20">
-                        <circle r="40" />
-                        <circle r="40" />
-                    </svg>
-                </p>
-            </div>
             <div
                 id="regionLabelFollower"
                 class="node-label group-label"
@@ -130,8 +116,6 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
                 lng: center.lng,
                 zoom: 2
             };
-
-            $scope.selectedRegions = [];
         } else {
             console.warn('[dirGeoLayout]Should never be called!');
             //Make it happy
@@ -225,7 +209,7 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
 
     function getItemName(osmId, scope, type) {
         if (currentQuery[type] && currentQuery[type].id == osmId) {
-            return;
+            return Promise.resolve({ name: undefined });
         }
 
         currentQuery[type] = { id: osmId };
@@ -237,7 +221,7 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
         }).then(x => x.json())
             .then(x => {
                 if (!x.name) {
-                    return;
+                    return { name: undefined };
                 }
 
                 updateRegionCacheItem(scope, osmId, x.name);
@@ -246,6 +230,7 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
                 }
             }).catch(() => {
                 currentQuery[type] = undefined;
+                return { name: undefined }
             });
     }
 
@@ -259,7 +244,7 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
         }
 
         const nodeData = getColors(nodes, lod, scope); // { [lodId]: color }
-        const getSelectedRegions = (lod) => {
+        const getSelectedRegions = () => {
             return selectService.getSelectedNodes().reduce((acc, cv) => {
                 if (!cv.geodata || !cv.geodata[lod]) return acc;
     
@@ -287,7 +272,7 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
                         }
                     }
 
-                    const selectedRegions = getSelectedRegions(lod);
+                    const selectedRegions = getSelectedRegions();
                     const isHover = selectedRegions.includes(+prop.osm_id);
 
                     return {
@@ -359,7 +344,7 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
 
                 selectService.selectNodes({ attr: $rootScope.geo.level, value: {
                     id: osmId,
-                    name: scope.region.name
+                    name: tileGrid._featureMap[osmId].name || tileGrid._featureMap[osmId]['name:en'] || osmId
                 } });
             },
             clearClick: () => {
@@ -369,7 +354,6 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
 
                 const self = scope.visitorTracker;
                 scope.region = undefined;
-                scope.selectedRegions = [];
                 scope.$apply();
                 selectService.unselect();
 
@@ -432,16 +416,12 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
             }
         };
 
-        scope.visitorTracker._expHovers = getSelectedRegions(lod);;
+        scope.visitorTracker._expHovers = getSelectedRegions();
         scope.visitorTracker._nodeData = nodeData;
 
         const onMouseMove = function(e) {
             const osmId = +e.layer.properties.osm_id;
             if (!(osmId in nodeData)) {
-                return;
-            }
-
-            if (scope.selectedRegions.some(x => x.id == osmId)) {
                 return;
             }
 
@@ -453,6 +433,7 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
 
             if (!scope.region.name) {
                 getItemName(osmId, scope, 'region').then((x) => {
+                    tileGrid._featureMap[osmId].name = x.name;
                     scope.region = {
                         ...scope.region,
                         name: x.name
@@ -483,37 +464,24 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
 
         const onClick = function(e) {
             const osmId = +e.layer.properties.osm_id;
-            scope.selectedRegions = [];
+
 
             if (!(osmId in nodeData)) {
                 scope.visitorTracker.clearClick();
+                e.originalEvent._isCaught = true;
+                return;
+            }
 
+            const selectedRegions = getSelectedRegions();
+
+            if (selectedRegions.includes(+osmId)) {
+                scope.visitorTracker.click(osmId);
+                scope.visitorTracker._clearHighlightInternal(osmId);
+                e.originalEvent._isCaught = true;
                 return;
             }
             
             scope.visitorTracker.click(osmId);
-            const region = {
-                id: osmId,
-                name: e.layer.properties['name:en'] || e.layer.properties.name || getRegionCacheItem(scope, osmId),
-                color: nodeData[osmId]?.color,
-                x: e.originalEvent.pageX + 20,
-                y: e.originalEvent.pageY,
-            };
-            scope.selectedRegions = [region]
-
-            if (!region.name) {
-                getItemName(osmId, scope, 'selectedRegions').then((x) => {
-                    scope.selectedRegions = [
-                        ...scope.selectedRegions.filter(x => x.id !== osmId),
-                        {
-                            ...region,
-                            name: x.name
-                        }
-                    ]
-                    scope.$apply();
-                });
-            }
-
             e.originalEvent._isCaught = true;
         }
 
@@ -523,7 +491,6 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
                 return;
             }
 
-            scope.selectedRegions = [];
             scope.visitorTracker.clearClick();
         });
 
@@ -574,8 +541,6 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
         scope.$on(BROADCAST_MESSAGES.sigma.rendered, enableViewResetEvent);
         scope.$on(BROADCAST_MESSAGES.geoSelector.changed, function(ev, d) {
             const nodes = subsetService.subsetNodes.length > 0 ? subsetService.subsetNodes : renderGraphfactory.sig().graph.nodes();
-
-            scope.selectedRegions = [];
 
             if (d.levelId == 'node') {
                 if (typeof window.removeTileLayer == 'function') {
@@ -676,25 +641,6 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
             console.assert(map, "Map Exists on the graph");
            
             scope.mapCenter = map.latLngToLayerPoint(map.getCenter());
-            map.on('move', function(e) {
-                const newCenter = map.latLngToLayerPoint(map.getCenter());
-
-                const diffX = scope.mapCenter.x - newCenter.x;
-                const diffY = scope.mapCenter.y - newCenter.y;
-                if(Math.abs(diffX) > 0.01 || Math.abs(diffY) > 0.01) {
-                    scope.mapCenter = newCenter;
-
-                    if (scope.selectedRegions.length) {
-                        scope.selectedRegions.forEach(region => {
-                            region.x = region.x + diffX;
-                            region.y = region.y + diffY;
-                        });
-                    }
-                    
-                }
-
-            });
-
             // Zoom Start Event
             deregisters.push(scope.$on(prefix + 'zoomstart', function(e, data) {
                 if(!disableViewReset) {
