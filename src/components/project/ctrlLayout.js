@@ -105,7 +105,6 @@ function ($scope, $q, $timeout, eventBridgeFactory, leafletData, layoutService, 
     **************************************/
 
     function updateMapprSettings(event, data) {
-        console.log("UPDATING MAPPR SETTINGS!", data);
         _.each(data, function(value, key) {
             $scope.layout.setting(key, value);
         });

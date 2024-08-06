@@ -265,6 +265,20 @@
                         "isDeleted": {
                             "type": "boolean"
                         },
+                        "geo": {
+                            "type": ["null", "object"],
+                            "properties": {
+                                "minLevel": {
+                                    "type": "string"
+                                },
+                                "maxLevel": {
+                                    "type": "string"
+                                },
+                                "defaultLevel": {
+                                    "type": "string"
+                                }
+                            }
+                        },
                         "camera": {
                             "type": "object",
                             "additionalProperties": false,

@@ -399,8 +399,26 @@ angular.module('common')
                 }
             });
 
+            const populateGeoSettings = (snapshot) => {
+                $scope.isGeoLayout = snapshot.layout.plotType == 'geo';
+                if (!snapshot.geo) {
+                    return;
+                }
+
+                const geoLvls = $scope.geoLevels.map(x => x.id);
+                const startIdx = geoLvls.indexOf(snapshot.geo.minLevel || 'node');
+                const endIdx = geoLvls.indexOf(snapshot.geo.maxLevel || 'countries');
+
+                $scope.geoLevels = $scope.geoLevels.filter((x, idx) => idx <= startIdx && idx >= endIdx);
+
+                $rootScope.geo = {
+                    level: snapshot.geo.defaultLevel || 'countries'
+                }
+                $scope.geoLevel = $scope.geoLevels.find(x => x.id == $rootScope.geo.level);
+            }
+
             $scope.$on(BROADCAST_MESSAGES.snapshot.loaded, function (ev, data) {
-                $scope.isGeoLayout = data.snapshot.layout.plotType == 'geo';
+                populateGeoSettings(data.snapshot);
 
                 if ($scope.isShowTutorial === undefined) {
                     $scope.isShowTutorial = true;
@@ -408,7 +426,7 @@ angular.module('common')
             });
 
             $scope.$on(BROADCAST_MESSAGES.snapshot.changed, function (ev, data) {
-                $scope.isGeoLayout = data.snapshot.layout.plotType == 'geo';
+                populateGeoSettings(data.snapshot);
             });
 
             $scope.exportCurrentImage = function () {
