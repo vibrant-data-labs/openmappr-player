@@ -39,6 +39,8 @@ angular.module('common')
              * @param {Object} hoverData - The hover descriptor
              * @param {string} hoverData.attr - The attribute
              * @param {string} hoverData.value - the attribute value
+             * @param {string} hoverData.attr2 - The attribute
+             * @param {string} hoverData.value2 - the attribute value
              * @param {string} hoverData.min - the attribute min value
              * @param {string} hoverData.max - the attribute max value
              * @param {string} hoverData.fivePct - fivePct
@@ -93,6 +95,9 @@ angular.module('common')
                     createMinMaxFilter(filters, data.attr, data.min, data.max);
                 } else {
                     createMultipleFilter(filters, data.attr, data.value);
+                    if (data.attr2) {
+                        createMultipleFilter(filters, data.attr2, data.value2);
+                    }
                 }
 
                 return _.reduce(_.values(filters), function (acc, filterCfg) {

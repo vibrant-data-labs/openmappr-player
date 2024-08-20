@@ -24,6 +24,7 @@
       var color = sigma.utils.floatColor(
         node.clusterColorStr || settings('nodeColorDefaultValue')
       );
+      var isParent = !Boolean(cluster.clusterKey);
 
       var minMax = cluster.nodes.reduce((acc, cv) => {
         const nodeX = cv[prefix + 'x'];
@@ -72,6 +73,9 @@
       }, 0);
 
       size = Math.sqrt(size) + node[prefix + 'size'];
+      if (isParent) {
+        size = size + (size * 0.05);
+      }
 
       data[i++] = center.x;
       data[i++] = center.y;

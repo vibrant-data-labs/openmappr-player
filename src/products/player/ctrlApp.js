@@ -221,23 +221,6 @@ angular.module('player')
                 //for sorting in list and (eventually) grid
                 $scope.appUi.nodeAttrs = dataGraph.getNodeAttrs();
 
-
-                var sigRender = renderGraphfactory.getRenderer();
-                var node = sigRender.d3Sel.clusters();
-                var snapshotId = snapshotService.getCurrentSnapshot().id;
-                const { xaxis, yaxis } = $scope.player.snapshots.find(i => i.id === snapshotId).layout;
-
-                const clusters = clusterService.getAllClusters();
-
-                Object.keys(clusters).forEach(key => {
-                    clusterService.getCoordinatesForCluster(clusters[key], { xaxis, yaxis }, node, key);
-                })
-
-                // const resp = clusterService.getCoordinatesForCluster('technology, business, science', {xaxis, yaxis}, node)
-                // console.log('poinst', resp);
-
-                // clusterService.d3ClusterCreate(node);
-
                 $scope.panelUI.showRightPanel = true;
             });
 

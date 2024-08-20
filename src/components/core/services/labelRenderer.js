@@ -127,7 +127,18 @@ function($q, renderGraphfactory, hoverService) {
     function labelHover(d) {
         var hoverFn = function() {
             _service.isGroupLabelHover = true;
-            hoverService.hoverNodes({ attr: renderGraphfactory.getRenderer().settings('nodeClusterAttr'), value: d.id });
+            if (d.id.includes(':::')) {
+                const [clusterAttr, subClusterAttr] = d.id.split(':::');
+                hoverService.hoverNodes({ 
+                    attr: renderGraphfactory.getRenderer().settings('nodeClusterAttr'), 
+                    value: clusterAttr,
+                    attr2: renderGraphfactory.getRenderer().settings('nodeSubclusterAttr'), 
+                    value2: subClusterAttr,
+                });
+
+            } else {
+                hoverService.hoverNodes({ attr: renderGraphfactory.getRenderer().settings('nodeClusterAttr'), value: d.id });
+            }
             hoverTimer = undefined;
         };
         _clearTimer();

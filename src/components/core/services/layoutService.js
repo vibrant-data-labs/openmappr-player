@@ -17,6 +17,7 @@ function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partiti
     this.getEdgeSizeAttrs =  getEdgeSizeAttrs;
     this.getLayoutPanelAttrs = getLayoutPanelAttrs;
     this.getGroupAttr = getGroupAttr;
+    this.getSubgroupAttr = getSubgroupAttr;
     this.MAX_COLOR_ITEMS = MAX_COLOR_ITEMS;
     this.hasRenderSettingsChanged = hasRenderSettingsChanged;
     this.invalidateCurrent = invalidateCurrent; //Invalidate the current layout, useful if changing layouts.
@@ -969,6 +970,25 @@ function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partiti
                 return info;
             }
         }
+        return undefined;
+    }
+
+    function getSubgroupAttr() {
+        var layout = this.getCurrentIfExists();
+        if (!layout || layout.mapprSettings.nodeColorStrat !== 'attr') {
+            return undefined;
+        }
+
+        var groupAttr = layout.mapprSettings.nodeSubclusterAttr;
+        if (!groupAttr) {
+            return undefined;
+        }
+
+        var info = AttrInfoService.getNodeAttrInfoForRG().getForId(groupAttr);
+        if(info && !info.isNumeric && !info.isTag && info.values.length > 1) {
+            return info;
+        }
+
         return undefined;
     }
 

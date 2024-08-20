@@ -116,14 +116,17 @@ angular.module('common')
                 };
 
                 var groupInfo = layoutService.getGroupAttr();
+                var subGroupInfo = layoutService.getSubgroupAttr();
                 if (settings('drawGroupLabels') && groupInfo !== undefined) {
                     var finalNodes = [];
                     var prefix = settings('prefix');
                     var attr = groupInfo.attr.id;
+                    var subAttr = subGroupInfo.attr.id;
                     var maxGroups = groupInfo.values.length;
                     var groups = {};
                     var popped = [];
-                    var allGroups = _.groupBy(allnodes, function (n) { return n.attr[attr]; });
+                    var allGroups = _.groupBy(allnodes, n => n.attr[attr]);
+                    var allSubgroups = _.groupBy(allnodes, n => `${n.attr[attr]}:::${n.attr[subAttr]}`);
                     // get nodes and nodes positions of each group
                     _.each(nodes, function (node) {
                         var x = node[prefix + 'x'], y = node[prefix + 'y'];
@@ -132,9 +135,7 @@ angular.module('common')
                             var groupNodes = allGroups[group];
                             var count = groupInfo.valuesCount[group];
                             if (hasSubset) {
-                                groupNodes = _.filter(groupNodes, function (n) {
-                                    return _.find(nodes, function (q) { return q.id == n.id });
-                                });
+                                groupNodes = groupNodes.filter(n => nodes.find(q => q.id == n.id));
                                 count = groupNodes.length;
                             }
 
@@ -147,16 +148,55 @@ angular.module('common')
                                 sumY: 0,
                                 isGroup: true,
                                 inHover: inHover,
-                                count: count
+                                count: count,
+                                clusterColorStr: ''
                             };
                         }
+
+                        var subgroup = `${node.attr[attr]}:::${node.attr[subAttr]}`;
+                        var subAttrVal = node.attr[subAttr];
+                        if (!groups[subgroup]) {
+                            var groupNodes = allSubgroups[group];
+                            var count = subGroupInfo.valuesCount[subAttrVal];
+                            if (hasSubset) {
+                                allSubgroups = allSubgroups.filter(n => nodes.find(q => q.id == n.id));
+                                count = allSubgroups.length;
+                            }
+
+                            groups[subgroup] = {
+                                title: subAttrVal,
+                                id: subgroup,
+                                nodes: groupNodes,
+                                viznodes: [],
+                                sumX: 0,
+                                sumY: 0,
+                                isGroup: true,
+                                inHover: inHover,
+                                count: count,
+                                clusterColorStr: ''
+                            };
+                        }
+                
+                
                         var info = groups[group];
                         if (onScreen(x, y)) {
                             info.viznodes.push(node);
                             info.sumX += x;
                             info.sumY += y;
                             if (!info.clusterColorStr)
-                                info.clusterColorStr = node.clusterColorStr;
+                                info.clusterColorStr = node.parentClusterColorStr;
+                            if (node.inPop) {
+                                popped.push(node);
+                            }
+                        }
+                
+                        var subinfo = groups[subgroup];
+                        if (onScreen(x, y)) {
+                            subinfo.viznodes.push(node);
+                            subinfo.sumX += x;
+                            subinfo.sumY += y;
+                            if (!subinfo.clusterColorStr)
+                                subinfo.clusterColorStr = node.clusterColorStr;
                             if (node.inPop) {
                                 popped.push(node);
                             }
@@ -165,7 +205,7 @@ angular.module('common')
 
                     if (popped.length == 0) {
                         //remove undefined groups (nodes which do not have label value or have no visible nodes)
-                        groups = _.reject(groups, function (group) { return (group.title && group.viznodes.length > 0) ? false : true; });
+                        groups = _.reject(groups, (group) => !group.title || !group.viznodes.length);
 
                         // compute position centroid
                         // and test whether to display the group label

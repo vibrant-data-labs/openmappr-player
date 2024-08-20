@@ -107,7 +107,7 @@ function ($rootScope, layoutService, $q, $timeout, renderGraphfactory, inputMgmt
             }
         }
         
-        var topNode = _getTopNode(event.data.nodes);
+        var topNode = _getTopNode(event.data.nodes || []);
         if (topNode) {
             event.data.nodes = [topNode];
         }
@@ -129,7 +129,18 @@ function ($rootScope, layoutService, $q, $timeout, renderGraphfactory, inputMgmt
             }
             
             if (event.data.all) {
-                selectService.selectNodes({ attr: settings('nodeClusterAttr'), value: event.data.labelId });
+                if (event.data.labelId.includes(':::')) {
+                    const [clusterAttr, subClusterAttr] = event.data.labelId.split(':::');
+                    selectService.selectNodes({ 
+                        attr: settings('nodeClusterAttr'),
+                        value: clusterAttr,
+                        attr2: settings('nodeSubclusterAttr'),
+                        value2: subClusterAttr,
+                     });
+
+                } else {
+                    selectService.selectNodes({ attr: settings('nodeClusterAttr'), value: event.data.labelId });
+                }
             }
             else {
                 var topNode = _getTopNode(event.data.node);

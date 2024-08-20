@@ -145,9 +145,9 @@
     });
 
     // calculate cluster circles depending on the nodes on screen
-    var colorAttr = this.settings(options, 'nodeClusterAttr');
+    var clusterAttr = this.settings(options, 'nodeClusterAttr');
     var clustersOnScreen = graph.nodes().reduce((acc, node) => {
-      const key = node.attr[colorAttr];
+      const key = node.attr[clusterAttr];
       let item = acc.find(x => x.key === key);
       if (!item) {
         item = { key: key, nodes: [node] };
@@ -158,6 +158,25 @@
 
       return acc;
     }, []);
+
+    // calculate subcluster circles depending on the nodes on screen
+    var subClusterAttr = this.settings(options, 'nodeSubclusterAttr');
+    var subClustersOnScreen = [];
+    if (subClusterAttr) {
+      subClustersOnScreen = graph.nodes().reduce((acc, node) => {
+        const clusterKey = node.attr[clusterAttr];
+        const key = node.attr[subClusterAttr];
+        let item = acc.find(x => x.clusterKey === clusterKey && x.key === key);
+        if (!item) {
+          item = { key: key, clusterKey: clusterKey, nodes: [node] };
+          acc.push(item);
+        } else {
+          item.nodes.push(node);
+        }
+  
+        return acc;
+      }, []);
+    }
 
     // only draw edge if one end is on the screen
     for (a = graph.edges(), i = 0, l = a.length; i < l; i++) {
@@ -202,6 +221,17 @@
     }
 
     for (a = clustersOnScreen, i = 0, l = a.length; i < l; i++) {
+      k = sigma.webgl.clusters.def;
+
+      if (!this.clusterFloatArrays[k])
+        this.clusterFloatArrays[k] = {
+          clusters: []
+        };
+
+      this.clusterFloatArrays[k].clusters.push(a[i]);
+    }
+
+    for (a = subClustersOnScreen, i = 0, l = a.length; i < l; i++) {
       k = sigma.webgl.clusters.def;
 
       if (!this.clusterFloatArrays[k])

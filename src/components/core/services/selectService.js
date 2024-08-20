@@ -257,6 +257,9 @@ angular.module('common')
                         this.createMinMaxFilter(data.attr, data.min, data.max, data.force, data.forceDisable);
                     } else {
                         this.createMultipleFilter(data.attr, data.value);
+                        if (data.attr2) {
+                            this.createMultipleFilter(data.attr2, data.value2);
+                        }
                     }
                 }
 

@@ -300,43 +300,77 @@ angular.module('common')
                     nodes.push(n);
                 });
                 const clusterAttr = layout.mapprSettings.nodeClusterAttr;
+                const subclusterAttr = layout.mapprSettings.nodeSubclusterAttr;
                 const clusters = _.reduce(nodes, function(acc, cv) {
-                    const val = cv.attr[clusterAttr];
-                    if(!acc[val]) {
-                        acc[val] = [];
+                    const clusterVal = cv.attr[clusterAttr];
+                    const subclusterVal = cv.attr[subclusterAttr] || '';
+                    if (!acc[clusterVal]) {
+                        acc[clusterVal] = {
+                            color: [],
+                        };
                     }
-                    acc[val].push(cv.color);
+                    if (!acc[clusterVal][subclusterVal]) {
+                        acc[clusterVal][subclusterVal] = [];
+                    }
+                    acc[clusterVal][subclusterVal].push(cv.color);
+                    acc[clusterVal].color.push(cv.color);
                     return acc;
                 }, {});
                 // calculate the most frequent color
                 Object.keys(clusters).forEach(function(key) {
-                    const colors = clusters[key];
-                    const colorStrs = colors.map(r => ({
-                        color: r,
-                        colorStr: window.mappr.utils.colorStr(r)
-                    }));
+                    const subclusters = clusters[key];
+                    Object.keys(subclusters).forEach(function(subkey) {
+                        if (subkey === 'color') {
+                            return;
+                        }
+                        const colors = subclusters[subkey];
+                        const colorStrs = colors.map(r => ({
+                            color: r,
+                            colorStr: window.mappr.utils.colorStr(r)
+                        }));
 
-                    const colorStats = _.reduce(colorStrs, function(acc, cv) {
-                        if (!acc[cv.colorStr]) {
-                            acc[cv.colorStr] = {
+                        const colorStats = _.reduce(colorStrs, function(acc, cv) {
+                            if (!acc[cv.colorStr]) {
+                                acc[cv.colorStr] = {
+                                    count: 1,
+                                    color: cv.color
+                                }
+                            } else {
+                                acc[cv.colorStr].count++;
+                            }
+
+                            return acc;
+                        }, {});
+                        
+                        const sorted = _.sortBy(colorStats, 'count');
+
+                        subclusters[subkey] = sorted[sorted.length - 1].color;
+                    });
+
+                    const clusterColors = clusters[key].color;
+                    const clusterColorStats = _.reduce(clusterColors, function(acc, cv) {
+                        if (!acc[cv]) {
+                            acc[cv] = {
                                 count: 1,
-                                color: cv.color
+                                color: cv
                             }
                         } else {
-                            acc[cv.colorStr].count++;
+                            acc[cv].count++;
                         }
 
                         return acc;
                     }, {});
-                    
-                    const sorted = _.sortBy(colorStats, 'count');
 
-                    clusters[key] = sorted[sorted.length - 1].color;
+                    const sortedClusterColors = _.sortBy(clusterColorStats, 'count');
+                    clusters[key].color = sortedClusterColors[sortedClusterColors.length - 1].color;
                 });
 
                 _.each(nodes, function(node) {
                     const val = node.attr[clusterAttr];
-                    node.clusterColor = clusters[val];
+                    const subVal = node.attr[subclusterAttr] || '';
+                    node.clusterColor = clusters[val][subVal];
+                    node.parentClusterColor = clusters[val].color;
+                    node.parentClusterColorStr = window.mappr.utils.colorStr(node.parentClusterColor);
                     node.clusterColorStr = window.mappr.utils.colorStr(node.clusterColor);
                 });
                 // sort to establish drawing order
