@@ -675,6 +675,9 @@
                                         "nodeClusterAttr": {
                                             "type": "string"
                                         },
+                                        "nodeSubclusterAttr": {
+                                            "type": "string"
+                                        },                                        
                                         "drawClustersCircle": {
                                             "type": "boolean"
                                         },
