@@ -121,12 +121,12 @@ angular.module('common')
                     var finalNodes = [];
                     var prefix = settings('prefix');
                     var attr = groupInfo.attr.id;
-                    var subAttr = subGroupInfo.attr.id;
+                    var subAttr = subGroupInfo ? subGroupInfo.attr.id : null;
                     var maxGroups = groupInfo.values.length;
                     var groups = {};
                     var popped = [];
                     var allGroups = _.groupBy(allnodes, n => n.attr[attr]);
-                    var allSubgroups = _.groupBy(allnodes, n => `${n.attr[attr]}:::${n.attr[subAttr]}`);
+                    var allSubgroups = subAttr ? _.groupBy(allnodes, n => `${n.attr[attr]}:::${n.attr[subAttr]}`) : [];
                     // get nodes and nodes positions of each group
                     _.each(nodes, function (node) {
                         var x = node[prefix + 'x'], y = node[prefix + 'y'];
@@ -153,30 +153,31 @@ angular.module('common')
                             };
                         }
 
-                        var subgroup = `${node.attr[attr]}:::${node.attr[subAttr]}`;
-                        var subAttrVal = node.attr[subAttr];
-                        if (!groups[subgroup]) {
-                            var groupNodes = allSubgroups[group];
-                            var count = subGroupInfo.valuesCount[subAttrVal];
-                            if (hasSubset) {
-                                allSubgroups = allSubgroups.filter(n => nodes.find(q => q.id == n.id));
-                                count = allSubgroups.length;
+                        if (subAttr) {
+                            var subgroup = `${node.attr[attr]}:::${node.attr[subAttr]}`;
+                            var subAttrVal = node.attr[subAttr];
+                            if (!groups[subgroup]) {
+                                var groupNodes = allSubgroups[group];
+                                var count = subGroupInfo.valuesCount[subAttrVal];
+                                if (hasSubset) {
+                                    allSubgroups = allSubgroups.filter(n => nodes.find(q => q.id == n.id));
+                                    count = allSubgroups.length;
+                                }
+    
+                                groups[subgroup] = {
+                                    title: subAttrVal,
+                                    id: subgroup,
+                                    nodes: groupNodes,
+                                    viznodes: [],
+                                    sumX: 0,
+                                    sumY: 0,
+                                    isGroup: true,
+                                    inHover: inHover,
+                                    count: count,
+                                    clusterColorStr: ''
+                                };
                             }
-
-                            groups[subgroup] = {
-                                title: subAttrVal,
-                                id: subgroup,
-                                nodes: groupNodes,
-                                viznodes: [],
-                                sumX: 0,
-                                sumY: 0,
-                                isGroup: true,
-                                inHover: inHover,
-                                count: count,
-                                clusterColorStr: ''
-                            };
                         }
-                
                 
                         var info = groups[group];
                         if (onScreen(x, y)) {
@@ -190,15 +191,17 @@ angular.module('common')
                             }
                         }
                 
-                        var subinfo = groups[subgroup];
-                        if (onScreen(x, y)) {
-                            subinfo.viznodes.push(node);
-                            subinfo.sumX += x;
-                            subinfo.sumY += y;
-                            if (!subinfo.clusterColorStr)
-                                subinfo.clusterColorStr = node.clusterColorStr;
-                            if (node.inPop) {
-                                popped.push(node);
+                        if (subAttr) {
+                            var subinfo = groups[subgroup];
+                            if (onScreen(x, y)) {
+                                subinfo.viznodes.push(node);
+                                subinfo.sumX += x;
+                                subinfo.sumY += y;
+                                if (!subinfo.clusterColorStr)
+                                    subinfo.clusterColorStr = node.clusterColorStr;
+                                if (node.inPop) {
+                                    popped.push(node);
+                                }
                             }
                         }
                     });
