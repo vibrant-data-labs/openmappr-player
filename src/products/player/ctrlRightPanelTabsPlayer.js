@@ -469,7 +469,7 @@ angular.module('common')
 
             $scope.tabs = {
                 summary: {
-                    title: 'Summary',
+                    title: 'Filters',
                     panel: 'filter',
                     cmd: function () {
                         $scope.panelUI.openPanel('filter');

@@ -1,22 +1,11 @@
 .flex-transclude.width-100(ng-mouseleave="rightPanelExited();", ng-controller="FilterPanelParentCtrl")
 	.flex-vert-container.flex-transclude.panel-container.width-100
-		//- .filter-header
-			//- ul.filter-header__list
-			//- 	li.filter-header__item.tag.filter-header__item_current(ng-click="navigateTo('.tags-first-item')", ng-if="canShowTagsBtn()")
-			//- 		span.filter-header__link Tags
-			//- 	li.filter-header__item.chart(ng-click="navigateTo('.chart-first-item')", ng-if="canShowChartsBtn()")
-			//- 		span.filter-header__link Charts
-
 		.panel-scroll.flex-fill.flex-vert-container(ng-controller="FilterPanelCtrl")
-			//- span {{filteredDistrAttrs.length}} of {{nodeDistrAttrs.length}}
 			div()
-				div.filter-list-category__head(ng-class="{'filter-list-category_open' : isShowMainCategory}", ng-click='showMainCategory()')
-					h5.filter-list-category__title Data Filters
-					button.filter-list-category__btn(ng-class='{"filter-list-category__btn_active": isShowMainCategory}')
 				ul.filter-list(container-item-count="nodeDistrAttrs.length" dir-kill-tooltip-on-scroll, ng-class="{'filter-list_shown' : ui.renderDistr && isShowMainCategory}", on-scroll="onScroll")
 					li.filter-list__item(
 						ng-repeat="attr in ui.filteredAttrs = ((hasPriority ? nodeDistrAttrsHigh : nodeDistrAttrs) | filter: {title : ui.statsSearchKey}) track by attr.id",
-						ng-if="attr.visible", ng-class="{'attr-hidden':!attr.visible, 'first': ($index == 1), 'chart-first-item': attr.isFirstChart, 'tags-first-item': attr.isFirstTag}",
+						ng-class="{'first': ($index == 1), 'chart-first-item': attr.isFirstChart, 'tags-first-item': attr.isFirstTag}",
 						ng-click='selectNodesByAttrib(attr.title, attr.value, $event)'
 					)
 						section.card.card_type_filter(data-attr="{{attr.id}}", class="card_collapsed" ng-class="{'card__chart' : attr.attrType == 'integer' || attr.attrType == 'float' || attr.attrType == 'boolean' || attr.attrType == 'year' || attr.attrType == 'timestamp' }")
@@ -68,13 +57,10 @@
 									tooltip-placement="right", 
 									tooltip-append-to-body="true")
 			.filter-list-category(ng-if="hasPriority")
-				div.filter-list-category__head(ng-class="{'filter-list-category_open' : isShowAdditionalCategory}", ng-click='showAdditionCat()')
-					h5.filter-list-category__title Advanced Filters
-					button.filter-list-category__btn(ng-class='{"filter-list-category__btn_active": isShowAdditionalCategory}')
-				ul.filter-list(container-item-count="nodeDistrAttrs.length" dir-kill-tooltip-on-scroll, ng-class="{'filter-list_shown' : ui.renderDistr && isShowAdditionalCategory}", on-scroll="onScroll")
+				ul.filter-list(container-item-count="nodeDistrAttrs.length" dir-kill-tooltip-on-scroll, ng-class="{'filter-list_shown' : ui.renderDistr}", on-scroll="onScroll")
 					li.filter-list__item(
 						ng-repeat="attr in ui.filteredAttrs = (nodeDistrAttrsLow | filter: {title : ui.statsSearchKey}) track by attr.id",
-						ng-if="attr.visible", ng-class="{'attr-hidden':!attr.visible, 'first': ($index == 1), 'chart-first-item': attr.isFirstChart, 'tags-first-item': attr.isFirstTag}",
+						ng-class="{'first': ($index == 1), 'chart-first-item': attr.isFirstChart, 'tags-first-item': attr.isFirstTag}",
 						ng-click='selectNodesByAttrib(attr.title, attr.value, $event)'
 					)
 						section.card.card_type_filter(data-attr="{{attr.id}}", class="card_collapsed", ng-click="collapseCard($event)", ng-class="{'card__chart' : attr.attrType == 'integer' || attr.attrType == 'float' || attr.attrType == 'boolean' || attr.attrType == 'year' || attr.attrType == 'timestamp' }")

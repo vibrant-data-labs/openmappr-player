@@ -196,7 +196,7 @@ angular.module('common')
                 if (filterAttrIds.length === 0) {
                     var filterAttrVMs = _.reduce(dataGraph.getNodeAttrs(), function(acc, attr) {
                         // Filter hidden & numeric & not searchable attrs
-                        if(!attr.isNumeric && attr.visible && attr.searchable) {
+                        if(!attr.isNumeric && attr.visibility.includes('search')) {
                             acc.push(_.assign(_.clone(attr), {
                                 checked: false
                             }));

@@ -86,7 +86,14 @@ angular.module('common')
                         } else if (scope.log) {
                             selectService.selectNodes({ attr: attrInfo.attr.id, min: Math.pow(10, valueRange.min), max: Math.pow(10, valueRange.max), force: true});
                         } else {
-                            selectService.selectNodes({ attr: attrInfo.attr.id, min: valueRange.min, max: valueRange.max, force: true});
+                            let min = valueRange.min;
+                            let max = valueRange.max;
+                            // if (attrInfo.attr.attrType === 'year') {
+                            //     min = Math.ceil(min);
+                            //     max = Math.floor(max);
+                            // }
+
+                            selectService.selectNodes({ attr: attrInfo.attr.id, min: min, max: max, force: true});
                         }
                     }
                 };
@@ -102,17 +109,6 @@ angular.module('common')
                 scope.$watch('attr', function(){
                     attrInfo = scope.attr;
                 });
-
-                // scope.$on(BROADCAST_MESSAGES.hss.subset.changed, function() {
-                //     // Reset filter values range on subset
-                //     filterConfig = selectService.getFilterForId(attrId);
-                //     console.log("FILTERCONFIG", attrInfo);
-                //     setRange();
-                // });
-
-                // scope.$on(BROADCAST_MESSAGES.fp.filter.reset, function() {
-                //     scope.filterRange = [0, binCount];
-                // });
 
                 function init () {
                     binCount = renderCtrl.getBinCount();
@@ -130,9 +126,14 @@ angular.module('common')
                     var attrMax = attrInfo.stats.max, attrMin = attrInfo.stats.min;
                     var step = (attrMax - attrMin) / binCount;
 
+                    if (attrInfo.attr.attrType === 'year') {
+                        step = 1;
+                        attrMax = attrMax + 1;
+                    }
+
                     var
                         valMin = attrMin + (min === 0 ? 0 : min * step),
-                        valMax = max === binCount ? attrMax : attrMin + max * step;
+                        valMax = (max === binCount ? attrMax : attrMin + max * step) - 1;
 
                     return {
                         min: attrInfo.isInteger ? Math.ceil(valMin) : valMin,

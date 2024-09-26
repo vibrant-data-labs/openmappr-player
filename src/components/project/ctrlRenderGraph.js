@@ -419,8 +419,6 @@ angular.module('common')
                 if ($scope.panelUI.currentPanelOpen === 'filter') {
                     subsetService.subset();
                 } else {
-                    $scope.panelUI.openPanel('filter');
-
                     setTimeout(() => {
                         subsetService.subset();
                     }, 500)

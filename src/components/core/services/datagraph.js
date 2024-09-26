@@ -111,7 +111,27 @@ angular.module('common')
                 this.id = _.uniqueId('raw-data');
                 this.nodes = nodes;
                 this.edges = edges;
-                this.nodeAttrs = nodeAttrs;
+                this.nodeAttrs = nodeAttrs.map(attr => {
+                    if (!attr.visibility) {
+                        attr.visibility = [];
+                        if (attr.visible) {
+                            attr.visibility.push('filters');
+                        }
+    
+                        if (attr.visibleInProfile) {
+                            attr.visibility.push('profile');
+                        }
+    
+                        if (attr.searchable) {
+                            attr.visibility.push('search');
+                        }
+                    }
+
+                    delete attr.visible;
+                    delete attr.visibleInProfile;
+                    delete attr.searchable;
+                    return attr;
+                });
                 this.edgeAttrs = edgeAttrs;
                 this.nodeAttrIndex = _.indexBy(nodeAttrs, 'id');
                 this.edgeAttrIndex = _.indexBy(edgeAttrs, 'id');

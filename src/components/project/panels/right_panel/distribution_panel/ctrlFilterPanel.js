@@ -13,6 +13,7 @@ angular.module('common')
                 charts: ['histogram'],
                 bars: ['horizontal-bars']
             };
+            const VISIBILITY_ID='filters';
 
             /*************************************
     ********* Scope Bindings *************
@@ -48,7 +49,7 @@ angular.module('common')
             $scope.$on(BROADCAST_MESSAGES.fp.filter.changed, onFilterSubset);
             $scope.$on(BROADCAST_MESSAGES.fp.filter.undo, onFilterUndo);
             $scope.$on(BROADCAST_MESSAGES.fp.filter.redo, onFilterRedo);
-            $scope.$on('TOGGLEFILTERS', toggleFiltersVisiblity);
+            $scope.$on('TOGGLEFILTERS', toggleFiltersvisibility);
             $scope.$on('RESETFILTERS', resetFilters);
 
             $scope.$on('$destroy', function() {
@@ -191,7 +192,10 @@ angular.module('common')
                 $scope.nodeDistrAttrs = [];
                 _.each(dataGraph.getNodeAttrs(), function(attr) {
                     if(AttrInfoService.isDistrAttr(attr, infoObj.getForId(attr.id))) {
-                        var attrClone = _.clone(attr);
+                        if (!attr.visibility.includes(VISIBILITY_ID)) {
+                            return;
+                        }
+                        var attrClone = _.cloneDeep(attr);
                         attrClone.principalVal = null;
                         attrClone.fpHeight = null;
                         attrClone.disableFilter = newSelection.length === 1 ? true : false;
@@ -201,28 +205,24 @@ angular.module('common')
 
                 $rootScope.canShowTagsBtn = function() {
                     return $scope.nodeDistrAttrs.some(function(attr) { 
-                        return attr.visible && $scope.tagsTypes.includes(attr.renderType);
+                        return $scope.tagsTypes.includes(attr.renderType);
                     });
                 }
 
                 $rootScope.canShowChartsBtn = function() {
                     return $scope.nodeDistrAttrs.some(function(attr) { 
-                        return attr.visible && (attr.attrType == 'integer' || attr.attrType == 'float' || attr.attrType == 'year' || attr.attrType == 'timestamp')
+                        return (attr.attrType == 'integer' || attr.attrType == 'float' || attr.attrType == 'year' || attr.attrType == 'timestamp')
                     });
                 }
 
                 var tagAttrs = $scope.nodeDistrAttrs.filter(function(x) { return groups.tag.includes(x.renderType) || groups.widetag.includes(x.renderType);});
-                var visibleTagAttrs = tagAttrs.filter(function(x) {
-                    return x.visible;
-                });
+                var visibleTagAttrs = tagAttrs;
                 if (visibleTagAttrs.length) {
                     visibleTagAttrs[0].isFirstTag = true;
                 }
 
                 var chartAttrs = $scope.nodeDistrAttrs.filter(function(x) { return groups.charts.includes(x.renderType);});
-                var visibleChartAttrs = chartAttrs.filter(function(x) {
-                    return x.visible;
-                });
+                var visibleChartAttrs = chartAttrs;
 
                 if (visibleChartAttrs.length) {
                     visibleChartAttrs[0].isFirstChart = true;
@@ -230,9 +230,7 @@ angular.module('common')
 
                 var barsAttrs = $scope.nodeDistrAttrs.filter(function(x) { return groups.bars.includes(x.renderType);});
 
-                var visibleBarsAttrs = barsAttrs.filter(function(x) {
-                    return x.visible;
-                });
+                var visibleBarsAttrs = barsAttrs;
 
                 if (visibleBarsAttrs.length) {
                     visibleBarsAttrs[0].isFirstChart = true;
@@ -259,7 +257,6 @@ angular.module('common')
 
                 $scope.nodeDistrAttrs = [...tagAttrs, ...barsAttrs, ...chartAttrs];
                 var nodePriorities = _($scope.nodeDistrAttrs)
-                    .filter(x => x.visible)
                     .countBy(x => x.priority || 'low')
                     .value();
                 $scope.hasPriority = nodePriorities.high > 0 && nodePriorities.low > 0;
@@ -425,7 +422,7 @@ angular.module('common')
                 }
             }
 
-            function toggleFiltersVisiblity() {
+            function toggleFiltersvisibility() {
                 var infoObj = AttrInfoService.getNodeAttrInfoForRG();
                 _.each($scope.nodeDistrAttrs, function(attr) {
                     var attrInfo = infoObj.getForId(attr.id);

@@ -185,7 +185,7 @@
                         )
                           | before
                           = ' '
-                          span {{val.values[0].toString().split('.')[0]}}
+                          span {{+val.values[0].toString().split('.')[0] + 1}}
 
                         span.filter-section__item_array(
                           ng-if="val.description == 'lt' && (filter.attrInfo.attr.attrType == 'timestamp')"

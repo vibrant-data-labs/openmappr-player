@@ -309,7 +309,7 @@ angular.module('common')
                         interim.renderType = attr.renderType || 'default';
                         interim.visible = attr.visible;
                         interim.isStarred = _.has(attr, 'isStarred') ? attr.isStarred : false;
-                        interim.searchable = _.has(attr, 'searchable') ? attr.searchable : true;
+                        interim.searchable = attr.visibility.includes('search');
                         interim.spHeight = AttrInfoService.getAttrSPHeight(interim.id, interim.renderType, interim.visible, true);
                         result.push(interim);
                     }
