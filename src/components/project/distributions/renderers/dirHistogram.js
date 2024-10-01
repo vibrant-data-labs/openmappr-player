@@ -176,14 +176,6 @@ angular.module('common')
 
                 // Create global distributions & selection bars
                 try {
-                    // if (scope.hasLogScale && !scope.checkLogScale && attrInfo.bins.length) {
-                    //     const binPercentage = attrInfo.bins[0].count / renderCtrl.getTotalNodesCount() * 100;
-                    //     if (binPercentage > 85) {
-                    //         attrInfo.isLogScale = scope.isLogScale = true
-                    //     }
-                    //     scope.checkLogScale = true;
-                    // }
-
                     var initialSelection = FilterPanelService.getInitialSelection();
                     histoBars = createGlobalDistribution(histElem, tooltip, attrInfo, renderCtrl, histoData, scope.isLogScale);
 
@@ -222,9 +214,12 @@ angular.module('common')
                             histElem.removeChild(histElem.lastChild);
                         }
                         histoData.binType = getBinType(attrInfo);
-                        histoBars = createGlobalDistribution(histElem, tooltip, attrInfo, renderCtrl, histoData, nodes, scope.isLogScale);
+                        const selectedNodes = selectService.selectedNodes && selectService.selectedNodes.length ? selectService.getSelectedNodes() : undefined;
+                        const nodeItems = nodes || selectedNodes || undefined;
+                        histoBars = createGlobalDistribution(histElem, tooltip, attrInfo, renderCtrl, histoData, nodeItems, scope.isLogScale);
                         $timeout(function () {
-                            updateSelectionBars(histoBars, [], attrInfo, histoData, false, histElem, renderCtrl, scope.isLogScale);
+                            updateSelectionBars(histoBars, nodeItems, attrInfo, histoData, false, histElem, renderCtrl, scope.isLogScale);
+                            updateFiltSelBars(histoBars, nodeItems, attrInfo, histoData, renderCtrl, scope);
                         }, 500);
                     }, 500);
                 }
