@@ -77,6 +77,9 @@ function($q, $http, projFactory) {
                 if (!snap.layout.settings.nodeClusterAttr) {
                     snap.layout.settings.nodeClusterAttr = snap.layout.settings.nodeColorAttr;
                 }
+                if (!snap.layout.settings.nodeSubclusterAttr) {
+                    snap.layout.settings.nodeSubclusterAttr = '';
+                }
             });
             if(response.status === 500) {
                 currPlayerDefer.reject('Some error');

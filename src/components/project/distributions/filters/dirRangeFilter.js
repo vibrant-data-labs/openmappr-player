@@ -128,6 +128,8 @@ angular.module('common')
 
                     if (attrInfo.attr.attrType === 'year') {
                         step = 1;
+                        attrMax = +attrMax;
+                        attrMin = +attrMin;
                         attrMax = attrMax + 1;
                     }
 

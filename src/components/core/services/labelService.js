@@ -105,6 +105,10 @@ angular.module('common')
                 return 0;
             }
 
+            function isGroupOrSelected(node) {
+                return 
+            }
+
             // add nodes representing group labels
             // nodes are those on screen or in a border outside the screen
             // allnodes are all the nodes, so that groups can contain every node, even those offscreen
@@ -333,7 +337,6 @@ angular.module('common')
                 var threshold = overrideThresholding ? 1 : settings('labelThreshold');
 
                 console.assert(threshold > 0, 'threshold should be greater than 0');
-                //console.log('Applying collision strat for labels. Num of nodes to take:' + nodes.length);
                 var sortedNodes = nodes.sort(function isSmallerInSize(n1, n2) {
                     var order1 = selectOrder(n1), order2 = selectOrder(n2);
                     if (order1 == order2) { /// XNOR
@@ -352,7 +355,6 @@ angular.module('common')
                     collisionCount = 0;
                     return optFilterCollisions(sortedNodes, settings).then(function (result) {
                         var labelsToShow = _.compact(result).concat(selNodes);
-                        // var labelsToHide = _.difference(sortedNodes, labelsToShow);
 
                         return labelsToShow;
                     });
@@ -574,7 +576,7 @@ angular.module('common')
                     allNodes = addGroupNodes(allNodes, allNodes, settings, true, hasSubset);   // add group labels if enabled
                 }
 
-                sigma.d3.labels.filterCollision(allNodes, settings, true, function (nodes) {
+                sigma.d3.labels.filterCollision(allNodes, settings, true).then(function (nodes) {
 
                     var sel = d3Sel.selectAll('div').data(nodes, nodeId);
 
