@@ -40,7 +40,7 @@
 				h6.panel-list__title(ng-if="dataGroupsInfo.colorNodesBy.attrType == 'integer' || dataGroupsInfo.colorNodesBy.attrType == 'float' || dataGroupsInfo.colorNodesBy.attrType == 'boolean' || dataGroupsInfo.colorNodesBy.attrType == 'year' || dataGroupsInfo.colorNodesBy.attrType == 'timestamp'") {{dataGroupsInfo.colorNodesBy.title}}
 		.list-content.flex-fill
 			///
-			/// Node Color Panel
+			/// Node Clustered by Panel
 			///
 			.panel-scroll(ng-if="!ui.showingLinks && mapprSettings.nodeColorStrat != 'select' && mapprSettings.nodeColorStrat != 'fixed'", dir-kill-tooltip-on-scroll)
 				.colored-by__container
@@ -63,6 +63,25 @@
 					.panel-list(ng-class="{'highlighted': ui.highlightingNodes}", ng-if="isShowClusteredBy && dataGroupsInfo.colorNodesBy.id != dataGroupsInfo.clusterNodesBy.id")
 						.flex
 							dir-attr-renderer(render-to-type="'horizontal-bars'", attr-to-render="dataGroupsInfo.clusterNodesBy", node-color-str="dataGroupsInfo.colorNodesBy.id == dataGroupsInfo.clusterNodesBy.id ? nodeColorStr : ''", is-node="true", show-filter="true", disable-filter="false" theme="appUi.theme" pinned-media="pinnedMedia" gradient="true")
+				.colored-by__container(ng-if="dataGroupsInfo.subclusterNodesBy")
+					.header(ng-if="isShowClusteredBy" ng-mouseenter="panelUI.summaryPanelOpen ? showLegendBtns = true : showLegendBtns = false;" ng-mouseleave="showLegendBtns = false;")
+						.row.vert-align.main
+							.col-xs-12
+								h6.title.text-uppercase.vert-align(style="padding-top: 0")
+										.title-space.width-100
+											h6.title.text-uppercase.truncate.vert-align(style="padding-top: 0")
+												.title-space
+													span.inline.nowrap
+														span Subclustered by:&nbsp;&nbsp;
+														span {{dataGroupsInfo.subclusterNodesBy.title}}
+														span.card__tooltip.tooltip__colored-by(ng-if="dataGroupsInfo.subclusterNodesBy.tooltip"
+															uib-tooltip="{{dataGroupsInfo.subclusterNodesBy.tooltip}}",
+															tooltip-placement="right", 
+															tooltip-append-to-body="true")											
+																	
+					.panel-list(ng-class="{'highlighted': ui.highlightingNodes}", ng-if="isShowClusteredBy && dataGroupsInfo.colorNodesBy.id != dataGroupsInfo.subclusterNodesBy.id")
+						.flex
+							dir-attr-renderer(render-to-type="'horizontal-bars'", attr-to-render="dataGroupsInfo.subclusterNodesBy", is-node="true", show-filter="true", disable-filter="false" theme="appUi.theme" pinned-media="pinnedMedia" gradient="true")
 				.row.vert-align.main.main--sized-by
 					.col-xs-12
 						h6.title.text-uppercase.vert-align.legend-title.legend-title--bottom

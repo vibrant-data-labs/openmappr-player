@@ -38,6 +38,7 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
     $scope.dataGroupsInfo = {
         colorNodesBy: null,
         clusterNodesBy: null,
+        subclusterNodesBy: null,
         colorEdgesBy: null,
         sortOp: '',
         sortReverse: false,
@@ -246,12 +247,14 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
         _.assign($scope.dataGroupsInfo, {
             colorNodesBy: null,
             clusterNodesBy: null,
+            subclusterNodesBy: null,
             colorEdgesBy: null,
             sortOp: '',
             sortReverse: false
         });
 
         $scope.isShowClusteredBy = $scope.showClusteredBy();
+
 
         if(switchingNetwork || !dataGraph.getRawDataUnsafe()) {
             var x = $scope.$on(BROADCAST_MESSAGES.sigma.rendered, function() {
@@ -293,6 +296,9 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
         $scope.dataGroupsInfo.colorNodesBy = _.find($scope.dataSet.attrDescriptors, 'id', $scope.mapprSettings.nodeColorAttr);
         $scope.dataGroupsInfo.clusterNodesBy = $scope.mapprSettings.nodeClusterAttr ?
             _.find($scope.dataSet.attrDescriptors , 'id', $scope.mapprSettings.nodeClusterAttr) : $scope.dataGroupsInfo.colorNodesBy;
+
+        $scope.dataGroupsInfo.subclusterNodesBy = $scope.mapprSettings.nodeSubclusterAttr ?
+            _.find($scope.dataSet.attrDescriptors , 'id', $scope.mapprSettings.nodeSubclusterAttr) : null;
 
         $scope.dataGroupsInfo.colorEdgesBy = _.find($scope.edgeColorAttrs, 'id', $scope.mapprSettings.edgeColorAttr);
         $scope.isNumericItemByColor = _.find($scope.dataSet.attrDescriptors, 'id', $scope.mapprSettings.nodeColorAttr);

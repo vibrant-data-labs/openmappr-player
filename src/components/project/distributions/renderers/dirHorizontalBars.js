@@ -354,6 +354,16 @@ angular.module('common')
                     return acc;
                 }, {});
             }
+            function getSubclusters(layout) {
+                const nodes = dataGraph.getRenderableGraph().graph.nodes;
+                const clusterAttr = layout.mapprSettings.nodeSubclusterAttr;
+                return _.reduce(nodes, function(acc, cv) {
+                    const val = cv.attr[clusterAttr];
+                    acc[val] = cv.clusterColorStr;
+                    return acc;
+                }, {});
+            }
+            
             function getColors(layout) {
                 const nodes = dataGraph.getRenderableGraph().graph.nodes;
                 const colorAttr = layout.mapprSettings.nodeColorAttr;
@@ -366,6 +376,10 @@ angular.module('common')
             function getColorMap(layout, attrInfo) {
                 if (attrInfo.attr.id === layout.mapprSettings.nodeClusterAttr) {
                     return getClusters(layout);
+                }
+
+                if (attrInfo.attr.id === layout.mapprSettings.nodeSubclusterAttr) {
+                    return getSubclusters(layout);
                 }
 
                 if (attrInfo.attr.id === layout.mapprSettings.nodeColorAttr) {
