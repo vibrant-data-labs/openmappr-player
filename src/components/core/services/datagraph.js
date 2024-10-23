@@ -118,7 +118,7 @@ angular.module('common')
                             attr.visibility.push('filters');
                         }
     
-                        if (attr.visibleInProfile) {
+                        if (attr.visible && attr.visibleInProfile) {
                             attr.visibility.push('profile');
                         }
     
