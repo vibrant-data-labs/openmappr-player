@@ -271,9 +271,9 @@ angular.module('common')
                     $scope.selInfo.singleNodeInfo.id = selNode.id;
                     $scope.selInfo.clusterVal = selNode.attr.Cluster || '';
                     $scope.selInfo.colorStr = selNode.colorStr;
-                    if (selNodes.length == 1){
+                    if (selNodes.length == 1) {
                         selectService.singleNode = selNode;
-                    } 
+                    }
                     console.log('sel node: ', selNode);
                     console.log('sel info: ', $scope.selInfo);
                 }
@@ -331,7 +331,7 @@ angular.module('common')
             function exportSelectionFromPlayer(type) {
                 var sigObj_1 = renderGraphfactory.sig();
                 var snapshot = snapshotService.getCurrentSnapshot();
-                sigObj_1.toSVG({download: true, filename: (snapshot ? snapshot.snapName : 'output') + '.svg', size: window.innerWidth});
+                sigObj_1.toSVG({ download: true, filename: (snapshot ? snapshot.snapName : 'output') + '.svg', size: window.innerWidth });
             }
 
             function exportCsvDataFromPlayer(type) {
@@ -351,13 +351,41 @@ angular.module('common')
                 var fileName = 'mappr-nodes';
                 var separator = getLocalListSeparator();
                 var decimalSeparator = getLocalDecimalSeparator();
-                
+
+                const getCsvValue = (value) => {
+                    var result = '';
+                    var hasSeparatorInValue = false;
+                    var hasDoubleQuoteInValue = false;
+                    var shouldBeWrapped = false;
+                    if (value) {
+                        hasSeparatorInValue = value.toString().indexOf(separator) !== -1;
+                        hasDoubleQuoteInValue = value.toString().indexOf('"') !== -1;
+                        result = value.toString().trim().replaceAll(/(\r\n|\n|\r)/gm, "");
+                    }
+
+                    shouldBeWrapped = hasSeparatorInValue || hasDoubleQuoteInValue;
+
+                    if (decimalSeparator !== '.' && isNumeric(result) && result % 1 !== 0) {
+                        result = result.replace('.', decimalSeparator);
+                    }
+
+                    if (hasDoubleQuoteInValue) {
+                        result = result.replaceAll('"', '""');
+                    }
+
+                    if (shouldBeWrapped) {
+                        result = '"' + result + '"';
+                    }
+
+                    return result;
+                }
+
                 try {
                     var csvContent = "";
                     var rowHeader = '';
                     var allProperties = {};
-                    
-                    _.forEach(nodes, function(item) { // construct a map of all possible parameters
+
+                    _.forEach(nodes, function (item) { // construct a map of all possible parameters
                         if (item.id) {
                             allProperties.id = '';
                         }
@@ -367,7 +395,7 @@ angular.module('common')
                     });
 
                     for (var headerKey in allProperties) { // create first line "header" of CSV file
-                        rowHeader += headerKey + separator;
+                        rowHeader += getCsvValue(headerKey) + separator;
                     }
 
                     csvContent += rowHeader + "\r\n";
@@ -395,33 +423,17 @@ angular.module('common')
                                 resultMap[nodeAttrKey] = ('"' + item.attr[nodeAttrKey].join(', ') + '"').replaceAll(/(\r\n|\n|\r)/gm, "");
                                 continue;
                             }
-                            
-                            const value = item.attr[nodeAttrKey];
 
-                            if (value) {
-                                hasSeparatorInValue = value.toString().indexOf(separator) !== -1;
-                                hasDoubleQuoteInValue = value.toString().indexOf('"') !== -1;
-                                rowText = value.toString().trim().replaceAll(/(\r\n|\n|\r)/gm, "");
-                            }
 
-                            shouldBeWrapped = hasSeparatorInValue || hasDoubleQuoteInValue;
-                            
-                            if (decimalSeparator !== '.' && isNumeric(rowText) && rowText % 1 !== 0) {
-                                rowText = rowText.replace('.', decimalSeparator);
-                            }
-
-                            if (hasDoubleQuoteInValue) {
-                                rowText = rowText.replaceAll('"', '""');
-                            }
-
-                            if (shouldBeWrapped) {
-                                rowText = '"' + rowText + '"';
-                            }
-
-                            resultMap[nodeAttrKey] = rowText;
+                            resultMap[nodeAttrKey] = getCsvValue(item.attr[nodeAttrKey]);
                         }
-                        
+
                         for (key in allProperties) { // prepare result but use all possible parameters instead of item parameters
+                            if (resultMap[key] == 0) {
+                                result += '0' + separator;
+                                continue;
+                            }
+
                             result += (resultMap[key] ? resultMap[key] : '') + separator;
                         }
 
