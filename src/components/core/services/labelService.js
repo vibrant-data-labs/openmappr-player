@@ -176,6 +176,7 @@ angular.module('common')
                                     sumX: 0,
                                     sumY: 0,
                                     isGroup: true,
+                                    isSubGroup: true,
                                     inHover: inHover,
                                     count: count,
                                     clusterColorStr: ''
@@ -462,6 +463,7 @@ angular.module('common')
                 strat(wGroupNodes, settings, false).then(function (nodesToLabel) {
                     if (nodesToLabel.length > 0 && typeof _.last(nodesToLabel) !== "undefined") {
                         var sel = d3Sel.selectAll('div').data(nodesToLabel, nodeId);
+                        const hasSubgroup = nodesToLabel.some(x => x.isSubGroup);
                         // create html element for holding the label if it does not exist in the selection.
                         sel.enter()
                             .append('div')
@@ -474,6 +476,8 @@ angular.module('common')
                             //.style('opacity', 0)
                             .classed(cssClass, true)
                             .classed(cssGroup, function (node) { return node.isGroup; })
+                            .classed('d3-cluster-node', function (node) { return node.isGroup && !node.isSubGroup && hasSubgroup; })
+                            .classed('d3-subgroup-node', function (node) { return node.isSubGroup; })
                             .append('p');
 
                         // For existing ones, set to the default state. (also updates for the newly creates ones above)

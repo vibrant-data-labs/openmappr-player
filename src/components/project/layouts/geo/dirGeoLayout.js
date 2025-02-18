@@ -18,10 +18,10 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
                 style="position: absolute; font-size: 15px;"
                 ng-style="{'color': region ? region.color : 'black' }"
                 ng-show="!!region">
-                <p style="font-size: 15px; pointer-events: auto; width: max-content;" ng-if="region && region.name">
+                <p style="font-size: 15px; pointer-events: auto; width: max-content;" ng-if="region && region.name && !region.name.includes('undefined')">
                     {{region.name}}
                 </p>
-                <p ng-if="!region.name" class="loader-spinner">
+                <p ng-if="!region.name || region.name.includes('undefined')" class="loader-spinner">
                     <svg viewBox="-50 -50 100 100" stroke-width="20">
                         <circle r="40" />
                         <circle r="40" />
@@ -426,17 +426,19 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
             }
 
             scope.visitorTracker.setCurrentItem(osmId);
+            const itemName = e.layer.properties['name:en'] || e.layer.properties.name || getRegionCacheItem(scope, osmId);
+
             scope.region = {
-                name: (e.layer.properties['name:en'] || e.layer.properties.name || getRegionCacheItem(scope, osmId)),
+                name: itemName ? `${itemName} (${nodeData[osmId].count})` : undefined,
                 color: nodeData[osmId]?.color
             }
 
-            if (!scope.region.name) {
+            if (!itemName) {
                 getItemName(osmId, scope, 'region').then((x) => {
                     tileGrid._featureMap[osmId].name = x.name;
                     scope.region = {
                         ...scope.region,
-                        name: x.name
+                        name: `${x.name} (${nodeData[osmId].count})`
                     }
                     scope.$apply();
                 });

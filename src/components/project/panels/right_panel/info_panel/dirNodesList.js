@@ -235,7 +235,7 @@ function(BROADCAST_MESSAGES, playerFactory, hoverService, selectService, subsetS
         })
 
         function getFunctionColor(cluster) {
-            return d3.rgb(scope.layout.scalers.color(cluster)).toString();
+            return scope.layout.scalers.color(cluster);
         }
 
         scope.debounceHoverNode = _.debounce(hoverNodes, 150);

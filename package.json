@@ -73,6 +73,8 @@
     "ng-device-detector": "~1.1.1",
     "ng-infinite-scroll": "~1.1.2",
     "re-tree": "^0.0.2",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "snapsvg": "^0.4.0",
     "toastr": "~2.1.2",
     "twix": "^0.7.2"

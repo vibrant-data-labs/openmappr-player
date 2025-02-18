@@ -370,7 +370,7 @@ angular.module('common')
                     }
 
                     if (hasDoubleQuoteInValue) {
-                        result = result.replaceAll('"', '""');
+                        result = result.replace(/"/g, '""');
                     }
 
                     if (shouldBeWrapped) {

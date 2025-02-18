@@ -504,3 +504,40 @@ angular.module('player')
 
         }
     ]);
+
+window.__components = [];
+window.__allComponentsLoaded = false;
+const onComponentsLoaded = new Event('componentsLoaded');
+
+const loadScript = function(scriptSrc, alias) {
+    return new Promise((resolve, reject) => {
+        const script = document.createElement("script");
+        script.crossOrigin = '';
+        script.type = 'module'
+        script.src = scriptSrc;
+        
+        script.onload = () => {
+            window.__components.push(alias);
+            if (window.__components.length === 3) {
+                window.__allComponentsLoaded = true;
+                window.dispatchEvent(onComponentsLoaded);
+            }
+            resolve()
+        };
+        
+        script.onerror = () => {
+            console.error("Failed to load script:", script.src);
+            reject()
+        };
+        
+        document.body.appendChild(script);
+    })
+
+}
+
+loadScript('https://unpkg.com/react@18/umd/react.production.min.js', 'react').then(() => {
+    return loadScript('https://unpkg.com/react-dom@18/umd/react-dom.production.min.js', 'react-dom')
+}).then(() => {
+    const src = '#{player_prefix_index_source}' || window.origin;
+    return loadScript(`${src}/libs/mappr-components.js`, 'components')
+});

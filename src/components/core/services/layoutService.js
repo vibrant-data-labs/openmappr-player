@@ -35,6 +35,7 @@ function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partiti
     this.buildLayoutForSnapshot = buildLayoutForSnapshot;
     //Creates a new layout of given type.
     this.createDefault = createDefaultLayout;
+    this.ScaleBuilder = ScaleBuilder
 
 
 
@@ -265,7 +266,7 @@ function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partiti
                     return defaultColor;
                 }
 
-                var idx = values.length - values.indexOf(value) - 1;
+                var idx = values.indexOf(value);
                 var desat = Math.floor(idx/colorCount);
                 idx %= colorCount;
                 if(idx < 0 || (!cycle && desat > 0)) {

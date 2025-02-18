@@ -98,6 +98,9 @@ const externalLibs = {
     'libs/intro.min.js': './node_modules/intro.js/minified/intro.min.js',
     'libs/angular-intro.js': './node_modules/angular-intro.js/build/angular-intro.min.js',
     'libs/html2canvas.min.js': './node_modules/html2canvas/dist/html2canvas.min.js',
+    'libs/mappr-components.js': './src/libs/mappr-components.umd.js',
+    'react': './node_modules/react/index.js',
+    'react-dom': './node_modules/react-dom/index.js',
 }
 
 module.exports = {
