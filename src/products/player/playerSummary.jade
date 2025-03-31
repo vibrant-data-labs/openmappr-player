@@ -37,7 +37,6 @@
 						i.icon-legend-dots
 			.panel-list
 				dir-attr-renderer(render-to-type="getRenderType(dataGroupsInfo.colorNodesBy)" attr-to-render="dataGroupsInfo.colorNodesBy", node-color-str="nodeColorStr", is-node="true", show-filter="true", disable-filter="false" theme="appUi.theme" pinned-media="pinnedMedia" gradient="true")
-				h6.panel-list__title(ng-if="dataGroupsInfo.colorNodesBy.attrType == 'integer' || dataGroupsInfo.colorNodesBy.attrType == 'float' || dataGroupsInfo.colorNodesBy.attrType == 'boolean' || dataGroupsInfo.colorNodesBy.attrType == 'year' || dataGroupsInfo.colorNodesBy.attrType == 'timestamp'") {{dataGroupsInfo.colorNodesBy.title}}
 		.list-content.flex-fill
 			///
 			/// Node Clustered by Panel
@@ -104,20 +103,10 @@
 						.filter-list__item(
 							ng-class="{'attr-hidden':!vm.nodeSizeAttr.visible, 'first': ($index == 1), 'chart-first-item': vm.nodeSizeAttr.isFirstChart, 'tags-first-item': vm.nodeSizeAttr.isFirstTag}",
 						)
-							section.card.card_type_filter(data-attr="{{vm.nodeSizeAttr.id}}", ng-class="{'card__chart' : vm.nodeSizeAttr.attrType == 'integer' || vm.nodeSizeAttr.attrType == 'float' || vm.nodeSizeAttr.attrType == 'boolean' || vm.nodeSizeAttr.attrType == 'year' || vm.nodeSizeAttr.attrType == 'timestamp' }")
+							section.card.card_type_filter(data-attr="{{vm.nodeSizeAttr.id}}")
 								.card__body
 									.card__content(ng-repeat="attrItem in [vm.nodeSizeAttr]")
 										dir-attr-renderer(attr-to-render="attrItem", noe-color-str="nodeColorStr", is-node="true", show-filter="true", disable-filter="false" theme="appUi.theme" pinned-media="pinnedMedia")
-
-							h6.no-margin.text-center.title(
-								ng-if="vm.nodeSizeAttr.attrType == 'integer' || vm.nodeSizeAttr.attrType == 'float' || vm.nodeSizeAttr.attrType == 'boolean' || vm.nodeSizeAttr.attrType == 'year' || vm.nodeSizeAttr.attrType == 'timestamp'"
-							)
-								span {{vm.nodeSizeAttr.title}}
-								span(ng-show="vm.nodeSizeAttr.principalVal") :&nbsp;{{vm.nodeSizeAttr.principalVal}}
-								span.card__tooltip.tooltip__histogram(ng-if="vm.nodeSizeAttr.tooltip"
-										uib-tooltip="{{vm.nodeSizeAttr.tooltip}}",
-										tooltip-placement="right", 
-										tooltip-append-to-body="true")
 					//- .col-xs-4
 					//- 	span
 					//- 		button.square-btn.small-btn.panel-btn(type="button", ng-click="clearSelections();") Reset

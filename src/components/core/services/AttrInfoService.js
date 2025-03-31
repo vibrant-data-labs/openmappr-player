@@ -422,8 +422,8 @@ angular.module('common')
                     rank += counts[key];
                 }
                 destination.ranks = ranks;
-                destination.valuesCount = sortedCounts;
-                destination.values = Object.entries(sortedCounts).sort((a, b) => {
+                destination.valuesCount = counts;
+                destination.values = Object.entries(counts).sort((a, b) => {
                     const diff = b[1] - a[1];
                     if (diff !== 0) {
                       return diff;
@@ -434,12 +434,23 @@ angular.module('common')
             }
 
             function getNonNumericAttrInfo(values, destination) {
-                var i, counts, val;
-                counts = {};
-                for (i = values.length - 1; i >= 0; i--) {
-                    val = values[i];
-                    counts[val] = counts[val] ? counts[val] + 1 : 1;
-                }
+                const counts = values.reduce((acc, val) => {
+                    if (Array.isArray(val)) {
+                      val.forEach(v => {
+                        if (!acc[v]) {
+                          acc[v] = 0;
+                        }
+                        acc[v]++;
+                      });
+                      return acc;
+                    }
+                
+                    if (!acc[val]) {
+                      acc[val] = 0;
+                    }
+                    acc[val]++;
+                    return acc;
+                  }, {});
                 destination.nValues = values.length;
                 _nonNumericHelper(destination, counts);
             }

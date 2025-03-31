@@ -85,6 +85,7 @@ function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partiti
 
         this.keys = _.keys(this.defaultValues);
     }
+    ScaleBuilder.prototype.scalerCache = {}
     ScaleBuilder.prototype.updateDefaultValues = function(new_values) {
         var prefix = this.prefix,
             objToMerge = _.mapKeys(new_values, function(val, key) { return prefix + key;});
@@ -243,6 +244,10 @@ function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partiti
         }
         console.log('Building %s Scaler for attrInfo: %O, mapprVals: %O', this.prefix, attrInfo, mapprVals);
 
+        if (ScaleBuilder.prototype.scalerCache[attrInfo.attr.id]) {
+            return ScaleBuilder.prototype.scalerCache[attrInfo.attr.id];
+        }
+
         //Ordinal Scaling
         var values = attrInfo.values;
         if(isTag) {
@@ -287,7 +292,8 @@ function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partiti
                 .domain(values)
                 .rangePoints([mapprVals.Min, mapprVals.Max]);
         }
-        return scaler;
+        ScaleBuilder.prototype.scalerCache[attrInfo.attr.id] = scaler;
+        return ScaleBuilder.prototype.scalerCache[attrInfo.attr.id];
     };
     ScaleBuilder.prototype._genPartitionedScale = function(mapprVals, partitionedInfos) {
         // generate scalers for each partition

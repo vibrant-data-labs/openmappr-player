@@ -509,27 +509,27 @@ window.__components = [];
 window.__allComponentsLoaded = false;
 const onComponentsLoaded = new Event('componentsLoaded');
 
-const loadScript = function(scriptSrc, alias) {
+const loadScript = function (scriptSrc, alias, options) {
     return new Promise((resolve, reject) => {
         const script = document.createElement("script");
-        script.crossOrigin = '';
-        script.type = 'module'
+        script.crossOrigin = options ? options.crossOrigin : '';
+        script.type = options ? options.type : 'module'
         script.src = scriptSrc;
-        
+
         script.onload = () => {
             window.__components.push(alias);
-            if (window.__components.length === 3) {
+            if (window.__components.length === 4) {
                 window.__allComponentsLoaded = true;
                 window.dispatchEvent(onComponentsLoaded);
             }
             resolve()
         };
-        
+
         script.onerror = () => {
             console.error("Failed to load script:", script.src);
             reject()
         };
-        
+
         document.body.appendChild(script);
     })
 
@@ -538,6 +538,23 @@ const loadScript = function(scriptSrc, alias) {
 loadScript('https://unpkg.com/react@18/umd/react.production.min.js', 'react').then(() => {
     return loadScript('https://unpkg.com/react-dom@18/umd/react-dom.production.min.js', 'react-dom')
 }).then(() => {
+    return loadScript('https://cdn.jsdelivr.net/npm/csv-stringify@6.5.2/dist/iife/sync.js', 'csvStringify', {
+        crossOrigin: undefined,
+        type: 'text/javascript'
+    })
+}).then(() => {
     const src = '#{player_prefix_index_source}' || window.origin;
     return loadScript(`${src}/libs/mappr-components.js`, 'components')
 });
+
+window.waitUntilLoaded = () => {
+    if (window.__allComponentsLoaded) return Promise.resolve();
+
+    return new Promise((resolve) => {
+        window.addEventListener('componentsLoaded', () => {
+            return resolve()
+        }, {
+            once: true
+        });
+    })
+}

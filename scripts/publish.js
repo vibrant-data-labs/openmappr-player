@@ -74,6 +74,8 @@ const getPublishFiles = () => {
             'img/**/*',
             'js/**/*',
             'partials/**/*',
+            'react/**/*',
+            'react-dom/**/*',
             'index.html',
         ],
         project: [
@@ -87,6 +89,8 @@ const getPublishFiles = () => {
             'img/**/*',
             'js/**/*',
             'partials/**/*',
+            'react/**/*',
+            'react-dom/**/*',
             'index.html',
         ]
     }[deployMode] || [];

@@ -10,7 +10,7 @@
 					)
 						section.card.card_type_filter(data-attr="{{attr.id}}", class="card_collapsed" ng-class="{'card__chart' : attr.attrType == 'integer' || attr.attrType == 'float' || attr.attrType == 'boolean' || attr.attrType == 'year' || attr.attrType == 'timestamp' }")
 							header.card__header(ng-click="collapseCard($event)")
-								.card__head-wrap(ng-if="attr.attrType != 'integer' && attr.attrType != 'float' && attr.attrType != 'boolean' && attr.attrType != 'year' && attr.attrType != 'timestamp'")
+								.card__head-wrap
 									h2.card__title(dir-elem-ready="onAttrHeaderLoad(attr, $event)") {{::attr.title}}
 									span.card__tooltip(ng-if="attr.tooltip"
 										uib-tooltip="{{attr.tooltip}}",
@@ -46,16 +46,6 @@
 								.card__content
 									dir-attr-renderer(attr-to-render="attr", node-color-str="nodeColorStr", is-node="true", show-filter="ui.enableFilters", disable-filter="attr.disableFilter" theme="appUi.theme" pinned-media="pinnedMedia" gradient="true")
 
-						h6.no-margin.text-center.card_histogram.title(
-							ng-if="attr.attrType == 'integer' || attr.attrType == 'float' || attr.attrType == 'boolean' || attr.attrType == 'year' || attr.attrType == 'timestamp'",
-							ng-click="collapseCardHistogram($event)"
-						)
-							span {{::attr.title}}
-							span(ng-show="attr.principalVal") :&nbsp;{{attr.principalVal}}
-							span.card__tooltip.tooltip__histogram(ng-if="attr.tooltip"
-									uib-tooltip="{{attr.tooltip}}",
-									tooltip-placement="right", 
-									tooltip-append-to-body="true")
 			.filter-list-category(ng-if="hasPriority")
 				ul.filter-list(container-item-count="nodeDistrAttrs.length" dir-kill-tooltip-on-scroll, ng-class="{'filter-list_shown' : ui.renderDistr}", on-scroll="onScroll")
 					li.filter-list__item(

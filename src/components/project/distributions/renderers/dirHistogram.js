@@ -11,19 +11,21 @@ angular.module('common')
                 restrict: 'AE',
                 require: '?^dirAttrRenderer',
                 template: `
-                    <div class="histogram"></div>
-                    <dir-range-filter
-                        ng-if="showFilter"
-                        ng-class="{disableFilter: disableFilter}"
-                        attr="attrInfo"
-                        log="isLogScale">
-                    </dir-range-filter>
-                    <div ng-show="hasLogScale" class="log-scale-toggle">
-                        <input type="checkbox" ng-change="toggleLogScale()" ng-model="isLogScale"/>
-                        <label>log</label>
-                    </div>
+                    <div></div>
                 `,
-                link: postLinkFn
+                link: function (scope, element, attrs) {
+                    waitUntilLoaded().then(() => {
+                        const root = ReactDOM.createRoot(element[0]);
+                        root.render(React.createElement(MapprComponents.Slider, {
+                            attrId: scope.attrToRender.id
+                        }));
+
+                        scope.$on('$destroy', () => {
+                            root.unmount();
+                        });
+                    });
+                },
+                // link: postLinkFn
             };
 
             /*************************************

@@ -348,41 +348,12 @@ angular.module('common')
                     // links = dataGraph.getEdgesByNodes(nodes);
                 }
 
-                var fileName = 'mappr-nodes';
-                var separator = getLocalListSeparator();
-                var decimalSeparator = getLocalDecimalSeparator();
-
-                const getCsvValue = (value) => {
-                    var result = '';
-                    var hasSeparatorInValue = false;
-                    var hasDoubleQuoteInValue = false;
-                    var shouldBeWrapped = false;
-                    if (value) {
-                        hasSeparatorInValue = value.toString().indexOf(separator) !== -1;
-                        hasDoubleQuoteInValue = value.toString().indexOf('"') !== -1;
-                        result = value.toString().trim().replaceAll(/(\r\n|\n|\r)/gm, "");
-                    }
-
-                    shouldBeWrapped = hasSeparatorInValue || hasDoubleQuoteInValue;
-
-                    if (decimalSeparator !== '.' && isNumeric(result) && result % 1 !== 0) {
-                        result = result.replace('.', decimalSeparator);
-                    }
-
-                    if (hasDoubleQuoteInValue) {
-                        result = result.replace(/"/g, '""');
-                    }
-
-                    if (shouldBeWrapped) {
-                        result = '"' + result + '"';
-                    }
-
-                    return result;
-                }
+                const ts = new Date().toISOString().split('T')[0];
+                var fileName = `${document.title} - ${ts}`;
 
                 try {
-                    var csvContent = "";
-                    var rowHeader = '';
+                    const csvData = [];
+                    var rowHeader = []
                     var allProperties = {};
 
                     _.forEach(nodes, function (item) { // construct a map of all possible parameters
@@ -395,50 +366,42 @@ angular.module('common')
                     });
 
                     for (var headerKey in allProperties) { // create first line "header" of CSV file
-                        rowHeader += getCsvValue(headerKey) + separator;
+                        rowHeader.push(headerKey);
                     }
 
-                    csvContent += rowHeader + "\r\n";
-                    csvContent += _.map(nodes, function (item) {
-                        var resultMap = {};
-                        var result = '';
-                        var hasSeparatorInValue = false;
-                        var hasDoubleQuoteInValue = false;
-                        var shouldBeWrapped = false;
-                        var rowText = '';
-                        var nodeAttrKey, key;
+                    csvData.push(rowHeader);
 
-                        if (!item.id) {
-                            throw new Error("Node has a missed identifier that required for csv generation");
-                        }
+                    nodes.forEach(function (item) {
+                        const rowItem = [];
+                        rowItem.push(item.id);
+                        const resultMap = {};
 
-                        if (!item.attr) {
-                            throw new Error("Node has a missed attributes that required for csv generation");
-                        }
-
-                        resultMap.id = item.id;
-
-                        for (nodeAttrKey in item.attr) { // get parameters from item attribute
+                        for (let nodeAttrKey in item.attr) { // get parameters from item attribute
                             if (Array.isArray(item.attr[nodeAttrKey])) {
-                                resultMap[nodeAttrKey] = ('"' + item.attr[nodeAttrKey].join(', ') + '"').replaceAll(/(\r\n|\n|\r)/gm, "");
+                                resultMap[nodeAttrKey] = item.attr[nodeAttrKey].join(', ');
                                 continue;
                             }
 
 
-                            resultMap[nodeAttrKey] = getCsvValue(item.attr[nodeAttrKey]);
+                            resultMap[nodeAttrKey] = item.attr[nodeAttrKey];
                         }
 
-                        for (key in allProperties) { // prepare result but use all possible parameters instead of item parameters
+                        for (let key in allProperties) { // prepare result but use all possible parameters instead of item parameters
+                            if (key == 'id') {
+                                continue;
+                            }
                             if (resultMap[key] == 0) {
-                                result += '0' + separator;
+                                rowItem.push(0);
                                 continue;
                             }
 
-                            result += (resultMap[key] ? resultMap[key] : '') + separator;
+                            rowItem.push(resultMap[key] ? resultMap[key] : '');
                         }
 
-                        return result;
-                    }).join("\r\n");
+                        csvData.push(rowItem);
+                    });
+
+                    const csvContent = csv_stringify_sync.stringify(csvData);
                     window.saveAs(new Blob([csvContent], { type: "text/plain;charset=utf-8" }), fileName + ".csv");
                 } catch (e) {
                     console.warn(e);

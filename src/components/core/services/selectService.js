@@ -18,6 +18,7 @@ angular.module('common')
             this.selectedNodes = [];
             this.getActiveFilterCount = getActiveFilterCount;
             this.getFilterForId = getFilterForId;
+            this.hasFilter = hasFilter;
             this.getSelectedNodes = getSelectedNodes;
             this.hasAttrId = hasAttrId;
             this.init = init;
@@ -351,11 +352,16 @@ angular.module('common')
                     selectionCount: this.selectedNodes.length,
                     isSubsetted: currentSubset.length > 0,
                     nodes: this.getSelectedNodes(),
+                    isUnselect: true
                 });
 
                 if (!currentSubset.length && !this.selectedNodes.length) {
                     renderGraphfactory.getRenderer().render();
                 }
+            }
+
+            function hasFilter(id) {
+                return this.filters && this.filters[id] && this.filters[id].isEnabled;
             }
 
             function getFilterForId(id) {

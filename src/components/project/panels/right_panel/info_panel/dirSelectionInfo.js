@@ -11,18 +11,6 @@ angular.module('common')
         function (dataGraph, $rootScope, graphSelectionService, infoPanelService, AttrInfoService, linkService, graphHoverService, BROADCAST_MESSAGES, selectService, subsetService) {
             'use strict';
 
-            const waitUntilLoaded = () => {
-                if (window.__allComponentsLoaded) return Promise.resolve();
-
-                return new Promise((resolve) => {
-                    window.addEventListener('componentsLoaded', () => {
-                        return resolve()
-                    }, {
-                        once: true
-                    });
-                })
-            }
-
             /*************************************
     ******** Directive description *******
     **************************************/
