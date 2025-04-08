@@ -767,7 +767,6 @@ angular.module('common')
                         }
                         var data = loadSuccess(networkService.getCurrentNetwork());
                         $rootScope.$broadcast(BROADCAST_MESSAGES.dataGraph.loaded, data);
-                        console.log('triggering snapshost laoded');
                         $rootScope.$broadcast(BROADCAST_MESSAGES.snapshot.loaded, {
                             snapshot: snap,
                         });
@@ -816,13 +815,9 @@ angular.module('common')
             }
 
             function loadSuccess(network) {
-                console.group('renderGraphCtrl.loadSuccess');
-                console.log('Merging Loading network :%O', network);
                 var frag = dataGraph.mergeAndLoadNetwork(network);
                 AttrInfoService.loadInfoForNetwork(network);
                 $scope.rawDataId = frag.id;
-
-                console.groupEnd();
                 return frag;
             }
 

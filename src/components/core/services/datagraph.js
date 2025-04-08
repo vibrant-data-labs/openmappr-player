@@ -598,7 +598,7 @@ angular.module('common')
                 var dpIndex = _.indexBy(dataset.datapoints, 'id');
                 // copy over Datapoint attrs into network node
                 _.each(nwData.nodes, function (node) {
-                    var dp = dpIndex[node.dataPointId];
+                    var dp = dpIndex[node.dataPointId || node.id];
                     //_.extend(node.attr, dp.attr); // _.defaults instead of _.extend so that dataset does not overwrite network prop
                     _.defaults(node.attr, dp.attr);
                     if ('geodata' in dp) {
@@ -623,7 +623,7 @@ angular.module('common')
                 });
 
                 // push network attrs to merged attrs
-                mergedNodeAttrDescriptors = mergedNodeAttrDescriptors.concat(nwData.nodeAttrDescriptors);
+                mergedNodeAttrDescriptors = mergedNodeAttrDescriptors.concat(nwData.nodeAttrDescriptors).filter(Boolean);
                 loadRawData(nwData.nodes, nwData.links, mergedNodeAttrDescriptors, nwData.linkAttrDescriptors);
                 _rawData.networkId = network.id;
                 return _rawData;

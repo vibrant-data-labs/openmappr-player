@@ -246,7 +246,11 @@ angular.module('common')
                 $scope.generalInfo.totalNodesCount = dataGraph.getAllNodes().length;
                 var currNw = networkService.getCurrentNetwork();
                 $scope.generalInfo.nwAttrs = dataGraph.getNodeAttrTitlesForIds(networkService.getNetworkAttrs(currNw.id));
-                $scope.generalInfo.hideArchsBridgers = !!currNw.networkInfo.hideArchsBridgers;
+                if (currNw && currNw.networkInfo) {
+                    $scope.generalInfo.hideArchsBridgers = !!currNw.networkInfo.hideArchsBridgers;
+                } else {
+                    $scope.generalInfo.hideArchsBridgers = false;
+                }
                 var selNodes = graphSelectionService.getSelectedNodes();
                 refreshSelectionInfo(selNodes);
             }

@@ -15,7 +15,6 @@ function ($http, $q, $timeout, $rootScope, projFactory, AttrSanitizeService, BRO
         loadedNetworks = {};
         currentNWId = null;
     };
-    this.fetchProjectNetworks = fetchProjectNetworks;
     this.fetchProjectNetworksLocally = fetchProjectNetworksLocally;
     this.fetchProjectNetwork = fetchProjectNetwork;
     this.refreshAllNetworks = refreshAllNetworks;
@@ -43,6 +42,7 @@ function ($http, $q, $timeout, $rootScope, projFactory, AttrSanitizeService, BRO
     this.currNetNeedsReGen= currNetNeedsReGen;
     this.hasNetworkProps= hasNetworkProps;
     this.getSelectionClusterVal= getSelectionClusterVal;
+    this.updateNetworks = updateNetworks;
     this.getCurrentNetworkPromisified = function() {
         if(currentNWId) {
             return $q.when(loadedNetworks[currentNWId]);
@@ -118,35 +118,12 @@ function ($http, $q, $timeout, $rootScope, projFactory, AttrSanitizeService, BRO
         return $http.get(DATA_PATH + 'links.json')
             .then(
                 function(result){
-                    console.log("----------- getting project networks");
-                    console.log("result", result);
-                    updateNetworks(result.data);
-                    return loadedNetworks;
+                    return result.data;
                 },
                 function(err) {
-                    console.log("[networkService.fetchProjectNetworks] Unable to fetch networks:", err);
-                    loadedNetworks = {};
-                    return $q.reject(err);
+                    return [];
                 }
             );
-    }
-
-    function fetchProjectNetworks(orgId, projId) {
-        var url = '/api/orgs/' + orgId + '/projects/' + projId + '/networks';
-        return $http.get(url)
-        .then(
-            function(result){
-                console.log("----------- getting project networks");
-                console.log("result", result);
-                updateNetworks(result.data.networks);
-                return loadedNetworks;
-            },
-            function(err) {
-                console.log("[networkService.fetchProjectNetworks] Unable to fetch networks:", err);
-                loadedNetworks = {};
-                return $q.reject(err);
-            }
-        );
     }
 
     function loadNetworksFromS3(playerUrl) {

@@ -16,6 +16,55 @@ angular.module('player')
                 list: 'info'
             }
 
+            const getDefaultNodeAttrs = (labelAttr) => {
+                return [
+                    {
+                        "id": labelAttr,
+                        "title": "OriginalLabel",
+                        "visible": false,
+                        "visibleInProfile": false,
+                        "searchable": false,
+                        "attrType": "liststring",
+                        "renderType": "tag-cloud"
+                    },
+                    {
+                        "id": "OriginalSize",
+                        "title": "OriginalSize",
+                        "visible": false,
+                        "visibleInProfile": false,
+                        "searchable": false,
+                        "attrType": "integer",
+                        "renderType": "histogram"
+                    },
+                    {
+                        "id": "OriginalX",
+                        "title": "OriginalX",
+                        "visible": false,
+                        "visibleInProfile": false,
+                        "searchable": false,
+                        "attrType": "float",
+                        "renderType": "histogram"
+                    },
+                    {
+                        "id": "OriginalY",
+                        "title": "OriginalY",
+                        "visible": false,
+                        "visibleInProfile": false,
+                        "searchable": false,
+                        "attrType": "float",
+                        "renderType": "histogram"
+                    },
+                    {
+                        "id": "OriginalColor",
+                        "title": "OriginalColor",
+                        "visible": false,
+                        "visibleInProfile": false,
+                        "searchable": false,
+                        "attrType": "color",
+                        "renderType": "categorybar"
+                    }
+                ]
+            }
 
             /*************************************
     ********* Scope Bindings *************
@@ -408,8 +457,18 @@ angular.module('player')
                             dataService.fetchProjectDatasetLocally(),
                             networkService.fetchProjectNetworksLocally()
                         ]);
-                    }).then(function (datasetAndNetworks) {
-                        loadPlayerData.resolve(datasetAndNetworks[0]);
+                    }).then(function ([dataset, network]) {
+                        const nw = {
+                            id: 'default',
+                            nodes: [...dataset.datapoints],
+                            links: [],
+                            nodeAttrDescriptors: getDefaultNodeAttrs('Name'),
+                            linkAttrDescriptors: [],
+                            ...(network || {}),
+                        }
+                        networkService.updateNetworks([nw]);
+                        networkService.setCurrentNetwork(nw.id)
+                        loadPlayerData.resolve(dataset);
                     })
                     .catch(function (err) {
                         $rootScope.$broadcast(BROADCAST_MESSAGES.player.loadFailure);
