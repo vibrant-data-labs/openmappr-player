@@ -464,7 +464,7 @@ angular.module('player')
                             links: [],
                             nodeAttrDescriptors: getDefaultNodeAttrs('Name'),
                             linkAttrDescriptors: [],
-                            ...(network || {}),
+                            ...(network && network.length ? network[0] : {}),
                         }
                         networkService.updateNetworks([nw]);
                         networkService.setCurrentNetwork(nw.id)
