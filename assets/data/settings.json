@@ -29,7 +29,8 @@
                 "linkedin",
                 "twitter",
                 "facebook"
-            ]
+            ],
+            "passwordHash": "f961cdac6749012d50af80b63e316f1df7e07ca5f57d07a7191ba412c31ff205"
         }
     },
     "snapshots": [

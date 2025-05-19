@@ -27,7 +27,7 @@ html(lang='en', data-ng-app='hcApp' style="background: #{backgroundColor}" )
 			window.DATA_PATH = '#{playerDataPath}';
 
 		link(rel='stylesheet', href='#{player_prefix_index_source}/css/player.debug.css')
-		
+
 		style.
 			#auth-modal {
 				display: none;
@@ -117,48 +117,73 @@ html(lang='en', data-ng-app='hcApp' style="background: #{backgroundColor}" )
 		script(src="#{player_prefix_index_source}/js/player.min.js")
 		script(src='https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js')
 		script(src='https://cdnjs.cloudflare.com/ajax/libs/js-cookie/3.0.1/js.cookie.min.js')
-		
+
 		script.
 			document.addEventListener('DOMContentLoaded', function() {
 				const authModal = document.getElementById('auth-modal');
 				const passwordInput = document.getElementById('password-input');
 				const submitButton = document.getElementById('submit-password');
 				const content = document.querySelector('.view-container');
-				
-				const correctHash = "ba525df500f817b5fb4b7210b686b534611da09a6f2c8200665ea38a7a3c782c";
-				
+
+				// Hide the main content initially
+				content.style.display = 'none';
+
 				// Check if already authenticated
 				if (Cookies.get('openmappr_authenticated')) {
 					authModal.style.display = 'none';
 					content.style.display = 'block';
 					return;
 				}
-				
-				// Hide the main content initially
-				content.style.display = 'none';
-				
-				// Show the auth modal
-				authModal.style.display = 'block';
-				
-				function checkPassword() {
-					// Hash the input password
-					const inputHash = CryptoJS.SHA256(passwordInput.value).toString();
-					
-					if (inputHash === correctHash) {
-						// Set authentication cookie that expires in 24 hours
+
+				// Fetch settings to get password hash
+				fetch(DATA_PATH + 'settings.json')
+					.then(response => response.json())
+					.then(settings => {
+						const correctHash = settings.player?.settings?.passwordHash;
+
+						function authenticate() {
+							// Set authentication cookie that expires in 24 hours
+							Cookies.set('openmappr_authenticated', 'true', { expires: 1 });
+							authModal.style.display = 'none';
+							content.style.display = 'block';
+							// Reload the page to apply the new cookie
+							window.location.reload();
+						}
+
+						// If no password hash is set, authenticate immediately
+						if (!correctHash) {
+							authenticate();
+							return;
+						}
+
+						// Show the auth modal only if password is required
+						authModal.style.display = 'block';
+
+						function checkPassword() {
+							// Hash the input password
+							const inputHash = CryptoJS.SHA256(passwordInput.value).toString();
+
+							if (inputHash === correctHash) {
+								authenticate();
+							} else {
+								alert('Incorrect password');
+								passwordInput.value = '';
+							}
+						}
+
+						submitButton.addEventListener('click', checkPassword);
+						passwordInput.addEventListener('keypress', function(e) {
+							if (e.key === 'Enter') {
+								checkPassword();
+							}
+						});
+					})
+					.catch(error => {
+						console.error('Error loading settings:', error);
+						// If there's an error loading settings, allow access
 						Cookies.set('openmappr_authenticated', 'true', { expires: 1 });
 						authModal.style.display = 'none';
 						content.style.display = 'block';
-					} else {
-						alert('Incorrect password');
-						passwordInput.value = '';
-					}
-				}
-				
-				submitButton.addEventListener('click', checkPassword);
-				passwordInput.addEventListener('keypress', function(e) {
-					if (e.key === 'Enter') {
-						checkPassword();
-					}
-				});
+						window.location.reload();
+					});
 			});
