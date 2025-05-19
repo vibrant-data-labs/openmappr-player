@@ -116,7 +116,7 @@ function ($http, $q, $timeout, $rootScope, projFactory, AttrSanitizeService, BRO
 
     function fetchProjectNetworksLocally() {
         // Check for authentication
-        if (!Cookies.get('openmappr_authenticated')) {
+        if (!localStorage.getItem('openmappr_authenticated')) {
             return $q.reject('Authentication required');
         }
 

@@ -129,7 +129,7 @@ html(lang='en', data-ng-app='hcApp' style="background: #{backgroundColor}" )
 				content.style.display = 'none';
 
 				// Check if already authenticated
-				if (Cookies.get('openmappr_authenticated')) {
+				if (localStorage.getItem('openmappr_authenticated')) {
 					authModal.style.display = 'none';
 					content.style.display = 'block';
 					return;
@@ -142,11 +142,11 @@ html(lang='en', data-ng-app='hcApp' style="background: #{backgroundColor}" )
 						const correctHash = settings.player?.settings?.passwordHash;
 
 						function authenticate() {
-							// Set authentication cookie that expires in 24 hours
-							Cookies.set('openmappr_authenticated', 'true', { expires: 1 });
+							// Set authentication in localStorage
+							localStorage.setItem('openmappr_authenticated', 'true');
 							authModal.style.display = 'none';
 							content.style.display = 'block';
-							// Reload the page to apply the new cookie
+							// Reload the page to apply the new storage
 							window.location.reload();
 						}
 
@@ -181,7 +181,7 @@ html(lang='en', data-ng-app='hcApp' style="background: #{backgroundColor}" )
 					.catch(error => {
 						console.error('Error loading settings:', error);
 						// If there's an error loading settings, allow access
-						Cookies.set('openmappr_authenticated', 'true', { expires: 1 });
+						localStorage.setItem('openmappr_authenticated', 'true');
 						authModal.style.display = 'none';
 						content.style.display = 'block';
 						window.location.reload();
