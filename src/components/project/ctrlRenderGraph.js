@@ -488,16 +488,23 @@ angular.module('common')
 
 
             $scope.$on(BROADCAST_MESSAGES.hss.select, function (e, data) {
+                if (selectService.singleNode) {
+                    return;
+                }
 
                 $scope.ui.activeFilterCount = data.filtersCount + (data.isSubsetted ? 1 : 0) + (data.filtersCount == 0 && data.selectionCount > 0 ? 1 : 0);
                 $scope.ui.subsetEnabled = data.selectionCount > 0;
 
-                if (!data.nodes.length && $scope.operations.last().type == 'select') {
+                if (data.filtersCount == 0 && !data.isSubsetted) {
+                    return;
+                }
+
+                if (!data.filtersCount && $scope.operations.last().type == 'select') {
                     removeOperation();
                 } else if ($scope.operations.last().type == 'select') {
                     $scope.operations.last().filterArray = null;
                     updateOperation('select', true, data.searchText, data.searchAttr, data.geoText);
-                } else {
+                } else if (!data.isUnselect) {
                     updateOperation('select', false, data.searchText, data.searchAttr, data.geoText);
                 }
 
@@ -511,10 +518,13 @@ angular.module('common')
             })
 
             $scope.$on(BROADCAST_MESSAGES.sigma.clickStage, function () {
-                if (!$scope.value.text) {
+                if ($scope.showSearch && !$scope.value.text) {
                     $scope.showSearch = false;
                 }
-                $scope.isShowShare = false;
+
+                if ($scope.isShowShare) {
+                    $scope.isShowShare = false;
+                }
             });
 
 
@@ -582,8 +592,6 @@ angular.module('common')
                     }
                     case 'select': {
                         var selectedNodes = selectService.getSelectedNodes();
-                        if (!selectedNodes.length) break;
-
                         var totalNodes = subsetService.currentSubset().length || dataGraph.getAllNodes().length;
                         if (replace) {
                             _.last($scope.operations.list).nodesCount = selectedNodes.length;
@@ -669,7 +677,6 @@ angular.module('common')
                 console.group('renderGraphCtrl.onProjectOrPlayerLoad');
                 dataGraph.clear();
                 layoutService.invalidateCurrent();
-                selectService.unselect();
                 snapshotService.clear();
                 var snapIdP = null;
                 $scope.updatePlotType('original');

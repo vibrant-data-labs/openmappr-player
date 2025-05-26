@@ -178,19 +178,6 @@ angular.module('common')
                         }
                     }
 
-                    //up and down for description
-                    if(e.keyCode == 38) {
-                        $timeout(function() {
-                            $scope.openSnapDescription();
-                        });
-                    }
-
-                    if(e.keyCode == 40) {
-                        $timeout(function() {
-                            $scope.closeSnapDescription();
-                        });
-                    }
-
                     // if(e.keyCode == 82) {
                     //  // r - load 1st
                     //  $scope.setSnapActive($scope.player.snapshots[0]);

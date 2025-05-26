@@ -237,7 +237,7 @@ angular.module('common')
                     inHoverMode: true
                 });
 
-                if (nodeIds.length == 0 && subsetNodes.length == 0) {
+                if (selectService.getActiveFilterCount() == 0 && nodeIds.length == 0 && subsetNodes.length == 0) {
                     sigRender.greyout(false);
                 }
 
@@ -334,11 +334,11 @@ angular.module('common')
                 var nodeId = window.mappr.utils.nodeId;
 
                 contexts.hovers.canvas.width = contexts.hovers.canvas.width;    // clear canvas
-                var shouldGreyOut = nodes.length > 0 || subsetNodes.length > 0;
+                var shouldGreyOut = selectService.getActiveFilterCount() > 0 || nodes.length > 0 || subsetNodes.length > 0;
                 var mode = 'hover';
                 if (subsetNodes.length > 0) {
                     mode = 'subset';
-                } else if (selectedNodes.length > 0) {
+                } else if (selectedNodes.length > 0 || selectService.getActiveFilterCount() > 0) {
                     mode = 'select';
                 }
                 sigRender.greyout(shouldGreyOut, mode);
