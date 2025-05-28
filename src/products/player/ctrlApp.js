@@ -453,6 +453,12 @@ angular.module('player')
                     .then(function (playerDoc) {
                         console.log('[' + (Date.now() - timeStart) + '] [ctrlPlayer] player load %O', playerDoc);
                         $scope.player = playerDoc;
+
+                        const authFlag = localStorage.getItem('openmappr_authenticated')
+                        if (playerDoc.player.settings.passwordHash && !authFlag) {
+                            return $q.reject('Authentication required');
+                        }
+
                         return $q.all([
                             dataService.fetchProjectDatasetLocally(),
                             networkService.fetchProjectNetworksLocally()

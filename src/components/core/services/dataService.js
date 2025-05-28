@@ -48,11 +48,6 @@ angular.module('common')
             }
 
             function fetchProjectDatasetLocally() {
-                // Check for authentication
-                if (!localStorage.getItem('openmappr_authenticated')) {
-                    return $q.reject('Authentication required');
-                }
-
                 return $http.head(DATA_PATH + 'nodes.json')
                         .then(function(result) {
                             return +result.headers('content-length');
