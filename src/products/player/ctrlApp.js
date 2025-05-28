@@ -610,7 +610,9 @@ loadScript('https://unpkg.com/react@18/umd/react.production.min.js', 'react').th
 }).then(() => {
     const src = '#{player_prefix_index_source}' || window.origin;
     return loadScript(`${src}/libs/mappr-components.js`, 'components')
-});
+}).then(() => loadScript('https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js', 'crypto-js', {
+    type: 'text/javascript'
+}));
 
 window.waitUntilLoaded = () => {
     if (window.__allComponentsLoaded) return Promise.resolve();
