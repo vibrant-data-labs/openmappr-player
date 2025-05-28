@@ -4,7 +4,7 @@
 .modal {
     overflow: auto;
 
-    .ui-select > select {
+    .ui-select>select {
         font-size: 14px;
         padding: 6px 25px 5px 5px;
         text-transform: none;
@@ -61,7 +61,7 @@
         padding: 0 20px;
         position: relative;
 
-        > .row {
+        >.row {
             height: 50px;
         }
 
@@ -234,13 +234,13 @@
         &.set-height {
             height: 580px;
 
-            > .container-fluid {
+            >.container-fluid {
                 height: 100%;
 
-                > .row {
+                >.row {
                     height: 100%;
 
-                    > .col-xs-3 {
+                    >.col-xs-3 {
                         height: 100%;
                     }
                 }
@@ -303,7 +303,7 @@
             }
         }
 
-        > div {
+        >div {
 
             &:first-child {
                 .menu-item:first-child {
@@ -382,6 +382,7 @@
         .visible-btn {
             font-size: 19px;
         }
+
         .visible-btn:hover {
             color: $active-color;
         }
@@ -634,8 +635,91 @@
         margin: 50px auto;
     }
 }
+
 @media (min-width: 992px) {
     .modal-lg {
         width: 950px;
+    }
+}
+
+#auth-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 9999;
+
+    form {
+        font-size: 1.25em;
+    }
+}
+
+.auth-form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.auth-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 5px;
+    text-align: center;
+
+    input {
+        margin: 10px 0;
+        padding: 5px;
+        width: 200px;
+        border: 1px solid #ebeff2;
+        border-radius: 4px;
+    }
+
+    .auth-button {
+        padding: 5px 15px;
+        background: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+
+        &:hover {
+            background: #0056b3;
+        }
+    }
+
+    .error-message {
+        color: #C2322B;
+    }
+
+    .password-input-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+
+        input {
+            width: 100%;
+            padding-right: 40px;
+        }
+    }
+
+    .toggle-password {
+        position: absolute;
+        right: 10px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 5px;
+        color: #666;
+
+        &:hover {
+            color: #333;
+        }
     }
 }

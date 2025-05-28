@@ -29,7 +29,7 @@ html(lang='en', data-ng-app='hcApp' style="background: #{backgroundColor}" )
 		link(rel='stylesheet', href='#{player_prefix_index_source}/css/player.debug.css')
 
 	body#app.nav-min(data-custom-background, data-off-canvas-nav style="background: #{backgroundColor}" class="#{colorTheme}-theme side-menu-compressed")
-
+		auth-modal
 		div
 			div.view-container
 				div#content(style="background: #{backgroundColor}" data-ng-view='ng-view', data-close-min-nav='data-close-min-nav')
@@ -54,7 +54,6 @@ html(lang='en', data-ng-app='hcApp' style="background: #{backgroundColor}" )
 		script(src='https://cdnjs.cloudflare.com/ajax/libs/json3/3.2.6/json3.min.js')
 		script(src='https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.min.js')
 		script(src='https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.0/leaflet.js')
-		//- script(src='https://cdnjs.cloudflare.com/ajax/libs/angular-leaflet-directive/0.10.0/angular-leaflet-directive.js')
 		script(src='https://cdnjs.cloudflare.com/ajax/libs/angular-loading-bar/0.7.1/loading-bar.min.js')
 		script(src='https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.13/d3.min.js')
 		script(src='https://cdnjs.cloudflare.com/ajax/libs/snap.svg/0.4.1/snap.svg-min.js')
@@ -73,4 +72,4 @@ html(lang='en', data-ng-app='hcApp' style="background: #{backgroundColor}" )
 		script(src='https://cdnjs.cloudflare.com/ajax/libs/sql.js/0.3.2/js/sql.js')
 		script(src='#{player_prefix_index_source}/js/player/vendor.js')
 		script(src="#{player_prefix_index_source}/js/player.min.js")
-		script(src='https://cdn.auth0.com/js/auth0-spa-js/2.0/auth0-spa-js.production.js')
+		script(src='https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js')

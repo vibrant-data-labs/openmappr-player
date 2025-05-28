@@ -6,6 +6,7 @@ export * from './SelectionSetService';
 export * from './SelectorService';
 export * from './aggregatorService';
 export * from './attrUIService';
+export * from './authService';
 export * from './browserDetectService';
 export * from './dataService';
 export * from './datagraph';

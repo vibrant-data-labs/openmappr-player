@@ -10,6 +10,7 @@ To run the project locally, run the following command:
 ```npm run start```
 
 It would use the sample TED data to be used as a source of the data for the project.
+Password is `vibrantdatalabs`
 
 If you want to replace the data with your own, place the data into the `data` folder. The easiest way to generate the data it is to use the [Py2Mappr](https://github.com/vibrant-data-labs/py2mappr) tool.
 

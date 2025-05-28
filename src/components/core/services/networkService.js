@@ -115,6 +115,11 @@ function ($http, $q, $timeout, $rootScope, projFactory, AttrSanitizeService, BRO
     }
 
     function fetchProjectNetworksLocally() {
+        // Check for authentication
+        if (!localStorage.getItem('openmappr_authenticated')) {
+            return $q.reject('Authentication required');
+        }
+
         return $http.get(DATA_PATH + 'links.json')
             .then(
                 function(result){
