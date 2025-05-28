@@ -28,6 +28,7 @@ angular.module('common')
             this.createMultipleFilter = createMultipleFilter;
             this.createMinMaxFilter = createMinMaxFilter;
             this.attrs = null;
+            this.prevBroadcastData = null;
 
             this.copyFilters = function () {
                 return angular.copy(this.filters);
@@ -51,9 +52,13 @@ angular.module('common')
             /*************************************
             ********* CLASSES ********************
             **************************************/
-            function FilterConfig(attrId, attrName) {
+            function FilterConfig(attrId, attrName, bounds) {
                 this.attrId = attrId;
                 this.attrName = attrName;
+                if (bounds) {
+                    this.max = bounds.max;
+                    this.min = bounds.min;
+                }
                 this.isEnabled = false;
                 this.selector = null;
                 this.selectedVals = [];
@@ -123,7 +128,7 @@ angular.module('common')
              * @param {Object} selectData.scope - exists when nodes were selected by the search
              */
             function selectNodes(selectData) {
-                _.map(this.getSelectedNodes(), function(n) {
+                _.map(this.getSelectedNodes(), function (n) {
                     n.isSelected = false;
                     return n;
                 });
@@ -134,7 +139,7 @@ angular.module('common')
 
                 var cs = this._filter(selectData, subsetService.subsetNodes);
                 this.selectedNodes = _.pluck(cs, 'id');
-                
+
                 if (currentSubset.length > 0) {
                     this.selectedNodes = this.selectedNodes.filter(function (x) {
                         return currentSubset.indexOf(x) > -1;
@@ -153,7 +158,7 @@ angular.module('common')
                     return searchNodes(selectData, this);
                 }
 
-                $rootScope.$broadcast(BROADCAST_MESSAGES.hss.select, {
+                const broadcastData = {
                     filtersCount: this.getActiveFilterCount(),
                     selectionCount: this.selectedNodes.length,
                     isSubsetted: currentSubset.length > 0,
@@ -161,7 +166,20 @@ angular.module('common')
                     searchText: selectData.searchText,
                     geoText: selectData.geoText,
                     searchAttr: selectData.searchAttr
-                });
+                };
+
+                const isEqualToPrev = this.prevBroadcastData &&
+                    this.prevBroadcastData.filtersCount === broadcastData.filtersCount &&
+                    this.prevBroadcastData.selectionCount === broadcastData.selectionCount &&
+                    this.prevBroadcastData.isSubsetted === broadcastData.isSubsetted &&
+                    this.prevBroadcastData.searchText === broadcastData.searchText &&
+                    this.prevBroadcastData.geoText === broadcastData.geoText &&
+                    this.prevBroadcastData.searchAttr === broadcastData.searchAttr;
+
+                if (!isEqualToPrev) {
+                    this.prevBroadcastData = broadcastData;
+                    $rootScope.$broadcast(BROADCAST_MESSAGES.hss.select, broadcastData);
+                }
 
                 return Promise.resolve();
             }
@@ -169,7 +187,7 @@ angular.module('common')
             function appendToSelection(nodeIds) {
                 var currentSubset = subsetService.currentSubset();
                 var selectNodeIds = !currentSubset.length ? nodeIds : nodeIds.filter(x => currentSubset.indexOf(x) > -1);
-                
+
                 if (this.singleNode && this.selectedNodes.length == 0) this.selectedNodes = [this.singleNode.id];
                 this.selectedNodes = _.unique([...this.selectedNodes, ...selectNodeIds]);
 
@@ -191,13 +209,13 @@ angular.module('common')
 
             function searchNodes(selectData, service) {
                 var dataRef = $rootScope.MAPP_EDITOR_OPEN
-                ? dataService.currDataSetUnsafe().id
-                : selectData.scope.player.dataset.ref;
+                    ? dataService.currDataSetUnsafe().id
+                    : selectData.scope.player.dataset.ref;
                 var filterAttrIds = selectData.searchAttr ? [selectData.searchAttr.id] : [];
                 if (filterAttrIds.length === 0) {
-                    var filterAttrVMs = _.reduce(dataGraph.getNodeAttrs(), function(acc, attr) {
+                    var filterAttrVMs = _.reduce(dataGraph.getNodeAttrs(), function (acc, attr) {
                         // Filter hidden & numeric & not searchable attrs
-                        if(!attr.isNumeric && attr.visibility.includes('search')) {
+                        if (!attr.isNumeric && attr.visibility.includes('search')) {
                             acc.push(_.assign(_.clone(attr), {
                                 checked: false
                             }));
@@ -207,15 +225,15 @@ angular.module('common')
                     filterAttrIds = _.map(filterAttrVMs, 'id');
                 }
 
-                return searchService.searchNodes(selectData.searchText, dataRef, filterAttrIds, selectData.scope.player.player.settings.searchAlg).then(function(hits) {
+                return searchService.searchNodes(selectData.searchText, dataRef, filterAttrIds, selectData.scope.player.player.settings.searchAlg).then(function (hits) {
                     var currentSubset = subsetService.currentSubset();
                     if (currentSubset && currentSubset.length) {
-                        hits = _.filter(hits, function(hit) {
+                        hits = _.filter(hits, function (hit) {
                             return _.includes(currentSubset, hit._source.id);
                         });
                     }
 
-                    service.selectedNodes = _.union(service.selectedNodes || [], _.map(hits, function(h) {
+                    service.selectedNodes = _.union(service.selectedNodes || [], _.map(hits, function (h) {
                         return h._source.id;
                     }));
 
@@ -249,7 +267,7 @@ angular.module('common')
             function applyFilters(filters, searchText, searchAttr, scope) {
                 this.unselect();
                 this.filters = _.clone(filters);
-                return this.selectNodes({ searchText: searchText, searchAttr: searchAttr, scope: scope});
+                return this.selectNodes({ searchText: searchText, searchAttr: searchAttr, scope: scope });
             }
 
             function filter(data, subset) {
@@ -304,6 +322,13 @@ angular.module('common')
             function createMinMaxFilter(attrId, min, max, force, forceDisable) {
                 var filterConfig = this.getFilterForId(attrId);
 
+                if (min == filterConfig.min && max == filterConfig.max) {
+                    filterConfig.selector = null;
+                    filterConfig.isEnabled = false;
+                    return filterConfig;
+                }
+
+
                 if (force || !filterConfig.isEnabled) {
                     filterConfig.selector = SelectorService.newSelector().ofMultiAttrRange(attrId, [{ min, max }]);
                 } else {
@@ -340,20 +365,33 @@ angular.module('common')
                     }
                 }
 
-                _.map(this.getSelectedNodes(), function(n) {
+                _.map(this.getSelectedNodes(), function (n) {
                     n.isSelected = false;
                     return n;
                 });
 
                 this.selectedNodes = [];
 
-                $rootScope.$broadcast(BROADCAST_MESSAGES.hss.select, {
+                const broadcastData = {
                     filtersCount: this.getActiveFilterCount(),
                     selectionCount: this.selectedNodes.length,
                     isSubsetted: currentSubset.length > 0,
                     nodes: this.getSelectedNodes(),
                     isUnselect: true
-                });
+                };
+
+                const isEqualToPrev = this.prevBroadcastData &&
+                    this.prevBroadcastData.filtersCount === broadcastData.filtersCount &&
+                    this.prevBroadcastData.selectionCount === broadcastData.selectionCount &&
+                    this.prevBroadcastData.isSubsetted === broadcastData.isSubsetted &&
+                    this.prevBroadcastData.isUnselect === broadcastData.isUnselect;
+
+                if (!isEqualToPrev) {
+                    this.prevBroadcastData = broadcastData;
+                    $rootScope.$broadcast(BROADCAST_MESSAGES.hss.select, broadcastData);
+                }
+
+
 
                 if (!currentSubset.length && !this.selectedNodes.length) {
                     renderGraphfactory.getRenderer().render();
@@ -407,7 +445,7 @@ angular.module('common')
             }
 
             function _buildFilters(attrs) {
-                const res = _.map(attrs, function (attr) { return new FilterConfig(attr.id); });
+                const res = _.map(attrs, function (attr) { return new FilterConfig(attr.id, null, attr.bounds); });
 
                 return [
                     ...res,

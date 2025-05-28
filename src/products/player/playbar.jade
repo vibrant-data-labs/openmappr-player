@@ -51,7 +51,7 @@
 
 .play-toolbar__buttons
   .button-group_type_play-toolbar
-    .play-toolbar__content(ng-if="operations.list.length > 1 && operations.opened")
+    .play-toolbar__content(ng-if="ui.activeFilterCount > 0")
       .play-toolbar__reset-wrap(ng-if="isShowBreadcrumbs")
         button.play-toolbar__btn-collapse(
           ng-click="collapseBreadcrumbs()",

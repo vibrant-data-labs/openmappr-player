@@ -154,9 +154,9 @@ angular.module('common')
                 if (snapData.snapshot) {
                     showNodeDetailOnLoad = snapData.snapshot.layout.settings.showNodeDetailOnLoad && $scope.mapprSettings.nodeFocusShow;
                 }
-                // if ($scope.player.player.settings.showStartInfo) {
-                //     $timeout(() => $scope.toggleRightPanel(), 500);
-                // }
+                if ($scope.player.player.settings.showStartInfo && !$scope.showOverlay) {
+                    $timeout(() => $scope.toggleRightPanel(), 500);
+                }
             });
             $scope.$on(BROADCAST_MESSAGES.snapshot.changed, function onSnapChange(e, data) {
                 $scope.cancelOverlay(true);
