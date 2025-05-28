@@ -28,44 +28,6 @@ html(lang='en', data-ng-app='hcApp' style="background: #{backgroundColor}" )
 
 		link(rel='stylesheet', href='#{player_prefix_index_source}/css/player.debug.css')
 
-		style.
-			#auth-modal {
-				display: none;
-				position: fixed;
-				top: 0;
-				left: 0;
-				width: 100%;
-				height: 100%;
-				background: rgba(0, 0, 0, 0.8);
-				z-index: 9999;
-			}
-			.auth-content {
-				position: absolute;
-				top: 50%;
-				left: 50%;
-				transform: translate(-50%, -50%);
-				background: white;
-				padding: 20px;
-				border-radius: 5px;
-				text-align: center;
-			}
-			.auth-content input {
-				margin: 10px 0;
-				padding: 5px;
-				width: 200px;
-			}
-			.auth-content button {
-				padding: 5px 15px;
-				background: #007bff;
-				color: white;
-				border: none;
-				border-radius: 3px;
-				cursor: pointer;
-			}
-			.auth-content button:hover {
-				background: #0056b3;
-			}
-
 	body#app.nav-min(data-custom-background, data-off-canvas-nav style="background: #{backgroundColor}" class="#{colorTheme}-theme side-menu-compressed")
 		auth-modal
 		div

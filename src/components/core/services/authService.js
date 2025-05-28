@@ -27,6 +27,7 @@ angular.module('common')
             }
 
             function authenticate() {
+                console.log('Authenticating...')
                 localStorage.setItem('openmappr_authenticated', 'true');
                 $rootScope.$broadcast(BROADCAST_MESSAGES.auth.authenticated);
                 window.location.reload();
@@ -54,7 +55,10 @@ angular.module('common')
                         if (!passwordHash) {
                             authenticate();
                         }
-                        return passwordHash;
+                        return {
+                            passwordHash: passwordHash,
+                            title: response.data.player?.settings?.headerTitle
+                        };
                     })
                     .catch(function(error) {
                         console.error('Error loading settings:', error);
