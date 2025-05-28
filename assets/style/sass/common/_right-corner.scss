@@ -215,7 +215,7 @@
 
       h3 {
         font: 400 16px / 23px "Poppins";
-        color: #BC3364;
+        color: #001C29;
         margin-top: 5px;
         margin-bottom: 0;
       }
@@ -538,14 +538,14 @@ body {
 
   &-bullets {
     .active {
-      background: #bc3364 !important;
+      background: #001C29 !important;
     }
   }
 }
 
 $d: 24px;
 $t: 15;
-$c: #bc3364 #bc3364 #bc3364 #bc3364 #bc3364;
+$c: #001C29 #001C29 #001C29 #001C29 #001C29;
 $n: length($c);
 $u: 100%/($n - 1);
 
@@ -578,7 +578,7 @@ $u: 100%/($n - 1);
 .loader {
   width: 48px;
   height: 48px;
-  border: 5px solid #bc3364;
+  border: 5px solid #001C29;
   border-bottom-color: transparent;
   border-radius: 50%;
   display: inline-block;

@@ -14,7 +14,7 @@
     height: auto;
 
     h6.title {
-      color: #BC3364;
+      color: #001C29;
       font: 400 13px/20px 'Poppins';
     }
 
@@ -142,7 +142,7 @@
 
       .card__title {
         margin: 0 0 0 9px;
-        color: #BC3364;
+        color: #001C29;
         font: 500 15px/24px 'Poppins';
         white-space: nowrap;
         overflow: hidden;
@@ -242,7 +242,7 @@
           }
 
           &:focus {
-            border-color: rgba(#BA3665, .5);
+            border-color: rgba(#001C29, .5);
             background-image: deployedUrl('/img/filter-panel/search-purple.svg');
             color: #000;
           }
@@ -282,7 +282,7 @@
         padding: 8px;
 
         &__button {
-          color: #C02D62;
+          color: #001C29;
           cursor: pointer;
 
           &:first-child {
@@ -294,7 +294,7 @@
           }
 
           &:hover {
-            color: darken(#C02D62, 10%);
+            color: darken(#001C29, 10%);
           }
 
           &.disabled {
@@ -414,7 +414,7 @@
   }
 
   &__title-full {
-    color: #BC3364;
+    color: #001C29;
     font: 500 15px/24px "Poppins";
     overflow: hidden;
     text-overflow: ellipsis;
@@ -530,7 +530,7 @@
   top: 50%;
   width: 100%;
   height: 100%;
-  background: #559aac;
+  background: #008BA0;
 }
 
 .range-slider[data-vertical] .range-slider__range {

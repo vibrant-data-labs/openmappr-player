@@ -113,7 +113,7 @@
   }
 
   &__value {
-    background-color: #BC3364;
+    background-color: #001C29;
     color: #fff;
     padding: 0 5px;
     border-radius: 50px;
@@ -144,11 +144,11 @@
   }
 
   .selected {
-    background: #BC3364;
+    background: #001C29;
   }
 
   .span-subset {
-    color: #BC3364;
+    color: #001C29;
   }
 
   .total {
@@ -258,7 +258,7 @@
 
         .play-toolbar-list__item_selected &,
         .play-toolbar-list__item:last-child & {
-          background-color: #BC3364;
+          background-color: #001C29;
         }
       }
     }
@@ -267,7 +267,7 @@
 
       .play-toolbar-list__item_selected &,
       .play-toolbar-list__item:last-child & {
-        color: #BC3364;
+        color: #001C29;
       }
     }
   }
@@ -314,7 +314,7 @@
       margin: 0;
       display: inline-block;
       font: 400 13px/20px 'Poppins';
-      color: #BC3364;
+      color: #001C29;
 
       span {
         color: #939698;
@@ -382,7 +382,7 @@
 
   &__project-title {
     font: 400 18px "Poppins";
-    color: #BC3364;
+    color: #001C29;
     display: flex;
     align-items: center;
     margin: 8px 0 7px 8px;
@@ -489,7 +489,7 @@
 
       h3 {
         font: 400 16px / 23px "Poppins";
-        color: #BC3364;
+        color: #001C29;
         margin-top: 5px;
         margin-bottom: 0;
       }
@@ -661,7 +661,7 @@
   }
 
   &__share-title {
-    color: #BC3364;
+    color: #001C29;
     font-size: 14px;
     margin: 14px 10px;
     font-weight: 600;

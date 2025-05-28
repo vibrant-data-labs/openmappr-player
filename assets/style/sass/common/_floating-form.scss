@@ -53,7 +53,7 @@
     
   /* Set a style for the submit/login button */
   .form-container button {
-    background-color: #BC3364;
+    background-color: #001C29;
     color: #fff;
     cursor: pointer;
     width: 100%;
@@ -63,7 +63,7 @@
   /* Set a style for the submit/login button */
   .form-container button:hover {
     background-color: #fff;
-    color: #BC3364;
+    color: #001C29;
     cursor: pointer;
     width: 100%;
     border-radius: 5px;
@@ -72,7 +72,7 @@
   
   /* Add a red background color to the cancel button */
   .form-container .cancel {
-    background-color: #BC3364;
+    background-color: #001C29;
   }
 
   .form-container ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */

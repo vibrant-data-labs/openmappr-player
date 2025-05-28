@@ -521,7 +521,7 @@
 
       &__title {
         font: 400 13px/20px "Poppins";
-        color: #BC3364;
+        color: #001C29;
         text-align: center;
       }
       &--scrollable {
@@ -870,7 +870,7 @@
     padding: 21px 0 18px 21px;
     font: 500 15px/24px 'Poppins';
     line-height: 23px;
-    color: #BC3364;
+    color: #001C29;
   }
 
   .line-row {
@@ -893,7 +893,7 @@
     position: absolute;
     box-sizing: border-box;
     height: 1px;
-    border: 3px solid #BC3364;
+    border: 3px solid #001C29;
     position: absolute;
     z-index: 2;
     left: 0;
@@ -914,7 +914,7 @@
       cursor: pointer;
 
       &-active {
-        background: linear-gradient(135deg, #BA3665 0%, #94408D 100%);
+        background: linear-gradient(135deg, #001C29 0%, #94408D 100%);
         
         .snap-info, &.snap-summary .snap-info-title {
           color: #ffffff;
@@ -997,7 +997,7 @@
     }    
 
     &:focus {
-      border-color: rgba(#BA3665, .5);
+      border-color: rgba(#001C29, .5);
       background-image: deployedUrl('/img/filter-panel/search-purple.svg');
       color:#000;
     }
@@ -1064,7 +1064,7 @@
 
   &__btn {
     font: 400 12px/18px "Poppins";
-    color: #BC3364;
+    color: #001C29;
   }
 
   &__btn-box {
@@ -1163,7 +1163,7 @@
 .panel-item-actions {
   padding: 7px 0;
   font: 400 12px/18px "Poppins";
-  color: #BC3364;
+  color: #001C29;
   position: relative;
   background: #F5F6F8;
   border-radius: 4px;

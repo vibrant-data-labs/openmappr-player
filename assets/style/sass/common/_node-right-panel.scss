@@ -43,7 +43,7 @@
 
     &__title {
       font: 400 15px/23px 'Poppins';
-      color: #BC3364;
+      color: #001C29;
       margin: 0;
 
       &--project {
@@ -200,7 +200,7 @@
 
           &.active {
             background: #fff;
-            color: #BC3364;
+            color: #001C29;
           }
         }
 
@@ -255,11 +255,11 @@
 
     &__more {
       font: 400 12px/18px 'Poppins';
-      color: #BC3364;
+      color: #001C29;
       display: inline-block;
 
       &:hover {
-        color: darken(#BC3364, 16);
+        color: darken(#001C29, 16);
       }
     }
 
@@ -380,9 +380,10 @@
     }
 
     &__label {
-      color: #BC3364;
+      color: #001C29;
       font: 400 13px/20px 'Poppins';
       padding: 0;
+      font-weight: 600;
     }
 
     &__value-wrap {

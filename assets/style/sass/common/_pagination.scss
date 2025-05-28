@@ -9,7 +9,7 @@
   padding: 8px;
 
   &__button {
-    color: #C02D62;
+    color: #001C29;
     cursor: pointer;
 
     &:first-child {
@@ -21,7 +21,7 @@
     }
 
     &:hover {
-      color: darken(#C02D62, 10%);
+      color: darken(#001C29, 10%);
     }
 
     &.disabled {

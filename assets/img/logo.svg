@@ -9,7 +9,7 @@
             <stop stop-color="#B73372" offset="100%"></stop>
         </linearGradient>
         <linearGradient x1="50%" y1="50%" x2="84.792689%" y2="88.1191453%" id="linearGradient-2">
-            <stop stop-color="#BA3665" offset="0%"></stop>
+            <stop stop-color="#001C29" offset="0%"></stop>
             <stop stop-color="#9013FE" offset="100%"></stop>
         </linearGradient>
     </defs>
@@ -17,7 +17,7 @@
         <g id="Mappr-Password" transform="translate(-671.000000, -140.000000)">
             <g id="Content" transform="translate(480.000000, 120.000000)">
                 <g id="logo" transform="translate(191.000000, 20.000000)">
-                    <text id="OpenMappr" font-family="Helvetica" font-size="20" font-weight="normal" letter-spacing="-1" fill="#BA3665">
+                    <text id="OpenMappr" font-family="Helvetica" font-size="20" font-weight="normal" letter-spacing="-1" fill="#001C29">
                         <tspan x="0.692382812" y="62">OpenMappr</tspan>
                     </text>
                     <g transform="translate(31.000000, 0.000000)" id="vibrantdata-logo-dark">
