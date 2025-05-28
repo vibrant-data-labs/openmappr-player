@@ -53,7 +53,7 @@ angular.module('common')
                     .then(function(response) {
                         passwordHash = response.data.player?.settings?.passwordHash;
                         if (!passwordHash) {
-                            authenticate();
+                            return null;
                         }
                         return {
                             passwordHash: passwordHash,

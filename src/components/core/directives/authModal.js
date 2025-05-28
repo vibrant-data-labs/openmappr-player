@@ -45,27 +45,30 @@ angular.module('common')
 
                     // Hide the main content initially
                     content.css('display', 'none');
-
-                    // Check if already authenticated
+                    authModal.css('display', 'none');
+                    content.css('display', 'block');
+                    
                     if (authService.isAuthenticated()) {
-                        authModal.css('display', 'none');
-                        content.css('display', 'block');
                         return;
                     }
 
                     // Load password hash and show modal if needed
                     authService.getPasswordHash()
-                        .then(({ title, passwordHash }) => {
+                        .then((data) => {
+                            if (!data) {
+                                return;
+                            }
+
+                            const { title, passwordHash } = data;
                             scope.title = title;
                             if (!passwordHash) {
                                 // No password required
-                                localStorage.setItem('openmappr_authenticated', 'true');
-                                window.location.reload();
                                 return;
                             }
 
                             // Show the auth modal
                             authModal.css('display', 'block');
+                            content.css('display', 'none');
 
                             scope.submitPassword = () => {
                                 scope.error = false;
