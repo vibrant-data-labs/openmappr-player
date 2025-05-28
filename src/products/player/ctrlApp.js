@@ -453,6 +453,12 @@ angular.module('player')
                     .then(function (playerDoc) {
                         console.log('[' + (Date.now() - timeStart) + '] [ctrlPlayer] player load %O', playerDoc);
                         $scope.player = playerDoc;
+
+                        const authFlag = localStorage.getItem('openmappr_authenticated')
+                        if (playerDoc.player.settings.passwordHash && !authFlag) {
+                            return $q.reject('Authentication required');
+                        }
+
                         return $q.all([
                             dataService.fetchProjectDatasetLocally(),
                             networkService.fetchProjectNetworksLocally()
@@ -604,7 +610,9 @@ loadScript('https://unpkg.com/react@18/umd/react.production.min.js', 'react').th
 }).then(() => {
     const src = '#{player_prefix_index_source}' || window.origin;
     return loadScript(`${src}/libs/mappr-components.js`, 'components')
-});
+}).then(() => loadScript('https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js', 'crypto-js', {
+    type: 'text/javascript'
+}));
 
 window.waitUntilLoaded = () => {
     if (window.__allComponentsLoaded) return Promise.resolve();

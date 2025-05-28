@@ -211,6 +211,10 @@
                                 "null",
                                 "string"
                             ]
+                        },
+                        "passwordHash": {
+                            "type": "string",
+                            "description": "SHA-256 hash of the password required to access the player"
                         }
                     },
                     "required": [
