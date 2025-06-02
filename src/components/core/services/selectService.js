@@ -350,8 +350,9 @@ angular.module('common')
 
             function unselect() {
                 var currentSubset = subsetService.currentSubset();
+                const hasSingleNodeSelection = Boolean(this.singleNode);
 
-                if (this.singleNode) {
+                if (hasSingleNodeSelection) {
                     this.singleNode = null;
                 }
 
@@ -386,12 +387,10 @@ angular.module('common')
                     this.prevBroadcastData.isSubsetted === broadcastData.isSubsetted &&
                     this.prevBroadcastData.isUnselect === broadcastData.isUnselect;
 
-                if (!isEqualToPrev) {
+                if (!isEqualToPrev || hasSingleNodeSelection) {
                     this.prevBroadcastData = broadcastData;
                     $rootScope.$broadcast(BROADCAST_MESSAGES.hss.select, broadcastData);
                 }
-
-
 
                 if (!currentSubset.length && !this.selectedNodes.length) {
                     renderGraphfactory.getRenderer().render();
