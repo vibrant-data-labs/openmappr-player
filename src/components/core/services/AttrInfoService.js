@@ -329,14 +329,27 @@ angular.module('common')
                 infoObj.isNumeric = attr.isNumeric;
                 infoObj.isInteger = attr.isInteger;
                 infoObj.isTag = attr.isTag;
+                infoObj.hasWeightData = false;
 
+                const values = [];
 
-                var values = _.reduce(entities, function (acc, item) {
-                    if (item.attr[attribId] != null) {
-                        acc.push(item.attr[attribId]);
+                _.each(entities, function (item) {
+                    if (!item.attr[attribId]) {
+                        return;
                     }
-                    return acc;
-                }, []);
+
+                    if (Array.isArray(item.attr[attribId])) {
+                        const hasWeightData = item.attr[attribId].every(v => Array.isArray(v) && v.length === 2);
+                        if (hasWeightData) {
+                            infoObj.hasWeightData = true;
+                            values.push(...item.attr[attribId].map(v => v[0]));
+                        } else {
+                            values.push(item.attr[attribId]);
+                        }
+                    } else {
+                        values.push(item.attr[attribId]);
+                    }
+                });
 
                 if (attr.isNumeric) {
                     var logInfoObj = { ...infoObj, isInteger: false };

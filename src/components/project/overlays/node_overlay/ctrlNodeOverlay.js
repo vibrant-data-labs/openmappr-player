@@ -1,5 +1,5 @@
 angular.module('common')
-    .controller('NodeOverlayCtrl', ['$scope', '$rootScope', '$timeout', 'BROADCAST_MESSAGES', 'zoomService', 'renderGraphfactory', 'dataGraph','AttrInfoService', 'linkService', 'hoverService', 'selectService', 'dataService',
+    .controller('NodeOverlayCtrl', ['$scope', '$rootScope', '$timeout', 'BROADCAST_MESSAGES', 'zoomService', 'renderGraphfactory', 'dataGraph', 'AttrInfoService', 'linkService', 'hoverService', 'selectService', 'dataService',
         function ($scope, $rootScope, $timeout, BROADCAST_MESSAGES, zoomService, renderGraphfactory, dataGraph, AttrInfoService, linkService, hoverService, selectService, dataService) {
             'use strict';
 
@@ -421,7 +421,7 @@ angular.module('common')
                         $scope.cancelOverlay(true);
                     }
                 }
-                
+
                 $scope.onSection2Load('.section_tab-1')
                 $scope.onSection3Load('.section_tab-2')
             }
@@ -686,7 +686,7 @@ angular.module('common')
                     const rawData = dataService.currDataSetUnsafe();
                     const rawNode = rawData.datapoints.find(x => x.id == nodesa.id);
 
-                    mapRightPanel(filteredAttr, nodesa.attr, rawNode ? rawNode.weightedAttr : undefined);
+                    mapRightPanel(filteredAttr, nodesa.attr);
                     buildNeighbours(nodesa);
                 }
 
@@ -696,7 +696,7 @@ angular.module('common')
              ********* Helper functions for the attr map *************
              **************************************/
 
-            function mapRightPanel(attrArray, values, weightedAttr) {
+            function mapRightPanel(attrArray, values) {
                 var result = {
                     section1: [],
                     section2: [],
@@ -708,8 +708,9 @@ angular.module('common')
                 result.section1.push(getNodeName(values));
 
                 attrArray.map((attr) => {
-                    if (mapToSectionOne(attr)) result.section1.push({ ...setToSectionOne(attr, values[attr.id]) });
-                    if (mapToSectionTwo(attr)) {
+                    const attrInfo = AttrInfoService.getNodeAttrInfoForRG().getForId(attr.id);
+                    if (mapToSectionOne(attr, attrInfo)) result.section1.push({ ...setToSectionOne(attr, values[attr.id]) });
+                    if (mapToSectionTwo(attr, attrInfo)) {
                         const htmlValue = processStringValue(values[attr.id])
 
                         result.section2.push({
@@ -724,8 +725,8 @@ angular.module('common')
                             } : null
                         });
                     }
-                    if (mapToSectionFour(attr)) result.section4.push({ key: attr.title ? attr.title : attr.id, value: parseValueToSection4(attr, values[attr.id]) });
-                    getSectionTags(attr, values, weightedAttr, result);
+                    if (mapToSectionFour(attr, attrInfo)) result.section4.push({ key: attr.title ? attr.title : attr.id, value: parseValueToSection4(attr, values[attr.id]) });
+                    getSectionTags(attr, values, result, attrInfo);
                 });
 
                 result.sectionShortTags.map(item => {
@@ -840,18 +841,17 @@ angular.module('common')
 
                 try {
                     return JSON.parse(weightsData);
-                } catch(e) {
+                } catch (e) {
                     return JSON.parse(weightsData.replace(/\'/g, "\""));
                 }
             }
 
-            function getSectionTags(attr, values, weightedAttr, result) {
+            function getSectionTags(attr, values, result, attrInfo) {
                 const { attrType, renderType } = attr;
                 const isWide = renderType === 'wide-tag-cloud';
                 const isHorizontalBar = renderType === 'horizontal-bars';
                 const cloudRenderTypes = ['tag-cloud', 'tag-cloud_2', 'tag-cloud_3'];
                 if (!cloudRenderTypes.includes(renderType) && !isWide && !isHorizontalBar) return;
-                var attrInfo = AttrInfoService.getNodeAttrInfoForRG().getForId(attr.id);
                 if (attrType === 'liststring') {
                     if (attrInfo.isSingleton) {
                         var count = attrInfo.valuesCount[values[attr.id]];
@@ -870,26 +870,25 @@ angular.module('common')
                     } else {
                         console.log(`section tags: ${attr.title}`)
                         let nodeVals = values[attr.id];
-                        const weightInfo = weightedAttr ? weightedAttr.find(x => x.id == attr.id) : undefined;
-                        if (weightInfo && weightInfo.values) {
-                            const valuesData = parseWeightsData(weightInfo.values);
-                            const weightsData = parseWeightsData(weightInfo.weights);
+                        if (attrInfo.hasWeightData) {
+                            const valuesData = parseWeightsData(values.map(v => v[0]));
+                            const weightsData = parseWeightsData(values.map(v => v[1]));
 
-                           const weightData = valuesData.map((item, idx) => ({
-                            val: item,
-                            weight: weightsData[idx] || 0   
-                           }));
+                            const weightData = valuesData.map((item, idx) => ({
+                                val: item,
+                                weight: weightsData[idx] || 0
+                            }));
 
-                           nodeVals = nodeVals.filter(x => valuesData.includes(x))
-                           const sortMethod = function(o) {
-                            const w = weightData.find(x => x.val == o);
-                            if (w) {
-                                return w.weight;
+                            nodeVals = nodeVals.filter(x => valuesData.includes(x))
+                            const sortMethod = function (o) {
+                                const w = weightData.find(x => x.val == o);
+                                if (w) {
+                                    return w.weight;
+                                }
+
+                                return 0;
                             }
-
-                            return 0;
-                           }
-                           nodeVals = _.sortByOrder(nodeVals, [sortMethod], ['desc'])
+                            nodeVals = _.sortByOrder(nodeVals, [sortMethod], ['desc'])
                         }
 
                         result.sectionTags.push({ key: attr.title || attr.id, id: attr.id, value: nodeVals, isWide });
@@ -1022,7 +1021,11 @@ angular.module('common')
             /*************************************
              ********* Helper functions for the attr map *************
              **************************************/
-            function mapToSectionOne(attr) {
+            function mapToSectionOne(attr, attrInfo) {
+                if (attrInfo.hasWeightData) {
+                    return false;
+                }
+
                 const { attrType, renderType, id } = attr;
 
                 return (attrType === 'string' && renderType === 'text' && id === 'Name') ||
@@ -1030,7 +1033,10 @@ angular.module('common')
                     (attrType === 'string' && renderType === 'email');
 
             }
-            function mapToSectionTwo(attr) {
+            function mapToSectionTwo(attr, attrInfo) {
+                if (attrInfo.hasWeightData) {
+                    return false;
+                }
                 const { attrType, renderType } = attr;
 
                 return (attrType === 'string' && renderType === 'text') ||
@@ -1050,7 +1056,10 @@ angular.module('common')
 
                 return false;
             }
-            function mapToSectionFour(attr) {
+            function mapToSectionFour(attr, attrInfo) {
+                if (attrInfo.hasWeightData) {
+                    return false;
+                }
                 const { attrType, renderType } = attr;
 
                 return (attrType === 'integer' && renderType === 'histogram') ||
