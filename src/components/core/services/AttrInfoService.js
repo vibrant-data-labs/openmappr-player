@@ -338,7 +338,7 @@ angular.module('common')
                         return;
                     }
 
-                    if (Array.isArray(item.attr[attribId])) {
+                    if (Array.isArray(item.attr[attribId]) && item.attr[attribId].length > 0) {
                         const hasWeightData = item.attr[attribId].every(v => Array.isArray(v) && v.length === 2);
                         if (hasWeightData) {
                             infoObj.hasWeightData = true;
