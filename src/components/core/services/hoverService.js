@@ -342,7 +342,7 @@ angular.module('common')
                     mode = 'select';
                 }
                 sigRender.greyout(shouldGreyOut, mode);
-                if (nodes.length == 0) {
+                if (nodes.length == 0 && !selectService.getActiveFilterCount()) {
                     sigRender.greyoutSubset(false);
                 } else {
                     sigRender.greyoutSubset(true, selectedNodes.length > 0 ? 'select' : 'hover');
