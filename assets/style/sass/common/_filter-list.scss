@@ -477,7 +477,7 @@
   display: block;
   position: relative;
   width: 100%;
-  height: 8px;
+  height: 4px;
   background: #ddd;
   border-radius: 4px;
 }
@@ -508,6 +508,7 @@
   height: 14px;
   position: absolute;
   width: 14px;
+
 }
 
 .range-slider .range-slider__thumb:focus-visible {
@@ -529,7 +530,7 @@
   transform: translate(0, -50%);
   top: 50%;
   width: 100%;
-  height: 100%;
+  height: 4px;
   background: #008BA0;
 }
 
