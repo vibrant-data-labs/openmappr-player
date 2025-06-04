@@ -248,6 +248,11 @@ angular.module('common')
             // #####
             $scope.isSnapshotSelectorOpen = false;
 
+            var descriptionCache = {
+                snapshotId: null,
+                hasContent: false
+            };
+
             $scope.getSelectedSnapshotTitle = function () {
                 const snap = snapshotService.getCurrentSnapshot();
                 if (snap) {
@@ -263,6 +268,30 @@ angular.module('common')
 
             $scope.openProjectInfo = function () {
                 $scope.$broadcast(BROADCAST_MESSAGES.ip.changed, true);
+            }
+
+            $scope.hasSnapshotDescription = function () {
+                var currentSnapshot = snapshotService.getCurrentSnapshot();
+                
+                if (!currentSnapshot || !currentSnapshot.descr) {
+                    return false;
+                }
+
+                if (descriptionCache.snapshotId === currentSnapshot.id) {
+                    return descriptionCache.hasContent;
+                }
+
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = currentSnapshot.descr;
+                
+                const hasContent = tempDiv.textContent.trim().length > 0;
+                
+                descriptionCache = {
+                    snapshotId: currentSnapshot.id,
+                    hasContent: hasContent
+                };
+                
+                return hasContent;
             }
 
             $scope.getSelectedSnapshot = function () {
