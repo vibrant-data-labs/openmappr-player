@@ -2,8 +2,8 @@
 * Used to search nodes on whole dataset or some selected attributes
 */
 angular.module('common')
-.service('searchService', ['$q', '$http', 'dataGraph', 'cfpLoadingBar',
-function($q, $http, dataGraph, cfpLoadingBar) {
+.service('searchService', ['$q', '$http', 'dataGraph',
+function($q, $http, dataGraph) {
     "use strict";
 
 
@@ -41,7 +41,6 @@ function($q, $http, dataGraph, cfpLoadingBar) {
         }
 
         var start = performance.now();
-        cfpLoadingBar.start();
 
         // FUZZY SORT
         var allNodes = dataGraph.getAllNodes();
@@ -72,8 +71,12 @@ function($q, $http, dataGraph, cfpLoadingBar) {
             this._activeSearch.onmessage = (e) => {
                 var end = performance.now();
                 console.log('Search took ' + (end - start) + ' ms');
-                cfpLoadingBar.complete();
                 searchResolve(e.data);
+            };
+
+            this._activeSearch.onerror = (e) => {
+                console.error(logPrefix + 'searchWorker error: ', e);
+                this._searchReject(e);
             };
 
             return result;
@@ -85,7 +88,6 @@ function($q, $http, dataGraph, cfpLoadingBar) {
                 threshold: 3});
 
                 
-            cfpLoadingBar.complete();
             resolve(data.map(r => ({
                 _source: {
                     id: r.id,

@@ -2,8 +2,8 @@
 * Handles dataset operations
 */
 angular.module('common')
-    .service('dataService',['$http', '$q', '$rootScope', '$timeout', 'projFactory', 'AttrSanitizeService', 'extAPIService', 'BROADCAST_MESSAGES',
-        function ($http, $q, $rootScope, $timeout, projFactory, AttrSanitizeService, extAPIService, BROADCAST_MESSAGES) {
+    .service('dataService',['$http', '$q', '$rootScope', '$timeout', 'projFactory', 'AttrSanitizeService', 'extAPIService', 'cfpLoadingBar', 'BROADCAST_MESSAGES',
+        function ($http, $q, $rootScope, $timeout, projFactory, AttrSanitizeService, extAPIService, cfpLoadingBar, BROADCAST_MESSAGES) {
             'use strict';
 
             /*************************************
@@ -48,6 +48,7 @@ angular.module('common')
             }
 
             function fetchProjectDatasetLocally() {
+                cfpLoadingBar.start();
                 return $http.head(DATA_PATH + 'nodes.json')
                         .then(function(result) {
                             return +result.headers('content-length');
@@ -58,6 +59,7 @@ angular.module('common')
                             return function (xhr) {
                                 xhr.addEventListener("progress", function (event) {
                                     const progress = event.loaded / contentLength * 100;
+                                    cfpLoadingBar.set(event.loaded / contentLength );
                                     $rootScope.$broadcast(BROADCAST_MESSAGES.data.downloadProgress, {
                                         progress: progress > 100 ? 100 : progress
                                     });
@@ -69,6 +71,7 @@ angular.module('common')
                     .then(
                         function(result) {
                             console.log("----------- getting project data locally");
+                            cfpLoadingBar.complete();
                             return updateDataSet(result.data);
                         },
                         function(err) {

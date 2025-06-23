@@ -203,6 +203,7 @@ function($scope, $rootScope, $timeout, searchService, BROADCAST_MESSAGES, uiServ
         console.assert(dataRef, "Dataset must exist for this version");
 
         $scope.ui.processingQuery = true;
+        $scope.$digest();
 
         searchService.searchNodes($scope.globalSearch.text, dataRef, filterAttrIds, $scope.player.player.settings.searchAlg)
         .then(function(hits) {
@@ -214,32 +215,22 @@ function($scope, $rootScope, $timeout, searchService, BROADCAST_MESSAGES, uiServ
             }
             console.log('[ctrlSearchPanel : ] nodes found -- ', hits);
             var rgNodes = renderGraphfactory.getGraph().nodes();
-            var dataPointIdNodeIdMap = dataGraph.getRawDataUnsafe().dataPointIdNodeIdMap;
             var validNodeIds = _(hits)
-                                .map(function(hit) { return dataPointIdNodeIdMap[hit._source.id]; })
+                                .map((hit) => hit._source.id)
                                 .compact()
                                 .value();
 
-            $scope.searchResults = _.filter(rgNodes, function(node) {
-                return validNodeIds.indexOf(node.id) > -1;
+            const searchResultNodes = _.filter(rgNodes, (node) => validNodeIds.indexOf(node.id) > -1);
+            //add highlights
+            _.forEach(searchResultNodes, (n) => {
+                var hit = hits.find(h => h._source.id == n.id);
+                n.highlights = [{
+                    attrName: hit.highlight.attr,
+                    text: hit.highlight.value
+                }];
             });
 
-            //add highlights
-            var highlightKeys = filterAttrIds.slice();
-            _.forEach($scope.searchResults, function(n) {
-                var hit = _.find(hits, function(h) {
-                    return h._source.id == n.id;
-                });
-                n.highlights = [];
-                _.forEach(highlightKeys, function(key) {
-                    if(hit.highlight[key]) {
-                        n.highlights = n.highlights.concat({
-                            attrName: key,
-                            text: hit.highlight[key]
-                        });
-                    }
-                });
-            });
+            $scope.searchResults = searchResultNodes;
 
             console.log(logPrefix + 'search results: ', $scope.searchResults);
 
@@ -277,6 +268,8 @@ function($scope, $rootScope, $timeout, searchService, BROADCAST_MESSAGES, uiServ
                 break;
             default:
             }
+        }).finally(function() {
+            $scope.$digest();
         });
 
         //added this in to show search panels
@@ -346,8 +339,8 @@ function($scope, $rootScope, $timeout, searchService, BROADCAST_MESSAGES, uiServ
         for (var i = 0; i < node.highlights.length; i++) {
             highlight = node.highlights[i];
             html += '<li class="h7">'
-                    + '<span><b>' + highlight.attrName + '</b></span> : '
-                    + '<span>&ldquo;&hellip;' + highlight.text + '&hellip;&rdquo;</span>'
+                    + (highlight.attrName ? '<span><b>' + highlight.attrName + '</b></span> : ' : '')
+                    + '<span>&ldquo;&hellip;' + (highlight.text.length > 100 ? highlight.text.slice(0, 100) : highlight.text) + '&hellip;&rdquo;</span>'
                     + '</li>';
         }
         html += '</ul>';

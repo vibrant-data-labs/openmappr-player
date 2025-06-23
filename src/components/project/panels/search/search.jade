@@ -11,14 +11,12 @@
       input.search-box__input(
         ng-show="ui.overlayOpen"
         type="text",
-        ng-model="globalSearch.text" ng-change="highlightTextInOverlay($event)" ng-focus="ui.showInfoIcon = true"
-        ng-blur="onBlurSearch($event)"
+        ng-model="globalSearch.text" ng-keyup="searchFn($event)" ng-focus="searchFocus()" ng-blur="onBlurSearch($event)",
         placeholder="Search"
       )
       button.search-box__clear(ng-if="globalSearch.text" ng-click="handleClearSearch()")
     .search-box__dropdown.search-dropdown(ng-class="{ 'search-dropdown_opened': searchDropdownVisible}")
       span.search-dropdown__button(role="button" ng-click="toggleSearchDropdown()") 
-      //{{selectedSearchValue.length > 0 ? selectedSearchValueStr : 'All'}}
 
       ul.search-dropdown__list
         li.search-dropdown__item(
@@ -32,8 +30,6 @@
 
     
 
-    //- button.search-box__close(ng-click="searchToggle()") Close
-  //- show and hide for results
   .search-results.uib-dropdown-menu-flexing(ng-show="showSearchResults")
     .search-results-cover(ng-click="hideSearchResults();")
 
@@ -70,7 +66,7 @@
 
     ul.search-results__list
       li.search-results__list-item(
-        ng-repeat="node in searchResults | limitTo: ui.showLimit track by node.id"
+        ng-repeat="node in searchResults | limitTo: ui.showLimit"
         ng-click="selectNode(node); $event.stopPropagation();"
         ng-mouseenter="hoverNode(node, $event); $event.stopPropagation();"
         ng-mouseleave="leaveNode(node); $event.stopPropagation();"

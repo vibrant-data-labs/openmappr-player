@@ -167,9 +167,9 @@ angular.module('common')
                     geoText: selectData.geoText,
                     searchAttr: selectData.searchAttr
                 };
-
+                
                 const isEqualToPrev = this.prevBroadcastData &&
-                    this.prevBroadcastData.filtersCount === broadcastData.filtersCount &&
+                    this.prevBroadcastData.filters === JSON.stringify(this.filters) &&
                     this.prevBroadcastData.selectionCount === broadcastData.selectionCount &&
                     this.prevBroadcastData.isSubsetted === broadcastData.isSubsetted &&
                     this.prevBroadcastData.searchText === broadcastData.searchText &&
@@ -177,7 +177,10 @@ angular.module('common')
                     this.prevBroadcastData.searchAttr === broadcastData.searchAttr;
 
                 if (!isEqualToPrev) {
-                    this.prevBroadcastData = broadcastData;
+                    this.prevBroadcastData = {
+                        ...broadcastData,
+                        filters: JSON.stringify(this.filters)
+                    }
                     $rootScope.$broadcast(BROADCAST_MESSAGES.hss.select, broadcastData);
                 }
 
@@ -382,13 +385,16 @@ angular.module('common')
                 };
 
                 const isEqualToPrev = this.prevBroadcastData &&
-                    this.prevBroadcastData.filtersCount === broadcastData.filtersCount &&
+                    this.prevBroadcastData.filters === JSON.stringify(this.filters) &&
                     this.prevBroadcastData.selectionCount === broadcastData.selectionCount &&
                     this.prevBroadcastData.isSubsetted === broadcastData.isSubsetted &&
                     this.prevBroadcastData.isUnselect === broadcastData.isUnselect;
 
                 if (!isEqualToPrev || hasSingleNodeSelection) {
-                    this.prevBroadcastData = broadcastData;
+                    this.prevBroadcastData = {
+                        ...broadcastData,
+                        filters: JSON.stringify(this.filters)
+                    }
                     $rootScope.$broadcast(BROADCAST_MESSAGES.hss.select, broadcastData);
                 }
 

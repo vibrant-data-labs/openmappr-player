@@ -421,7 +421,13 @@ angular.module('common')
                 populateGeoSettings(data.snapshot);
 
                 if ($scope.isShowTutorial === undefined) {
-                    $scope.isShowTutorial = true;
+                    const tutorialShown = localStorage.getItem('tutorial-shown');
+                    if (tutorialShown) {
+                        $scope.isShowTutorial = false;
+                    } else {
+                        $scope.isShowTutorial = true;
+                        localStorage.setItem('tutorial-shown', 'true');
+                    }
                 }
             });
 

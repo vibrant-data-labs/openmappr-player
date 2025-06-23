@@ -457,8 +457,12 @@ function matchSorter(items, value, options) {
   return matchedItems.sort(function (a, b) {
     return sortRankedItems(a, b, baseSort);
   }).map(function (_ref) {
-    var item = _ref.item;
-    return item;
+	return {
+		item: _ref.item,
+		highlight: _ref.rankedItem,
+		key: keys[_ref.keyIndex] ? keys[_ref.keyIndex].split('.')[1] : null,
+		attr: _ref.attr
+	}
   });
 
   function reduceItemsToRanked(matches, item, index) {
@@ -467,7 +471,8 @@ function matchSorter(items, value, options) {
         rank = _getHighestRanking.rank,
         keyIndex = _getHighestRanking.keyIndex,
         _getHighestRanking$ke = _getHighestRanking.keyThreshold,
-        keyThreshold = _getHighestRanking$ke === void 0 ? threshold : _getHighestRanking$ke;
+        keyThreshold = _getHighestRanking$ke === void 0 ? threshold : _getHighestRanking$ke,
+		attr = _getHighestRanking.attr
 
     if (rank >= keyThreshold) {
       matches.push({
@@ -475,7 +480,8 @@ function matchSorter(items, value, options) {
         item: item,
         rank: rank,
         index: index,
-        keyIndex: keyIndex
+        keyIndex: keyIndex,
+		attr: attr
       });
     }
 
@@ -534,7 +540,8 @@ function getHighestRanking(item, keys, value, options) {
       rankedItem: newRankedItem,
       rank: rank,
       keyIndex: keyIndex,
-      keyThreshold: keyThreshold
+      keyThreshold: keyThreshold,
+	  attr: _ref3.attr
     };
   }, {
     rank: rankings.NO_MATCH,
@@ -612,8 +619,16 @@ function getMatchRanking(testString, stringToRank, options) {
 
 function getAcronym(string) {
   var acronym = '';
+  if (!string) {
+	return '';
+  }
+  
   var wordsInString = string.split(' ');
   wordsInString.forEach(function (wordInString) {
+	if (!wordInString) {
+		return '';
+	}
+
     var splitByHyphenWords = wordInString.split('-');
     splitByHyphenWords.forEach(function (splitByHyphenWord) {
       acronym += splitByHyphenWord.substr(0, 1);
@@ -768,6 +783,7 @@ function getAllValuesToRank(item, keys) {
       values.forEach(function (itemValue) {
         allVals.push({
           itemValue: itemValue,
+		  attr: key ? key.split('.').pop() : null,
           attributes: getKeyAttributes(key)
         });
       });
@@ -804,8 +820,11 @@ onmessage = function(e) {
     
     postMessage(data.map(r => ({
         _source: {
-            id: r.id,
+            id: r.item.id,
         },
-        highlight: filterAttrIds.reduce((acc, cv) => { acc.cv = ''; return acc; } , {})
+        highlight: {
+			attr: r.attr,
+			value: r.highlight
+		}
     })));
 }

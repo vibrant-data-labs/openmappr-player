@@ -45,7 +45,7 @@ angular.module('common')
             $scope.nodeRightInfo = null;
             $scope.totalCount = 0;
             $scope.showFocusNode = false;
-            $scope.isShowTutorial = false;
+            $scope.isShowTutorial = localStorage.getItem('tutorial-shown') ? true : false;
             /**
             * Scope methods
             */

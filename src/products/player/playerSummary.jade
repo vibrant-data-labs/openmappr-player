@@ -110,7 +110,7 @@
 					//- .col-xs-4
 					//- 	span
 					//- 		button.square-btn.small-btn.panel-btn(type="button", ng-click="clearSelections();") Reset
-				.color-box__description-wrap
+				.color-box__description-wrap(ng-if="hasSnapshotDescription()")
 					.color-box__description-title Snapshot Description
 					.color-box__description(ng-if="getSelectedSnapshot().length")
 						div(ng-bind-html="getSelectedSnapshot()[0]")

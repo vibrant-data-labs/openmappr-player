@@ -87,7 +87,7 @@ angular.module('common')
                 var attrArr = ent.attr[attr.id];
                 if(_.isArray(attrArr) && attrArr.length > 0) {
                     numFound++;
-                    if( _.isArray(attrArr[0]) ) {   // get tags from weighted tags
+                    if( _.isArray(attrArr[0]) ) {
                         ent.attr[attr.id] = attrArr = _.map(attrArr, _.first);
                     }
                     attrArr.sort();
