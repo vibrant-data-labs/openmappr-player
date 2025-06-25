@@ -577,6 +577,7 @@
                 background: $dark-background;
                 border-color: $dark-background;
                 color: $panel-text-dark;
+                z-index: 9999;
 
                 .more-btn {
                     color: $panel-text-dark;

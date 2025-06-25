@@ -101,6 +101,7 @@
     border: 1px solid #EBEFF2;
     height: max-content;
     max-height: 50vh;
+    z-index: 9999;
     
     &__header,
     &__list,
