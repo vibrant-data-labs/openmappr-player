@@ -177,7 +177,7 @@ angular.module('common')
                             if (!groups[subgroup]) {
                                 var groupNodes = allSubgroups[group];
                                 var count = subGroupInfo.valuesCount[subAttrVal];
-                                if (hasSubset) {
+                                if (hasSubset && groupNodes) {
                                     allSubgroups = allSubgroups.filter(n => nodes.find(q => q.id == n.id));
                                     count = allSubgroups.length;
                                 }
@@ -185,7 +185,7 @@ angular.module('common')
                                 groups[subgroup] = {
                                     title: subAttrVal,
                                     id: subgroup,
-                                    nodes: groupNodes,
+                                    nodes: groupNodes || [],
                                     viznodes: [],
                                     sumX: 0,
                                     sumY: 0,
