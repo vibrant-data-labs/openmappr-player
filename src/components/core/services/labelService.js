@@ -105,8 +105,22 @@ angular.module('common')
                 return 0;
             }
 
-            function isGroupOrSelected(node) {
-                return 
+            function calculateDistance(group1, group2, prefix) {
+                var dx = group1[prefix + 'x'] - group2[prefix + 'x'];
+                var dy = group1[prefix + 'y'] - group2[prefix + 'y'];
+                return Math.sqrt(dx * dx + dy * dy);
+            }
+
+            function isSpatiallyDistant(smallGroup, largeGroups, prefix) {
+                if (largeGroups.length === 0) return true;
+                
+                var minDistance = 100; // Minimum distance threshold in pixels
+                
+                // Check if the small group is far enough from all large groups
+                return largeGroups.every(function(largeGroup) {
+                    var distance = calculateDistance(smallGroup, largeGroup, prefix);
+                    return distance > minDistance;
+                });
             }
 
             // add nodes representing group labels
@@ -235,16 +249,26 @@ angular.module('common')
                             info.showNodes = true; // hasSelectedNodes || (inHover || (n >= 0.8*info.count));    // show node labels if cluster fully on screen
                         });
 
-                        // Counting numbers of groups which have more than 1% out of total nodes
-                        var groupsCount = groups.filter(x => x.onScreen && x.count / allnodes.length > 0.01).length;
+
+
+                        // Get groups with more than 1% of total nodes
+                        var largeGroups = groups.filter(x => x.onScreen && x.count / allnodes.length > 0.01);
+                        var groupsCount = largeGroups.length;
+                        
                         if (groupsCount > 5) {
-                            finalNodes = groups.filter(x => x.onScreen && x.count / allnodes.length > 0.01);
+                            // If we have many large groups, include them plus any small groups that are spatially distant
+                            var smallGroups = groups.filter(x => x.onScreen && x.count / allnodes.length <= 0.01);
+                            var spatiallyDistantSmallGroups = smallGroups.filter(function(smallGroup) {
+                                return isSpatiallyDistant(smallGroup, largeGroups, prefix);
+                            });
+                            
+                            finalNodes = largeGroups.concat(spatiallyDistantSmallGroups);
                         } else {
                             // decide whether to include node labels
                             if (!inHover || onScreen > 4 || onScreen > maxGroups / 3) {  // show only group labels and perhaps some node labels if a lot are visible
                                 _.each(groups, function (info) {
                                     if (info.showNodes) {
-                                        finalNodes.push.apply(finalNodes, info.nodes);
+                                        finalNodes.push(...info.nodes);
                                     }
                                 });
                             } else {    // otherwise show group and all node labels when few group labels are visible
@@ -415,10 +439,21 @@ angular.module('common')
                 };
                 // Remove collisions algo
                 var nodesCount = renderGraphfactory.sig().graph.nodes().length;
-                // Counting numbers of groups which have more than 1% out of total nodes
-                var groupsCount = validNodes.filter(x => x.count / nodesCount > 0.01).length;
+                
+
+
+                // Get groups with more than 1% of total nodes
+                var largeGroups = validNodes.filter(x => x.count / nodesCount > 0.01);
+                var groupsCount = largeGroups.length;
+                
                 if (groupsCount > 5) {
-                    validNodes = validNodes.filter(x => x.count / nodesCount > 0.01);
+                    // If we have many large groups, include them plus any small groups that are spatially distant
+                    var smallGroups = validNodes.filter(x => x.count / nodesCount <= 0.01);
+                    var spatiallyDistantSmallGroups = smallGroups.filter(function(smallGroup) {
+                        return isSpatiallyDistant(smallGroup, largeGroups, prefix);
+                    });
+                    
+                    validNodes = largeGroups.concat(spatiallyDistantSmallGroups);
                 }
 
                 var selNodes = validNodes.filter(x => x.specialHighlight);
