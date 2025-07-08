@@ -519,6 +519,7 @@ function getHighestRanking(item, keys, value, options) {
         attributes = _ref3.attributes;
     var newRank = getMatchRanking(itemValue, value, options);
     var newRankedItem = rankedItem;
+	var newAttr = _ref2.attr;
     var minRanking = attributes.minRanking,
         maxRanking = attributes.maxRanking,
         threshold = attributes.threshold;
@@ -534,6 +535,7 @@ function getHighestRanking(item, keys, value, options) {
       keyIndex = i;
       keyThreshold = threshold;
       newRankedItem = itemValue;
+	  newAttr = _ref3.attr;
     }
 
     return {
@@ -541,7 +543,7 @@ function getHighestRanking(item, keys, value, options) {
       rank: rank,
       keyIndex: keyIndex,
       keyThreshold: keyThreshold,
-	  attr: _ref3.attr
+	  attr: newAttr
     };
   }, {
     rank: rankings.NO_MATCH,
