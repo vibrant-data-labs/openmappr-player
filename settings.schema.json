@@ -272,11 +272,11 @@
                         "geo": {
                             "type": ["null", "object"],
                             "properties": {
-                                "minLevel": {
-                                    "type": "string"
-                                },
-                                "maxLevel": {
-                                    "type": "string"
+                                "levels": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
                                 },
                                 "defaultLevel": {
                                     "type": "string"

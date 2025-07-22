@@ -406,10 +406,8 @@ angular.module('common')
                 }
 
                 const geoLvls = $scope.geoLevels.map(x => x.id);
-                const startIdx = geoLvls.indexOf(snapshot.geo.minLevel || 'node');
-                const endIdx = geoLvls.indexOf(snapshot.geo.maxLevel || 'countries');
-
-                $scope.geoLevels = $scope.geoLevels.filter((x, idx) => idx <= startIdx && idx >= endIdx);
+                const dataLevels = snapshot.geo.levels || geoLvls;
+                $scope.geoLevels = dataLevels.map(x => $scope.geoLevels.find(y => y.id == x));
 
                 $rootScope.geo = {
                     level: snapshot.geo.defaultLevel || 'countries'
