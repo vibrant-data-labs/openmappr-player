@@ -406,8 +406,15 @@ angular.module('common')
                 }
 
                 const geoLvls = $scope.geoLevels.map(x => x.id);
-                const dataLevels = snapshot.geo.levels || geoLvls;
-                $scope.geoLevels = dataLevels.map(x => $scope.geoLevels.find(y => y.id == x));
+                if (snapshot.geo.levels) {
+                    const dataLevels = snapshot.geo.levels || geoLvls;
+                    $scope.geoLevels = dataLevels.map(x => $scope.geoLevels.find(y => y.id == x));
+                } else {
+                    const startIdx = geoLvls.indexOf(snapshot.geo.minLevel || 'node');
+                    const endIdx = geoLvls.indexOf(snapshot.geo.maxLevel || 'countries');
+    
+                    $scope.geoLevels = $scope.geoLevels.filter((x, idx) => idx <= startIdx && idx >= endIdx);
+                }
 
                 $rootScope.geo = {
                     level: snapshot.geo.defaultLevel || 'countries'
