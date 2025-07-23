@@ -13,6 +13,7 @@ angular.module('common')
             this.authenticate = authenticate;
             this.checkPassword = checkPassword;
             this.getPasswordHash = getPasswordHash;
+            this.clearAuthCache = clearAuthCache;
 
             /*************************************
             ********* Local Data *****************
@@ -23,14 +24,43 @@ angular.module('common')
             ********* Core Functions *************
             **************************************/
             function isAuthenticated() {
-                return localStorage.getItem('openmappr_authenticated') === 'true';
+                const cachedHash = localStorage.getItem('openmappr_password_hash');
+
+                // If no cached hash, user is not authenticated
+                if (cachedHash === null) {
+                    return false;
+                }
+
+                // If we haven't loaded the current password hash yet, 
+                // we can't validate, so return false to trigger authentication
+                if (passwordHash === null) {
+                    return false;
+                }
+
+                // If no password is required, authentication is valid
+                if (!passwordHash) {
+                    return true;
+                }
+
+                // If password hash doesn't match, clear cache and return false
+                if (cachedHash !== passwordHash) {
+                    clearAuthCache();
+                    return false;
+                }
+
+                return true;
             }
 
             function authenticate() {
                 console.log('Authenticating...')
-                localStorage.setItem('openmappr_authenticated', 'true');
+                // Store the current password hash (or empty string if no password required)
+                localStorage.setItem('openmappr_password_hash', passwordHash || '');
                 $rootScope.$broadcast(BROADCAST_MESSAGES.auth.authenticated);
                 window.location.reload();
+            }
+
+            function clearAuthCache() {
+                localStorage.removeItem('openmappr_password_hash');
             }
 
             function checkPassword(inputPassword) {
