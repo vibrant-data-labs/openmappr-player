@@ -48,13 +48,14 @@ angular.module('common')
                     authModal.css('display', 'none');
                     content.css('display', 'block');
                     
-                    if (authService.isAuthenticated()) {
-                        return;
-                    }
-
-                    // Load password hash and show modal if needed
+                    // Load password hash first, then check authentication
                     authService.getPasswordHash()
                         .then((data) => {
+                            // Now check if already authenticated
+                            if (authService.isAuthenticated()) {
+                                return;
+                            }
+
                             if (!data) {
                                 return;
                             }
@@ -75,7 +76,8 @@ angular.module('common')
                                 const inputHash = CryptoJS.SHA256(passwordInput.val()).toString();
 
                                 if (inputHash === passwordHash) {
-                                    localStorage.setItem('openmappr_authenticated', 'true');
+                                    // Store the password hash for authentication
+                                    localStorage.setItem('openmappr_password_hash', passwordHash);
                                     window.location.reload();
                                 } else {
                                     scope.error = true;
@@ -87,7 +89,8 @@ angular.module('common')
                         .catch(function (error) {
                             console.error('Error in auth modal:', error);
                             // If there's an error, allow access
-                            localStorage.setItem('openmappr_authenticated', 'true');
+                            // Store empty hash since no password is required in error case
+                            localStorage.setItem('openmappr_password_hash', '');
                             window.location.reload();
                         });
                 }

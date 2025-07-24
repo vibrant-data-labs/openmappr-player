@@ -1,6 +1,6 @@
 angular.module('player')
-    .controller('AppCtrl', ['$q', '$sce', '$scope', '$rootScope', '$uibModal', '$routeParams', '$timeout', '$location', '$http', '$cookies', 'playerFactory', 'projFactory', 'dataService', 'networkService', 'clusterService', 'dataGraph', 'snapshotService', 'graphSelectionService', 'layoutService', 'searchService', 'browserDetectService', 'BROADCAST_MESSAGES', 'renderGraphfactory', 'ngIntroService', '$window',
-        function ($q, $sce, $scope, $rootScope, $uibModal, $routeParams, $timeout, $location, $http, $cookies, playerFactory, projFactory, dataService, networkService, clusterService, dataGraph, snapshotService, graphSelectionService, layoutService, searchService, browserDetectService, BROADCAST_MESSAGES, renderGraphfactory, ngIntroService, $window) {
+    .controller('AppCtrl', ['$q', '$sce', '$scope', '$rootScope', '$uibModal', '$routeParams', '$timeout', '$location', '$http', '$cookies', 'playerFactory', 'projFactory', 'dataService', 'networkService', 'clusterService', 'dataGraph', 'snapshotService', 'graphSelectionService', 'layoutService', 'searchService', 'browserDetectService', 'BROADCAST_MESSAGES', 'renderGraphfactory', 'ngIntroService', '$window', 'authService',
+        function ($q, $sce, $scope, $rootScope, $uibModal, $routeParams, $timeout, $location, $http, $cookies, playerFactory, projFactory, dataService, networkService, clusterService, dataGraph, snapshotService, graphSelectionService, layoutService, searchService, browserDetectService, BROADCAST_MESSAGES, renderGraphfactory, ngIntroService, $window, authService) {
             'use strict';
 
             /*************************************
@@ -454,7 +454,7 @@ angular.module('player')
                         console.log('[' + (Date.now() - timeStart) + '] [ctrlPlayer] player load %O', playerDoc);
                         $scope.player = playerDoc;
 
-                        const authFlag = localStorage.getItem('openmappr_authenticated')
+                        const authFlag = authService.isAuthenticated();
                         if (playerDoc.player.settings.passwordHash && !authFlag) {
                             return $q.reject('Authentication required');
                         }
