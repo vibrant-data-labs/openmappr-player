@@ -37,7 +37,7 @@ angular.module('common')
             const GEO_FILTERS = {
                 'countries': 'Country',
                 'fed_districts': 'States',
-                'adm_districts': 'Counties'
+                'adm_districts': 'Counties',
             }
 
             /*************************************
@@ -456,7 +456,8 @@ angular.module('common')
                     ...res,
                     ...Object.entries(GEO_FILTERS).map(([k, v]) => {
                         return new FilterConfig(k, v)
-                    })
+                    }),
+                    new FilterConfig('geo_count', 'Points Count per Region')
                 ]
             }
         }

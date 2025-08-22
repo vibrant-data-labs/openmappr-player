@@ -173,7 +173,7 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
            opt = {};
        }
 
-       const colorByDensity = opt.scope ? Boolean(opt.scope.layout.setting("colorByDensity")) : false;
+       /*const colorByDensity = opt.scope ? Boolean(opt.scope.layout.setting("colorByDensity")) : false;
 
        const percentage = nodeData[id].count / nodeData.max;
 
@@ -182,9 +182,9 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
            const minOpacity = opt.isHover ? 0.7 : 0.3;
    
            return minOpacity + (maxOpacity - minOpacity) * percentage;
-       }
+       }*/
 
-       return opt.isHover ? 0.9 : 0.3;
+       return opt.isHover ? 0.9 : 0.5;
    }
 
    function getRegionCacheItem(scope, osmId) {
@@ -542,6 +542,9 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
 
        scope.$on(BROADCAST_MESSAGES.sigma.rendered, enableViewResetEvent);
        scope.$on(BROADCAST_MESSAGES.geoSelector.changed, function(ev, d) {
+           const rg = dataGraph.getRenderableGraph();
+           rg.refreshForZoomLevel(0);
+
            const nodes = subsetService.subsetNodes.length > 0 ? subsetService.subsetNodes : renderGraphfactory.sig().graph.nodes();
 
            if (d.levelId == 'node') {

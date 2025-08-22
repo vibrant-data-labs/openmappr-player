@@ -26,6 +26,13 @@ angular.module('common')
                         title: 'County',
                         attrType: 'geo'
                     }
+                },
+                'geo_count': {
+                    attr: {
+                        id: 'geo_count',
+                        title: 'Points Count per Region',
+                        attrType: 'geo'
+                    }
                 }
             }
 

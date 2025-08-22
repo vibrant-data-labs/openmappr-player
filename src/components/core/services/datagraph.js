@@ -9,6 +9,14 @@ const GENERIC_TERRITORIES = [
     16467322 // Metropolitan France (Landmass)
 ]
 
+const PERCENTILES = [
+    { value: 0.1, name: '10%' },
+    { value: 0.25, name: '25%' },
+    { value: 0.5, name: '50%' },
+    { value: 0.75, name: '75%' },
+    { value: 0.9, name: '90%' },
+]
+
 angular.module('common')
     .factory('dataGraph', ['$timeout', '$q', '$rootScope', 'aggregatorService', 'dataService', 'networkService', 'AttrInfoService', 'orgFactory', 'BROADCAST_MESSAGES',
         function ($timeout, $q, $rootScope, aggregatorService, dataService, networkService, AttrInfoService, orgFactory, BROADCAST_MESSAGES) {
@@ -599,7 +607,6 @@ angular.module('common')
                 // copy over Datapoint attrs into network node
                 _.each(nwData.nodes, function (node) {
                     var dp = dpIndex[node.dataPointId || node.id];
-                    //_.extend(node.attr, dp.attr); // _.defaults instead of _.extend so that dataset does not overwrite network prop
                     _.defaults(node.attr, dp.attr);
                     if ('geodata' in dp) {
                         node.geodata = dp.geodata.filter(x => !GENERIC_TERRITORIES.includes(x.polygon_id)).reduce((acc, cv) => {
@@ -691,6 +698,14 @@ angular.module('common')
                     console.log('getNodesByAttrib ----------------------');
                     return [];
                 }
+
+                if (attr === 'geo_count') {
+                    const val = PERCENTILES.find(p => p.name === value).value;
+                    const idx = Math.floor(value * _currRenderableGraph.layout.geoCounts[$rootScope.geo.level].length);
+                    const percentile = _currRenderableGraph.layout.geoCounts[$rootScope.geo.level].map((p, i) => i < idx ? p.nodes : []).flat();
+                    return percentile.map(n => n.id);
+                }
+
                 console.log('Getting nodes by value: %s for attr: %s', value, attr);
                 var attrInfo = AttrInfoService.getNodeAttrInfoForRG().getForId(attr);
                 var nodes = API.getAllNodes();

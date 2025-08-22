@@ -184,8 +184,11 @@ angular.module('common')
                     $scope.selInfo.selectedGroups = [];
                     $scope.selInfo.linkInfoAttrIds = [];
                     $scope.selInfo.nodeColorAttr = $scope.mapprSettings.nodeColorAttr;
-                    var attrInfo = AttrInfoService.getNodeAttrInfoForRG().getForId($scope.mapprSettings.nodeColorAttr);
-                    $scope.selInfo.nodeColorAttrTitle = attrInfo.attr.title;
+
+                    if ($scope.mapprSettings.nodeColorAttr !== 'geo_count') {
+                        var attrInfo = AttrInfoService.getNodeAttrInfoForRG().getForId($scope.mapprSettings.nodeColorAttr);
+                        $scope.selInfo.nodeColorAttrTitle = attrInfo.attr.title;
+                    }
 
                     if(panelMode == 'node') {
                         $scope.selInfo.principalNode = _.first(selNodes);
@@ -267,6 +270,12 @@ angular.module('common')
                 }
 
                 function getGroupForNode(node) {
+                    if ($scope.mapprSettings.nodeColorAttr === 'geo_count') {
+                        return {
+                            name: 'geo_count',
+                            type: 'geo_count'
+                        }
+                    }
                     var colorByAttr = $scope.mapprSettings.nodeColorAttr || 'Cluster';
                     var clusterAttrInfo = AttrInfoService.getNodeAttrInfoForRG().getForId(colorByAttr);
                     var nodeCluster, numericDomain;

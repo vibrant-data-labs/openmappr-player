@@ -98,6 +98,7 @@ angular.module('common')
                 this.entity_type = entity_type;
             }
             AttrInfo.prototype.getForId = function (attrId) {
+
                 var val = this.__cache[attrId];
                 if (!val) { // attrInfo does not exist
                     throw new Error("AttrInfo not found for this attr:" + attrId);

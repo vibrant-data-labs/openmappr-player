@@ -2,8 +2,8 @@
 * Provides layout builders(scatterplot, geo, grid n cluster) & other layout related ops
 */
 angular.module('common')
-.service('layoutService', ['$q', 'dataGraph', 'renderGraphfactory','AttrInfoService' ,'leafletData', 'partitionService',
-function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partitionService) {
+.service('layoutService', ['$rootScope', '$q', 'dataGraph', 'renderGraphfactory','AttrInfoService' ,'leafletData', 'partitionService',
+function($rootScope, $q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partitionService) {
     "use strict";
 
 
@@ -106,6 +106,9 @@ function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partiti
         });
     };
     ScaleBuilder.prototype._getInfo = function(mapprVals) {
+        if (mapprVals.Attr === 'geo_count') {
+            return undefined;
+        }
         return this.isEdge ? AttrInfoService.getLinkAttrInfoForRG().getForId(mapprVals.Attr) : AttrInfoService.getNodeAttrInfoForRG().getForId(mapprVals.Attr);
     };
     // returns a scaler which takes 2 arguments
@@ -891,7 +894,7 @@ function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partiti
     //     return ((attrBounds.max + attrBounds.min) / 2) + margin;
     // }
 
-    function getNodeColorAttrs() {
+    function getNodeColorAttrs(layoutType) {
         // Only Attributes which are
         // 1) the original color attribute
         // 2) Non Tags -- tags are now allowed
@@ -906,7 +909,19 @@ function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partiti
 
             return true;
         }
-        return _.filter(dataGraph.getNodeAttrs(), _filterAttrs);
+
+        const allAttrs = dataGraph.getNodeAttrs();
+        if (layoutType === 'geo' && !allAttrs.some(attr => attr.id === 'geo_count')) {
+            allAttrs.push({
+                id: 'geo_count',
+                title: 'Points Count per Region',
+                colorSelectable: true,
+                isNumeric: true,
+                renderType: 'horizontal-bars'
+            })
+        }
+
+        return _.filter(allAttrs, _filterAttrs);
     }
 
     function getNodeSizeAttrs() {
@@ -1171,7 +1186,6 @@ function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partiti
 
             node.size     = this._getSize(node);
             node.baseSize = node.size;
-            node.colorStr = newColor.toString();
             node.color    = [newColor.r, newColor.g, newColor.b];
             node.colorStr = window.mappr.utils.colorStr(node.color);
             node.clusterColor = node.color;
@@ -1720,8 +1734,9 @@ function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partiti
     }
 
     function Geo() {
-        var prefix = renderGraphfactory.getTweenPrefix();
         this.isGeo = true;
+        this.mapprSettings.nodeColorAttr = 'geo_count';
+
         this.map = null; // the leaflet object
         // This layout requries a valid leaflet object.
         // Until it is not there, this won't function
@@ -1741,9 +1756,62 @@ function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partiti
             this.map = map;
             this.isBuild = true;
         };
+        this.interpolateColors = interpolateColors;
+
         this.nodeT = function nodeT (node) {
             console.assert(this.isBuild, 'Geo layout not initialized.');
-            this._commonNodeT(node);
+            if (!this.geoCounts || !this.geoCounts[$rootScope.geo.level]) {
+                if (!this.geoCounts) {
+                    this.geoCounts = {};
+                }
+
+                const nodes = dataGraph.getAllNodes();
+                this.geoCounts[$rootScope.geo.level] = nodes.reduce((acc, node) => {
+                    if (!node.geodata || !node.geodata[$rootScope.geo.level]) return acc;
+        
+                    const geoId = node.geodata[$rootScope.geo.level];
+                    if (!acc[geoId]) {
+                        acc[geoId] = {
+                            count: 1,
+                            nodes: [node]
+                        }
+                    } else {
+                        acc[geoId].count += 1;
+                        acc[geoId].nodes.push(node);
+                    }
+        
+                    return acc;
+                }, {});
+
+                this.geoCounts[$rootScope.geo.level] = Object.values(this.geoCounts[$rootScope.geo.level]).sort((a, b) => b.count - a.count);
+            }
+
+            if (this.mapprSettings.nodeColorAttr === 'geo_count') {
+                const [minColor, maxColor] = this.mapprSettings.nodeColorPaletteNumeric;
+                const geoData = this.geoCounts[$rootScope.geo.level];
+                const idx = geoData.findIndex(x => x.nodes.some(r => r.id === node.id));
+                if (idx === -1) {
+                    console.warn('Node not found in geo counts', node.id);
+                    return;
+                }
+
+                const val = geoData[idx].count;
+                const [nodeMin, nodeMax] = [
+                    geoData[0].count,
+                    geoData[geoData.length - 1].count
+                ]
+                var color = interpolateColors(minColor.col, maxColor.col, 1 - (val - nodeMin) / (nodeMax - nodeMin));
+                color = d3.rgb(color);
+                node.size     = this._getSize(node);
+                node.baseSize = node.size;
+                node.color    = [color.r, color.g, color.b];
+                node.colorStr = window.mappr.utils.colorStr(node.color);
+                node.clusterColor = node.color;
+                node.clusterColorStr = node.colorStr;
+            } else {
+                this._commonNodeT(node);
+            }
+            
             //sanitize lat lon
             var lat = node.attr[this.attr.x] ? parseFloat(node.attr[this.attr.x]) : 0;
             var lng = node.attr[this.attr.y] ? parseFloat(node.attr[this.attr.y]) : 0;
@@ -1760,6 +1828,7 @@ function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partiti
         this.edgeT = function edgeT(edge) {
             this._commonEdgeT(edge);
         };
+
         this.setupLayoutFuncs.push(function setupCamera() {
             this.defCamera.x = this.camera.x;
             this.defCamera.y = this.camera.y;
@@ -1871,6 +1940,36 @@ function($q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partiti
         var l = new Layout(layout, camera);
         l.snapshotId = null;
         return l;
+    }
+
+    function interpolateColors(c1, c2, p) {
+        // Parse hex colors to RGB
+        function parseHexColor(hex) {
+            hex = hex.replace(/^#/, '');
+            return {
+                r: parseInt(hex.substr(0, 2), 16),
+                g: parseInt(hex.substr(2, 2), 16),
+                b: parseInt(hex.substr(4, 2), 16)
+            };
+        }
+        
+        var color1 = parseHexColor(c1);
+        var color2 = parseHexColor(c2);
+        
+        // Interpolate RGB values
+        var interpolated = {
+            r: Math.round(color1.r * (1 - p) + color2.r * p),
+            g: Math.round(color1.g * (1 - p) + color2.g * p),
+            b: Math.round(color1.b * (1 - p) + color2.b * p)
+        };
+        
+        // Convert back to hex
+        function toHex(n) {
+            var hex = n.toString(16);
+            return hex.length === 1 ? '0' + hex : hex;
+        }
+        
+        return '#' + toHex(interpolated.r) + toHex(interpolated.g) + toHex(interpolated.b);
     }
 
     function upgradeMapprSettings(oldSettings) {
