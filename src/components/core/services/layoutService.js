@@ -1813,7 +1813,7 @@ function($rootScope, $q, dataGraph, renderGraphfactory,AttrInfoService, leafletD
                         regions: regions,
                         color: interpolateColors(minColor.col, maxColor.col, 1 - i / BUCKET_COUNT)
                     }
-                });
+                }).reverse();
 
                 window.geoBuckets = this.geoBuckets[$rootScope.geo.level];
             }
