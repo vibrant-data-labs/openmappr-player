@@ -8,14 +8,18 @@
 const GENERIC_TERRITORIES = [
     16467322 // Metropolitan France (Landmass)
 ]
-
 const PERCENTILES = [
     { value: 0.1, name: '10%' },
-    { value: 0.25, name: '25%' },
+    { value: 0.2, name: '20%' },
+    { value: 0.3, name: '30%' },
+    { value: 0.4, name: '40%' },
     { value: 0.5, name: '50%' },
-    { value: 0.75, name: '75%' },
+    { value: 0.6, name: '60%' },
+    { value: 0.7, name: '70%' },
+    { value: 0.8, name: '80%' },
     { value: 0.9, name: '90%' },
-]
+    { value: 1, name: '100%' },
+];
 
 angular.module('common')
     .factory('dataGraph', ['$timeout', '$q', '$rootScope', 'aggregatorService', 'dataService', 'networkService', 'AttrInfoService', 'orgFactory', 'BROADCAST_MESSAGES',
@@ -125,11 +129,11 @@ angular.module('common')
                         if (attr.visible) {
                             attr.visibility.push('filters');
                         }
-    
+
                         if (attr.visible && attr.visibleInProfile) {
                             attr.visibility.push('profile');
                         }
-    
+
                         if (attr.searchable) {
                             attr.visibility.push('search');
                         }
@@ -322,14 +326,16 @@ angular.module('common')
                 _.each(data.nodes, function (node) {
                     var n = _.clone(node);
                     layout.nodeT(n);
-                    console.assert(isFinite(n.x) && !isNaN(n.x), 'node x is invalid. ' + n.x + '. Bad layout?');
-                    console.assert(isFinite(n.y) && !isNaN(n.y), 'node y is invalid. ' + n.y + '. Bad layout?');
-                    console.assert(isFinite(n.size) && !isNaN(n.size), 'node size is invalid. ' + n.size + '. Bad layout?');
+                    if (layout.mapprSettings.nodeColorAttr != 'geo_count') {
+                        console.assert(isFinite(n.x) && !isNaN(n.x), 'node x is invalid. ' + n.x + '. Bad layout?');
+                        console.assert(isFinite(n.y) && !isNaN(n.y), 'node y is invalid. ' + n.y + '. Bad layout?');
+                        console.assert(isFinite(n.size) && !isNaN(n.size), 'node size is invalid. ' + n.size + '. Bad layout?');
+                    }
                     nodes.push(n);
                 });
                 const clusterAttr = layout.mapprSettings.nodeClusterAttr;
                 const subclusterAttr = layout.mapprSettings.nodeSubclusterAttr;
-                const clusters = _.reduce(nodes, function(acc, cv) {
+                const clusters = _.reduce(nodes, function (acc, cv) {
                     const clusterVal = cv.attr[clusterAttr];
                     const subclusterVal = cv.attr[subclusterAttr] || '';
                     if (!acc[clusterVal]) {
@@ -345,9 +351,9 @@ angular.module('common')
                     return acc;
                 }, {});
                 // calculate the most frequent color
-                Object.keys(clusters).forEach(function(key) {
+                Object.keys(clusters).forEach(function (key) {
                     const subclusters = clusters[key];
-                    Object.keys(subclusters).forEach(function(subkey) {
+                    Object.keys(subclusters).forEach(function (subkey) {
                         if (subkey === 'color') {
                             return;
                         }
@@ -357,7 +363,7 @@ angular.module('common')
                             colorStr: window.mappr.utils.colorStr(r)
                         }));
 
-                        const colorStats = _.reduce(colorStrs, function(acc, cv) {
+                        const colorStats = _.reduce(colorStrs, function (acc, cv) {
                             if (!acc[cv.colorStr]) {
                                 acc[cv.colorStr] = {
                                     count: 1,
@@ -369,14 +375,14 @@ angular.module('common')
 
                             return acc;
                         }, {});
-                        
+
                         const sorted = _.sortBy(colorStats, 'count');
 
                         subclusters[subkey] = sorted[sorted.length - 1].color;
                     });
 
                     const clusterColors = clusters[key].color;
-                    const clusterColorStats = _.reduce(clusterColors, function(acc, cv) {
+                    const clusterColorStats = _.reduce(clusterColors, function (acc, cv) {
                         if (!acc[cv]) {
                             acc[cv] = {
                                 count: 1,
@@ -393,7 +399,7 @@ angular.module('common')
                     clusters[key].color = sortedClusterColors[sortedClusterColors.length - 1].color;
                 });
 
-                _.each(nodes, function(node) {
+                _.each(nodes, function (node) {
                     const val = node.attr[clusterAttr];
                     const subVal = node.attr[subclusterAttr] || '';
                     node.clusterColor = clusters[val][subVal];
@@ -517,6 +523,10 @@ angular.module('common')
                 _.each(nodes, function (node) {
                     var n = node;
                     layout.nodeT(n);
+
+                    if (layout.mapprSettings.nodeColorAttr == 'geo_count') {
+                        return;
+                    }
 
                     console.assert(isFinite(n.x) && !isNaN(n.x), 'node x is invalid. Bad layout?');
                     console.assert(isFinite(n.y) && !isNaN(n.y), 'node size is invalid. Bad layout?');
@@ -825,7 +835,7 @@ angular.module('common')
 
             function getEdgesByNodes(nodes) {
                 var edges = API.getAllEdges();
-                var filteredEdges = _.filter(edges, function(edge) {
+                var filteredEdges = _.filter(edges, function (edge) {
                     var source = edge.source;
                     var target = edge.target;
 

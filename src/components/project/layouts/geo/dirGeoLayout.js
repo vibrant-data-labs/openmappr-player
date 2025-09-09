@@ -184,7 +184,7 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
            return minOpacity + (maxOpacity - minOpacity) * percentage;
        }*/
 
-       return opt.isHover ? 0.9 : 0.5;
+       return opt.isHover ? 1 : 0.8;
    }
 
    function getRegionCacheItem(scope, osmId) {
@@ -277,6 +277,7 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
 
                    return {
                        color: color,
+                       stroke: false,
                        opacity: getOpacity(nodeData, prop.osm_id, { isHover, scope }),
                        fillOpacity: getOpacity(nodeData, prop.osm_id, { isHover, scope }),
                        fill: true,

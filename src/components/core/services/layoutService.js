@@ -917,6 +917,7 @@ function($rootScope, $q, dataGraph, renderGraphfactory,AttrInfoService, leafletD
                 title: 'Points Count per Region',
                 colorSelectable: true,
                 isNumeric: true,
+                visibility: [],
                 renderType: 'horizontal-bars'
             })
         }
@@ -1758,15 +1759,19 @@ function($rootScope, $q, dataGraph, renderGraphfactory,AttrInfoService, leafletD
         };
         this.interpolateColors = interpolateColors;
 
+        const BUCKET_COUNT = 10;        
+
         this.nodeT = function nodeT (node) {
             console.assert(this.isBuild, 'Geo layout not initialized.');
             if (!this.geoCounts || !this.geoCounts[$rootScope.geo.level]) {
                 if (!this.geoCounts) {
                     this.geoCounts = {};
+                    this.geoGroups = {};
+                    this.geoBuckets = {};
                 }
 
                 const nodes = dataGraph.getAllNodes();
-                this.geoCounts[$rootScope.geo.level] = nodes.reduce((acc, node) => {
+                this.geoGroups[$rootScope.geo.level] = nodes.reduce((acc, node) => {
                     if (!node.geodata || !node.geodata[$rootScope.geo.level]) return acc;
         
                     const geoId = node.geodata[$rootScope.geo.level];
@@ -1783,35 +1788,54 @@ function($rootScope, $q, dataGraph, renderGraphfactory,AttrInfoService, leafletD
                     return acc;
                 }, {});
 
-                this.geoCounts[$rootScope.geo.level] = Object.values(this.geoCounts[$rootScope.geo.level]).sort((a, b) => b.count - a.count);
+                this.geoCounts[$rootScope.geo.level] = Object.values(this.geoGroups[$rootScope.geo.level]).sort((a, b) => b.count - a.count);
+
+                const step = this.geoCounts[$rootScope.geo.level].length / BUCKET_COUNT;
+                const [minColor, maxColor] = this.mapprSettings.nodeColorPaletteNumeric;
+                this.geoBuckets[$rootScope.geo.level] = Array.from({ length: BUCKET_COUNT }, (_, i) => {
+                    const index = i;
+                    const startIndex = Math.floor(index * step);
+                    const endIndex = Math.floor((index + 1) * step);
+
+                    const nodes = this.geoCounts[$rootScope.geo.level].slice(startIndex, endIndex).map(p => p.nodes).flat();
+
+                    return {
+                        start: startIndex,
+                        end: endIndex,
+                        nodes: nodes,
+                        color: interpolateColors(minColor.col, maxColor.col, 1 - i / BUCKET_COUNT)
+                    }
+                });
+
+                window.geoBuckets = this.geoBuckets[$rootScope.geo.level];
             }
 
             if (this.mapprSettings.nodeColorAttr === 'geo_count') {
-                const [minColor, maxColor] = this.mapprSettings.nodeColorPaletteNumeric;
-                const geoData = this.geoCounts[$rootScope.geo.level];
-                const idx = geoData.findIndex(x => x.nodes.some(r => r.id === node.id));
+                if (!node.geodata || !node.geodata[$rootScope.geo.level]) {
+                    this._commonNodeT(node);
+                    return;
+                }
+
+                const idx = this.geoBuckets[$rootScope.geo.level].findIndex(x => x.nodes.some(r => r.id === node.id));
                 if (idx === -1) {
                     console.warn('Node not found in geo counts', node.id);
                     return;
                 }
 
-                const val = geoData[idx].count;
-                const [nodeMin, nodeMax] = [
-                    geoData[0].count,
-                    geoData[geoData.length - 1].count
-                ]
-                var color = interpolateColors(minColor.col, maxColor.col, 1 - (val - nodeMin) / (nodeMax - nodeMin));
-                color = d3.rgb(color);
+                const color = this.geoBuckets[$rootScope.geo.level][idx].color;
+
+                const colorRgb = d3.rgb(color);
+
                 node.size     = this._getSize(node);
                 node.baseSize = node.size;
-                node.color    = [color.r, color.g, color.b];
+                node.color    = [colorRgb.r, colorRgb.g, colorRgb.b];
                 node.colorStr = window.mappr.utils.colorStr(node.color);
                 node.clusterColor = node.color;
                 node.clusterColorStr = node.colorStr;
             } else {
                 this._commonNodeT(node);
             }
-            
+
             //sanitize lat lon
             var lat = node.attr[this.attr.x] ? parseFloat(node.attr[this.attr.x]) : 0;
             var lng = node.attr[this.attr.y] ? parseFloat(node.attr[this.attr.y]) : 0;

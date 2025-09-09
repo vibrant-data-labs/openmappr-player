@@ -120,6 +120,7 @@ angular.module('common')
              * @param {string} selectData.max - the attribute max value
              * @param {string} selectData.fivePct - fivePct
              * @param {array}  selectData.ids - nodeIds
+             * @param {string} selectData.customValue - custom value
              * @param {boolean} selectData.filters - whether apply current filters
              * @param {boolean} selectData.force - whether replace value of current filter
              * @param {boolean} selectData.forceDisable - whether disable current filter
@@ -165,7 +166,9 @@ angular.module('common')
                     nodes: this.getSelectedNodes(),
                     searchText: selectData.searchText,
                     geoText: selectData.geoText,
-                    searchAttr: selectData.searchAttr
+                    searchAttr: selectData.searchAttr,
+                    attr: selectData.attr,
+                    attrCustomValue: selectData.customValue,
                 };
                 
                 const isEqualToPrev = this.prevBroadcastData &&

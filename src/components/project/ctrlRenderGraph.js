@@ -528,20 +528,29 @@ angular.module('common')
                     return;
                 }
 
-                $scope.ui.activeFilterCount = data.filtersCount + (data.isSubsetted ? 1 : 0) + (data.filtersCount == 0 && data.selectionCount > 0 ? 1 : 0);
+                const filterOps = [
+                    data.filtersCount,
+                    data.attr === 'geo_count' ? 1 : 0,
+                    data.isSubsetted ? 1 : 0,
+                    data.filtersCount == 0 && data.selectionCount > 0 ? 1 : 0
+                ]
+
+                $scope.ui.activeFilterCount = filterOps.reduce((acc, op) => acc + op, 0);
+
                 $scope.ui.subsetEnabled = data.selectionCount > 0;
 
-                if (data.filtersCount == 0 && !data.isSubsetted) {
+                const filtersEnabled = data.filtersCount > 0 || data.attr === 'geo_count';
+                if (!filtersEnabled && !data.isSubsetted) {
                     return;
                 }
 
-                if (!data.filtersCount && $scope.operations.last().type == 'select') {
+                if (!filtersEnabled && $scope.operations.last().type == 'select') {
                     removeOperation();
                 } else if ($scope.operations.last().type == 'select') {
                     $scope.operations.last().filterArray = null;
-                    updateOperation('select', true, data.searchText, data.searchAttr, data.geoText);
+                    updateOperation('select', true, data.searchText, data.searchAttr, data.geoText, data.attr, data.attrCustomValue);
                 } else if (!data.isUnselect) {
-                    updateOperation('select', false, data.searchText, data.searchAttr, data.geoText);
+                    updateOperation('select', false, data.searchText, data.searchAttr, data.geoText, data.attr, data.attrCustomValue);
                 }
 
                 $scope.isShowShare = false;
@@ -617,7 +626,7 @@ angular.module('common')
                 }
             }
 
-            function updateOperation(type, replace, searchText, searchAttr, geoText) {
+            function updateOperation(type, replace, searchText, searchAttr, geoText, customAttr, customAttrValue) {
                 switch (type) {
                     case 'init': {
                         $scope.operations.list.push({
@@ -638,9 +647,15 @@ angular.module('common')
                                 _.last($scope.operations.list).searchAttr = searchAttr;
                             }
                         } else {
+                            const filters = _.clone(selectService.filters);
+                            const filterOverride = customAttr ? filters[customAttr] : null;
+                            if (filterOverride) {
+                                filterOverride.isEnabled = true;
+                                filterOverride.selector = SelectorService.newSelector().ofAttrValue(customAttr, customAttrValue);
+                            }
                             var operation = {
                                 type: 'select',
-                                filters: _.clone(selectService.filters),
+                                filters: filters,
                                 searchText: searchText,
                                 searchAttr: searchAttr,
                                 geoSlice: geoText ? searchAttr.title: null,
