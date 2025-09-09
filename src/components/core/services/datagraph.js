@@ -524,7 +524,7 @@ angular.module('common')
                     var n = node;
                     layout.nodeT(n);
 
-                    if (layout.mapprSettings.nodeColorAttr == 'geo_count') {
+                    if (layout.mapprSettings.nodeColorAttr == 'geo_count' && $rootScope.geo.level !== 'node') {
                         return;
                     }
 

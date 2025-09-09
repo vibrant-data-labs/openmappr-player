@@ -1772,7 +1772,13 @@ function($rootScope, $q, dataGraph, renderGraphfactory,AttrInfoService, leafletD
 
                 const nodes = dataGraph.getAllNodes();
                 this.geoGroups[$rootScope.geo.level] = nodes.reduce((acc, node) => {
-                    if (!node.geodata || !node.geodata[$rootScope.geo.level]) return acc;
+                    if (!node.geodata || !node.geodata[$rootScope.geo.level]) {
+                        acc[node.id] = {
+                            count: 1,
+                            nodes: [node]
+                        }
+                        return acc;
+                    }
         
                     const geoId = node.geodata[$rootScope.geo.level];
                     if (!acc[geoId]) {
@@ -1797,12 +1803,14 @@ function($rootScope, $q, dataGraph, renderGraphfactory,AttrInfoService, leafletD
                     const startIndex = Math.floor(index * step);
                     const endIndex = Math.floor((index + 1) * step);
 
-                    const nodes = this.geoCounts[$rootScope.geo.level].slice(startIndex, endIndex).map(p => p.nodes).flat();
+                    const regions = this.geoCounts[$rootScope.geo.level].slice(startIndex, endIndex);
+                    const nodes = regions.map(p => p.nodes).flat();
 
                     return {
                         start: startIndex,
                         end: endIndex,
                         nodes: nodes,
+                        regions: regions,
                         color: interpolateColors(minColor.col, maxColor.col, 1 - i / BUCKET_COUNT)
                     }
                 });
@@ -1811,7 +1819,7 @@ function($rootScope, $q, dataGraph, renderGraphfactory,AttrInfoService, leafletD
             }
 
             if (this.mapprSettings.nodeColorAttr === 'geo_count') {
-                if (!node.geodata || !node.geodata[$rootScope.geo.level]) {
+                if (!node.geodata || !node.geodata[$rootScope.geo.level] && $rootScope.geo.level !== 'node') {
                     this._commonNodeT(node);
                     return;
                 }

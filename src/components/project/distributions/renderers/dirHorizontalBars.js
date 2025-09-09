@@ -59,20 +59,18 @@ angular.module('common')
             const percentileIdx = PERCENTILES.map(p => p.value);
             const percentileNames = PERCENTILES.map(p => p.name);
 
-            const calculatePercentileValues = (percentiles, minColor, maxColor) => {
+            const calculatePercentileValues = (percentiles, minColor, maxColor, geoBuckets) => {
+                if (geoBuckets.length === 0) {
+                    return []
+                };
+
                 return percentileIdx.map((cv, idx) => {
-                    const index = Math.floor(cv * percentiles.length);
-                    const startIndex = idx === 0 ? 0 : percentileIdx[idx - 1] * percentiles.length;
-                    const endIndex = index === percentiles.length ? percentiles.length - 1 : index;
-
-                    const nodes = percentiles.slice(startIndex, endIndex).map(p => p.nodes);
-
                     return {
                         value: cv,
                         percentage: percentileIdx[idx],
                         title: percentileNames[idx],
-                        nodes: nodes.flat(),
-                        valuesCount: nodes.length,
+                        nodes: geoBuckets[idx].nodes.flat(),
+                        valuesCount: geoBuckets[idx].regions.length,
                         colorPalette: [minColor, maxColor]
                     }
                 });
@@ -130,12 +128,12 @@ angular.module('common')
                     const percentiles = scope.attrToRender.id === 'geo_count' ? Object.values(layout.geoCounts[$rootScope.geo.level]).sort((a, b) => a.count - b.count) : [];
                     const [minColor, maxColor] = layout.mapprSettings.nodeColorPaletteNumeric;
 
-                    const percentileValues = calculatePercentileValues(percentiles, minColor, maxColor);
+                    const percentileValues = calculatePercentileValues(percentiles, minColor, maxColor, layout.geoBuckets ? layout.geoBuckets[$rootScope.geo.level] : []);
 
-                    const valuesCount = percentileNames.reduce((acc, x, idx) => {
+                    const valuesCount = scope.attrToRender.id === 'geo_count' ? percentileNames.reduce((acc, x, idx) => {
                         acc[x] = percentileValues[idx].valuesCount;
                         return acc;
-                    }, {});
+                    }, {}) : {};
 
                     var attrInfo = scope.attrToRender.id === 'geo_count' ?
                         geoCountAttrInfo(valuesCount) :
@@ -195,11 +193,11 @@ angular.module('common')
 
                     const percentiles = scope.attrToRender.id === 'geo_count' ? Object.values(layout.geoCounts[$rootScope.geo.level]).sort((a, b) => a.count - b.count) : [];
                     const [minColor, maxColor] = layout.mapprSettings.nodeColorPaletteNumeric;
-                    const percentileValues = calculatePercentileValues(percentiles, minColor, maxColor);
-                    const valuesCount = percentileNames.reduce((acc, x, idx) => {
+                    const percentileValues = calculatePercentileValues(percentiles, minColor, maxColor, layout.geoBuckets ? layout.geoBuckets[$rootScope.geo.level] : []);
+                    const valuesCount = scope.attrToRender.id === 'geo_count' ? percentileNames.reduce((acc, x, idx) => {
                         acc[x] = percentileValues[idx].valuesCount;
                         return acc;
-                    }, {});
+                    }, {}) : {};
 
                     const attrInfo = scope.attrToRender.id === 'geo_count' ?
                         geoCountAttrInfo(valuesCount) :
@@ -325,17 +323,30 @@ angular.module('common')
                     scope.selectedValues = valuesCount;
                 });
 
-                scope.$on(BROADCAST_MESSAGES.hss.select, function (ev, data) {
+                scope.$on(BROADCAST_MESSAGES.hss.select, async function (ev, data) {
                     scope.isInSelection = Boolean(data.nodes.length);
                     if (!data.nodes.length) {
                         scope.totalSelectedValue = 0;
                         return;
                     }
-                    const valuesCount = _.reduce(data.nodes, (acc, cv) => {
-                        const attrValue = cv.attr[scope.attrToRender.id];
-                        acc[attrValue] = acc[attrValue] ? (acc[attrValue] + 1) : 1;
-                        return acc;
-                    }, {});
+
+                    const layout = await layoutService.getCurrent();
+
+                    let valuesCount = {};
+                    if (scope.attrToRender.id === 'geo_count') {
+                        const geoBuckets = layout.geoBuckets[$rootScope.geo.level];
+                        valuesCount = percentileNames.reduce((acc, x, idx) => {
+                            const matchingValues = geoBuckets[idx].nodes.filter(x => data.nodes.some(y => y.id === x.id));
+                            acc[x] = matchingValues.length;
+                            return acc;
+                        }, {});
+                    } else {
+                        valuesCount = data.nodes.reduce((acc, cv) => {
+                            const attrValue = cv.attr[scope.attrToRender.id];
+                            acc[attrValue] = acc[attrValue] ? (acc[attrValue] + 1) : 1;
+                            return acc;
+                        }, {});
+                    }
 
                     scope.totalSelectedValue = _(valuesCount).keys().map(x => valuesCount[x]).max();
                     scope.selectedValues = valuesCount;
@@ -457,13 +468,8 @@ angular.module('common')
                     if (scope.attrToRender.id === 'geo_count') {
                         const layout = await layoutService.getCurrent();
                         const valIdx = PERCENTILES.findIndex(p => p.name === catData.id);
-                        const value = PERCENTILES[valIdx].value;
-                        const index = Math.floor(value * layout.geoCounts[$rootScope.geo.level].length);
-                        const startIndex = valIdx === 0 ? 0 : PERCENTILES[valIdx - 1].value * layout.geoCounts[$rootScope.geo.level].length;
-                        const endIndex = index === layout.geoCounts[$rootScope.geo.level].length ? layout.geoCounts[$rootScope.geo.level].length - 1 : index;
-                        const percentiles = Object.values(layout.geoCounts[$rootScope.geo.level]).sort((a, b) => a.count - b.count);
-                        const percentile = percentiles.slice(startIndex, endIndex).map(p => p.nodes).flat();
-                        selectService.selectNodes({ attr: scope.attrToRender.id, customValue: catData.id, ids: percentile.map(n => n.id) });
+                        const geoBuckets = layout.geoBuckets[$rootScope.geo.level][valIdx];
+                        selectService.selectNodes({ attr: scope.attrToRender.id, customValue: catData.id, ids: geoBuckets.nodes.map(n => n.id) });
                     } else {
                         selectService.selectNodes({ attr: scope.attrToRender.id, value: catData.id });
                     }
@@ -553,7 +559,7 @@ angular.module('common')
             }
             function genTagListData(currentSel, globalAttrInfo, filteringCatVals, defColorStr, valColorMap, sortType, sortOrder, layout) {
                 var attrInfo = globalAttrInfo;
-                var currSelFreqs = getCurrSelFreqsObj(currentSel, attrInfo.attr);
+                var currSelFreqs = getCurrSelFreqsObj(currentSel, attrInfo.attr, layout);
                 var maxValue = 0;
                 var maxFreq = attrInfo.nValues;
                 var usePercentage = true;
@@ -637,10 +643,12 @@ angular.module('common')
                 return (localFreq * localFreq) / globalFreq;
             }
 
-            function getCurrSelFreqsObj(currentSel, attr) {
+            function getCurrSelFreqsObj(currentSel, attr, layout) {
                 if (attr.id === 'geo_count') {
-                    return percentileNames.reduce((acc, x) => {
-                        acc[x] = Math.round(currentSel.length * 0.1);
+                    const geoBuckets = layout.geoBuckets[$rootScope.geo.level];
+                    return percentileNames.reduce((acc, x, idx) => {
+                        const matchingValues = geoBuckets[idx].nodes.filter(x => currentSel.some(y => y.id === x.id));
+                        acc[x] = matchingValues.length;
                         return acc;
                     }, {});
                 }
