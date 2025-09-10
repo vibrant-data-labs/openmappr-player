@@ -8,22 +8,10 @@
 const GENERIC_TERRITORIES = [
     16467322 // Metropolitan France (Landmass)
 ]
-const PERCENTILES = [
-    { value: 0.1, name: '10%' },
-    { value: 0.2, name: '20%' },
-    { value: 0.3, name: '30%' },
-    { value: 0.4, name: '40%' },
-    { value: 0.5, name: '50%' },
-    { value: 0.6, name: '60%' },
-    { value: 0.7, name: '70%' },
-    { value: 0.8, name: '80%' },
-    { value: 0.9, name: '90%' },
-    { value: 1, name: '100%' },
-];
 
 angular.module('common')
-    .factory('dataGraph', ['$timeout', '$q', '$rootScope', 'aggregatorService', 'dataService', 'networkService', 'AttrInfoService', 'orgFactory', 'BROADCAST_MESSAGES',
-        function ($timeout, $q, $rootScope, aggregatorService, dataService, networkService, AttrInfoService, orgFactory, BROADCAST_MESSAGES) {
+    .factory('dataGraph', ['$timeout', '$q', '$rootScope', 'aggregatorService', 'dataService', 'networkService', 'AttrInfoService', 'orgFactory', 'BROADCAST_MESSAGES', 'GEO_PERCENTILES',
+        function ($timeout, $q, $rootScope, aggregatorService, dataService, networkService, AttrInfoService, orgFactory, BROADCAST_MESSAGES, GEO_PERCENTILES) {
             "use strict";
 
             /*************************************
@@ -710,7 +698,6 @@ angular.module('common')
                 }
 
                 if (attr === 'geo_count') {
-                    const val = PERCENTILES.find(p => p.name === value).value;
                     const idx = Math.floor(value * _currRenderableGraph.layout.geoCounts[$rootScope.geo.level].length);
                     const percentile = _currRenderableGraph.layout.geoCounts[$rootScope.geo.level].map((p, i) => i < idx ? p.nodes : []).flat();
                     return percentile.map(n => n.id);

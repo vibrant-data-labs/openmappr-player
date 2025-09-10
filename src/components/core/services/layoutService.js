@@ -914,7 +914,7 @@ function($rootScope, $q, dataGraph, renderGraphfactory,AttrInfoService, leafletD
         if (layoutType === 'geo' && !allAttrs.some(attr => attr.id === 'geo_count')) {
             allAttrs.push({
                 id: 'geo_count',
-                title: 'Points Count per Region',
+                title: 'Points Density',
                 colorSelectable: true,
                 isNumeric: true,
                 visibility: [],

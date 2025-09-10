@@ -1,7 +1,7 @@
 /*globals d3,$  */
 angular.module('common')
-    .directive('dirHorizontalBars', ['$rootScope', '$timeout', '$q', 'FilterPanelService', 'dataGraph', 'AttrInfoService', 'SelectorService', 'BROADCAST_MESSAGES', 'hoverService', 'selectService', 'subsetService', 'layoutService', 'renderGraphfactory', 'clusterService',
-        function ($rootScope, $timeout, $q, FilterPanelService, dataGraph, AttrInfoService, SelectorService, BROADCAST_MESSAGES, hoverService, selectService, subsetService, layoutService, renderGraphfactory, clusterService) {
+    .directive('dirHorizontalBars', ['$rootScope', '$timeout', '$q', 'FilterPanelService', 'dataGraph', 'AttrInfoService', 'SelectorService', 'BROADCAST_MESSAGES', 'hoverService', 'selectService', 'subsetService', 'layoutService', 'renderGraphfactory', 'clusterService', 'GEO_PERCENTILES',
+        function ($rootScope, $timeout, $q, FilterPanelService, dataGraph, AttrInfoService, SelectorService, BROADCAST_MESSAGES, hoverService, selectService, subsetService, layoutService, renderGraphfactory, clusterService, GEO_PERCENTILES) {
             'use strict';
 
             /*************************************
@@ -17,10 +17,10 @@ angular.module('common')
 
             const geoCountAttrInfo = (valuesCount) => ({
                 id: 'geo_count',
-                title: 'Points Count per Region',
+                title: 'Points Density',
                 renderType: 'horizontal-bars',
                 axis: 'none',
-                tooltip: 'Points Count per Region',
+                tooltip: 'Points Density',
                 colorSelectable: true,
                 sizeSelectable: false,
                 isTag: false,
@@ -43,21 +43,8 @@ angular.module('common')
             var ITEMS_TO_SHOW_INITIALLY = 20;
             var totalNodes = 0;
 
-            const PERCENTILES = [
-                { value: 0.1, name: '10%' },
-                { value: 0.2, name: '20%' },
-                { value: 0.3, name: '30%' },
-                { value: 0.4, name: '40%' },
-                { value: 0.5, name: '50%' },
-                { value: 0.6, name: '60%' },
-                { value: 0.7, name: '70%' },
-                { value: 0.8, name: '80%' },
-                { value: 0.9, name: '90%' },
-                { value: 1, name: '100%' },
-            ];
-
-            const percentileIdx = PERCENTILES.map(p => p.value);
-            const percentileNames = PERCENTILES.map(p => p.name);
+            const percentileIdx = GEO_PERCENTILES.map(p => p.value);
+            const percentileNames = GEO_PERCENTILES.map(p => p.name);
 
             const calculatePercentileValues = (percentiles, minColor, maxColor, geoBuckets) => {
                 if (geoBuckets.length === 0) {
@@ -286,6 +273,10 @@ angular.module('common')
                 });
 
                 scope.calcLineWidth = function (item) {
+                    if (scope.attrToRender.id === 'geo_count') {
+                        return 100;
+                    }
+
                     if (item) {
                         var num = item.selTagFreq || item.globalTagFreq;
                         return num / scope.totalValue * 100;
@@ -301,7 +292,8 @@ angular.module('common')
                         return 0;
                     }
                     const totalValues = Object.values(scope.selectedValues).reduce((acc, i) => acc += i, 0);
-                    return scope.selectedValues[attr.id] / totalValues * 100;
+                    const res = scope.selectedValues[attr.id] / totalValues * 100 + 10;
+                    return res > 100 ? 100 : res;
                 }
 
                 scope.$on(BROADCAST_MESSAGES.snapshot.changed, function (event, data) {
@@ -393,7 +385,14 @@ angular.module('common')
                     return `${Math.round(value)}%`;
                 }
 
-                scope.getTooltipInfo = function (catData) {
+                function formatValue(value) {
+                    if (typeof value === 'number') {
+                        return value.toLocaleString();
+                    }
+                    return value;
+                }
+
+                scope.getTooltipInfo = function (catData, idx) {
                     if (catData) {
                         var subsetLength = subsetService.currentSubset().length;
                         var total = 0;
@@ -408,8 +407,17 @@ angular.module('common')
                         const totalValues = Object.values(scope.selectedValues).reduce((acc, i) => acc += i, 0);
                         const selectedVals = scope.selectedValues[catData.id];
                         if (scope.totalSelectedValue && selectedVals) {
+                            if (scope.attrToRender.id === 'geo_count') {
+                                const geoBuckets = layoutService.getCurrentIfExists().geoBuckets[$rootScope.geo.level][idx];
+                                return formatValue(selectedVals) + ' / ' + formatValue(geoBuckets.nodes.length);
+                            }
                             //return (selectedVals || 0) + ' / ' + total;
                             return roundValue(((selectedVals || 0) / totalValues * 100).toFixed(1)) + ` / ${roundValue(catData.percentage)}`;
+                        }
+
+                        if (scope.attrToRender.id === 'geo_count') {
+                            const geoBuckets = layoutService.getCurrentIfExists().geoBuckets[$rootScope.geo.level][idx];
+                            return formatValue(geoBuckets.nodes.length);
                         }
 
                         return roundValue(catData.percentage || total);
@@ -425,14 +433,9 @@ angular.module('common')
                         }
 
                         const layout = await layoutService.getCurrent();
-                        const valIdx = PERCENTILES.findIndex(p => p.name === catData.id);
-                        const value = PERCENTILES[valIdx].value;
-                        const index = Math.floor(value * layout.geoCounts[$rootScope.geo.level].length);
-                        const startIndex = valIdx === 0 ? 0 : PERCENTILES[valIdx - 1].value * layout.geoCounts[$rootScope.geo.level].length;
-                        const endIndex = index === layout.geoCounts[$rootScope.geo.level].length ? layout.geoCounts[$rootScope.geo.level].length - 1 : index;
-                        const percentiles = Object.values(layout.geoCounts[$rootScope.geo.level]).sort((a, b) => a.count - b.count);
-                        const percentile = percentiles.slice(startIndex, endIndex).map(p => p.nodes).flat();
-                        hoverService.hoverNodes({ attr: scope.attrToRender.id, ids: percentile.map(n => n.id) });
+                        const valIdx = GEO_PERCENTILES.findIndex(p => p.name === catData.id);
+                        const geoBuckets = layout.geoBuckets[$rootScope.geo.level][valIdx];
+                        hoverService.hoverNodes({ attr: scope.attrToRender.id, ids: geoBuckets.nodes.map(n => n.id) });
                         return;
                     }
 
@@ -467,7 +470,7 @@ angular.module('common')
                 async function selectFilter(catData) {
                     if (scope.attrToRender.id === 'geo_count') {
                         const layout = await layoutService.getCurrent();
-                        const valIdx = PERCENTILES.findIndex(p => p.name === catData.id);
+                        const valIdx = GEO_PERCENTILES.findIndex(p => p.name === catData.id);
                         const geoBuckets = layout.geoBuckets[$rootScope.geo.level][valIdx];
                         selectService.selectNodes({ attr: scope.attrToRender.id, customValue: catData.id, ids: geoBuckets.nodes.map(n => n.id) });
                     } else {
@@ -525,8 +528,8 @@ angular.module('common')
 
             function getGeoColors(layout) {
                 const [minColor, maxColor] = layout.mapprSettings.nodeColorPaletteNumeric;
-                const percentileIdx = PERCENTILES.map(p => p.value);
-                const percentileNames = PERCENTILES.map(p => p.name);
+                const percentileIdx = GEO_PERCENTILES.map(p => p.value);
+                const percentileNames = GEO_PERCENTILES.map(p => p.name);
                 return percentileNames.map((cv, idx) => {
                     return {
                         title: cv,
@@ -709,7 +712,7 @@ angular.module('common')
             }
 
             function sortTagData(catData, sortType, sortOrder, inSelection) {
-                if (catData.length > 0 && catData[0].id === PERCENTILES[0].name) {
+                if (catData.length > 0 && catData[0].id === GEO_PERCENTILES[0].name) {
                     return catData;
                 }
 

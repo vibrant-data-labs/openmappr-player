@@ -30,7 +30,7 @@ angular.module('common')
                 'geo_count': {
                     attr: {
                         id: 'geo_count',
-                        title: 'Points Count per Region',
+                        title: 'Points Density',
                         attrType: 'geo'
                     }
                 }
@@ -649,7 +649,7 @@ angular.module('common')
                         } else {
                             const filters = _.clone(selectService.filters);
                             const filterOverride = customAttr ? filters[customAttr] : null;
-                            if (filterOverride) {
+                            if (filterOverride && customAttrValue !== undefined ) {
                                 filterOverride.isEnabled = true;
                                 filterOverride.selector = SelectorService.newSelector().ofAttrValue(customAttr, customAttrValue);
                             }

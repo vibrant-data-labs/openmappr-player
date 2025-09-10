@@ -9,7 +9,7 @@
     div(ng-if="ui.summaryToggleOpen && (item.archetypes.length > 0 || item.bridgers.length > 0)")
       .legend-line-down.animate-fade(style="border-color: {{item.colorVal}}" ng-class="{'only-one':(item.bridgers.length == 0 || item.archetypes.length == 0)}")
     h6.less-gutter.panel-text(ng-class="{'reduced': isInSelection }") {{item.text}}
-    h6.panel-number {{getTooltipInfo(item)}}
+    h6.panel-number {{getTooltipInfo(item, $index)}}
 .panel-item-actions(ng-if="catListDataTail.length", ng-class="{'panel-item-actions_active' : isShowMore}")
   span.panel-item-actions__info {{isShowMore ? totalItems : displayItemsBars}} of {{totalItems}}
   button.panel-item-actions__btn(ng-click="toggleShowMore()"){{ !isShowMore ? 'Show More →' : '← Less' }}
@@ -25,4 +25,4 @@
       div(ng-if="ui.summaryToggleOpen && (item.archetypes.length > 0 || item.bridgers.length > 0)")
         .legend-line-down.animate-fade(style="border-color: {{item.colorVal}}" ng-class="{'only-one':(item.bridgers.length == 0 || item.archetypes.length == 0)}")
       h6.less-gutter.panel-text {{item.text}}
-      h6.panel-number {{getTooltipInfo(item)}}
+      h6.panel-number {{getTooltipInfo(item. $index)}}

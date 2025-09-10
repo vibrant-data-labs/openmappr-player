@@ -460,7 +460,7 @@ angular.module('common')
                     ...Object.entries(GEO_FILTERS).map(([k, v]) => {
                         return new FilterConfig(k, v)
                     }),
-                    new FilterConfig('geo_count', 'Points Count per Region')
+                    new FilterConfig('geo_count', 'Points Density')
                 ]
             }
         }
