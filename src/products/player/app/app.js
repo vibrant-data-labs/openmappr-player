@@ -341,15 +341,15 @@ angular.module('hcApp', [
     })
 
     .constant('GEO_PERCENTILES', [
-        { value: 0.1, name: 'Very Low' },
-        { value: 0.2, name: 'Low' },
-        { value: 0.3, name: 'Moderately Low' },
-        { value: 0.4, name: 'Below Average' },
-        { value: 0.5, name: 'Average' },
-        { value: 0.6, name: 'Above Average' },
-        { value: 0.7, name: 'Moderately High' },
-        { value: 0.8, name: 'High' },
-        { value: 0.9, name: 'Very High' },
+        { value: 0.1, name: 'Lowest' },
+        { value: 0.2, name: '---' },
+        { value: 0.3, name: '--' },
+        { value: 0.4, name: '-' },
+        { value: 0.5, name: 'Median' },
+        { value: 0.6, name: '+' },
+        { value: 0.7, name: '++' },
+        { value: 0.8, name: '+++' },
+        { value: 0.9, name: '++++' },
         { value: 1, name: 'Highest' },
     ])
 

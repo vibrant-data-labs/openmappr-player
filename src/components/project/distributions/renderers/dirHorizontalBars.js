@@ -408,16 +408,14 @@ angular.module('common')
                         const selectedVals = scope.selectedValues[catData.id];
                         if (scope.totalSelectedValue && selectedVals) {
                             if (scope.attrToRender.id === 'geo_count') {
-                                const geoBuckets = layoutService.getCurrentIfExists().geoBuckets[$rootScope.geo.level][idx];
-                                return formatValue(selectedVals) + ' / ' + formatValue(geoBuckets.nodes.length);
+                                return formatValue(selectedVals);
                             }
                             //return (selectedVals || 0) + ' / ' + total;
                             return roundValue(((selectedVals || 0) / totalValues * 100).toFixed(1)) + ` / ${roundValue(catData.percentage)}`;
                         }
 
                         if (scope.attrToRender.id === 'geo_count') {
-                            const geoBuckets = layoutService.getCurrentIfExists().geoBuckets[$rootScope.geo.level][idx];
-                            return formatValue(geoBuckets.nodes.length);
+                            return '';
                         }
 
                         return roundValue(catData.percentage || total);
