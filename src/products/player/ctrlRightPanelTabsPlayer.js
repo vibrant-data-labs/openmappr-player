@@ -517,6 +517,7 @@ angular.module('common')
             playerFactory.getPlayerLocally().then(function (resp) {
                 const { displayExportButton, feedback, beta } = resp.player.settings;
                 $scope.displayExportButton = displayExportButton;
+                $scope.showFeedback = feedback !== null;
                 $scope.feedbackLink = (feedback && feedback.link) || 'support@openmappr.org';
                 $scope.feedbackText = (feedback && feedback.text) || 'Contact us';
                 $scope.feedbackType = (feedback && feedback.type) || 'email';

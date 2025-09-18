@@ -54,7 +54,7 @@
   .side-menu__footer
     ul.right-corner(ng-if="showButtons")
 
-      li.right-corner__item
+      li.right-corner__item(ng-if="showFeedback")
         a.feedback(href="{{ feedbackType === 'email' ? 'mailto:' + feedbackLink : feedbackLink }}" target="_blank")
           span.feedback__beta(ng-if="isShowBeta")
           {{feedbackText}}
