@@ -314,6 +314,24 @@ angular.module('common')
                 return _.get($scope, '$parent.player.player.settings.projectLogoUrl') || null;
             }
 
+            $scope.getFooterInfo = function () {
+                const footer = _.get($scope, '$parent.player.player.settings.footer');
+                const defaultFooter = {
+                    logo: '#{player_prefix_index_source}/img/logos/vdl-logo.svg',
+                    name: 'Vibrant Data Labs',
+                    link: 'https://vibrantdatalabs.org'
+                }
+                if (footer) {
+                    return {
+                        logo: footer.studioLogo || defaultFooter.logo,
+                        name: footer.studioName || defaultFooter.name,
+                        link: footer.studioUrl || defaultFooter.link
+                    }
+                }
+
+                return defaultFooter;
+            }
+
             $scope.isShowMoreBtn = true;
             
             $scope.socialLinks = {

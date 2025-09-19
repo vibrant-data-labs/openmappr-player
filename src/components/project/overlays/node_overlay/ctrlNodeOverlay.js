@@ -123,16 +123,6 @@ angular.module('common')
 
                 $scope.sponsorsTxt = $scope.player.player.settings.sponsorsTxt || 'Powered by';
 
-                if ($scope.player.player.settings.footer) {
-                    $scope.footerLogo = $scope.player.player.settings.footer.studioLogo || '#{player_prefix_index_source}/img/logos/vdl-logo.svg';
-                    $scope.footerName = $scope.player.player.settings.footer.studioName || 'Vibrant Data Labs';
-                    $scope.footerLink = $scope.player.player.settings.footer.studioUrl || 'https://vibrantdatalabs.org';
-                } else {
-                    $scope.footerLogo = '#{player_prefix_index_source}/img/logos/vdl-logo.svg';
-                    $scope.footerName = 'Vibrant Data Labs';
-                    $scope.footerLink = 'https://vibrantdatalabs.org';
-                }
-
                 $scope.beginOverlayRightPanel = val || !$scope.beginOverlayRightPanel;
                 $scope.showOverlay = val || !$scope.showOverlay;
                 $scope.showFocusNode = val || !$scope.showFocusNode;
