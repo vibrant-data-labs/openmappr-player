@@ -27,6 +27,9 @@ jobs:
               uses: actions/setup-node@v4.0.3
               with:
                   node-version: 22.15.0
+            - name: Install dependencies
+              run: |
+                  npm install
             - name: Build and Publish
               run: |
                   npm run publish
