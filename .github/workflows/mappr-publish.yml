@@ -1,0 +1,32 @@
+name: Openmappr Player Publish
+on:
+    push:
+        branches:
+            - main
+
+jobs:
+    build-and-publish:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Check out repository code
+              uses: actions/checkout@v4
+            - name: Populate .env from secrets
+              working-directory: ./
+              env:
+                  AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+                  AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
+                  BUCKET: ${{ vars.S3_BUCKET }}
+                  CLOUDFLARE_API_KEY: ${{ secrets.CLOUDFLARE_API_KEY }}
+              run: |
+                  printenv | while IFS= read -r line; do
+                      key=$(echo "$line" | cut -d'=' -f1)
+                      value=$(echo "$line" | cut -d'=' -f2-)
+                      echo "$key=\"$value\"" >> .env
+                  done
+            - name: Setup Node.js
+              uses: actions/setup-node@v4.0.3
+              with:
+                  node-version: 22.15.0
+            - name: Build and Publish
+              run: |
+                  npm run publish
