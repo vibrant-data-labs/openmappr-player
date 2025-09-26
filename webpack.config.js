@@ -241,8 +241,10 @@ module.exports = {
         new CopyPlugin({
             patterns: [
                 { from: 'assets/style/css/mappr-icons/style.css', to: 'css/mappr-icons/style.css' },
+                { from: 'assets/font-awesome.min.css', to: 'css/font-awesome.min.css' },
                 { from: 'assets/fonts', to: 'fonts' },
                 { from: 'assets/img', to: 'img' },
+                { from: 'assets/libs', to: 'libs' },
                 !isProduction ? { from: 'assets/data', to: 'data' } : undefined,
                 ...Object.keys(externalLibs).map((key) => ({ from: externalLibs[key], to: key }))
             ].filter(Boolean)
