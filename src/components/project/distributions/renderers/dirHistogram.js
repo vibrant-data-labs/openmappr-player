@@ -17,7 +17,8 @@ angular.module('common')
                     waitUntilLoaded().then(() => {
                         const root = ReactDOM.createRoot(element[0]);
                         root.render(React.createElement(MapprComponents.Slider, {
-                            attrId: scope.attrToRender.id
+                            attrId: scope.attrToRender.id,
+                            attrType: scope.attrToRender.attrType
                         }));
 
                         scope.$on('$destroy', () => {
