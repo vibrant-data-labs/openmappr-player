@@ -253,7 +253,7 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
             $scope.nodeColorAttrs.find(x => x.id === 'geo_count').isDisabled = true;
         } else {
             const attr = $scope.nodeColorAttrs.find(x => x.id === 'geo_count');
-            $scope.nodeColorAttrs.find(x => x.id === 'geo_count').isDisabled = true;
+            attr.isDisabled = false;
             $scope.colorByAttrUpdate(attr);
         }
     });
