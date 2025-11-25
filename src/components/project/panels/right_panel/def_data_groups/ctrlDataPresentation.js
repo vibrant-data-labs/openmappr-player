@@ -1,6 +1,6 @@
 angular.module('common')
-.controller('DataPresentationCtrl', ['$scope', '$rootScope','$timeout', '$q', 'uiService', 'AttrInfoService' ,'layoutService', 'snapshotService', 'networkService', 'nodeSelectionService','projFactory', 'renderGraphfactory', 'FilterPanelService', 'BROADCAST_MESSAGES', 'dataGraph', 'hoverService', 'selectService', 'subsetService',
-function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutService, snapshotService, networkService, nodeSelectionService, projFactory, renderGraphfactory, FilterPanelService, BROADCAST_MESSAGES, dataGraph, hoverService, selectService, subsetService) {
+.controller('DataPresentationCtrl', ['$scope', '$rootScope','$timeout', '$q', 'uiService', 'AttrInfoService' ,'layoutService', 'snapshotService', 'networkService', 'nodeSelectionService','projFactory', 'renderGraphfactory', 'FilterPanelService', 'BROADCAST_MESSAGES', 'dataGraph', 'hoverService', 'selectService', 'subsetService', 'GEO_REGION_TITLES',
+function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutService, snapshotService, networkService, nodeSelectionService, projFactory, renderGraphfactory, FilterPanelService, BROADCAST_MESSAGES, dataGraph, hoverService, selectService, subsetService, GEO_REGION_TITLES) {
     'use strict';
 
     /*************************************
@@ -45,7 +45,6 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
         hasArchetypesOrBridgers: false
     };
 
-
     /**
     * Scope functions *****
     */
@@ -70,6 +69,8 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
     $scope.MAPP_EDITOR_OPEN = $rootScope.MAPP_EDITOR_OPEN;
     $scope.isShowClusteredBy = true;
     $scope.isGeoLayout = false;
+    $scope.isPointsDensity = false;
+    $scope.pointsDensityRegionTitle = 'Region';
     
 
     $scope.sizeByAttrUpdate = sizeByAttrUpdate;
@@ -105,14 +106,18 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
         $scope.isNumericItemByColor = colorAttr;
         $rootScope.$broadcast(BROADCAST_MESSAGES.cb.changed, colorAttr);
 
-        var attrInfo = AttrInfoService.getNodeAttrInfoForRG().getForId($scope.mapprSettings.nodeColorAttr);
-        $scope.totalValue = _(attrInfo.valuesCount).keys().map(x => attrInfo.valuesCount[x]).max();
+        if (colorAttr.id != 'geo_count') {
+            var attrInfo = AttrInfoService.getNodeAttrInfoForRG().getForId($scope.mapprSettings.nodeColorAttr);
+            $scope.totalValue = _(attrInfo.valuesCount).keys().map(x => attrInfo.valuesCount[x]).max();
+        }
 
-        if (!$scope.showClusteredBy()) {
+        if (!$scope.showClusteredBy() && colorAttr.id !== 'geo_count') {
             $scope.clusterByAttrUpdate(colorAttr);
         }
 
         $scope.isGeoLayout = $scope.layout.plotType === 'geo';
+        $scope.isPointsDensity = colorAttr.id === 'geo_count' && $rootScope.geo.level !== 'node';
+        $scope.pointsDensityRegionTitle = GEO_REGION_TITLES[$rootScope.geo.level];
     };
 
     $scope.clusterByAttrUpdate = function clusterByAttrUpdate(colorAttr){
@@ -173,6 +178,12 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
         }, 500);
     });
 
+    $scope.$watch('pointsDensityRegionTitle', function(newVal) {
+        if (newVal && $rootScope.geo.level !== 'node') {
+            $scope.nodeColorAttrs.find(x => x.id === 'geo_count').title = 'Points per ' + newVal;
+        }
+    });
+
     $scope.getSelectedSnapshot = function () {
         var content = snapshotService.getCurrentSnapshot().descr;
         var index = content.indexOf('</p>') + 4;
@@ -231,6 +242,20 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
 
         $scope.totalSelectedValue = _(valuesCount).keys().map(x => valuesCount[x]).max();
         $scope.selectedValues = valuesCount;
+    });
+
+    $scope.$on(BROADCAST_MESSAGES.geoSelector.changed, function(event, data) {
+        if (data.levelId === 'node') {
+            const snapshot = snapshotService.getCurrentSnapshot();
+            const colorNodesByAttr = snapshot.layout.settings.nodeColorAttr;
+            const nodeAttrs = $scope.dataSet.attrDescriptors;
+            $scope.colorByAttrUpdate(nodeAttrs.find(x => x.id === colorNodesByAttr));
+            $scope.nodeColorAttrs.find(x => x.id === 'geo_count').isDisabled = true;
+        } else {
+            const attr = $scope.nodeColorAttrs.find(x => x.id === 'geo_count');
+            $scope.nodeColorAttrs.find(x => x.id === 'geo_count').isDisabled = true;
+            $scope.colorByAttrUpdate(attr);
+        }
     });
 
     /*************************************
@@ -301,6 +326,8 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
             const attr = $scope.nodeColorAttrs.find(x => x.id === $scope.mapprSettings.nodeColorAttr);
             if (attr) {
                 $scope.dataGroupsInfo.colorNodesBy = attr;
+                $scope.isPointsDensity = true;
+                $scope.pointsDensityRegionTitle = GEO_REGION_TITLES[$rootScope.geo.level];
             }
         } else {
             $scope.dataGroupsInfo.colorNodesBy = _.find($scope.dataSet.attrDescriptors, 'id', $scope.mapprSettings.nodeColorAttr);

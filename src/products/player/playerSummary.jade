@@ -11,13 +11,15 @@
 											span(ng-if="!isShowClusteredBy || dataGroupsInfo.colorNodesBy.id != dataGroupsInfo.clusterNodesBy.id") Colored by:&nbsp;&nbsp;
 											span(ng-if="isShowClusteredBy && dataGroupsInfo.colorNodesBy.id == dataGroupsInfo.clusterNodesBy.id") Colored by, Clustered by:&nbsp;&nbsp;
 											span(ng-if="!nodeColorAttrs || nodeColorAttrs.length < 2") {{dataGroupsInfo.colorNodesBy.title}}
+											span(ng-if="isPointsDensity && (!nodeColorAttrs || nodeColorAttrs.length < 2)") Points per {{pointsDensityRegionTitle}}&nbsp;&nbsp;
 											span.card__tooltip.tooltip__colored-by(ng-if="(!nodeColorAttrs || nodeColorAttrs.length < 2) && dataGroupsInfo.colorNodesBy.tooltip"
 												uib-tooltip="{{dataGroupsInfo.colorNodesBy.tooltip}}",
 												tooltip-placement="right", 
 												tooltip-append-to-body="true")
 											span(ng-if="nodeColorAttrs && nodeColorAttrs.length > 1" uib-dropdown dropdown-append-to-body)
 												span(uib-dropdown-toggle auto-close="outsideClick" ng-click="keepDrawerOpen = true;")
-													span.text-link {{dataGroupsInfo.colorNodesBy.title}}
+													span.text-link(ng-if="!isPointsDensity") {{dataGroupsInfo.colorNodesBy.title}}
+													span.text-link(ng-if="isPointsDensity") Points per {{pointsDensityRegionTitle}}
 														i.fa.fa-angle-down
 												.uib-dropdown-menu.uib-dropdown-menu-flexing(uib-dropdown-menu)
 													.uib-dropdown-click-close(ng-click="keepDrawerOpen = false;")
@@ -25,8 +27,12 @@
 														.uib-dropdown-triangle
 														.uib-dropdown-flex.center
 															ul.dd-list.list-unstyled(style="max-height:50vh;overflow-y:auto;")
-																li.row.vert-align.pointable-cursor(ng-repeat="item in nodeColorAttrs", ng-click="colorByAttrUpdate(item)", style="width: auto")
-																	.col-xs-12
+																li.row.vert-align.pointable-cursor(
+																	ng-repeat="item in nodeColorAttrs",
+																	ng-click="item.isDisabled ? null : colorByAttrUpdate(item)",
+																	style="width: auto",
+																	ng-style="{'pointer-events': item.isDisabled ? 'none' : 'auto'}")
+																	.col-xs-12(ng-style="{'opacity': item.isDisabled ? 0.7 : 1}")
 																		h6.no-margin {{item.title}}
 
 				.btns(ng-if="mapprSettings.edgeColorStrat == 'select' || mapprSettings.edgeColorStrat == 'attr'")

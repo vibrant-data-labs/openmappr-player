@@ -2,8 +2,8 @@
 * Provides layout builders(scatterplot, geo, grid n cluster) & other layout related ops
 */
 angular.module('common')
-.service('layoutService', ['$rootScope', '$q', 'dataGraph', 'renderGraphfactory','AttrInfoService' ,'leafletData', 'partitionService',
-function($rootScope, $q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partitionService) {
+.service('layoutService', ['$rootScope', '$q', 'dataGraph', 'renderGraphfactory','AttrInfoService' ,'leafletData', 'partitionService', 'GEO_REGION_TITLES',
+function($rootScope, $q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partitionService, GEO_REGION_TITLES) {
     "use strict";
 
 
@@ -25,6 +25,7 @@ function($rootScope, $q, dataGraph, renderGraphfactory,AttrInfoService, leafletD
 
     this.getCurrent = getCurrentLayout;
     this.getCurrentIfExists = function() { return _currLayout; };
+    this.rebuildGeoLayout = rebuildGeoLayout;
 
     this.getCurrentOrCreateDefault = getCurrentOrCreateDefault;
 
@@ -914,7 +915,7 @@ function($rootScope, $q, dataGraph, renderGraphfactory,AttrInfoService, leafletD
         if (layoutType === 'geo' && !allAttrs.some(attr => attr.id === 'geo_count')) {
             allAttrs.push({
                 id: 'geo_count',
-                title: 'Points Density',
+                title: 'Points per ' + GEO_REGION_TITLES[$rootScope.geo.level],
                 colorSelectable: true,
                 isNumeric: true,
                 visibility: [],
@@ -1738,6 +1739,7 @@ function($rootScope, $q, dataGraph, renderGraphfactory,AttrInfoService, leafletD
         this.isGeo = true;
         this.mapprSettings.nodeColorAttr = 'geo_count';
 
+        this._nodes = [];
         this.map = null; // the leaflet object
         // This layout requries a valid leaflet object.
         // Until it is not there, this won't function
@@ -1770,13 +1772,9 @@ function($rootScope, $q, dataGraph, renderGraphfactory,AttrInfoService, leafletD
                     this.geoBuckets = {};
                 }
 
-                const nodes = dataGraph.getAllNodes();
+                const nodes = _currLayout._nodes.length > 0 ? _currLayout._nodes : dataGraph.getAllNodes();
                 this.geoGroups[$rootScope.geo.level] = nodes.reduce((acc, node) => {
                     if (!node.geodata || !node.geodata[$rootScope.geo.level]) {
-                        acc[node.id] = {
-                            count: 1,
-                            nodes: [node]
-                        }
                         return acc;
                     }
         
@@ -1826,7 +1824,6 @@ function($rootScope, $q, dataGraph, renderGraphfactory,AttrInfoService, leafletD
 
                 const idx = this.geoBuckets[$rootScope.geo.level].findIndex(x => x.nodes.some(r => r.id === node.id));
                 if (idx === -1) {
-                    console.warn('Node not found in geo counts', node.id);
                     return;
                 }
 
@@ -1972,6 +1969,18 @@ function($rootScope, $q, dataGraph, renderGraphfactory,AttrInfoService, leafletD
         var l = new Layout(layout, camera);
         l.snapshotId = null;
         return l;
+    }
+
+    function rebuildGeoLayout(newNodes) {
+        if (!_currLayout.isGeo) {
+            return false;
+        }
+
+        _currLayout.geoCounts = undefined;
+        _currLayout.geoGroups = undefined;
+        _currLayout.geoBuckets = undefined;
+        _currLayout._nodes = newNodes || [];
+        return true;
     }
 
     function interpolateColors(c1, c2, p) {

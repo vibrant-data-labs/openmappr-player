@@ -2,8 +2,8 @@
 * Handles Graph Selection ops
 */
 angular.module('common')
-    .service('selectService', ['$rootScope', '$q', 'dataService', 'renderGraphfactory', 'dataGraph', 'nodeRenderer', 'inputMgmtService', 'BROADCAST_MESSAGES', 'SelectorService', 'subsetService', 'graphSelectionService', 'searchService',
-        function ($rootScope, $q, dataService, renderGraphfactory, dataGraph, nodeRenderer, inputMgmtService, BROADCAST_MESSAGES, SelectorService, subsetService, graphSelectionService, searchService) {
+    .service('selectService', ['$rootScope', '$q', 'dataService', 'renderGraphfactory', 'dataGraph', 'nodeRenderer', 'inputMgmtService', 'BROADCAST_MESSAGES', 'SelectorService', 'subsetService', 'graphSelectionService', 'searchService', 'layoutService', 'GEO_REGION_TITLES',
+        function ($rootScope, $q, dataService, renderGraphfactory, dataGraph, nodeRenderer, inputMgmtService, BROADCAST_MESSAGES, SelectorService, subsetService, graphSelectionService, searchService, layoutService, GEO_REGION_TITLES) {
             'use strict';
 
             /*************************************
@@ -98,6 +98,10 @@ angular.module('common')
                 this.filters = _.indexBy(_buildFilters(dataGraph.getNodeAttrs()), 'attrId');
                 (function (service) {
                     $rootScope.$on(BROADCAST_MESSAGES.hss.subset.init, function (ev) {
+                        if (layoutService.rebuildGeoLayout(service.getSelectedNodes())) {
+                            var rg = dataGraph.getRenderableGraph();
+                            rg.refreshForZoomLevel(0);
+                        }
                         subsetService.subsetSelection(service.getSelectedNodes());
                         service.filters = _.indexBy(_buildFilters(dataGraph.getNodeAttrs()), 'attrId');
                         service.unselect();
@@ -281,7 +285,7 @@ angular.module('common')
                     if (data.min || data.max) {
                         this.createMinMaxFilter(data.attr, data.min, data.max, data.force, data.forceDisable);
                     } else {
-                        this.createMultipleFilter(data.attr, data.value);
+                        this.createMultipleFilter(data.attr, data.value, data.ids);
                         if (data.attr2) {
                             this.createMultipleFilter(data.attr2, data.value2);
                         }
@@ -293,7 +297,7 @@ angular.module('common')
                 }, subset.length > 0 ? subset : null);
             }
 
-            function createMultipleFilter(attrId, vals) {
+            function createMultipleFilter(attrId, vals, ids) {
                 var filterConfig = this.getFilterForId(attrId);
                 var newVal = _.isArray(vals) ? vals : [vals];
                 var filterVal;
@@ -301,7 +305,9 @@ angular.module('common')
                 const isGeoFilter = Object.keys(GEO_FILTERS).includes(attrId);
 
                 if (!isGeoFilter) {
-                    if (filterConfig.state.selectedVals && filterConfig.state.selectedVals.indexOf(vals) > -1) {
+                    if (attrId === 'geo_count') {
+                        // do nothing
+                    } else if (filterConfig.state.selectedVals && filterConfig.state.selectedVals.indexOf(vals) > -1) {
                         filterVal = _.filter(_.filter(filterConfig.state.selectedVals, v => newVal.indexOf(v) == -1), _.identity);
                     } else {
                         filterVal = _.filter(_.flatten([filterConfig.state.selectedVals, _.clone(newVal)]), _.identity);
@@ -317,10 +323,12 @@ angular.module('common')
                 filterConfig.state.selectedVals = filterVal;
                 if (isGeoFilter) {
                     filterConfig.selector = SelectorService.newSelector().ofGeo(attrId, filterVal);
+                } else if (attrId === 'geo_count') {
+                    filterConfig.selector = SelectorService.newSelector().ofMultipleNodes(ids);
                 } else {
                     filterConfig.selector = SelectorService.newSelector().ofMultipleAttrValues(attrId, filterVal, true);
                 }
-                filterConfig.isEnabled = filterVal && filterVal.length > 0;
+                filterConfig.isEnabled = attrId === 'geo_count' ? true : filterVal && filterVal.length > 0;
 
                 return filterConfig;
             }
@@ -460,7 +468,7 @@ angular.module('common')
                     ...Object.entries(GEO_FILTERS).map(([k, v]) => {
                         return new FilterConfig(k, v)
                     }),
-                    new FilterConfig('geo_count', 'Points Density')
+                    new FilterConfig('geo_count', 'Points per ' + GEO_REGION_TITLES[$rootScope.geo.level])
                 ]
             }
         }

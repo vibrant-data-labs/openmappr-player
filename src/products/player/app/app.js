@@ -340,6 +340,13 @@ angular.module('hcApp', [
         }
     })
 
+    .constant('GEO_REGION_TITLES', {
+        countries: 'Country',
+        fed_districts: 'State',
+        adm_districts: 'County',
+        node: 'Region'
+    })
+
     .constant('GEO_PERCENTILES', [
         { value: 0.1, name: 'Lowest' },
         { value: 0.2, name: '---' },

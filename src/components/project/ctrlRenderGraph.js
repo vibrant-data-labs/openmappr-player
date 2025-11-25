@@ -1,8 +1,8 @@
 //RenderCtrl sets up dataGraph and the current Snapshot
 // if an attribute is changed, loads the new graph!
 angular.module('common')
-    .controller('renderGraphCtrl', ['$scope', '$rootScope', '$routeParams', '$q', '$timeout', '$location', 'leafletData', 'dataService', 'networkService', 'dataGraph', 'AttrInfoService', 'layoutService', 'snapshotService', 'orgFactory', 'projFactory', 'playerFactory', 'graphSelectionService', 'zoomService', 'SelectorService', 'BROADCAST_MESSAGES', 'selectService', 'subsetService',
-        function ($scope, $rootScope, $routeParams, $q, $timeout, $location, leafletData, dataService, networkService, dataGraph, AttrInfoService, layoutService, snapshotService, orgFactory, projFactory, playerFactory, graphSelectionService, zoomService, SelectorService, BROADCAST_MESSAGES, selectService, subsetService) {
+    .controller('renderGraphCtrl', ['$scope', '$rootScope', '$routeParams', '$q', '$timeout', '$location', 'leafletData', 'dataService', 'networkService', 'dataGraph', 'AttrInfoService', 'layoutService', 'snapshotService', 'orgFactory', 'projFactory', 'playerFactory', 'graphSelectionService', 'zoomService', 'SelectorService', 'BROADCAST_MESSAGES', 'selectService', 'subsetService', 'GEO_REGION_TITLES',
+        function ($scope, $rootScope, $routeParams, $q, $timeout, $location, leafletData, dataService, networkService, dataGraph, AttrInfoService, layoutService, snapshotService, orgFactory, projFactory, playerFactory, graphSelectionService, zoomService, SelectorService, BROADCAST_MESSAGES, selectService, subsetService, GEO_REGION_TITLES) {
             'use strict';
 
             const GEO_FILTERS = {
@@ -30,7 +30,7 @@ angular.module('common')
                 'geo_count': {
                     attr: {
                         id: 'geo_count',
-                        title: 'Points Density',
+                        title: 'Points per Region',
                         attrType: 'geo'
                     }
                 }
@@ -154,6 +154,15 @@ angular.module('common')
 
                         if (Object.keys(GEO_FILTERS).includes(filter.attrId)) {
                             var attrInfo = GEO_FILTERS[filter.attrId];
+                            if (filter.attrId === 'geo_count') {
+                                attrInfo = {
+                                    attr: {
+                                        id: 'geo_count',
+                                        title: 'Points per ' + GEO_REGION_TITLES[$rootScope.geo.level],
+                                        attrType: 'geo'
+                                    }
+                                }
+                            }
                         } else {
                             var attrInfo = AttrInfoService.getNodeAttrInfoForRG().getForId(filter.attrId);
                         }
@@ -541,6 +550,10 @@ angular.module('common')
 
                 const filtersEnabled = data.filtersCount > 0 || data.attr === 'geo_count';
                 if (!filtersEnabled && !data.isSubsetted) {
+                    if ($scope.operations.last().type == 'select' && $scope.operations.last().filters.geo_count.isEnabled) {
+                        removeOperation();
+                    }
+
                     return;
                 }
 
@@ -626,6 +639,47 @@ angular.module('common')
                 }
             }
 
+            function updateFilterSelector(filterConfig, attrId, customAttrValue) {
+                if (!filterConfig || customAttrValue === undefined) {
+                    return;
+                }
+                
+                filterConfig.isEnabled = true;
+                
+                const isGeoFilter = Object.keys(GEO_FILTERS).includes(attrId) && attrId !== 'geo_count';
+                const newVal = _.isArray(customAttrValue) ? customAttrValue : [customAttrValue];
+                let filterVal;
+                
+                if (filterConfig.state && filterConfig.state.selectedVals && filterConfig.state.selectedVals.length > 0) {
+                    if (!isGeoFilter) {
+                        if (filterConfig.state.selectedVals.indexOf(customAttrValue) > -1) {
+                            filterVal = _.filter(filterConfig.state.selectedVals, v => newVal.indexOf(v) === -1);
+                        } else {
+                            filterVal = _.filter(_.flatten([filterConfig.state.selectedVals, _.clone(newVal)]), _.identity);
+                        }
+                    } else {
+                        if (filterConfig.state.selectedVals.some(x => x.id == customAttrValue.id)) {
+                            filterVal = _.filter(filterConfig.state.selectedVals, v => v.id != customAttrValue.id);
+                        } else {
+                            filterVal = _.filter(_.flatten([filterConfig.state.selectedVals, _.clone(newVal)]), _.identity);
+                        }
+                    }
+                } else {
+                    filterVal = newVal;
+                }
+                
+                if (!filterConfig.state) {
+                    filterConfig.state = {};
+                }
+                filterConfig.state.selectedVals = filterVal;
+                
+                if (filterVal.length == 1) {
+                    filterConfig.selector = SelectorService.newSelector().ofAttrValue(attrId, filterVal[0]);
+                } else {
+                    filterConfig.selector = SelectorService.newSelector().ofMultipleAttrValues(attrId, filterVal);
+                }
+            }
+
             function updateOperation(type, replace, searchText, searchAttr, geoText, customAttr, customAttrValue) {
                 switch (type) {
                     case 'init': {
@@ -639,19 +693,28 @@ angular.module('common')
                         var selectedNodes = selectService.getSelectedNodes();
                         var totalNodes = subsetService.currentSubset().length || dataGraph.getAllNodes().length;
                         if (replace) {
-                            _.last($scope.operations.list).nodesCount = selectedNodes.length;
-                            _.last($scope.operations.list).totalNodes = totalNodes;
+                            var lastOperation = _.last($scope.operations.list);
+                            lastOperation.nodesCount = selectedNodes.length;
+                            lastOperation.totalNodes = totalNodes;
+                            const newFilters = _.cloneDeep(selectService.filters);
+                            newFilters.geo_count = lastOperation.filters.geo_count;
+                            
+                            lastOperation.filters = newFilters;
                             // Change search params, if they are in new operation
                             if (searchText && searchAttr) {
-                                _.last($scope.operations.list).searchText = searchText;
-                                _.last($scope.operations.list).searchAttr = searchAttr;
+                                lastOperation.searchText = searchText;
+                                lastOperation.searchAttr = searchAttr;
+                            } else if (customAttr == 'geo_count') {
+                                const geoCountFilter = lastOperation.filters.geo_count;
+                                if (geoCountFilter) {
+                                    updateFilterSelector(geoCountFilter, 'geo_count', customAttrValue);
+                                }
                             }
                         } else {
-                            const filters = _.clone(selectService.filters);
+                            const filters = _.cloneDeep(selectService.filters);
                             const filterOverride = customAttr ? filters[customAttr] : null;
-                            if (filterOverride && customAttrValue !== undefined ) {
-                                filterOverride.isEnabled = true;
-                                filterOverride.selector = SelectorService.newSelector().ofAttrValue(customAttr, customAttrValue);
+                            if (filterOverride && customAttrValue !== undefined) {
+                                updateFilterSelector(filterOverride, customAttr, customAttrValue);
                             }
                             var operation = {
                                 type: 'select',

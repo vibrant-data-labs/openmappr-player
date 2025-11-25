@@ -244,6 +244,9 @@ angular.module('common')
                         return geoValues.some(x => attrValues.map(r => r.id).includes(x));
                     }).map(x => x.id)
                     break;
+                case 'MULTI_NODES':
+                    nodeIds = nodes.filter(x => this.entityIds.includes(x.id)).map(x => x.id);
+                    break;
                 default:
                     throw new Error(logPrefix + 'selectFromNodes() ' + "Not implemented for " + this.type);
                 }

@@ -1,7 +1,7 @@
 /*globals d3,$  */
 angular.module('common')
-    .directive('dirHorizontalBars', ['$rootScope', '$timeout', '$q', 'FilterPanelService', 'dataGraph', 'AttrInfoService', 'SelectorService', 'BROADCAST_MESSAGES', 'hoverService', 'selectService', 'subsetService', 'layoutService', 'renderGraphfactory', 'clusterService', 'GEO_PERCENTILES',
-        function ($rootScope, $timeout, $q, FilterPanelService, dataGraph, AttrInfoService, SelectorService, BROADCAST_MESSAGES, hoverService, selectService, subsetService, layoutService, renderGraphfactory, clusterService, GEO_PERCENTILES) {
+    .directive('dirHorizontalBars', ['$rootScope', '$timeout', '$q', 'FilterPanelService', 'dataGraph', 'AttrInfoService', 'SelectorService', 'BROADCAST_MESSAGES', 'hoverService', 'selectService', 'subsetService', 'layoutService', 'renderGraphfactory', 'clusterService', 'GEO_PERCENTILES', 'GEO_REGION_TITLES',
+        function ($rootScope, $timeout, $q, FilterPanelService, dataGraph, AttrInfoService, SelectorService, BROADCAST_MESSAGES, hoverService, selectService, subsetService, layoutService, renderGraphfactory, clusterService, GEO_PERCENTILES, GEO_REGION_TITLES) {
             'use strict';
 
             /*************************************
@@ -17,10 +17,10 @@ angular.module('common')
 
             const geoCountAttrInfo = (valuesCount) => ({
                 id: 'geo_count',
-                title: 'Points Density',
+                title: 'Points per ' + GEO_REGION_TITLES[$rootScope.geo.level],
                 renderType: 'horizontal-bars',
                 axis: 'none',
-                tooltip: 'Points Density',
+                tooltip: 'Points per ' + GEO_REGION_TITLES[$rootScope.geo.level],
                 colorSelectable: true,
                 sizeSelectable: false,
                 isTag: false,
@@ -470,7 +470,21 @@ angular.module('common')
                         const layout = await layoutService.getCurrent();
                         const valIdx = GEO_PERCENTILES.findIndex(p => p.name === catData.id);
                         const geoBuckets = layout.geoBuckets[$rootScope.geo.level][valIdx];
-                        selectService.selectNodes({ attr: scope.attrToRender.id, customValue: catData.id, ids: geoBuckets.nodes.map(n => n.id) });
+                        const currentSelection = selectService.getSelectedNodes().map(x => x.id);
+                        const newNodes = geoBuckets.nodes.map(n => n.id);
+                        let nodesToSelect = [];
+
+                        if (newNodes.every(n => currentSelection.includes(n))) {
+                            nodesToSelect = currentSelection.filter(n => !newNodes.includes(n));
+                        } else {
+                            nodesToSelect = [...currentSelection, ...newNodes];
+                        }
+
+                        if (nodesToSelect.length === 0) {
+                            selectService.unselect();
+                        } else {
+                            selectService.selectNodes({ attr: scope.attrToRender.id, customValue: catData.id, ids: nodesToSelect });
+                        }
                     } else {
                         selectService.selectNodes({ attr: scope.attrToRender.id, value: catData.id });
                     }

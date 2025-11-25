@@ -52,6 +52,10 @@
     }
 
     function darkenColor(color, k) {
+      if (!color) {
+        return color;
+      }
+
       if (k){
         var colArr = [Math.max(0, color[0]*k), Math.max(0, color[1]*k), Math.max(0, color[2]*k)];
         return 'rgb(' + colArr[0] + ',' + colArr[1] + ',' + colArr[2] + ')';

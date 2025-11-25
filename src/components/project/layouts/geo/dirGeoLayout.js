@@ -625,7 +625,7 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
            }
 
            var sig = renderGraphfactory.sig();
-           var allNodes = sig.graph.nodes();
+           var allNodes = subsetService.subsetNodes.length > 0 ? subsetService.subsetNodes : sig.graph.nodes();
            const lod = $rootScope.geo.level;
 
            const geoItems = new Set();
