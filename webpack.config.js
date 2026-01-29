@@ -98,7 +98,7 @@ const externalLibs = {
     'libs/intro.min.js': './node_modules/intro.js/minified/intro.min.js',
     'libs/angular-intro.js': './node_modules/angular-intro.js/build/angular-intro.min.js',
     'libs/html2canvas.min.js': './node_modules/html2canvas/dist/html2canvas.min.js',
-    'libs/mappr-components.js': './src/libs/mappr-components.umd.js',
+    'libs/mappr-components.js': './src/libs/mappr-components.js',
     'react': './node_modules/react/index.js',
     'react-dom': './node_modules/react-dom/index.js',
 }
@@ -241,8 +241,10 @@ module.exports = {
         new CopyPlugin({
             patterns: [
                 { from: 'assets/style/css/mappr-icons/style.css', to: 'css/mappr-icons/style.css' },
+                { from: 'assets/font-awesome.min.css', to: 'css/font-awesome.min.css' },
                 { from: 'assets/fonts', to: 'fonts' },
                 { from: 'assets/img', to: 'img' },
+                { from: 'assets/libs', to: 'libs' },
                 !isProduction ? { from: 'assets/data', to: 'data' } : undefined,
                 ...Object.keys(externalLibs).map((key) => ({ from: externalLibs[key], to: key }))
             ].filter(Boolean)

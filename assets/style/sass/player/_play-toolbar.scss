@@ -750,3 +750,41 @@
     overflow: hidden;
   }
 }
+
+.playbar {
+  &__footer {
+    display: inline-flex;
+    margin: 0 auto;
+    align-items: center;
+    padding: 4px 10px;
+    border: 1px solid #e4eaef;
+    border-radius: 4px;
+    font-size: 14px;
+    color: rgba(97, 97, 97, 0.7);
+    white-space: nowrap;
+
+    &-wrap {
+      text-align: center;
+      background: #fff;
+      margin-top: auto;
+      font-weight: 400;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      transition: all 225ms linear;
+
+      .node-right-panel_opened & {
+        transform: translateX(-345px);
+      }
+    }
+
+    &-img {
+      margin: 0 10px;
+      max-height: 20px;
+    }
+
+    &-link {
+      color: #5885e1;
+    }
+  }
+}

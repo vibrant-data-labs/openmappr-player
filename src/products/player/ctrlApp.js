@@ -600,17 +600,17 @@ const loadScript = function (scriptSrc, alias, options) {
 
 }
 
-loadScript('https://unpkg.com/react@18/umd/react.production.min.js', 'react').then(() => {
-    return loadScript('https://unpkg.com/react-dom@18/umd/react-dom.production.min.js', 'react-dom')
+loadScript('#{player_prefix_index_source}/libs/react.production.min.js', 'react').then(() => {
+    return loadScript('#{player_prefix_index_source}/libs/react-dom.production.min.js', 'react-dom')
 }).then(() => {
-    return loadScript('https://cdn.jsdelivr.net/npm/csv-stringify@6.5.2/dist/iife/sync.js', 'csvStringify', {
+    return loadScript('#{player_prefix_index_source}/libs/sync.js', 'csvStringify', {
         crossOrigin: undefined,
         type: 'text/javascript'
     })
 }).then(() => {
     const src = '#{player_prefix_index_source}' || window.origin;
     return loadScript(`${src}/libs/mappr-components.js`, 'components')
-}).then(() => loadScript('https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js', 'crypto-js', {
+}).then(() => loadScript('#{player_prefix_index_source}/libs/crypto-js.min.js', 'crypto-js', {
     type: 'text/javascript'
 }));
 

@@ -222,10 +222,5 @@
             .project-info__content
               div(ng-bind-html="projectInfoTitle | trustHtml")
               div(ng-bind-html="projectInfoDesc | trustHtml")
-            .project-info__footer-wrap
-              .project-info__footer Powered by
-                a.project-info__footer-link(href="{{footerLink}}" target="_blank" rel="nofollow")
-                  img.project-info__footer-img(ng-src="{{footerLogo}}")
-                  {{footerName}}
   dir-focus-node(ng-show="false" ng-if="showFocusNode && mapprSettings.nodeFocusRenderTemplate != 'content' && nodeRightInfo" node="focusNode" img-attr="nodeImageAttr" start="nodeStartData" end="nodeEndData" duration="175" ease="" finish="finishAnimation()")
   dir-focus-node(ng-show="false" ng-if="showNeighborNode" node="neighborNode" img-attr="nodeImageAttr" start="neighborNodeStartData" end="neighborNodeEndData" duration="175" ease="" finish="finishNeighborAnimation()")

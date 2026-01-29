@@ -232,3 +232,8 @@
         tooltip-placement="left"
       ) zoom -
 
+  .playbar__footer-wrap
+    .playbar__footer Powered by
+      a.playbar__footer-link(href="{{getFooterInfo().link}}" target="_blank" rel="nofollow")
+        img.playbar__footer-img(ng-src="{{getFooterInfo().logo}}")
+        {{getFooterInfo().name}}

@@ -76,6 +76,7 @@ const getPublishFiles = () => {
             'partials/**/*',
             'react/**/*',
             'react-dom/**/*',
+            'libs/**/*',
             'index.html',
         ],
         project: [
@@ -91,6 +92,7 @@ const getPublishFiles = () => {
             'partials/**/*',
             'react/**/*',
             'react-dom/**/*',
+            'libs/**/*',
             'index.html',
         ]
     }[deployMode] || [];

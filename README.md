@@ -36,3 +36,23 @@ Once it is configured, the following command will generate all the assets and pu
 To have only the static files generated, set `NODE_ENV` to be `production` and run the `build` command:
 
 ```NODE_ENV=production npm run build```
+
+The GitHub Action for publishing the project is configured to run when a new commit is pushed to the `main` branch.
+
+## Updating the published players
+
+The player is integrated to other players as the following:
+
+```
+[Player S3 Bucket]
+Stores the static files for the player: css, js, fonts, images, partials, etc.
+
+[Project S3 Bucket]
+Stores the data for the project: data, index.html, etc.
+
+The `index.html` file in the project bucket contains the links to the static files from the Player S3 Bucket.
+```
+
+So if the logic should be updated in the player, the openmappr-player should be published to the Player S3 Bucket. All the changes would be propagated to all projects immediately.
+
+If it is required to update the `index.html`, e.g. to change the title, add analytics, change logo, etc., it should be done manually for each project.
