@@ -17,10 +17,10 @@ angular.module('common')
 
             const geoCountAttrInfo = (valuesCount) => ({
                 id: 'geo_count',
-                title: 'Points per ' + GEO_REGION_TITLES[$rootScope.geo.level],
+                title: `Points per ${GEO_REGION_TITLES[$rootScope.geo.level]} (percentile)`,
                 renderType: 'horizontal-bars',
                 axis: 'none',
-                tooltip: 'Points per ' + GEO_REGION_TITLES[$rootScope.geo.level],
+                tooltip: `Points per ${GEO_REGION_TITLES[$rootScope.geo.level]} (percentile)`,
                 colorSelectable: true,
                 sizeSelectable: false,
                 isTag: false,
@@ -393,6 +393,10 @@ angular.module('common')
                 }
 
                 scope.getTooltipInfo = function (catData, idx) {
+                    if (scope.attrToRender.id === 'geo_count') {
+                        return '';
+                    }
+
                     if (catData) {
                         var subsetLength = subsetService.currentSubset().length;
                         var total = 0;
@@ -412,10 +416,6 @@ angular.module('common')
                             }
                             //return (selectedVals || 0) + ' / ' + total;
                             return roundValue(((selectedVals || 0) / totalValues * 100).toFixed(1)) + ` / ${roundValue(catData.percentage)}`;
-                        }
-
-                        if (scope.attrToRender.id === 'geo_count') {
-                            return '';
                         }
 
                         return roundValue(catData.percentage || total);

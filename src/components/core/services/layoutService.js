@@ -915,7 +915,7 @@ function($rootScope, $q, dataGraph, renderGraphfactory,AttrInfoService, leafletD
         if (layoutType === 'geo' && !allAttrs.some(attr => attr.id === 'geo_count')) {
             allAttrs.push({
                 id: 'geo_count',
-                title: 'Points per ' + GEO_REGION_TITLES[$rootScope.geo.level],
+                title: `Points per ${GEO_REGION_TITLES[$rootScope.geo.level]} (percentile)`,
                 colorSelectable: true,
                 isNumeric: true,
                 visibility: [],

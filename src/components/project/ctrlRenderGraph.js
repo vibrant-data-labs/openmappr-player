@@ -30,7 +30,7 @@ angular.module('common')
                 'geo_count': {
                     attr: {
                         id: 'geo_count',
-                        title: 'Points per Region',
+                        title: 'Points per Region (percentile)',
                         attrType: 'geo'
                     }
                 }
@@ -158,7 +158,7 @@ angular.module('common')
                                 attrInfo = {
                                     attr: {
                                         id: 'geo_count',
-                                        title: 'Points per ' + GEO_REGION_TITLES[$rootScope.geo.level],
+                                        title: `Points per ${GEO_REGION_TITLES[$rootScope.geo.level]} (percentile)`,
                                         attrType: 'geo'
                                     }
                                 }
@@ -691,7 +691,9 @@ angular.module('common')
                 }
                 filterConfig.state.selectedVals = filterVal;
                 
-                if (filterVal.length == 1) {
+                if (attrId === 'geo_count') {
+                    // do nothing
+                } else if (filterVal.length == 1) {
                     filterConfig.selector = SelectorService.newSelector().ofAttrValue(attrId, filterVal[0]);
                 } else {
                     filterConfig.selector = SelectorService.newSelector().ofMultipleAttrValues(attrId, filterVal);
@@ -714,7 +716,7 @@ angular.module('common')
                             var lastOperation = _.last($scope.operations.list);
                             lastOperation.nodesCount = selectedNodes.length;
                             lastOperation.totalNodes = totalNodes;
-                            const newFilters = _.cloneDeep(selectService.filters);
+                            const newFilters = selectService.copyFilters();
                             newFilters.geo_count = lastOperation.filters.geo_count;
                             
                             lastOperation.filters = newFilters;
@@ -729,7 +731,7 @@ angular.module('common')
                                 }
                             }
                         } else {
-                            const filters = _.cloneDeep(selectService.filters);
+                            const filters = selectService.copyFilters();
                             const filterOverride = customAttr ? filters[customAttr] : null;
                             if (filterOverride && customAttrValue !== undefined) {
                                 updateFilterSelector(filterOverride, customAttr, customAttrValue);

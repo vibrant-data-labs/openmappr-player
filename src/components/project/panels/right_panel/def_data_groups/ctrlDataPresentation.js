@@ -180,7 +180,7 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
 
     $scope.$watch('pointsDensityRegionTitle', function(newVal) {
         if (newVal && $rootScope.geo.level !== 'node') {
-            $scope.nodeColorAttrs.find(x => x.id === 'geo_count').title = 'Points per ' + newVal;
+            $scope.nodeColorAttrs.find(x => x.id === 'geo_count').title = `Points per ${newVal} (percentile)`;
         }
     });
 

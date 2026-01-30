@@ -1143,6 +1143,10 @@ angular.module('common')
                 $scope.nodeInfoAttrs = [];
 
                 _.each(nodeAttrs, function (attr) {
+                    if (attr.id === 'geo_count') {
+                        return;
+                    }
+
                     var attrClone = _.clone(attr);
                     var attrInfo = infoObj.getForId(attr.id);
                     var isInfoAttr = !AttrInfoService.isDistrAttr(attr, attrInfo);

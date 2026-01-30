@@ -460,7 +460,7 @@ angular.module('common')
             }
 
             function filterTags(cs, catListData) {
-                if (cs.length === 0 || catListData.highlightedCats.length === 0) { return; }
+                if (cs.length === 0 || catListData.highlightedCats.length === 0) { return []; }
                 return _.filter(catListData.data, 'isCurrent');
             }
 

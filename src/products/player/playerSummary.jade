@@ -11,7 +11,7 @@
 											span(ng-if="!isShowClusteredBy || dataGroupsInfo.colorNodesBy.id != dataGroupsInfo.clusterNodesBy.id") Colored by:&nbsp;&nbsp;
 											span(ng-if="isShowClusteredBy && dataGroupsInfo.colorNodesBy.id == dataGroupsInfo.clusterNodesBy.id") Colored by, Clustered by:&nbsp;&nbsp;
 											span(ng-if="!nodeColorAttrs || nodeColorAttrs.length < 2") {{dataGroupsInfo.colorNodesBy.title}}
-											span(ng-if="isPointsDensity && (!nodeColorAttrs || nodeColorAttrs.length < 2)") Points per {{pointsDensityRegionTitle}}&nbsp;&nbsp;
+											span(ng-if="isPointsDensity && (!nodeColorAttrs || nodeColorAttrs.length < 2)") Points per {{pointsDensityRegionTitle}} (percentile)&nbsp;&nbsp;
 											span.card__tooltip.tooltip__colored-by(ng-if="(!nodeColorAttrs || nodeColorAttrs.length < 2) && dataGroupsInfo.colorNodesBy.tooltip"
 												uib-tooltip="{{dataGroupsInfo.colorNodesBy.tooltip}}",
 												tooltip-placement="right", 
@@ -19,7 +19,7 @@
 											span(ng-if="nodeColorAttrs && nodeColorAttrs.length > 1" uib-dropdown dropdown-append-to-body)
 												span(uib-dropdown-toggle auto-close="outsideClick" ng-click="keepDrawerOpen = true;")
 													span.text-link(ng-if="!isPointsDensity") {{dataGroupsInfo.colorNodesBy.title}}
-													span.text-link(ng-if="isPointsDensity") Points per {{pointsDensityRegionTitle}}
+													span.text-link(ng-if="isPointsDensity") Points per {{pointsDensityRegionTitle}} (percentile)
 														i.fa.fa-angle-down
 												.uib-dropdown-menu.uib-dropdown-menu-flexing(uib-dropdown-menu)
 													.uib-dropdown-click-close(ng-click="keepDrawerOpen = false;")

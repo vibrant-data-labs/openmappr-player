@@ -132,11 +132,20 @@ angular.module('common')
                 };
                 return this;
             };
-            NodeSelector.prototype.ofMultipleNodes = function(nodeIds) {
+            NodeSelector.prototype.ofMultipleNodes = function(nodeIds, customValue) {
                 this.type = 'MULTI_NODES';
                 this.entityIds = nodeIds;
-                this.stringify = function() {
-                    return { values: this.entityIds };
+                this.customValue = customValue ? (Array.isArray(customValue) ? customValue : [customValue]) : undefined;
+                this.stringify = function () {
+                    return { values: this.customValue || this.entityIds };
+                };
+                return this;
+            };
+            NodeSelector.prototype.modifyMultipleNodes = function(nodeIds, customValue) {
+                this.entityIds = nodeIds;
+                this.customValue = customValue ? (Array.isArray(customValue) ? customValue : [customValue]) : undefined;
+                this.stringify = function () {
+                    return { values: this.customValue || this.entityIds };
                 };
                 return this;
             };

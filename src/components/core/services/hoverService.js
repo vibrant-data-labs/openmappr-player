@@ -90,7 +90,7 @@ angular.module('common')
             }
 
             function filter(data, subset) {
-                var filters = selectService.copyFilters();
+                var filters = angular.copy(selectService.copyFilters());
                 if (data.min || data.max) {
                     createMinMaxFilter(filters, data.attr, data.min, data.max);
                 } else {
