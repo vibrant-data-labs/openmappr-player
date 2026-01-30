@@ -142,7 +142,7 @@ angular.module('common')
                 return this;
             };
             NodeSelector.prototype.modifyMultipleNodes = function(nodeIds, customValue) {
-                this.entityIds = nodeIds;
+                this.entityIds = _.uniq([...this.entityIds, ...nodeIds]);
                 this.customValue = customValue ? (Array.isArray(customValue) ? customValue : [customValue]) : undefined;
                 this.stringify = function () {
                     return { values: this.customValue || this.entityIds };

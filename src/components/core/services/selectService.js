@@ -32,7 +32,6 @@ angular.module('common')
 
             this.copyFilters = function () {
                 return this.filters;
-                // return angular.copy(this.filters);
             };
 
             const GEO_FILTERS = {
@@ -168,7 +167,7 @@ angular.module('common')
                     }
                 }
 
-                if (selectData.ids) {
+                if (selectData.attr !== 'geo_count' && selectData.ids) {
                     this.selectedNodes = _.uniq(this.selectedNodes.concat(selectData.ids));
                 }
 
@@ -307,6 +306,7 @@ angular.module('common')
 
                 return Object
                     .values(this.filters)
+                    .sort((a, b) => a.attrId === 'geo_count' ? 1 : b.attrId === 'geo_count' ? -1 : 0)
                     .reduce((acc, filterCfg) => {
                         return filterCfg.filter(acc);
                     }, subset.length > 0 ? subset : null);

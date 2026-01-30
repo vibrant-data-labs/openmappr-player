@@ -2,8 +2,8 @@
 * Provides layout builders(scatterplot, geo, grid n cluster) & other layout related ops
 */
 angular.module('common')
-.service('layoutService', ['$rootScope', '$q', 'dataGraph', 'renderGraphfactory','AttrInfoService' ,'leafletData', 'partitionService', 'GEO_REGION_TITLES',
-function($rootScope, $q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partitionService, GEO_REGION_TITLES) {
+.service('layoutService', ['$rootScope', '$q', 'dataGraph', 'renderGraphfactory','AttrInfoService' ,'leafletData', 'partitionService', 'GEO_REGION_TITLES', '$injector',
+function($rootScope, $q, dataGraph, renderGraphfactory,AttrInfoService, leafletData, partitionService, GEO_REGION_TITLES, $injector) {
     "use strict";
 
 
@@ -1772,7 +1772,21 @@ function($rootScope, $q, dataGraph, renderGraphfactory,AttrInfoService, leafletD
                     this.geoBuckets = {};
                 }
 
-                const nodes = _currLayout._nodes.length > 0 ? _currLayout._nodes : dataGraph.getAllNodes();
+                const nodes = [
+                    _currLayout._nodes,
+                    $injector.get('subsetService').subsetNodes,
+                    dataGraph.getAllNodes(),
+                ].reduce((acc, cv) => {
+                    if (acc.length > 0) {
+                        return acc;
+                    }
+
+                    if (cv && cv.length > 0) {
+                        return cv;
+                    }
+                    return acc;
+                }, []);
+
                 this.geoGroups[$rootScope.geo.level] = nodes.reduce((acc, node) => {
                     if (!node.geodata || !node.geodata[$rootScope.geo.level]) {
                         return acc;

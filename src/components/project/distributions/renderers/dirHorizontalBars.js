@@ -46,7 +46,7 @@ angular.module('common')
             const percentileIdx = GEO_PERCENTILES.map(p => p.value);
             const percentileNames = GEO_PERCENTILES.map(p => p.name);
 
-            const calculatePercentileValues = (percentiles, minColor, maxColor, geoBuckets) => {
+            const calculatePercentileValues = (minColor, maxColor, geoBuckets) => {
                 if (geoBuckets.length === 0) {
                     return []
                 };
@@ -112,10 +112,9 @@ angular.module('common')
                         defColorStr = FilterPanelService.getColorString();
 
                     const layout = await layoutService.getCurrent();
-                    const percentiles = scope.attrToRender.id === 'geo_count' ? Object.values(layout.geoCounts[$rootScope.geo.level]).sort((a, b) => a.count - b.count) : [];
                     const [minColor, maxColor] = layout.mapprSettings.nodeColorPaletteNumeric;
 
-                    const percentileValues = calculatePercentileValues(percentiles, minColor, maxColor, layout.geoBuckets ? layout.geoBuckets[$rootScope.geo.level] : []);
+                    const percentileValues = calculatePercentileValues(minColor, maxColor, layout.geoBuckets ? layout.geoBuckets[$rootScope.geo.level] : []);
 
                     const valuesCount = scope.attrToRender.id === 'geo_count' ? percentileNames.reduce((acc, x, idx) => {
                         acc[x] = percentileValues[idx].valuesCount;
@@ -178,9 +177,8 @@ angular.module('common')
                     }));
                     scope.catListData = (new Array(ITEMS_TO_SHOW)).map((r, i) => ({ id: i }));
 
-                    const percentiles = scope.attrToRender.id === 'geo_count' ? Object.values(layout.geoCounts[$rootScope.geo.level]).sort((a, b) => a.count - b.count) : [];
                     const [minColor, maxColor] = layout.mapprSettings.nodeColorPaletteNumeric;
-                    const percentileValues = calculatePercentileValues(percentiles, minColor, maxColor, layout.geoBuckets ? layout.geoBuckets[$rootScope.geo.level] : []);
+                    const percentileValues = calculatePercentileValues(minColor, maxColor, layout.geoBuckets ? layout.geoBuckets[$rootScope.geo.level] : []);
                     const valuesCount = scope.attrToRender.id === 'geo_count' ? percentileNames.reduce((acc, x, idx) => {
                         acc[x] = percentileValues[idx].valuesCount;
                         return acc;
@@ -215,9 +213,9 @@ angular.module('common')
                     });
 
                     var sortOps = scope.attrToRender.sortConfig;
-                    _catListData.data = sortTagData(_catListData.data,
+                    _catListData.data = scope.attrToRender.id !== 'geo_count' ? sortTagData(_catListData.data,
                         sortOps && sortOps.sortType || 'frequency',
-                        sortOps && sortOps.sortOrder || 'desc', false);
+                        sortOps && sortOps.sortOrder || 'desc', false) : _catListData.data;
                     setupFilterClasses(_catListData, false);
                     scope.selNodesCount = data.nodes.length;
 
@@ -367,7 +365,7 @@ angular.module('common')
                 scope.$watch('attrToRender.sortConfig', function (sortOps) {
                     sortType = sortOps && sortOps.sortType || 'frequency';
                     sortOrder = sortOps && sortOps.sortOrder || 'desc';
-                    scope.catListData.data = sortTagData(scope.catListData.data, sortType, sortOrder, (scope.catListData.highlightedCats || []).length > 0);
+                    scope.catListData.data = scope.attrToRender.id !== 'geo_count' ? sortTagData(scope.catListData.data, sortType, sortOrder, (scope.catListData.highlightedCats || []).length > 0) : scope.catListData.data;
                 }, true);
 
                 scope.$watch('attrToRender.searchQuery', function onSearchQueryChanged(newVal, oldVal) {
@@ -470,15 +468,8 @@ angular.module('common')
                         const layout = await layoutService.getCurrent();
                         const valIdx = GEO_PERCENTILES.findIndex(p => p.name === catData.id);
                         const geoBuckets = layout.geoBuckets[$rootScope.geo.level][valIdx];
-                        const currentSelection = selectService.getSelectedNodes().map(x => x.id);
                         const newNodes = geoBuckets.nodes.map(n => n.id);
-                        let nodesToSelect = [];
-
-                        if (newNodes.every(n => currentSelection.includes(n))) {
-                            nodesToSelect = currentSelection.filter(n => !newNodes.includes(n));
-                        } else {
-                            nodesToSelect = [...currentSelection, ...newNodes];
-                        }
+                        let nodesToSelect = newNodes;
 
                         if (nodesToSelect.length === 0) {
                             selectService.unselect();
@@ -640,7 +631,7 @@ angular.module('common')
                     };
                 });
 
-                catData = sortTagData(catData, sortType, sortOrder, highlightedCats.length > 0);
+                catData = attrInfo.attr.id !== 'geo_count' ? sortTagData(catData, sortType, sortOrder, highlightedCats.length > 0) : catData;
 
                 return {
                     data: catData,
@@ -724,10 +715,6 @@ angular.module('common')
             }
 
             function sortTagData(catData, sortType, sortOrder, inSelection) {
-                if (catData.length > 0 && catData[0].id === GEO_PERCENTILES[0].name) {
-                    return catData;
-                }
-
                 var sortFn = function (cat) { return cat.importance; }; //sortType: statistical
                 if (sortType === 'alphabetical') { sortFn = function (cat) { return cat.text.toLowerCase(); }; }
                 if (sortType === 'frequency') {
