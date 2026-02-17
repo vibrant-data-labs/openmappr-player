@@ -155,6 +155,11 @@ angular.module('common')
                 var currentSubset = subsetService.currentSubset();
 
                 var cs = this._filter(selectData, subsetService.subsetNodes);
+                if (this._pendingUnselect) {
+                    this._pendingUnselect = false;
+                    this.unselect();
+                    return Promise.resolve();
+                }
                 this.selectedNodes = _.pluck(cs, 'id');
 
                 if (currentSubset.length > 0) {
@@ -339,14 +344,40 @@ angular.module('common')
                 if (isGeoFilter) {
                     filterConfig.selector = SelectorService.newSelector().ofGeo(attrId, filterVal);
                 } else if (attrId === 'geo_count') {
-                    const prevCustomValue = filterConfig.selector ? angular.copy(filterConfig.selector.customValue) : [];
-                    filterConfig.selector = filterConfig.selector ? 
-                        filterConfig.selector.modifyMultipleNodes(ids, [...prevCustomValue, customValue]) :
-                        SelectorService.newSelector().ofMultipleNodes(ids, [...prevCustomValue, customValue]);
+                    const prevCustomValue = filterConfig.selector ? angular.copy(filterConfig.selector.customValue || []) : [];
+                    const prevEntityIds = filterConfig.selector ? (filterConfig.selector.entityIds || []) : [];
+                    const isTogglingOff = prevCustomValue.indexOf(customValue) > -1;
+
+                    let newCustomValues, newEntityIds;
+                    if (isTogglingOff) {
+                        newCustomValues = prevCustomValue.filter(v => v !== customValue);
+                        const idsSet = new Set(ids);
+                        newEntityIds = prevEntityIds.filter(id => !idsSet.has(id));
+                    } else {
+                        newCustomValues = [...prevCustomValue, customValue];
+                        newEntityIds = _.uniq([...prevEntityIds, ...ids]);
+                    }
+
+                    if (newCustomValues.length === 0) {
+                        const wasOnlyFilter = this.getActiveFilterCount() === 1;
+                        filterConfig.selector = null;
+                        filterConfig.isEnabled = false;
+                        filterConfig.state.selectedVals = [];
+                        if (wasOnlyFilter) {
+                            this._pendingUnselect = true;
+                        }
+                    } else {
+                        filterConfig.selector = SelectorService.newSelector().ofMultipleNodes(newEntityIds, newCustomValues);
+                        filterConfig.isEnabled = true;
+                        filterConfig.state.selectedVals = newCustomValues;
+                    }
                 } else {
                     filterConfig.selector = SelectorService.newSelector().ofMultipleAttrValues(attrId, filterVal, true);
                 }
-                filterConfig.isEnabled = attrId === 'geo_count' ? true : filterVal && filterVal.length > 0;
+                if (attrId !== 'geo_count') {
+                    filterConfig.isEnabled = filterVal && filterVal.length > 0;
+                }
+                // geo_count isEnabled is set in the block above (true when selector exists, false when cleared)
 
                 return filterConfig;
             }

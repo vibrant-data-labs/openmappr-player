@@ -63,12 +63,10 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
        // Postpone to next JS tick so internal click event handling
        // still see it as "moved".
        this._resetStateTimeout = setTimeout(L.Util.bind(this._resetState, this), 0);
-   
-       var point = this._map.mouseEventToLayerPoint(e);
-       
+
        var bounds = new L.LatLngBounds(
-           this._map.layerPointToLatLng(this._startLayerPoint),
-           this._map.layerPointToLatLng(point)
+           this._map.containerPointToLatLng(this._startPoint),
+           this._map.containerPointToLatLng(this._point)
        );
 
        if (typeof onBoxZoomEnd === 'function') {

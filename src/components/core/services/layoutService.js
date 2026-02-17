@@ -1806,7 +1806,7 @@ function($rootScope, $q, dataGraph, renderGraphfactory,AttrInfoService, leafletD
                     return acc;
                 }, {});
 
-                this.geoCounts[$rootScope.geo.level] = Object.values(this.geoGroups[$rootScope.geo.level]).sort((a, b) => b.count - a.count);
+                this.geoCounts[$rootScope.geo.level] = Object.values(this.geoGroups[$rootScope.geo.level]).sort((a, b) => a.count - b.count);
 
                 const step = this.geoCounts[$rootScope.geo.level].length / BUCKET_COUNT;
                 const [minColor, maxColor] = this.mapprSettings.nodeColorPaletteNumeric;
@@ -1823,9 +1823,9 @@ function($rootScope, $q, dataGraph, renderGraphfactory,AttrInfoService, leafletD
                         end: endIndex,
                         nodes: nodes,
                         regions: regions,
-                        color: interpolateColors(minColor.col, maxColor.col, 1 - i / BUCKET_COUNT)
+                        color: interpolateColors(minColor.col, maxColor.col, i / BUCKET_COUNT)
                     }
-                }).reverse();
+                });
 
                 window.geoBuckets = this.geoBuckets[$rootScope.geo.level];
             }
