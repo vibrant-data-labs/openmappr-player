@@ -340,6 +340,26 @@ angular.module('hcApp', [
         }
     })
 
+    .constant('GEO_REGION_TITLES', {
+        countries: 'Country',
+        fed_districts: 'State',
+        adm_districts: 'County',
+        node: 'Region'
+    })
+
+    .constant('GEO_PERCENTILES', [
+        { value: 0.1, name: '10th' },
+        { value: 0.2, name: '20th' },
+        { value: 0.3, name: '30th' },
+        { value: 0.4, name: '40th' },
+        { value: 0.5, name: '50th' },
+        { value: 0.6, name: '60th' },
+        { value: 0.7, name: '70th' },
+        { value: 0.8, name: '80th' },
+        { value: 0.9, name: '90th' },
+        { value: 1, name: '100th' },
+    ])
+
     .constant('EMIT_MESSAGES', {
 
     });

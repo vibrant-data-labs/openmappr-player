@@ -133,6 +133,10 @@ angular.module('common')
                     $scope.selInfo.selectedGroups = [];
                     $scope.selInfo.linkInfoAttrIds = [];
                     $scope.selInfo.nodeColorAttr = $scope.mapprSettings.nodeColorAttr;
+                    if ($scope.mapprSettings.nodeColorAttr == 'geo_count') {
+                        return;
+                    }
+
                     var attrInfo = AttrInfoService.getNodeAttrInfoForRG().getForId($scope.mapprSettings.nodeColorAttr);
                     $scope.selInfo.nodeColorAttrTitle = attrInfo.attr.title;
 

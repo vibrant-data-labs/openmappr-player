@@ -2,8 +2,8 @@
 * Handles Graph Subset ops
 */
 angular.module('common')
-    .service('subsetService', ['$rootScope', '$q', 'renderGraphfactory', 'dataGraph', 'nodeRenderer', 'inputMgmtService', 'BROADCAST_MESSAGES',
-        function ($rootScope, $q, renderGraphfactory, dataGraph, nodeRenderer, inputMgmtService, BROADCAST_MESSAGES) {
+    .service('subsetService', ['$rootScope', '$q', 'renderGraphfactory', 'dataGraph', 'nodeRenderer', 'inputMgmtService', 'layoutService', 'BROADCAST_MESSAGES',
+        function ($rootScope, $q, renderGraphfactory, dataGraph, nodeRenderer, inputMgmtService, layoutService, BROADCAST_MESSAGES) {
 
             "use strict";
 
@@ -84,6 +84,11 @@ angular.module('common')
                 this.subsetHistory = [];
                 this.subsetNodes = [];
                 draw([]);
+
+                if (layoutService.rebuildGeoLayout()) {
+                    var rg = dataGraph.getRenderableGraph();
+                    rg.refreshForZoomLevel(0);
+                }
 
                 $rootScope.$broadcast(BROADCAST_MESSAGES.hss.subset.changed, {
                     subsetCount: 0,

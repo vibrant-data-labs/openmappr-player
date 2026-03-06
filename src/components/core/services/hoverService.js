@@ -69,7 +69,7 @@ angular.module('common')
                         hoveredSingleNode = hoverData.ids[0];
                         this.hoveredNodes = this.hoveredNodes.concat(hoverData.ids);
                     } else {
-                        this.hoveredNodes = [hoverData.ids];
+                        this.hoveredNodes = [...hoverData.ids];
                     }
                 } else {
                     var cs = filter(hoverData, subsetService.subsetNodes)
@@ -90,7 +90,7 @@ angular.module('common')
             }
 
             function filter(data, subset) {
-                var filters = selectService.copyFilters();
+                var filters = angular.copy(selectService.copyFilters());
                 if (data.min || data.max) {
                     createMinMaxFilter(filters, data.attr, data.min, data.max);
                 } else {

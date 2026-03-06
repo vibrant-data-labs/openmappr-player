@@ -1,6 +1,6 @@
 angular.module('common')
-.controller('DataPresentationCtrl', ['$scope', '$rootScope','$timeout', '$q', 'uiService', 'AttrInfoService' ,'layoutService', 'snapshotService', 'networkService', 'nodeSelectionService','projFactory', 'renderGraphfactory', 'FilterPanelService', 'BROADCAST_MESSAGES', 'dataGraph', 'hoverService', 'selectService', 'subsetService',
-function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutService, snapshotService, networkService, nodeSelectionService, projFactory, renderGraphfactory, FilterPanelService, BROADCAST_MESSAGES, dataGraph, hoverService, selectService, subsetService) {
+.controller('DataPresentationCtrl', ['$scope', '$rootScope','$timeout', '$q', 'uiService', 'AttrInfoService' ,'layoutService', 'snapshotService', 'networkService', 'nodeSelectionService','projFactory', 'renderGraphfactory', 'FilterPanelService', 'BROADCAST_MESSAGES', 'dataGraph', 'hoverService', 'selectService', 'subsetService', 'GEO_REGION_TITLES',
+function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutService, snapshotService, networkService, nodeSelectionService, projFactory, renderGraphfactory, FilterPanelService, BROADCAST_MESSAGES, dataGraph, hoverService, selectService, subsetService, GEO_REGION_TITLES) {
     'use strict';
 
     /*************************************
@@ -45,7 +45,6 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
         hasArchetypesOrBridgers: false
     };
 
-
     /**
     * Scope functions *****
     */
@@ -69,6 +68,10 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
     $scope.nodeColorAttrs = layoutService.getNodeColorAttrs();
     $scope.MAPP_EDITOR_OPEN = $rootScope.MAPP_EDITOR_OPEN;
     $scope.isShowClusteredBy = true;
+    $scope.isGeoLayout = false;
+    $scope.isPointsDensity = false;
+    $scope.pointsDensityRegionTitle = 'Region';
+    
 
     $scope.sizeByAttrUpdate = sizeByAttrUpdate;
     function sizeByAttrUpdate(attr){
@@ -103,12 +106,18 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
         $scope.isNumericItemByColor = colorAttr;
         $rootScope.$broadcast(BROADCAST_MESSAGES.cb.changed, colorAttr);
 
-        var attrInfo = AttrInfoService.getNodeAttrInfoForRG().getForId($scope.mapprSettings.nodeColorAttr);
-        $scope.totalValue = _(attrInfo.valuesCount).keys().map(x => attrInfo.valuesCount[x]).max();
+        if (colorAttr.id != 'geo_count') {
+            var attrInfo = AttrInfoService.getNodeAttrInfoForRG().getForId($scope.mapprSettings.nodeColorAttr);
+            $scope.totalValue = _(attrInfo.valuesCount).keys().map(x => attrInfo.valuesCount[x]).max();
+        }
 
-        if (!$scope.showClusteredBy()) {
+        if (!$scope.showClusteredBy() && colorAttr.id !== 'geo_count') {
             $scope.clusterByAttrUpdate(colorAttr);
         }
+
+        $scope.isGeoLayout = $scope.layout.plotType === 'geo';
+        $scope.isPointsDensity = colorAttr.id === 'geo_count' && $rootScope.geo.level !== 'node';
+        $scope.pointsDensityRegionTitle = GEO_REGION_TITLES[$rootScope.geo.level];
     };
 
     $scope.clusterByAttrUpdate = function clusterByAttrUpdate(colorAttr){
@@ -169,6 +178,12 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
         }, 500);
     });
 
+    $scope.$watch('pointsDensityRegionTitle', function(newVal) {
+        if (newVal && $rootScope.geo.level !== 'node') {
+            $scope.nodeColorAttrs.find(x => x.id === 'geo_count').title = `Points per ${newVal} (percentile)`;
+        }
+    });
+
     $scope.getSelectedSnapshot = function () {
         var content = snapshotService.getCurrentSnapshot().descr;
         var index = content.indexOf('</p>') + 4;
@@ -179,7 +194,7 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
     
     $scope.showClusteredBy = function() {
         var snapshot = snapshotService.getCurrentSnapshot();
-        var disableClusteredBy = ['scatterplot'];
+        var disableClusteredBy = ['scatterplot', 'geo'];
         return !disableClusteredBy.includes(snapshot.layout.plotType);
     }
 
@@ -206,7 +221,7 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
     });
 
     $scope.$on(BROADCAST_MESSAGES.dataGraph.nodeAttrsUpdated, function() {
-        $scope.nodeColorAttrs = layoutService.getNodeColorAttrs();
+        $scope.nodeColorAttrs = layoutService.getNodeColorAttrs($scope.layout.plotType);
     });
 
     $scope.$on(BROADCAST_MESSAGES.network.updated, function() {
@@ -227,6 +242,20 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
 
         $scope.totalSelectedValue = _(valuesCount).keys().map(x => valuesCount[x]).max();
         $scope.selectedValues = valuesCount;
+    });
+
+    $scope.$on(BROADCAST_MESSAGES.geoSelector.changed, function(event, data) {
+        if (data.levelId === 'node') {
+            const snapshot = snapshotService.getCurrentSnapshot();
+            const colorNodesByAttr = snapshot.layout.settings.nodeColorAttr;
+            const nodeAttrs = $scope.dataSet.attrDescriptors;
+            $scope.colorByAttrUpdate(nodeAttrs.find(x => x.id === colorNodesByAttr));
+            $scope.nodeColorAttrs.find(x => x.id === 'geo_count').isDisabled = true;
+        } else {
+            const attr = $scope.nodeColorAttrs.find(x => x.id === 'geo_count');
+            attr.isDisabled = false;
+            $scope.colorByAttrUpdate(attr);
+        }
     });
 
     /*************************************
@@ -259,14 +288,14 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
         if(switchingNetwork || !dataGraph.getRawDataUnsafe()) {
             var x = $scope.$on(BROADCAST_MESSAGES.sigma.rendered, function() {
                 x();
-                $scope.nodeColorAttrs = layoutService.getNodeColorAttrs();
+                $scope.nodeColorAttrs = layoutService.getNodeColorAttrs($scope.layout.plotType);
                 $scope.edgeColorAttrs = layoutService.getEdgeColorAttrs();
                 refreshDataGroups();
                 switchingNetwork = false;
             });
         }
         else {
-            $scope.nodeColorAttrs = layoutService.getNodeColorAttrs();
+            $scope.nodeColorAttrs = layoutService.getNodeColorAttrs($scope.layout.plotType);
             $scope.edgeColorAttrs = layoutService.getEdgeColorAttrs();
             refreshDataGroups();
         }
@@ -285,7 +314,7 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
         console.group(logPrefix + 'starting legend generation.');
         $scope.nodeColorAttrs = $scope.nodeColorAttrs.length > 0
             ? $scope.nodeColorAttrs
-            : layoutService.getNodeColorAttrs();
+            : layoutService.getNodeColorAttrs($scope.layout.plotType);
 
         $scope.edgeColorAttrs = $scope.edgeColorAttrs.length > 0
             ? $scope.edgeColorAttrs
@@ -293,7 +322,17 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
 
         $scope.dataGroupsInfo.sortOp = _.find($scope.dataGroupSortOptions, {'title': $scope.layout.setting('legendSortOption')});
         $scope.dataGroupsInfo.sortReverse = $scope.layout.setting('legendSortIsReverse');
-        $scope.dataGroupsInfo.colorNodesBy = _.find($scope.dataSet.attrDescriptors, 'id', $scope.mapprSettings.nodeColorAttr);
+        if ($scope.mapprSettings.nodeColorAttr === 'geo_count') {
+            const attr = $scope.nodeColorAttrs.find(x => x.id === $scope.mapprSettings.nodeColorAttr);
+            if (attr) {
+                $scope.dataGroupsInfo.colorNodesBy = attr;
+                $scope.isPointsDensity = true;
+                $scope.pointsDensityRegionTitle = GEO_REGION_TITLES[$rootScope.geo.level];
+            }
+        } else {
+            $scope.dataGroupsInfo.colorNodesBy = _.find($scope.dataSet.attrDescriptors, 'id', $scope.mapprSettings.nodeColorAttr);
+        }
+
         $scope.dataGroupsInfo.clusterNodesBy = $scope.mapprSettings.nodeClusterAttr ?
             _.find($scope.dataSet.attrDescriptors , 'id', $scope.mapprSettings.nodeClusterAttr) : $scope.dataGroupsInfo.colorNodesBy;
 
@@ -380,6 +419,12 @@ function($scope, $rootScope, $timeout, $q, uiService, AttrInfoService, layoutSer
         var layout = $scope.layout;
         var networkId = graphData.networkId;
         $scope.colorAttr = $scope.mapprSettings.nodeColorAttr;
+
+        if ($scope.colorAttr === 'geo_count') {
+            $scope.isNodeColorNumeric = true;
+            return;
+        }
+
         var attrInfo = AttrInfoService.getNodeAttrInfoForRG().getForId($scope.colorAttr);
         if(!attrInfo) { throw new Error('Couldn\'t get attrInfo for attr:', $scope.colorAttr); }
 

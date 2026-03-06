@@ -10,8 +10,8 @@ const GENERIC_TERRITORIES = [
 ]
 
 angular.module('common')
-    .factory('dataGraph', ['$timeout', '$q', '$rootScope', 'aggregatorService', 'dataService', 'networkService', 'AttrInfoService', 'orgFactory', 'BROADCAST_MESSAGES',
-        function ($timeout, $q, $rootScope, aggregatorService, dataService, networkService, AttrInfoService, orgFactory, BROADCAST_MESSAGES) {
+    .factory('dataGraph', ['$timeout', '$q', '$rootScope', 'aggregatorService', 'dataService', 'networkService', 'AttrInfoService', 'orgFactory', 'BROADCAST_MESSAGES', 'GEO_PERCENTILES',
+        function ($timeout, $q, $rootScope, aggregatorService, dataService, networkService, AttrInfoService, orgFactory, BROADCAST_MESSAGES, GEO_PERCENTILES) {
             "use strict";
 
             /*************************************
@@ -117,11 +117,11 @@ angular.module('common')
                         if (attr.visible) {
                             attr.visibility.push('filters');
                         }
-    
+
                         if (attr.visible && attr.visibleInProfile) {
                             attr.visibility.push('profile');
                         }
-    
+
                         if (attr.searchable) {
                             attr.visibility.push('search');
                         }
@@ -314,14 +314,16 @@ angular.module('common')
                 _.each(data.nodes, function (node) {
                     var n = _.clone(node);
                     layout.nodeT(n);
-                    console.assert(isFinite(n.x) && !isNaN(n.x), 'node x is invalid. ' + n.x + '. Bad layout?');
-                    console.assert(isFinite(n.y) && !isNaN(n.y), 'node y is invalid. ' + n.y + '. Bad layout?');
-                    console.assert(isFinite(n.size) && !isNaN(n.size), 'node size is invalid. ' + n.size + '. Bad layout?');
+                    if (layout.mapprSettings.nodeColorAttr != 'geo_count') {
+                        console.assert(isFinite(n.x) && !isNaN(n.x), 'node x is invalid. ' + n.x + '. Bad layout?');
+                        console.assert(isFinite(n.y) && !isNaN(n.y), 'node y is invalid. ' + n.y + '. Bad layout?');
+                        console.assert(isFinite(n.size) && !isNaN(n.size), 'node size is invalid. ' + n.size + '. Bad layout?');
+                    }
                     nodes.push(n);
                 });
                 const clusterAttr = layout.mapprSettings.nodeClusterAttr;
                 const subclusterAttr = layout.mapprSettings.nodeSubclusterAttr;
-                const clusters = _.reduce(nodes, function(acc, cv) {
+                const clusters = _.reduce(nodes, function (acc, cv) {
                     const clusterVal = cv.attr[clusterAttr];
                     const subclusterVal = cv.attr[subclusterAttr] || '';
                     if (!acc[clusterVal]) {
@@ -337,9 +339,9 @@ angular.module('common')
                     return acc;
                 }, {});
                 // calculate the most frequent color
-                Object.keys(clusters).forEach(function(key) {
+                Object.keys(clusters).forEach(function (key) {
                     const subclusters = clusters[key];
-                    Object.keys(subclusters).forEach(function(subkey) {
+                    Object.keys(subclusters).forEach(function (subkey) {
                         if (subkey === 'color') {
                             return;
                         }
@@ -349,7 +351,7 @@ angular.module('common')
                             colorStr: window.mappr.utils.colorStr(r)
                         }));
 
-                        const colorStats = _.reduce(colorStrs, function(acc, cv) {
+                        const colorStats = _.reduce(colorStrs, function (acc, cv) {
                             if (!acc[cv.colorStr]) {
                                 acc[cv.colorStr] = {
                                     count: 1,
@@ -361,14 +363,14 @@ angular.module('common')
 
                             return acc;
                         }, {});
-                        
+
                         const sorted = _.sortBy(colorStats, 'count');
 
                         subclusters[subkey] = sorted[sorted.length - 1].color;
                     });
 
                     const clusterColors = clusters[key].color;
-                    const clusterColorStats = _.reduce(clusterColors, function(acc, cv) {
+                    const clusterColorStats = _.reduce(clusterColors, function (acc, cv) {
                         if (!acc[cv]) {
                             acc[cv] = {
                                 count: 1,
@@ -385,7 +387,7 @@ angular.module('common')
                     clusters[key].color = sortedClusterColors[sortedClusterColors.length - 1].color;
                 });
 
-                _.each(nodes, function(node) {
+                _.each(nodes, function (node) {
                     const val = node.attr[clusterAttr];
                     const subVal = node.attr[subclusterAttr] || '';
                     node.clusterColor = clusters[val][subVal];
@@ -510,6 +512,10 @@ angular.module('common')
                     var n = node;
                     layout.nodeT(n);
 
+                    if (layout.mapprSettings.nodeColorAttr == 'geo_count' && $rootScope.geo.level !== 'node') {
+                        return;
+                    }
+
                     console.assert(isFinite(n.x) && !isNaN(n.x), 'node x is invalid. Bad layout?');
                     console.assert(isFinite(n.y) && !isNaN(n.y), 'node size is invalid. Bad layout?');
                     console.assert(isFinite(n.size) && !isNaN(n.size), 'node size is invalid. Bad layout?');
@@ -599,7 +605,6 @@ angular.module('common')
                 // copy over Datapoint attrs into network node
                 _.each(nwData.nodes, function (node) {
                     var dp = dpIndex[node.dataPointId || node.id];
-                    //_.extend(node.attr, dp.attr); // _.defaults instead of _.extend so that dataset does not overwrite network prop
                     _.defaults(node.attr, dp.attr);
                     if ('geodata' in dp) {
                         node.geodata = dp.geodata.filter(x => !GENERIC_TERRITORIES.includes(x.polygon_id)).reduce((acc, cv) => {
@@ -691,6 +696,13 @@ angular.module('common')
                     console.log('getNodesByAttrib ----------------------');
                     return [];
                 }
+
+                if (attr === 'geo_count') {
+                    const idx = Math.floor(value * _currRenderableGraph.layout.geoCounts[$rootScope.geo.level].length);
+                    const percentile = _currRenderableGraph.layout.geoCounts[$rootScope.geo.level].map((p, i) => i < idx ? p.nodes : []).flat();
+                    return percentile.map(n => n.id);
+                }
+
                 console.log('Getting nodes by value: %s for attr: %s', value, attr);
                 var attrInfo = AttrInfoService.getNodeAttrInfoForRG().getForId(attr);
                 var nodes = API.getAllNodes();
@@ -810,7 +822,7 @@ angular.module('common')
 
             function getEdgesByNodes(nodes) {
                 var edges = API.getAllEdges();
-                var filteredEdges = _.filter(edges, function(edge) {
+                var filteredEdges = _.filter(edges, function (edge) {
                     var source = edge.source;
                     var target = edge.target;
 

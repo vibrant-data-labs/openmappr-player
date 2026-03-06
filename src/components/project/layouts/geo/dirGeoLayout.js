@@ -63,12 +63,10 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
        // Postpone to next JS tick so internal click event handling
        // still see it as "moved".
        this._resetStateTimeout = setTimeout(L.Util.bind(this._resetState, this), 0);
-   
-       var point = this._map.mouseEventToLayerPoint(e);
-       
+
        var bounds = new L.LatLngBounds(
-           this._map.layerPointToLatLng(this._startLayerPoint),
-           this._map.layerPointToLatLng(point)
+           this._map.containerPointToLatLng(this._startPoint),
+           this._map.containerPointToLatLng(this._point)
        );
 
        if (typeof onBoxZoomEnd === 'function') {
@@ -173,7 +171,7 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
            opt = {};
        }
 
-       const colorByDensity = opt.scope ? Boolean(opt.scope.layout.setting("colorByDensity")) : false;
+       /*const colorByDensity = opt.scope ? Boolean(opt.scope.layout.setting("colorByDensity")) : false;
 
        const percentage = nodeData[id].count / nodeData.max;
 
@@ -182,9 +180,9 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
            const minOpacity = opt.isHover ? 0.7 : 0.3;
    
            return minOpacity + (maxOpacity - minOpacity) * percentage;
-       }
+       }*/
 
-       return opt.isHover ? 0.9 : 0.3;
+       return opt.isHover ? 1 : 0.8;
    }
 
    function getRegionCacheItem(scope, osmId) {
@@ -245,18 +243,14 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
 
        const nodeData = getColors(nodes, lod, scope); // { [lodId]: color }
        const getSelectedRegions = () => {
-           return selectService.getSelectedNodes().reduce((acc, cv) => {
-               if (!cv.geodata || !cv.geodata[lod]) return acc;
-   
-               if (acc.includes(cv.geodata[lod])) {
-                   return acc;
-               }
-   
-               return [
-                   ...acc,
-                   cv.geodata[lod]
-               ]
-           }, []);
+           const geoItems = new Set();
+           selectService.getSelectedNodes().forEach(n => {
+               if (!n.geodata || !n.geodata[lod]) return;
+               geoItems.add(n.geodata[lod]);
+           })
+
+           
+           return Array.from(geoItems);
        }
 
        const tileGrid = L.vectorGrid
@@ -277,6 +271,7 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
 
                    return {
                        color: color,
+                       stroke: false,
                        opacity: getOpacity(nodeData, prop.osm_id, { isHover, scope }),
                        fillOpacity: getOpacity(nodeData, prop.osm_id, { isHover, scope }),
                        fill: true,
@@ -296,6 +291,7 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
            previous: null,
            clickedItem: null,
            _expHovers: [],
+           _expFades: [],
            _nodeData: {},
            _setHighlightInternal: (id) => {
                const self = scope.visitorTracker;
@@ -307,6 +303,14 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
                    fill: true,
                });
            },
+           _setFadeInternal: (id) => {
+               const self = scope.visitorTracker;
+               if (!(id in self._nodeData)) {
+                   return;
+               }
+               const color = self._nodeData[id].color;
+               tileGrid.setFeatureStyle(id, { color: color, opacity: 0.3, fillOpacity: 0.3, fill: true, stroke: false });
+           },
            _clearHighlightInternal: (id) => {
                const self = scope.visitorTracker;
                if (!(id in self._nodeData)) {
@@ -314,15 +318,19 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
                }
                tileGrid.resetFeatureStyle(id);
            },
-           setHoverStyleExplicitly: (osmIds) => {
+           setHoverStyleExplicitly: (osmIds, remainingIds) => {
                const self = scope.visitorTracker;
                self._expHovers = osmIds;
+               self._expFades = remainingIds;
                self._expHovers.forEach(self._setHighlightInternal);
+               self._expFades.forEach(self._setFadeInternal);
            },
            hardResetHoverStyle: () => {
                const self = scope.visitorTracker;
+               self._expFades.forEach(self._clearHighlightInternal);
                self._expHovers.filter(x => x != self.clickedItem).forEach(self._clearHighlightInternal);
                self._expHovers = [];
+               self._expFades = [];
            },
            setCurrentItem: (osmId) => {
                const self = scope.visitorTracker;
@@ -405,6 +413,11 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
                    return;
                }
 
+               if (self._expFades.includes(self.previous)) {
+                    self._setFadeInternal(self.previous);
+                    return;
+               }
+
                if (self.previous) {
                    const container = document.querySelector('.leaflet-container');
                    if (container.classList.contains('leaflet-clickable')) {
@@ -417,6 +430,7 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
        };
 
        scope.visitorTracker._expHovers = getSelectedRegions();
+       scope.visitorTracker._expFades = [];
        scope.visitorTracker._nodeData = nodeData;
 
        const onMouseMove = function(e) {
@@ -542,6 +556,9 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
 
        scope.$on(BROADCAST_MESSAGES.sigma.rendered, enableViewResetEvent);
        scope.$on(BROADCAST_MESSAGES.geoSelector.changed, function(ev, d) {
+           const rg = dataGraph.getRenderableGraph();
+           rg.refreshForZoomLevel(0);
+
            const nodes = subsetService.subsetNodes.length > 0 ? subsetService.subsetNodes : renderGraphfactory.sig().graph.nodes();
 
            if (d.levelId == 'node') {
@@ -606,22 +623,28 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
            }
 
            var sig = renderGraphfactory.sig();
-           var allNodes = sig.graph.nodes();
+           var allNodes = subsetService.subsetNodes.length > 0 ? subsetService.subsetNodes : sig.graph.nodes();
            const lod = $rootScope.geo.level;
 
            const geoItems = new Set();
+           const allGeoItems = new Set();
 
            _.filter(allNodes, function(node) {
                if (!('geodata' in node)) {
                    return false;
                }
 
-               return d.nodes.includes(node.id) && Boolean(node.geodata[lod]);
+               if (node.geodata[lod]) {
+                  allGeoItems.add(node.geodata[lod]);
+               }
+
+               return d.nodes.includes(node.id) && node.geodata[lod];
            }).forEach((v) => {
+               allGeoItems.delete(v.geodata[lod]);
                geoItems.add(v.geodata[lod])
            });
 
-           scope.visitorTracker.setHoverStyleExplicitly(Array.from(geoItems));
+           scope.visitorTracker.setHoverStyleExplicitly(Array.from(geoItems), Array.from(allGeoItems));
        });
 
 

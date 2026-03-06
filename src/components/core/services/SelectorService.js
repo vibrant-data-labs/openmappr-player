@@ -132,11 +132,20 @@ angular.module('common')
                 };
                 return this;
             };
-            NodeSelector.prototype.ofMultipleNodes = function(nodeIds) {
+            NodeSelector.prototype.ofMultipleNodes = function(nodeIds, customValue) {
                 this.type = 'MULTI_NODES';
                 this.entityIds = nodeIds;
-                this.stringify = function() {
-                    return { values: this.entityIds };
+                this.customValue = customValue ? (Array.isArray(customValue) ? customValue : [customValue]) : undefined;
+                this.stringify = function () {
+                    return { values: this.customValue || this.entityIds };
+                };
+                return this;
+            };
+            NodeSelector.prototype.modifyMultipleNodes = function(nodeIds, customValue) {
+                this.entityIds = _.uniq([...this.entityIds, ...nodeIds]);
+                this.customValue = customValue ? (Array.isArray(customValue) ? customValue : [customValue]) : undefined;
+                this.stringify = function () {
+                    return { values: this.customValue || this.entityIds };
                 };
                 return this;
             };
@@ -243,6 +252,9 @@ angular.module('common')
                         const geoValues = Object.values(node.geodata);
                         return geoValues.some(x => attrValues.map(r => r.id).includes(x));
                     }).map(x => x.id)
+                    break;
+                case 'MULTI_NODES':
+                    nodeIds = nodes.filter(x => this.entityIds.includes(x.id)).map(x => x.id);
                     break;
                 default:
                     throw new Error(logPrefix + 'selectFromNodes() ' + "Not implemented for " + this.type);

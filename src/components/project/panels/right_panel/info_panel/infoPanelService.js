@@ -30,6 +30,11 @@ function(networkService, AttrInfoService, SelectionSetService, dataGraph) {
 
     function getAllNodeGroups(colorByAttr) {
         var groups = [];
+
+        if (colorByAttr === 'geo_count') {
+            return [];
+        }
+
         var clusterAttrInfo = AttrInfoService.getNodeAttrInfoForRG().getForId(colorByAttr);
         if(!clusterAttrInfo.isNumeric){
             groups = _getAttrValGroups(colorByAttr);
