@@ -2167,6 +2167,7 @@
             this._url = url;
             this._abortController = new AbortController();
             this._featureMap = {};
+            this._geoFeatures = {};
             this._zoomLevel = undefined;
             L.VectorGrid.prototype.initialize.call(this, options);
         },
@@ -2193,9 +2194,10 @@
                 z: coords.z
             };
 
-            if (this._zoomLevel && this._zoomLevel !== coords.z) { 
+            if (this._zoomLevel && this._zoomLevel !== coords.z) {
                 this._abortController.abort("Zoom Level Changed");
                 this._abortController = new AbortController();
+                this._geoFeatures = {};
             }
 
             this._zoomLevel = coords.z;
@@ -2240,6 +2242,16 @@
                     for (var i=0; i<json.layers[layerName].length; i++) {
                         var feat = json.layers[layerName].feature(i);
                         self._featureMap[feat.properties['osm_id']] = feat.properties;
+
+                        // Store GeoJSON for polygon features (type 3) for SVG export
+                        if (feat.type === 3 && feat.properties['osm_id']) {
+                            var osmId = feat.properties['osm_id'];
+                            var geojson = feat.toGeoJSON(coords.x, coords.y, coords.z);
+                            if (!self._geoFeatures[osmId]) {
+                                self._geoFeatures[osmId] = [];
+                            }
+                            self._geoFeatures[osmId].push(geojson);
+                        }
 
                         feat.geometry = feat.loadGeometry();
                         feats.push(feat);

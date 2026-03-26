@@ -333,9 +333,154 @@ angular.module('common')
             }
 
             function exportSelectionFromPlayer(type) {
-                var sigObj_1 = renderGraphfactory.sig();
                 var snapshot = snapshotService.getCurrentSnapshot();
-                sigObj_1.toSVG({ download: true, filename: (snapshot ? snapshot.snapName : 'output') + '.svg', size: window.innerWidth });
+                var filename = (snapshot ? snapshot.snapName : 'output') + '.svg';
+
+                // In geo region mode, export the map with regions instead of sigma graph
+                var isGeoRegionMode = snapshot && snapshot.layout.plotType === 'geo'
+                    && $rootScope.geo && $rootScope.geo.level !== 'node';
+
+                if (isGeoRegionMode) {
+                    exportGeoAsSVG(filename);
+                    return;
+                }
+
+                var sigObj_1 = renderGraphfactory.sig();
+                sigObj_1.toSVG({ download: true, filename: filename, size: window.innerWidth });
+            }
+
+            function captureBaseTiles(map) {
+                var container = map.getContainer();
+                var containerRect = container.getBoundingClientRect();
+                var width = Math.round(containerRect.width);
+                var height = Math.round(containerRect.height);
+
+                var canvas = document.createElement('canvas');
+                canvas.width = width;
+                canvas.height = height;
+                var ctx = canvas.getContext('2d');
+
+                // Draw only base map tile images (not vector grid canvases)
+                var tilePane = container.querySelector('.leaflet-tile-pane');
+                if (!tilePane) return null;
+
+                var imgs = tilePane.querySelectorAll('img');
+                for (var i = 0; i < imgs.length; i++) {
+                    var img = imgs[i];
+                    if (!img.complete) continue;
+                    if (img.style.visibility === 'hidden' || img.style.display === 'none') continue;
+
+                    var tileRect = img.getBoundingClientRect();
+                    try {
+                        ctx.drawImage(img,
+                            tileRect.left - containerRect.left,
+                            tileRect.top - containerRect.top,
+                            tileRect.width, tileRect.height);
+                    } catch (e) {
+                        console.warn('[geoExport] Could not draw base tile:', e);
+                    }
+                }
+
+                return canvas.toDataURL('image/png');
+            }
+
+            function geoJsonToSvgPath(geometry, map) {
+                var paths = [];
+
+                function coordsToPoints(ring) {
+                    return ring.map(function(coord) {
+                        var pt = map.latLngToContainerPoint([coord[1], coord[0]]);
+                        return pt.x + ',' + pt.y;
+                    });
+                }
+
+                if (geometry.type === 'Polygon') {
+                    // First ring is outer, rest are holes
+                    var d = 'M' + coordsToPoints(geometry.coordinates[0]).join('L') + 'Z';
+                    for (var h = 1; h < geometry.coordinates.length; h++) {
+                        d += 'M' + coordsToPoints(geometry.coordinates[h]).join('L') + 'Z';
+                    }
+                    paths.push(d);
+                } else if (geometry.type === 'MultiPolygon') {
+                    for (var p = 0; p < geometry.coordinates.length; p++) {
+                        var poly = geometry.coordinates[p];
+                        var d = 'M' + coordsToPoints(poly[0]).join('L') + 'Z';
+                        for (var h = 1; h < poly.length; h++) {
+                            d += 'M' + coordsToPoints(poly[h]).join('L') + 'Z';
+                        }
+                        paths.push(d);
+                    }
+                }
+
+                return paths;
+            }
+
+            function exportGeoAsSVG(filename) {
+                var map = window.map;
+                var tileGrid = window.tileGrid;
+                var nodeData = window.tileNodeData;
+                if (!map || !tileGrid) return;
+
+                var container = map.getContainer();
+                var containerRect = container.getBoundingClientRect();
+                var width = Math.round(containerRect.width);
+                var height = Math.round(containerRect.height);
+
+                // Capture base map tiles as raster background
+                var baseDataUrl = captureBaseTiles(map);
+
+                // Build SVG
+                var svgParts = [];
+                svgParts.push('<?xml version="1.0" encoding="utf-8"?>');
+                svgParts.push('<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">');
+                svgParts.push('<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" ' +
+                    'width="' + width + '" height="' + height + '" viewBox="0 0 ' + width + ' ' + height + '">');
+
+                // Base map raster layer
+                if (baseDataUrl) {
+                    svgParts.push('<image width="' + width + '" height="' + height + '" href="' + baseDataUrl + '"/>');
+                }
+
+                // Region polygons as vector paths
+                if (tileGrid._geoFeatures && nodeData) {
+                    svgParts.push('<g id="regions" fill-rule="evenodd">');
+
+                    var osmIds = Object.keys(tileGrid._geoFeatures);
+                    for (var i = 0; i < osmIds.length; i++) {
+                        var osmId = osmIds[i];
+                        if (!(osmId in nodeData)) continue;
+
+                        var color = nodeData[osmId].color;
+                        var fragments = tileGrid._geoFeatures[osmId];
+
+                        // Combine all tile fragments for this region into one path
+                        var allPathData = [];
+                        for (var f = 0; f < fragments.length; f++) {
+                            var pathSegments = geoJsonToSvgPath(fragments[f].geometry, map);
+                            allPathData = allPathData.concat(pathSegments);
+                        }
+
+                        if (allPathData.length > 0) {
+                            svgParts.push('<path d="' + allPathData.join(' ') + '" fill="' + color + '" fill-opacity="0.8" stroke="none"/>');
+                        }
+                    }
+
+                    svgParts.push('</g>');
+                }
+
+                svgParts.push('</svg>');
+
+                var output = svgParts.join('\n');
+
+                // Trigger download
+                var blob = new Blob([output], { type: 'image/svg+xml;charset=utf-8' });
+                var anchor = document.createElement('a');
+                anchor.setAttribute('href', URL.createObjectURL(blob));
+                anchor.setAttribute('download', filename);
+                var event = document.createEvent('MouseEvent');
+                event.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+                anchor.dispatchEvent(event);
+                URL.revokeObjectURL(blob);
             }
 
             function exportCsvDataFromPlayer(type) {

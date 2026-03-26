@@ -95,9 +95,9 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
                },
                tiles: {
                    url: "https://api.mapbox.com/styles/v1/" + mapID + "/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZXJpY2JlcmxvdyIsImEiOiJja2h6MjA5bGkwY283MndvaDMyMzN0eXlmIn0.9f_Dm_N5IHHgGS4bfidgtA",
-                   // options: {
-                   //     noWrap: true
-                   // }
+                   options: {
+                       crossOrigin: 'anonymous'
+                   }
                }
            });
            $scope.events = {
@@ -510,11 +510,16 @@ function ($rootScope, renderGraphfactory, leafletData, layoutService, dataGraph,
            scope.visitorTracker.clearClick();
        });
 
+       window.tileGrid = tileGrid;
+       window.tileNodeData = nodeData;
+
        window.removeTileLayer = function() {
            tileGrid.off('mousemove', onMouseMove);
            tileGrid.off('mouseout', onMouseOut);
            tileGrid.off('click', onClick);
            window.map.removeLayer(tileGrid);
+           window.tileGrid = null;
+           window.tileNodeData = null;
        }
    }
 
