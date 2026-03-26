@@ -443,7 +443,7 @@ angular.module('common')
 
                 // Region polygons as vector paths
                 if (tileGrid._geoFeatures && nodeData) {
-                    svgParts.push('<g id="regions" fill-rule="evenodd">');
+                    svgParts.push('<g id="regions">');
 
                     var osmIds = Object.keys(tileGrid._geoFeatures);
                     for (var i = 0; i < osmIds.length; i++) {
@@ -453,16 +453,16 @@ angular.module('common')
                         var color = nodeData[osmId].color;
                         var fragments = tileGrid._geoFeatures[osmId];
 
-                        // Combine all tile fragments for this region into one path
-                        var allPathData = [];
+                        // Group per region with opacity at group level so overlapping
+                        // tile fragments don't create darker seams at boundaries
+                        svgParts.push('<g opacity="0.8">');
                         for (var f = 0; f < fragments.length; f++) {
                             var pathSegments = geoJsonToSvgPath(fragments[f].geometry, map);
-                            allPathData = allPathData.concat(pathSegments);
+                            for (var s = 0; s < pathSegments.length; s++) {
+                                svgParts.push('<path d="' + pathSegments[s] + '" fill="' + color + '" stroke="' + color + '" stroke-width="1" stroke-linejoin="round"/>');
+                            }
                         }
-
-                        if (allPathData.length > 0) {
-                            svgParts.push('<path d="' + allPathData.join(' ') + '" fill="' + color + '" fill-opacity="0.8" stroke="' + color + '" stroke-opacity="0.8" stroke-width="1" stroke-linejoin="round"/>');
-                        }
+                        svgParts.push('</g>');
                     }
 
                     svgParts.push('</g>');
