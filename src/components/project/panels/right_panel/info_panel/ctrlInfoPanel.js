@@ -461,7 +461,7 @@ angular.module('common')
                         }
 
                         if (allPathData.length > 0) {
-                            svgParts.push('<path d="' + allPathData.join(' ') + '" fill="' + color + '" fill-opacity="0.8" stroke="none"/>');
+                            svgParts.push('<path d="' + allPathData.join(' ') + '" fill="' + color + '" fill-opacity="0.8" stroke="' + color + '" stroke-opacity="0.8" stroke-width="1" stroke-linejoin="round"/>');
                         }
                     }
 
