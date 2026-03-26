@@ -573,6 +573,16 @@ angular.module('common')
                     nodeIndex[graphNodes[i].id] = graphNodes[i];
                 }
 
+                var curvature = sig.settings('edgeCurvature') || 0;
+                if (curvature > 0) {
+                    curvature = curvature * 1.33;
+                }
+                var edgeColorStrat = sig.settings('edgeColorStrat');
+                var defaultNodeColor = sig.settings('nodeColorDefaultValue');
+                var defaultEdgeColor = sig.settings('edgeColorDefaultValue');
+                var gradientId = 0;
+                var gradientDefs = [];
+
                 var graphEdges = sig.graph.edges();
                 if (graphEdges.length > 0) {
                     svgParts.push('<g id="edges">');
@@ -590,12 +600,57 @@ angular.module('common')
 
                         var p1 = map.latLngToContainerPoint([srcLat, srcLng]);
                         var p2 = map.latLngToContainerPoint([tgtLat, tgtLng]);
-                        var edgeColor = edge.colorStr || 'rgba(200,200,200,0.2)';
+                        var strokeWidth = edge.size || 0.5;
 
-                        svgParts.push('<line x1="' + p1.x + '" y1="' + p1.y + '" x2="' + p2.x + '" y2="' + p2.y +
-                            '" stroke="' + edgeColor + '" stroke-width="' + (edge.size || 0.5) + '"/>');
+                        // Determine edge color based on strategy
+                        var edgeColor;
+                        var strokeAttr;
+                        switch (edgeColorStrat) {
+                            case 'source':
+                                edgeColor = src.colorStr || defaultNodeColor;
+                                break;
+                            case 'target':
+                                edgeColor = tgt.colorStr || defaultNodeColor;
+                                break;
+                            case 'gradient':
+                                var gid = 'geo-grad-' + (gradientId++);
+                                var srcCol = src.colorStr || defaultNodeColor;
+                                var tgtCol = tgt.colorStr || defaultNodeColor;
+                                gradientDefs.push('<linearGradient id="' + gid + '" x1="' + p1.x + '" y1="' + p1.y +
+                                    '" x2="' + p2.x + '" y2="' + p2.y + '" gradientUnits="userSpaceOnUse">' +
+                                    '<stop offset="0%" style="stop-color:' + srcCol + '"/>' +
+                                    '<stop offset="100%" style="stop-color:' + tgtCol + '"/></linearGradient>');
+                                strokeAttr = 'url(#' + gid + ')';
+                                break;
+                            case 'attr':
+                                edgeColor = edge.colorStr || defaultEdgeColor;
+                                break;
+                            default:
+                                edgeColor = defaultEdgeColor || 'rgba(200,200,200,0.2)';
+                                break;
+                        }
+                        if (!strokeAttr) {
+                            strokeAttr = edgeColor;
+                        }
+
+                        if (curvature > 0) {
+                            var cx = (p1.x + p2.x) / 2 + curvature * (p2.y - p1.y) / 4;
+                            var cy = (p1.y + p2.y) / 2 + curvature * (p1.x - p2.x) / 4;
+                            svgParts.push('<path d="M' + p1.x + ',' + p1.y + ' Q' + cx + ',' + cy + ' ' + p2.x + ',' + p2.y +
+                                '" fill="none" stroke="' + strokeAttr + '" stroke-width="' + strokeWidth + '"/>');
+                        } else {
+                            svgParts.push('<line x1="' + p1.x + '" y1="' + p1.y + '" x2="' + p2.x + '" y2="' + p2.y +
+                                '" stroke="' + strokeAttr + '" stroke-width="' + strokeWidth + '"/>');
+                        }
                     }
                     svgParts.push('</g>');
+                }
+
+                // Insert gradient defs if any
+                if (gradientDefs.length > 0) {
+                    var defsBlock = '<defs>' + gradientDefs.join('') + '</defs>';
+                    // Insert after opening <svg> tag
+                    svgParts.splice(3, 0, defsBlock);
                 }
 
                 // Render nodes
