@@ -15,8 +15,8 @@
             -- NeighborClusters
 */
 angular.module('common')
-    .controller('InfoPanelCtrl', ['$scope', '$rootScope', 'graphSelectionService', 'dataGraph', 'networkService', 'FilterPanelService', 'AttrInfoService', 'projFactory', 'playerFactory', 'BROADCAST_MESSAGES', '$injector', '$uibModal', 'uiService', 'infoPanelService', 'selectService', 'subsetService', 'renderGraphfactory', 'snapshotService',
-        function ($scope, $rootScope, graphSelectionService, dataGraph, networkService, FilterPanelService, AttrInfoService, projFactory, playerFactory, BROADCAST_MESSAGES, $injector, $uibModal, uiService, infoPanelService, selectService, subsetService, renderGraphfactory, snapshotService) {
+    .controller('InfoPanelCtrl', ['$scope', '$rootScope', 'graphSelectionService', 'dataGraph', 'networkService', 'FilterPanelService', 'AttrInfoService', 'projFactory', 'playerFactory', 'BROADCAST_MESSAGES', '$injector', '$uibModal', 'uiService', 'infoPanelService', 'selectService', 'subsetService', 'renderGraphfactory', 'snapshotService', 'layoutService',
+        function ($scope, $rootScope, graphSelectionService, dataGraph, networkService, FilterPanelService, AttrInfoService, projFactory, playerFactory, BROADCAST_MESSAGES, $injector, $uibModal, uiService, infoPanelService, selectService, subsetService, renderGraphfactory, snapshotService, layoutService) {
             'use strict';
 
             /*************************************
@@ -335,13 +335,15 @@ angular.module('common')
             function exportSelectionFromPlayer(type) {
                 var snapshot = snapshotService.getCurrentSnapshot();
                 var filename = (snapshot ? snapshot.snapName : 'output') + '.svg';
+                var isGeo = snapshot && snapshot.layout.plotType === 'geo';
 
-                // In geo region mode, export the map with regions instead of sigma graph
-                var isGeoRegionMode = snapshot && snapshot.layout.plotType === 'geo'
-                    && $rootScope.geo && $rootScope.geo.level !== 'node';
-
-                if (isGeoRegionMode) {
+                if (isGeo && $rootScope.geo && $rootScope.geo.level !== 'node') {
                     exportGeoAsSVG(filename);
+                    return;
+                }
+
+                if (isGeo) {
+                    exportGeoNodesSVG(filename);
                     return;
                 }
 
@@ -381,7 +383,48 @@ angular.module('common')
                     }
                 }
 
-                return canvas.toDataURL('image/png');
+                try {
+                    return canvas.toDataURL('image/png');
+                } catch (e) {
+                    console.warn('[geoExport] Canvas tainted by cross-origin tiles, base map will be omitted:', e);
+                    return null;
+                }
+            }
+
+            function captureVectorTiles(map) {
+                var container = map.getContainer();
+                var containerRect = container.getBoundingClientRect();
+                var width = Math.round(containerRect.width);
+                var height = Math.round(containerRect.height);
+
+                var canvas = document.createElement('canvas');
+                canvas.width = width;
+                canvas.height = height;
+                var ctx = canvas.getContext('2d');
+                var hasContent = false;
+
+                var tilePane = container.querySelector('.leaflet-tile-pane');
+                if (!tilePane) return null;
+
+                var canvases = tilePane.querySelectorAll('canvas');
+                for (var i = 0; i < canvases.length; i++) {
+                    var c = canvases[i];
+                    if (c.style.visibility === 'hidden' || c.style.display === 'none') continue;
+                    var tileRect = c.getBoundingClientRect();
+                    try {
+                        ctx.globalAlpha = parseFloat(c.style.opacity) || 1;
+                        ctx.drawImage(c,
+                            tileRect.left - containerRect.left,
+                            tileRect.top - containerRect.top,
+                            tileRect.width, tileRect.height);
+                        hasContent = true;
+                    } catch (e) {
+                        // skip
+                    }
+                }
+                ctx.globalAlpha = 1;
+
+                return hasContent ? canvas.toDataURL('image/png') : null;
             }
 
             function geoJsonToSvgPath(geometry, map) {
@@ -442,7 +485,10 @@ angular.module('common')
                 }
 
                 // Region polygons as vector paths
-                if (tileGrid._geoFeatures && nodeData) {
+                var hasVectorRegions = tileGrid && tileGrid._geoFeatures && nodeData
+                    && Object.keys(tileGrid._geoFeatures).length > 0;
+
+                if (hasVectorRegions) {
                     svgParts.push('<g id="regions">');
 
                     var osmIds = Object.keys(tileGrid._geoFeatures);
@@ -466,21 +512,116 @@ angular.module('common')
                     }
 
                     svgParts.push('</g>');
+                } else {
+                    // Fallback: capture vector grid canvases as raster
+                    var regionsDataUrl = captureVectorTiles(map);
+                    if (regionsDataUrl) {
+                        svgParts.push('<image width="' + width + '" height="' + height + '" href="' + regionsDataUrl + '"/>');
+                    }
                 }
 
                 svgParts.push('</svg>');
+                downloadSVG(svgParts.join('\n'), filename);
+            }
 
-                var output = svgParts.join('\n');
-
-                // Trigger download
-                var blob = new Blob([output], { type: 'image/svg+xml;charset=utf-8' });
+            function downloadSVG(svgString, filename) {
+                var blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+                var url = URL.createObjectURL(blob);
                 var anchor = document.createElement('a');
-                anchor.setAttribute('href', URL.createObjectURL(blob));
-                anchor.setAttribute('download', filename);
-                var event = document.createEvent('MouseEvent');
-                event.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-                anchor.dispatchEvent(event);
-                URL.revokeObjectURL(blob);
+                anchor.href = url;
+                anchor.download = filename;
+                anchor.style.display = 'none';
+                document.body.appendChild(anchor);
+                anchor.click();
+                setTimeout(function() {
+                    document.body.removeChild(anchor);
+                    URL.revokeObjectURL(url);
+                }, 100);
+            }
+
+            function exportGeoNodesSVG(filename) {
+                var map = window.map;
+                if (!map) return;
+
+                var sig = renderGraphfactory.sig();
+                var layout = layoutService.getCurrentIfExists();
+                var latAttr = layout ? layout.attr.x : 'Latitude';
+                var lngAttr = layout ? layout.attr.y : 'Longitude';
+
+                var container = map.getContainer();
+                var containerRect = container.getBoundingClientRect();
+                var width = Math.round(containerRect.width);
+                var height = Math.round(containerRect.height);
+
+                // Capture base map tiles as raster background
+                var baseDataUrl = captureBaseTiles(map);
+
+                var svgParts = [];
+                svgParts.push('<?xml version="1.0" encoding="utf-8"?>');
+                svgParts.push('<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">');
+                svgParts.push('<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" ' +
+                    'width="' + width + '" height="' + height + '" viewBox="0 0 ' + width + ' ' + height + '">');
+
+                if (baseDataUrl) {
+                    svgParts.push('<image width="' + width + '" height="' + height + '" href="' + baseDataUrl + '"/>');
+                }
+
+                // Render edges
+                var graphNodes = sig.graph.nodes();
+                var nodeIndex = {};
+                for (var i = 0; i < graphNodes.length; i++) {
+                    nodeIndex[graphNodes[i].id] = graphNodes[i];
+                }
+
+                var graphEdges = sig.graph.edges();
+                if (graphEdges.length > 0) {
+                    svgParts.push('<g id="edges">');
+                    for (var i = 0; i < graphEdges.length; i++) {
+                        var edge = graphEdges[i];
+                        var src = nodeIndex[edge.source];
+                        var tgt = nodeIndex[edge.target];
+                        if (!src || !tgt) continue;
+
+                        var srcLat = parseFloat(src.attr[latAttr]);
+                        var srcLng = parseFloat(src.attr[lngAttr]);
+                        var tgtLat = parseFloat(tgt.attr[latAttr]);
+                        var tgtLng = parseFloat(tgt.attr[lngAttr]);
+                        if (isNaN(srcLat) || isNaN(srcLng) || isNaN(tgtLat) || isNaN(tgtLng)) continue;
+
+                        var p1 = map.latLngToContainerPoint([srcLat, srcLng]);
+                        var p2 = map.latLngToContainerPoint([tgtLat, tgtLng]);
+                        var edgeColor = edge.colorStr || 'rgba(200,200,200,0.2)';
+
+                        svgParts.push('<line x1="' + p1.x + '" y1="' + p1.y + '" x2="' + p2.x + '" y2="' + p2.y +
+                            '" stroke="' + edgeColor + '" stroke-width="' + (edge.size || 0.5) + '"/>');
+                    }
+                    svgParts.push('</g>');
+                }
+
+                // Render nodes
+                svgParts.push('<g id="nodes">');
+                for (var i = 0; i < graphNodes.length; i++) {
+                    var node = graphNodes[i];
+                    if (node.hidden) continue;
+
+                    var lat = parseFloat(node.attr[latAttr]);
+                    var lng = parseFloat(node.attr[lngAttr]);
+                    if (isNaN(lat) || isNaN(lng)) continue;
+
+                    var pt = map.latLngToContainerPoint([lat, lng]);
+                    var color = node.colorStr || '#aaa';
+                    var strokeColor = node.color
+                        ? 'rgb(' + Math.max(0, node.color[0] - 80) + ',' + Math.max(0, node.color[1] - 80) + ',' + Math.max(0, node.color[2] - 80) + ')'
+                        : '#555';
+                    var r = node.size || 3;
+
+                    svgParts.push('<circle cx="' + pt.x + '" cy="' + pt.y + '" r="' + r +
+                        '" fill="' + color + '" stroke="' + strokeColor + '" stroke-width="1"/>');
+                }
+                svgParts.push('</g>');
+
+                svgParts.push('</svg>');
+                downloadSVG(svgParts.join('\n'), filename);
             }
 
             function exportCsvDataFromPlayer(type) {

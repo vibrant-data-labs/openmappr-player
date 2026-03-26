@@ -2243,18 +2243,23 @@
                         var feat = json.layers[layerName].feature(i);
                         self._featureMap[feat.properties['osm_id']] = feat.properties;
 
-                        // Store GeoJSON for polygon features (type 3) for SVG export
-                        if (feat.type === 3 && feat.properties['osm_id']) {
-                            var osmId = feat.properties['osm_id'];
-                            var geojson = feat.toGeoJSON(coords.x, coords.y, coords.z);
-                            if (!self._geoFeatures[osmId]) {
-                                self._geoFeatures[osmId] = [];
-                            }
-                            self._geoFeatures[osmId].push(geojson);
-                        }
-
                         feat.geometry = feat.loadGeometry();
                         feats.push(feat);
+
+                        // Store GeoJSON for polygon features (type 3) for SVG export
+                        // Done after loadGeometry to avoid pbf buffer conflicts
+                        if (feat.type === 3 && feat.properties['osm_id']) {
+                            try {
+                                var osmId = feat.properties['osm_id'];
+                                var geojson = feat.toGeoJSON(coords.x, coords.y, coords.z);
+                                if (!self._geoFeatures[osmId]) {
+                                    self._geoFeatures[osmId] = [];
+                                }
+                                self._geoFeatures[osmId].push(geojson);
+                            } catch (e) {
+                                // Silently skip - export will fall back to canvas capture
+                            }
+                        }
                     }
     
                     json.layers[layerName].features = feats;
