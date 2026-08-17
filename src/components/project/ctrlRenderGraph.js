@@ -358,7 +358,12 @@ angular.module('common')
             }
 
             $scope.getSnapshots = function() {
-                return $scope.player.snapshots.filter(x => x.isEnabled);
+                return (_.get($scope, 'player.snapshots') || []).filter(x => x.isEnabled);
+            }
+
+            // Nothing to switch between with a single snapshot, so the selector is hidden
+            $scope.hasMultipleSnapshots = function() {
+                return $scope.getSnapshots().length > 1;
             }
 
             $scope.formatSnapshotTitle = function(snap) {
