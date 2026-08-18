@@ -443,6 +443,9 @@ angular.module('common')
 
             $scope.resetOperation = function () {
                 var prevOperation = removeOperation();
+                // pop() yields undefined once the list is empty, so there is nothing to undo
+                if (!prevOperation) return;
+
                 var operation = $scope.operations.last();
 
                 if (prevOperation.type == 'subset') {

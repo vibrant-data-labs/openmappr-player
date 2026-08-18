@@ -401,7 +401,14 @@ angular.module('common')
 
                 ngIntroService.intro.onchange(function () {
                     const currentStep = ngIntroService.intro._currentStep;
-                    transitionHandler.processTransition(currentStep);
+                    // intro.js runs this as the first statement of _showElement, after it has
+                    // already advanced the step counter, so a throw here leaves the tour on a
+                    // step it never drew and the next click appears to skip one
+                    try {
+                        transitionHandler.processTransition(currentStep);
+                    } catch (err) {
+                        console.error('[tutorial] step ' + currentStep + ' handler failed', err);
+                    }
                 });
 
                 ngIntroService.intro.oncomplete(function () {
