@@ -373,8 +373,15 @@ angular.module('common')
                 $scope.isShowShare = false;
             }
 
+            // Mirrors the check in ctrlApp: a snapshot is hidden only when isEnabled is explicitly
+            // false, so projects whose settings.json omits the field keep their snapshots
             $scope.getSnapshots = function() {
-                return $scope.player.snapshots.filter(x => x.isEnabled);
+                return (_.get($scope, 'player.snapshots') || []).filter(x => x.isEnabled !== false);
+            }
+
+            // Nothing to switch between with a single snapshot, so the selector is hidden
+            $scope.hasMultipleSnapshots = function() {
+                return $scope.getSnapshots().length > 1;
             }
 
             $scope.formatSnapshotTitle = function(snap) {
@@ -452,6 +459,9 @@ angular.module('common')
 
             $scope.resetOperation = function () {
                 var prevOperation = removeOperation();
+                // pop() yields undefined once the list is empty, so there is nothing to undo
+                if (!prevOperation) return;
+
                 var operation = $scope.operations.last();
 
                 if (prevOperation.type == 'subset') {

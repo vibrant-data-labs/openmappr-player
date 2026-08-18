@@ -33,7 +33,7 @@
       span.text__content Loading Data
       span.text__percent {{loadingState.progress | number:0}}%
 
-.details-panel__snapshots(ng-if="loadingState.isLoaded" ng-click="toggleSnapshotSelector()")
+.details-panel__snapshots(ng-if="loadingState.isLoaded && hasMultipleSnapshots()" ng-click="toggleSnapshotSelector()")
   .row-data__content {{getSelectedSnapshotTitle() || ''}}
   .button-group__item
     button.button.button_type_play-toolbar(

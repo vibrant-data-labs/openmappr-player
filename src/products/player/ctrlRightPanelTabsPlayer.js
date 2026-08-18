@@ -161,99 +161,120 @@ angular.module('common')
                     $timeout.cancel(tutorialCountdownPromise);
                 }
 
+                const tutorialSteps = [
+                    {
+                        id: 'panel-info',
+                        element: '.focus-rigth-panel',
+                        intro: `
+                        <p>Welcome! Map information is located in the right side panel, opened by clicking the info icon. <span class="tutorial__button tutorial__button--info"></span></p>
+                        `,
+                        tooltipClass: 'tutorial__tooltip step--0'
+                    },
+                    {
+                        id: 'panel-node',
+                        element: '.focus-rigth-panel',
+                        intro: `
+                        <p>If a node is selected, the panel will display node-specific information. Close the panel by clicking the drawer icon at the top. <span class="tutorial__button tutorial__button--drawer-close"></span></p>
+                        `,
+                        tooltipClass: 'tutorial__tooltip step--1'
+                    },
+                    {
+                        id: 'legend',
+                        element: '#right-panel',
+                        intro: `
+                        <p>The left side panel displays the Summary, Legend, and List tabs.</p>
+                        <p>The Legend explains what the nodes are clustered by, colored by, and sized by.</p>
+                        `,
+                        tooltipClass: 'tutorial__tooltip step--2'
+                    },
+                    {
+                        id: 'summary',
+                        element: '#right-panel',
+                        intro: `
+                        The Summary tab displays data elements grouped by category and enables data filtering and exploration. The elements within each category reflect the make-up of your current data selection that appears in the visualization, thereby providing a high-level 'summary' of the content.
+                        `,
+                        tooltipClass: 'tutorial__tooltip step--3'
+                    },
+                    {
+                        id: 'select',
+                        element: '.play-toolbar__buttons',
+                        intro: `
+                        <p>Selecting a data element will highlight your selection in the data visualization. A 'Filters Applied' window appears to itemize the elements you've selected and the number of nodes in your current selection and to provide the option to 'Summarize Selection.'</p>
+                        <p>Selecting multiple elements within the same category will act as an OR operator, while selecting elements across different categories will act as an AND operator.</p>
+                        `,
+                        tooltipClass: 'tutorial__tooltip step--4'
+                    },
+                    {
+                        id: 'subset',
+                        element: '.play-toolbar__buttons',
+                        intro: `
+                        <p>Clicking 'Summarize Selection' filters the data down to the subset of nodes that match your selected attributes, and the data elements within each category in the Summary panel will update to reflect the content of your current data subset.</p>
+                        <p>You can select additional data elements and click 'Summarize Selection' to filter your subset further and continue exploring.</p>
+                        <p>Clicking Undo will remove your most recent selection and clicking 'Clear All' will reset the Summary panel and the visualization to display all data.</p>
+                        `,
+                        tooltipClass: 'tutorial__tooltip step--5'
+                    },
+                    {
+                        id: 'list',
+                        element: '#right-panel',
+                        intro: `
+                        <p>The List tab displays the list of entities in your current selection. Clicking on one will open the information panel to display node-specific details.</p>
+                        `,
+                        tooltipClass: 'tutorial__tooltip step--6'
+                    },
+                    {
+                        id: 'snapshots',
+                        element: '.details-panel__snapshots',
+                        intro: `
+                        <p>The Snapshot Selector provides a list of data visualizations with preset configurations. A description of each one is displayed below the Snapshot Title.</p>
+                        `,
+                        tooltipClass: 'tutorial__tooltip step--7'
+                    },
+                    {
+                        id: 'search',
+                        element: '.details-panel__controls',
+                        intro: `
+                        <p>You can Search the text fields of the dataset via the search bar at the top.</p>
+                        `,
+                        tooltipClass: 'tutorial__tooltip step--8'
+                    },
+                    {
+                        id: 'zoom',
+                        element: '.button-zoom',
+                        intro: `
+                            <p>
+                                You can Zoom In/Out with your mouse or via the + and - toggles.
+                            </p>
+                            <p>
+                                Thanks for taking this Tutorial! If you have any questions, comments, or suggestions, 
+                                <a href="https://airtable.com/shruDh1SDKndgTl51" target="_blank">
+                                contact us
+                                </a>!
+                            </p>
+                        `,
+                        tooltipClass: 'tutorial__tooltip step--9'
+                    }
+                ].filter(function (step) {
+                    // The snapshot selector is only rendered when there is more than one
+                    // snapshot, so its step goes away with it.
+                    return step.id !== 'snapshots' || $scope.hasMultipleSnapshots();
+                });
+
+                const stepIndex = function (id) {
+                    return tutorialSteps.findIndex(function (step) { return step.id === id; });
+                };
+                const hasSnapshotsStep = stepIndex('snapshots') !== -1;
+
                 ngIntroService.setOptions(
                     {
                         tooltipClass: 'tutorial__tooltip',
                         skipLabel: 'Close',
-                        steps: [
-                            {
-                                element: '.focus-rigth-panel',
-                                intro: `
-                                <p>Welcome! Map information is located in the right side panel, opened by clicking the info icon. <span class="tutorial__button tutorial__button--info"></span></p>
-                                `,
-                                tooltipClass: 'tutorial__tooltip step--0'
-                            },
-                            {
-                                element: '.focus-rigth-panel',
-                                intro: `
-                                <p>If a node is selected, the panel will display node-specific information. Close the panel by clicking the drawer icon at the top. <span class="tutorial__button tutorial__button--drawer-close"></span></p>
-                                `,
-                                tooltipClass: 'tutorial__tooltip step--1'
-                            },
-                            {
-                                element: '#right-panel',
-                                intro: `
-                                <p>The left side panel displays the Summary, Legend, and List tabs.</p>
-                                <p>The Legend explains what the nodes are clustered by, colored by, and sized by.</p>
-                                `,
-                                tooltipClass: 'tutorial__tooltip step--2'
-                            },
-                            {
-                                element: '#right-panel',
-                                intro: `
-                                The Summary tab displays data elements grouped by category and enables data filtering and exploration. The elements within each category reflect the make-up of your current data selection that appears in the visualization, thereby providing a high-level 'summary' of the content.
-                                `,
-                                tooltipClass: 'tutorial__tooltip step--3'
-                            },
-                            {
-                                element: '.play-toolbar__buttons',
-                                intro: `
-                                <p>Selecting a data element will highlight your selection in the data visualization. A 'Filters Applied' window appears to itemize the elements you've selected and the number of nodes in your current selection and to provide the option to 'Summarize Selection.'</p>
-                                <p>Selecting multiple elements within the same category will act as an OR operator, while selecting elements across different categories will act as an AND operator.</p>
-                                `,
-                                tooltipClass: 'tutorial__tooltip step--4'
-                            },
-                            {
-                                element: '.play-toolbar__buttons',
-                                intro: `
-                                <p>Clicking 'Summarize Selection' filters the data down to the subset of nodes that match your selected attributes, and the data elements within each category in the Summary panel will update to reflect the content of your current data subset.</p>
-                                <p>You can select additional data elements and click 'Summarize Selection' to filter your subset further and continue exploring.</p>
-                                <p>Clicking Undo will remove your most recent selection and clicking 'Clear All' will reset the Summary panel and the visualization to display all data.</p>
-                                `,
-                                tooltipClass: 'tutorial__tooltip step--5'
-                            },
-                            {
-                                element: '#right-panel',
-                                intro: `
-                                <p>The List tab displays the list of entities in your current selection. Clicking on one will open the information panel to display node-specific details.</p>
-                                `,
-                                tooltipClass: 'tutorial__tooltip step--6'
-                            },
-                            {
-                                element: '.details-panel__snapshots',
-                                intro: `
-                                <p>The Snapshot Selector provides a list of data visualizations with preset configurations. A description of each one is displayed below the Snapshot Title.</p>
-                                `,
-                                tooltipClass: 'tutorial__tooltip step--7'
-                            },
-                            {
-                                element: '.details-panel__controls',
-                                intro: `
-                                <p>You can Search the text fields of the dataset via the search bar at the top.</p>
-                                `,
-                                tooltipClass: 'tutorial__tooltip step--8'
-                            },
-                            {
-                                element: '.button-zoom',
-                                intro: `
-                                    <p>
-                                        You can Zoom In/Out with your mouse or via the + and - toggles.
-                                    </p>
-                                    <p>
-                                        Thanks for taking this Tutorial! If you have any questions, comments, or suggestions, 
-                                        <a href="https://airtable.com/shruDh1SDKndgTl51" target="_blank">
-                                        contact us
-                                        </a>!
-                                    </p>
-                                `,
-                                tooltipClass: 'tutorial__tooltip step--9'
-                            }
-                        ]
+                        steps: tutorialSteps
                     }
                 );
 
                 const transitionHandler = TransitionHandler();
-                transitionHandler.registerCallback(0, () => {
+                transitionHandler.registerCallback(stepIndex('panel-info'), () => {
                     $rootScope.$broadcast(BROADCAST_MESSAGES.ip.changed, true);
                     $timeout(function () {
                         $('.focus-rigth-panel').addClass('active');
@@ -261,36 +282,36 @@ angular.module('common')
                     }, 50);
                 })
 
-                transitionHandler.registerTransition(1, 0, () => {
+                transitionHandler.registerTransition(stepIndex('panel-node'), stepIndex('panel-info'), () => {
                     if (selectService.singleNode) {
                         selectService.unselect();
                     }
                 });
 
-                transitionHandler.registerCallback(1, () => {
+                transitionHandler.registerCallback(stepIndex('panel-node'), () => {
                     const nodes = dataGraph.getAllNodes();
                     if (nodes && nodes.length) {
                         selectService.selectSingleNode(nodes[0].id)
                     }
                 });
 
-                transitionHandler.registerTransition(1, 2, () => {
+                transitionHandler.registerTransition(stepIndex('panel-node'), stepIndex('legend'), () => {
                     selectService.unselect();
                 });
 
-                transitionHandler.registerCallback(2, () => {
+                transitionHandler.registerCallback(stepIndex('legend'), () => {
                     $timeout(() => {
                         $scope.panelUI.openPanel('summary');
                     }, 50);
                 });
 
-                transitionHandler.registerCallback(3, () => {
+                transitionHandler.registerCallback(stepIndex('summary'), () => {
                     $timeout(() => {
                         $scope.panelUI.openPanel('filter');
                     }, 50);
                 });
 
-                transitionHandler.registerCallback(4, () => {
+                transitionHandler.registerCallback(stepIndex('select'), () => {
                     const rawData = dataGraph.getRawDataUnsafe();
                     const cloudAttrs = [
                         'tag-cloud',
@@ -310,49 +331,55 @@ angular.module('common')
                     }
                 });
 
-                transitionHandler.registerTransition(4, 3, () => {
+                transitionHandler.registerTransition(stepIndex('select'), stepIndex('summary'), () => {
                     selectService.unselect();
                 });
 
-                transitionHandler.registerTransition(4, 5, () => {
+                transitionHandler.registerTransition(stepIndex('select'), stepIndex('subset'), () => {
                     subsetService.subset();
                 });
 
-                transitionHandler.registerTransition(5, 4, () => {
+                transitionHandler.registerTransition(stepIndex('subset'), stepIndex('select'), () => {
                     subsetService.unsubset();
                     $scope.resetOperation();
                 });
 
-                transitionHandler.registerCallback(6, () => {
+                transitionHandler.registerCallback(stepIndex('list'), () => {
                     $timeout(() => {
                         $scope.panelUI.openPanel('list');
                     }, 50);
                 });
 
-                transitionHandler.registerTransition(6, 7, () => {
+                // Without the snapshot step, the list step is followed directly by the search step
+                const afterList = hasSnapshotsStep ? stepIndex('snapshots') : stepIndex('search');
+                const beforeSearch = hasSnapshotsStep ? stepIndex('snapshots') : stepIndex('list');
+
+                transitionHandler.registerTransition(stepIndex('list'), afterList, () => {
                     subsetService.unsubset();
                     $scope.resetOperation();
                 });
 
-                transitionHandler.registerTransition(7, 6, () => {
-                    if ($scope.isSnapshotSelectorOpen) {
-                        $scope.toggleSnapshotSelector();
-                    }
-                }, [4, 5]);
+                if (hasSnapshotsStep) {
+                    transitionHandler.registerTransition(stepIndex('snapshots'), stepIndex('list'), () => {
+                        if ($scope.isSnapshotSelectorOpen) {
+                            $scope.toggleSnapshotSelector();
+                        }
+                    }, [stepIndex('select'), stepIndex('subset')]);
 
-                transitionHandler.registerCallback(7, () => {
-                    if (!$scope.isSnapshotSelectorOpen) {
-                        $scope.toggleSnapshotSelector();
-                    };
-                });
+                    transitionHandler.registerCallback(stepIndex('snapshots'), () => {
+                        if (!$scope.isSnapshotSelectorOpen) {
+                            $scope.toggleSnapshotSelector();
+                        };
+                    });
 
-                transitionHandler.registerTransition(7, 8, () => {
-                    if ($scope.isSnapshotSelectorOpen) {
-                        $scope.toggleSnapshotSelector();
-                    }
-                });
+                    transitionHandler.registerTransition(stepIndex('snapshots'), stepIndex('search'), () => {
+                        if ($scope.isSnapshotSelectorOpen) {
+                            $scope.toggleSnapshotSelector();
+                        }
+                    });
+                }
 
-                transitionHandler.registerCallback(8, () => {
+                transitionHandler.registerCallback(stepIndex('search'), () => {
                     $rootScope.$broadcast(BROADCAST_MESSAGES.searchRequest.init, { text: 'oceans' });
 
                     $timeout(function () {
@@ -362,17 +389,26 @@ angular.module('common')
                     }, 100);
                 });
 
-                transitionHandler.registerTransition(8, 7, () => {
+                // Stepping back out of search restores whichever step precedes it; without the
+                // snapshot step that is the list step, which needs its selection state rebuilt
+                transitionHandler.registerTransition(stepIndex('search'), beforeSearch, () => {
                     $rootScope.$broadcast(BROADCAST_MESSAGES.searchRequest.init, undefined);
-                });
+                }, hasSnapshotsStep ? undefined : [stepIndex('select'), stepIndex('subset')]);
 
-                transitionHandler.registerTransition(8, 9, () => {
+                transitionHandler.registerTransition(stepIndex('search'), stepIndex('zoom'), () => {
                     $rootScope.$broadcast(BROADCAST_MESSAGES.searchRequest.init, undefined);
                 });
 
                 ngIntroService.intro.onchange(function () {
                     const currentStep = ngIntroService.intro._currentStep;
-                    transitionHandler.processTransition(currentStep);
+                    // intro.js runs this as the first statement of _showElement, after it has
+                    // already advanced the step counter, so a throw here leaves the tour on a
+                    // step it never drew and the next click appears to skip one
+                    try {
+                        transitionHandler.processTransition(currentStep);
+                    } catch (err) {
+                        console.error('[tutorial] step ' + currentStep + ' handler failed', err);
+                    }
                 });
 
                 ngIntroService.intro.oncomplete(function () {
